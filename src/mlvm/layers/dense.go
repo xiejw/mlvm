@@ -1,9 +1,9 @@
 package layers
 
-import(
+import (
+	c "mlvm/base/context"
 	t "mlvm/base/tensor"
 	w "mlvm/base/weight"
-	c "mlvm/base/context"
 )
 
 func NewInput(name string, shape t.Shape) t.Tensor {

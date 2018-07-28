@@ -5,10 +5,10 @@ import (
 	w "mlvm/base/weight"
 )
 
-struct Layer interface {
-	func Weights() []w.Weight
+type Layer interface {
+	Weights() []w.Weight
 
-	func Apply(args ...t.Tensor) t.Tensor
+	Apply(args ...t.Tensor) t.Tensor
 
-	func Backprop()
+	Backprop()
 }

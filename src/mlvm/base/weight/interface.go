@@ -1,6 +1,5 @@
 package weight
 
 type Weight interface {
-  Name() string
+	Name() string
 }
-

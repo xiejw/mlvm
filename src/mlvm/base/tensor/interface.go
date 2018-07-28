@@ -3,12 +3,12 @@ package tensor
 type DimensionType int
 
 const (
-	IntValue DimensionType = 1
-	BatchSize DimensionType = 2
+	IntType       DimensionType = 1
+	BatchSizeType DimensionType = 2
 )
 
 type Dimension struct {
-	Type DimensionType
+	Type  DimensionType
 	Value int
 }
 
