@@ -8,6 +8,7 @@ const (
 
 // Immutable
 type Tensor interface {
+	Name() string
 	Shape() Shape
-	Dtype() DType
+	DType() DType
 }

@@ -14,6 +14,7 @@ func (b *ContextBuilder) Build() *Context {
 		isTraining:        b.IsTraining,
 		weights:           make(map[string]w.Weight),
 		weightNameRecords: make(map[string]int),
+		tensorNameRecords: make(map[string]int),
 	}
 	return &c
 }
@@ -22,6 +23,7 @@ type Context struct {
 	isTraining        bool
 	weights           map[string]w.Weight
 	weightNameRecords map[string]int
+	tensorNameRecords map[string]int
 }
 
 func (ctx *Context) IsTraining() bool {
@@ -33,6 +35,14 @@ func (ctx *Context) NewWeight(name string, shape t.Shape, dtype t.DType) w.Weigh
 	weight := w.NewWeight(unique_name, shape, dtype)
 	ctx.registerNewWeight(weight)
 	return weight
+}
+
+func (ctx *Context) GetUniqueNameForTensor(name string) string {
+	if _, existed := ctx.tensorNameRecords[name]; existed {
+		panic("not impl")
+	}
+	ctx.tensorNameRecords[name] += 1
+	return name
 }
 
 func (ctx *Context) getUniqueNameForWeight(name string) string {
