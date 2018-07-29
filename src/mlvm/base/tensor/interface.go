@@ -16,5 +16,11 @@ type Shape struct {
 	Dimensions []Dimension
 }
 
+type DType int
+
+const (
+	Float32 DType = 1
+)
+
 type Tensor interface {
 }

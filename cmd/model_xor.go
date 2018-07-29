@@ -1,11 +1,16 @@
 package main
 
 import (
-	_ "mlvm/base/context"
-	t "mlvm/base/tensor"
+	"fmt"
+
+	c "mlvm/base/context"
+	_ "mlvm/base/tensor"
 	_ "mlvm/base/weight"
 )
 
 func main() {
-	_ = t.Shape{}
+	ctx :=  (&c.ContextBuilder{
+		IsTraining: false,
+	}).Build()
+	fmt.Printf("IsTraining %v\n", ctx.IsTraining())
 }
