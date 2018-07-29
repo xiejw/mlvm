@@ -10,6 +10,9 @@ BIN=$(PWD)/bin
 MODEL_SRC=$(PWD)/cmd
 
 # {{{1 Actions
+# {{{2 Default
+default: clean fmt model_xor
+
 # {{{2 model_xor
 model_xor:
 	$(GO) build -o $(BIN)/model_xor $(MODEL_SRC)/model_xor.go

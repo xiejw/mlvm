@@ -4,11 +4,14 @@ import (
 	"fmt"
 
 	c "mlvm/base/context"
-	_ "mlvm/base/tensor"
+	t "mlvm/base/tensor"
 	_ "mlvm/base/weight"
 )
 
 func main() {
+	inputShape := t.NewShapeWithBatchSize(1, 2)
+	fmt.Printf("InputShape %v\n", inputShape)
+
 	ctx :=  (&c.ContextBuilder{
 		IsTraining: false,
 	}).Build()
