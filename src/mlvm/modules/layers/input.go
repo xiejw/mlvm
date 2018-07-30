@@ -10,34 +10,24 @@ import (
 func NewInput(ctx *c.Context, name string, shape t.Shape, dtype t.DType) Layer {
 	unique_name := ctx.AssignUniqueName(name)
 	return &inputLayer{
-		name:  unique_name,
-		shape: shape,
-		dtype: dtype,
+		name:   unique_name,
+		inputs: nil,
 	}
 }
 
 type inputLayer struct {
-	name  string
-	shape t.Shape
-	dtype t.DType
+	name   string
+	inputs Inputs
 }
 
-func (input *inputLayer) Name() string {
-	return input.name
+func (layer *inputLayer) Name() string {
+	return layer.name
 }
 
-func (input *inputLayer) Inputs() Inputs {
-	return nil
+func (layer *inputLayer) Inputs() Inputs {
+	return layer.inputs
 }
 
-func (input *inputLayer) Shape() t.Shape {
-	return input.shape
-}
-
-func (input *inputLayer) DType() t.DType {
-	return input.dtype
-}
-
-func (input *inputLayer) String() string {
-	return fmt.Sprintf("Input (\"%v\"), shape: %v", input.name, input.shape)
+func (layer *inputLayer) String() string {
+	return fmt.Sprintf("Input (\"%v\")", layer.name)
 }

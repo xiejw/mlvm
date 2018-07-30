@@ -25,6 +25,9 @@ generate:
 model_xor:
 	$(GO) build -o $(BIN)/model_xor $(MODEL_SRC)/model_xor.go
 
+run_model_xor: model_xor
+	$(BIN)/model_xor
+
 # {{{1 Maintenance.
 # {{{2 fmt
 fmt:

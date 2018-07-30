@@ -10,6 +10,7 @@ type Layer interface {
 
 	Name() string
 
+	// nil if no inputs
 	Inputs() Inputs
 
 	// Output

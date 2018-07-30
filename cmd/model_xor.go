@@ -10,16 +10,16 @@ import (
 )
 
 func main() {
-	inputShape := t.NewShapeWithBatchSize(1, 2)
-	fmt.Printf("InputShape %v\n", inputShape)
-
 
 	ctx :=  (&c.ContextBuilder{
 		IsTraining: false,
 	}).Build()
-	fmt.Printf("IsTraining %v\n", ctx.IsTraining())
 
-	input := layers.NewInput(ctx, "x", inputShape, t.Float32)
+	inputShape := t.NewShapeWithBatchSize(1, 2)
+	inputLayer := layers.NewInput(ctx, "x", inputShape, t.Float32)
 
-	fmt.Printf("Input layer %v\n", input)
+	denseLayer := layers.NewDense(ctx, "first_layer", inputLayer, 3)
+
+	fmt.Printf("-> %v\n", inputLayer)
+	fmt.Printf("-> %v\n", denseLayer)
 }
