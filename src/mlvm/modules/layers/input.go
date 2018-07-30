@@ -7,33 +7,37 @@ import (
 	t "mlvm/base/tensor"
 )
 
-func NewInput(ctx *c.Context, name string, shape t.Shape, dtype t.DType) t.Tensor {
-	unique_name := ctx.GetUniqueNameForTensor(name)
-	return &inputTensor{
+func NewInput(ctx *c.Context, name string, shape t.Shape, dtype t.DType) Layer {
+	unique_name := ctx.AssignUniqueName(name)
+	return &inputLayer{
 		name:  unique_name,
 		shape: shape,
 		dtype: dtype,
 	}
 }
 
-type inputTensor struct {
+type inputLayer struct {
 	name  string
 	shape t.Shape
 	dtype t.DType
 }
 
-func (input *inputTensor) Name() string {
+func (input *inputLayer) Name() string {
 	return input.name
 }
 
-func (input *inputTensor) Shape() t.Shape {
+func (input *inputLayer) Inputs() Inputs {
+	return nil
+}
+
+func (input *inputLayer) Shape() t.Shape {
 	return input.shape
 }
 
-func (input *inputTensor) DType() t.DType {
+func (input *inputLayer) DType() t.DType {
 	return input.dtype
 }
 
-func (input *inputTensor) String() string {
+func (input *inputLayer) String() string {
 	return fmt.Sprintf("Input (\"%v\"), shape: %v", input.name, input.shape)
 }

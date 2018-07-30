@@ -1,14 +1,20 @@
 package layers
 
 import (
-	t "mlvm/base/tensor"
-	w "mlvm/base/weight"
+	_ "mlvm/base/tensor"
+	_ "mlvm/base/weight"
 )
 
 type Layer interface {
-	Weights() []w.Weight
+	// Weights() []w.Weight
 
-	Apply(args ...t.Tensor) t.Tensor
+	Name() string
 
-	Backprop()
+	Inputs() Inputs
+
+	// Output
+
+	// Apply(args ...t.Tensor) t.Tensor
+
+	// Backprop()
 }
