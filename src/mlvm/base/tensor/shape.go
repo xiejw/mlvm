@@ -9,8 +9,8 @@ import (
 type DimensionType int
 
 const (
-	IntType       DimensionType = 1
-	BatchSizeType DimensionType = 2
+	IntType       DimensionType = 0
+	BatchSizeType DimensionType = 1
 )
 
 type Dimension struct {
@@ -33,11 +33,22 @@ func (d *Dimension) String() string {
 type Shape interface {
 	Dim(index int) Dimension
 	Rank() int
+	AsList() []Dimension
 }
 
 func NewShape(dimArgs ...int) Shape {
 	dims := make([]*Dimension, 0, len(dimArgs))
 	dims = fillDims(dims, dimArgs...)
+	return &shapeImpl{dims: dims}
+}
+
+func NewShapeFromDims(dimArgs []Dimension) Shape {
+	dims := make([]*Dimension, 0, len(dimArgs))
+	for _, dim := range dimArgs {
+		var dimCopy Dimension
+		dimCopy = dim
+		dims = append(dims, &dimCopy)
+	}
 	return &shapeImpl{dims: dims}
 }
 
@@ -71,6 +82,14 @@ func (s *shapeImpl) Dim(index int) Dimension {
 
 func (s *shapeImpl) Rank() int {
 	return len(s.dims)
+}
+
+func (s *shapeImpl) AsList() []Dimension {
+	dimsCopy := make([]Dimension, 0, len(s.dims))
+	for _, dim := range s.dims {
+		dimsCopy = append(dimsCopy, *dim)
+	}
+	return dimsCopy
 }
 
 func (s *shapeImpl) String() string {

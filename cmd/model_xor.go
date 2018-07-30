@@ -15,7 +15,7 @@ func main() {
 		IsTraining: false,
 	}).Build()
 
-	inputShape := t.NewShapeWithBatchSize(1, 2)
+	inputShape := t.NewShapeWithBatchSize(1)
 	inputLayer := layers.NewInput(ctx, "x", inputShape, t.Float32)
 
 	denseLayer := layers.NewDense(ctx, "first_layer", inputLayer, 3)

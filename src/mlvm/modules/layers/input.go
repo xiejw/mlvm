@@ -12,12 +12,17 @@ func NewInput(ctx *c.Context, name string, shape t.Shape, dtype t.DType) Layer {
 	return &inputLayer{
 		name:   unique_name,
 		inputs: nil,
+		output: &outputImpl{
+			dtype: dtype,
+			shape: shape,
+		},
 	}
 }
 
 type inputLayer struct {
 	name   string
 	inputs Inputs
+	output Output
 }
 
 func (layer *inputLayer) Name() string {
@@ -28,6 +33,10 @@ func (layer *inputLayer) Inputs() Inputs {
 	return layer.inputs
 }
 
+func (layer *inputLayer) Output() Output {
+	return layer.output
+}
+
 func (layer *inputLayer) String() string {
-	return fmt.Sprintf("Input (\"%v\")", layer.name)
+	return fmt.Sprintf("Input Layer\t\tshape: %v\n\t- name: %v", layer.output.Shape(), layer.name)
 }

@@ -14,6 +14,7 @@ type Layer interface {
 	Inputs() Inputs
 
 	// Output
+	Output() Output
 
 	// Apply(args ...t.Tensor) t.Tensor
 
