@@ -1,8 +1,6 @@
 package layers
 
 import (
-	"fmt"
-
 	c "mlvm/base/context"
 	t "mlvm/base/tensor"
 	_ "mlvm/base/weight"
@@ -14,8 +12,9 @@ func NewDense(
 
 	// FIXME: check input size.
 
-	inputs := &inputsImpl{}
+	inputs := &InputsBuilder{}
 	inputs.Append(input)
+	inputs.Build()
 
 	inputShape := input.Output().Shape().AsList()
 	inputShape[1] = t.Dimension{
@@ -53,5 +52,5 @@ func (layer *denseImpl) Output() Output {
 }
 
 func (layer *denseImpl) String() string {
-	return fmt.Sprintf("Dense Layer\t\tshape: %v\n\t- name: %v", layer.output.Shape(), layer.name)
+	return FormatPrintString("Dense Layer", layer)
 }

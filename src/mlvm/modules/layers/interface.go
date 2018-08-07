@@ -16,6 +16,8 @@ type Layer interface {
 	// Output
 	Output() Output
 
+	String() string
+
 	// Apply(args ...t.Tensor) t.Tensor
 
 	// Backprop()

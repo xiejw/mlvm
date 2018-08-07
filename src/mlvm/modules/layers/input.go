@@ -1,8 +1,6 @@
 package layers
 
 import (
-	"fmt"
-
 	c "mlvm/base/context"
 	t "mlvm/base/tensor"
 )
@@ -38,5 +36,5 @@ func (layer *inputLayer) Output() Output {
 }
 
 func (layer *inputLayer) String() string {
-	return fmt.Sprintf("Input Layer\t\tshape: %v\n\t- name: %v", layer.output.Shape(), layer.name)
+	return FormatPrintString("Input Layer", layer)
 }
