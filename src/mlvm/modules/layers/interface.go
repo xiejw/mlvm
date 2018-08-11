@@ -8,17 +8,15 @@ import (
 type Layer interface {
 	// Weights() []w.Weight
 
+	// Name of the layer.
 	Name() string
 
-	// nil if no inputs
+	// Inputs of current layer. `nil` if absent.
 	Inputs() Inputs
 
-	// Output
+	// Single output of current layer.
 	Output() Output
 
+	// String representation.
 	String() string
-
-	// Apply(args ...t.Tensor) t.Tensor
-
-	// Backprop()
 }

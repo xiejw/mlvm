@@ -1,4 +1,3 @@
-// Layer-like function without states.
 package functions
 
 import (
@@ -25,18 +24,18 @@ type reluLayer struct {
 	output layers.Output
 }
 
-func (r *reluLayer) Name() string {
-	return r.name
+func (layer *reluLayer) Name() string {
+	return layer.name
 }
 
-func (r *reluLayer) Inputs() layers.Inputs {
-	return r.inputs
+func (layer *reluLayer) Inputs() layers.Inputs {
+	return layer.inputs
 }
 
-func (r *reluLayer) Output() layers.Output {
-	return r.output
+func (layer *reluLayer) Output() layers.Output {
+	return layer.output
 }
 
-func (r *reluLayer) String() string {
-	return layers.FormatPrintString("Relu", r)
+func (layer *reluLayer) String() string {
+	return layers.FormatPrintString("Relu", layer)
 }
