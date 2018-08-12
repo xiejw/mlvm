@@ -4,11 +4,19 @@ package layers
 // Inputs of layers. Typically a list of `Layer`s.
 type Inputs interface {
 	Iterator() <-chan Layer
+	Count() int
 }
 
 type InputsBuilder struct {
 	data      []Layer
 	finalized bool
+}
+
+func (impl *InputsBuilder) Count() int {
+	if !impl.finalized {
+		panic("The Build should be called first.")
+	}
+	return len(impl.data)
 }
 
 func (impl *InputsBuilder) Iterator() <-chan Layer {
@@ -20,6 +28,7 @@ func (impl *InputsBuilder) Iterator() <-chan Layer {
 		for _, item := range impl.data {
 			c <- item
 		}
+		close(c)
 	}()
 	return c
 }

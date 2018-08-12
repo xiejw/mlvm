@@ -14,11 +14,19 @@ package {{.Package}}
 {{.Comment}}
 type {{.Name}} interface {
 	Iterator() <-chan {{.Type}}
+	Count() int
 }
 
 type {{.ImplName}} struct {
 	data      []{{.Type}}
 	finalized bool
+}
+
+func (impl *{{.ImplName}}) Count() int {
+	if !impl.finalized {
+		panic("The Build should be called first.")
+	}
+	return len(impl.data)
 }
 
 func (impl *{{.ImplName}}) Iterator() <-chan {{.Type}} {
@@ -30,6 +38,7 @@ func (impl *{{.ImplName}}) Iterator() <-chan {{.Type}} {
 		for _, item := range impl.data {
 			c <- item
 		}
+		close(c)
 	}()
 	return c
 }

@@ -8,7 +8,7 @@ import (
 type Layer interface {
 	// Weights() []w.Weight
 
-	// Name of the layer.
+	// Name of the layer. Unique in graph.
 	Name() string
 
 	// Inputs of current layer. `nil` if absent.

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	c "mlvm/base/context"
 	t "mlvm/base/tensor"
 	"mlvm/modules/layers"
@@ -26,7 +28,11 @@ func main() {
 	denseLayer := layers.NewDense(ctx, "layer_1", concatLayer, 3)
 	activation := functions.Relu(ctx, denseLayer)
 
-	_ = g.NewInferenceGraph([]layers.Layer{activation}, &g.DebuggingOptions{
+	_,err := g.NewInferenceGraph(ctx, []layers.Layer{activation}, &g.DebuggingOptions{
 		PrintAllLayers: true,
 	})
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
