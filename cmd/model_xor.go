@@ -1,13 +1,10 @@
 package main
 
 import (
-	"os"
-	"fmt"
-	"text/tabwriter"
-
 	c "mlvm/base/context"
 	t "mlvm/base/tensor"
 	"mlvm/modules/layers"
+	g "mlvm/modules/graph"
 	"mlvm/modules/functions"
 )
 
@@ -29,12 +26,7 @@ func main() {
 	denseLayer := layers.NewDense(ctx, "layer_1", concatLayer, 3)
 	activation := functions.Relu(ctx, denseLayer)
 
-	// Output
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.Debug)
-	fmt.Fprintln(w, inputX.String())
-	fmt.Fprintln(w, inputY.String())
-	fmt.Fprintln(w, concatLayer.String())
-	fmt.Fprintln(w, denseLayer.String())
-	fmt.Fprintln(w, activation.String())
-	w.Flush()
+	_ = g.NewInferenceGraph([]layers.Layer{activation}, &g.DebuggingOptions{
+		PrintAllLayers: true,
+	})
 }
