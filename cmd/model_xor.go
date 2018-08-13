@@ -12,9 +12,7 @@ import (
 
 func main() {
 
-	ctx :=  (&c.ContextBuilder{
-		IsTraining: false,
-	}).Build()
+	ctx :=  (&c.ContextBuilder{ }).Build()
 
 	inputShape := t.NewShapeWithBatchSize(1)
 

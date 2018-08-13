@@ -52,5 +52,5 @@ func (layer *denseImpl) Output() Output {
 }
 
 func (layer *denseImpl) String() string {
-	return FormatPrintString("Dense Layer", layer)
+	return FormatPrintString(denseLayerType, layer)
 }

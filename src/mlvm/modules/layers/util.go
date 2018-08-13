@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+// Formats a string for debugging information of a layer. Typically used by
+// `layer.String()`.
 func FormatPrintString(layerType string, layer Layer) string {
 	// Major information
 	layerInfo := fmt.Sprintf(" Type: %v\t Shape: %v\t Name: %v",

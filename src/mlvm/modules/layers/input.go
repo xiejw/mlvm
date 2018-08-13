@@ -5,6 +5,7 @@ import (
 	t "mlvm/base/tensor"
 )
 
+// A input layer representation.
 func NewInput(ctx *c.Context, name string, shape t.Shape, dtype t.DType) Layer {
 	unique_name := ctx.AssignUniqueName(name)
 	return &inputLayer{
@@ -36,5 +37,5 @@ func (layer *inputLayer) Output() Output {
 }
 
 func (layer *inputLayer) String() string {
-	return FormatPrintString("Input Layer", layer)
+	return FormatPrintString(inputLayerType, layer)
 }

@@ -6,12 +6,10 @@ import (
 )
 
 type ContextBuilder struct {
-	IsTraining bool
 }
 
 func (b *ContextBuilder) Build() *Context {
 	c := Context{
-		isTraining:  b.IsTraining,
 		weights:     make(map[string]w.Weight),
 		nameRecords: make(map[string]int),
 	}
@@ -19,15 +17,11 @@ func (b *ContextBuilder) Build() *Context {
 }
 
 type Context struct {
-	isTraining  bool
 	weights     map[string]w.Weight
 	nameRecords map[string]int
 }
 
-func (ctx *Context) IsTraining() bool {
-	return ctx.isTraining
-}
-
+// Returns a new `Weight` with unique name.
 func (ctx *Context) NewWeight(name string, shape t.Shape, dtype t.DType) w.Weight {
 	unique_name := ctx.AssignUniqueName(name)
 	weight := w.NewWeight(unique_name, shape, dtype)
@@ -35,6 +29,8 @@ func (ctx *Context) NewWeight(name string, shape t.Shape, dtype t.DType) w.Weigh
 	return weight
 }
 
+// Assign a unique name in the context. It appends suffix at the end to make it
+// unique.
 func (ctx *Context) AssignUniqueName(name string) string {
 	if _, existed := ctx.nameRecords[name]; existed {
 		panic("not impl")
@@ -43,6 +39,7 @@ func (ctx *Context) AssignUniqueName(name string) string {
 	return name
 }
 
+// Records a table for weight name to `Weight` mapping.
 func (ctx *Context) registerNewWeight(weight w.Weight) {
 	ctx.weights[weight.Name()] = weight
 }

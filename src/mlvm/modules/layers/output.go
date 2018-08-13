@@ -4,12 +4,6 @@ import (
 	t "mlvm/base/tensor"
 )
 
-// Output of the layer, which only records the shape and dtype.
-type Output interface {
-	Shape() t.Shape
-	DType() t.DType
-}
-
 // Creates an immutable `Output` instance.
 func NewOutput(shape t.Shape, dtype t.DType) Output {
 	return &outputImpl{
