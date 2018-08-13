@@ -25,7 +25,7 @@ func Concat(ctx *c.Context, name string, inputLayers []layers.Layer) layers.Laye
 	outputDims[finalAxis] = finalDim
 
 	output := layers.NewOutput(
-		t.NewShapeFromDims(outputDims), inputLayers[0].Output().DType())
+		t.NewShapeFromDims(outputDims...), inputLayers[0].Output().DType())
 
 	return &concatLayer{
 		name:   ctx.AssignUniqueName(name),

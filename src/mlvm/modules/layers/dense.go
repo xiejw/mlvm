@@ -22,7 +22,7 @@ func NewDense(
 	}
 
 	output := &outputImpl{
-		shape: t.NewShapeFromDims(inputShape),
+		shape: t.NewShapeFromDims(inputShape...),
 		dtype: input.Output().DType(),
 	}
 
