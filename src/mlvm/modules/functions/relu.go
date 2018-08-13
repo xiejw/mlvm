@@ -37,5 +37,5 @@ func (layer *reluLayer) Output() layers.Output {
 }
 
 func (layer *reluLayer) String() string {
-	return layers.FormatPrintString("Relu", layer)
+	return layers.FormatPrintString(layers.ReluFuncType, layer)
 }

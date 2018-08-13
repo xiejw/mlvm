@@ -2,7 +2,7 @@
 package layers
 
 // Template: Inputs of layers. Typically a list of `Layer`s.
-type InputsTemplate interface {
+type inputsTemplate interface {
 	Iterator() <-chan Layer
 	Count() int
 }

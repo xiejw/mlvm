@@ -53,5 +53,5 @@ func (layer *concatLayer) Output() layers.Output {
 }
 
 func (layer *concatLayer) String() string {
-	return layers.FormatPrintString("Concat", layer)
+	return layers.FormatPrintString(layers.ConcatFuncType, layer)
 }

@@ -37,5 +37,5 @@ func (layer *inputLayer) Output() Output {
 }
 
 func (layer *inputLayer) String() string {
-	return FormatPrintString(inputLayerType, layer)
+	return FormatPrintString(InputLayerType, layer)
 }

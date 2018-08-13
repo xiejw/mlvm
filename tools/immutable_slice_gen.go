@@ -63,7 +63,7 @@ func main() {
 	c := Context{
 		Package:  "layers",
 		Comment:  "// Template: Inputs of layers. Typically a list of `Layer`s.",
-		Name:     "InputsTemplate",
+		Name:     "inputsTemplate", // Non public
 		Type:     "Layer",
 		ImplName: "InputsBuilder",
 	}

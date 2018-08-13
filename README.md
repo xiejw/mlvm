@@ -6,8 +6,8 @@
 
 ## TODO List
 
-* Unique names.
-* Emit graph
+* Emit Layer graph
 * Lower to Op
-* Execute
+* Emit Op graph
+* Execute by connecting channels, inputs, outputs
 
