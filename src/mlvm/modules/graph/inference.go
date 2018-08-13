@@ -11,6 +11,7 @@ type DebuggingOptions struct {
 }
 
 // Builds an inference graph and compile.
+// Graph is DAG.
 func NewInferenceGraph(ctx *c.Context, outputs []layers.Layer, options *DebuggingOptions) (InferenceGraph, error) {
 	if options == nil {
 		options = &DebuggingOptions{}

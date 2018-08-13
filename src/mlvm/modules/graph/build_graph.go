@@ -20,9 +20,7 @@ func (g *layerGraph) BuildGraph() error {
 	root.Children = make([]*layerNode, 0, len(outputs))
 
 	for _, outputLayer := range outputs {
-		g.allLayers = append(g.allLayers, outputLayer)
-
-		node := buildNodeForLayer(outputLayer)
+		node := g.buildNodeForLayer(outputLayer)
 		node.IsOutput = true
 		root.Children = append(root.Children, node)
 	}
@@ -34,8 +32,11 @@ func (g *layerGraph) BuildGraph() error {
 	return nil
 }
 
-// Builds a
-func buildNodeForLayer(layer layers.Layer) *layerNode {
+// Builds a node for the graph. Registers layers.
+func (g *layerGraph) buildNodeForLayer(layer layers.Layer) *layerNode {
+	// TODO(xiejw): dedup.
+	g.allLayers = append(g.allLayers, layer)
+
 	node := &layerNode{
 		Layer: layer,
 	}
@@ -48,7 +49,7 @@ func buildNodeForLayer(layer layers.Layer) *layerNode {
 	node.Children = make([]*layerNode, 0, layerInputs.Count())
 
 	for childLayer := range layerInputs.Iterator() {
-		childNode := buildNodeForLayer(childLayer)
+		childNode := g.buildNodeForLayer(childLayer)
 		node.Children = append(node.Children, childNode)
 	}
 
