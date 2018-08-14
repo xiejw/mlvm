@@ -1,4 +1,4 @@
-package graph
+package compilation
 
 import (
 	"errors"
@@ -7,37 +7,37 @@ import (
 )
 
 // TODO: dedup layer based on name.
-func (g *layerGraph) BuildGraph() error {
+func (g *LayerGraph) BuildGraph() error {
 	g.allLayers = make([]layers.Layer, 0)
 
-	outputs := g.outputs
+	outputs := g.Outputs
 	if len(outputs) == 0 {
 		return errors.New("Outpus of Graph should not be empty.")
 	}
 
 	// Builds root node.
-	root := &layerNode{IsRoot: true}
-	root.Children = make([]*layerNode, 0, len(outputs))
+	root := &LayerNode{IsRoot: true}
+	root.Children = make([]*LayerNode, 0, len(outputs))
 
 	for _, outputLayer := range outputs {
-		node := g.buildNodeForLayer(outputLayer)
+		node := g.buildNodeForLayerGraph(outputLayer)
 		node.IsOutput = true
 		root.Children = append(root.Children, node)
 	}
 
 	// Print layers.
-	if g.options.PrintAllLayers {
+	if g.Options.PrintAllLayers {
 		printLayersDebuggingInfo(g.allLayers)
 	}
 	return nil
 }
 
 // Builds a node for the graph. Registers layers.
-func (g *layerGraph) buildNodeForLayer(layer layers.Layer) *layerNode {
+func (g *LayerGraph) buildNodeForLayerGraph(layer layers.Layer) *LayerNode {
 	// TODO(xiejw): dedup.
 	g.allLayers = append(g.allLayers, layer)
 
-	node := &layerNode{
+	node := &LayerNode{
 		Layer: layer,
 	}
 
@@ -46,10 +46,10 @@ func (g *layerGraph) buildNodeForLayer(layer layers.Layer) *layerNode {
 		return node
 	}
 
-	node.Children = make([]*layerNode, 0, layerInputs.Count())
+	node.Children = make([]*LayerNode, 0, layerInputs.Count())
 
 	for childLayer := range layerInputs.Iterator() {
-		childNode := g.buildNodeForLayer(childLayer)
+		childNode := g.buildNodeForLayerGraph(childLayer)
 		node.Children = append(node.Children, childNode)
 	}
 
