@@ -24,11 +24,14 @@ func main() {
 		ctx, "concat_inputs", []layers.Layer{inputX, inputY})
 
 	// NN.
-	denseLayer := layers.NewDense(ctx, "layer_1", concatLayer, 3)
-	activation := functions.Relu(ctx, denseLayer)
+	denseLayer_1 := layers.NewDense(ctx, "layer_1", concatLayer, 4)
+	activation_1 := functions.Relu(ctx, denseLayer_1)
+	denseLayer_2 := layers.NewDense(ctx, "layer_2", activation_1, 3)
+	activation_2 := functions.Relu(ctx, denseLayer_2)
 
-	_,err := g.NewInferenceGraph(ctx, []layers.Layer{activation}, &g.DebuggingOptions{
+	_,err := g.NewInferenceGraph(ctx, []layers.Layer{activation_2}, &g.DebuggingOptions{
 		 LayerInfoWriter: os.Stdout,
+		 LayerDotGraphWriter: os.Stdout,
 	})
 
 	if err != nil {

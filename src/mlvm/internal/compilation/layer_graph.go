@@ -8,7 +8,7 @@ import (
 
 type Options struct {
 	// Prints all debugging information for layers.
-	LayerInfoWriter io.Writer
+	LayerInfoWriter     io.Writer
 	LayerDotGraphWriter io.Writer
 }
 
