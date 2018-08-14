@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	dotGraphLineFormat = `  "%v" -> "%v" [dir=back];`
+	dotGraphLineFormat = `  "%v" -> "%v" [label=" %v " dir=back];`
 	rootNodeName       = `(Root)`
 )
 
@@ -73,7 +73,8 @@ func PrintLayersDotGraph(w io.Writer, root *LayerNode) {
 				outputs = append(outputs, fmt.Sprintf(`"%v";`, child.Layer.Name()))
 			} else {
 				fmt.Fprintln(writer,
-					fmt.Sprintf(dotGraphLineFormat, node.Layer.Name(), child.Layer.Name()))
+					fmt.Sprintf(dotGraphLineFormat,
+						node.Layer.Name(), child.Layer.Name(), child.Layer.Output().Shape()))
 			}
 			emitFn(writer, child)
 		}
