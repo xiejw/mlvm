@@ -26,7 +26,10 @@ func (g *LayerGraph) BuildGraph() error {
 	}
 
 	if g.Options.LayerInfoWriter != nil {
-		printLayersDebuggingInfo(g.Options.LayerInfoWriter, g.allLayers)
+		PrintLayersDebuggingInfo(g.Options.LayerInfoWriter, g.allLayers)
+	}
+	if g.Options.LayerDotGrahpWriter != nil {
+		PrintLayersDotGraph(g.Options.LayerDotGrahpWriter, root)
 	}
 	return nil
 }
