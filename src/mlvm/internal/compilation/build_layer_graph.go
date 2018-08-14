@@ -25,9 +25,8 @@ func (g *LayerGraph) BuildGraph() error {
 		root.Children = append(root.Children, node)
 	}
 
-	// Print layers.
-	if g.Options.PrintAllLayers != nil {
-		printLayersDebuggingInfo(g.Options.PrintAllLayers, g.allLayers)
+	if g.Options.LayerInfoWriter != nil {
+		printLayersDebuggingInfo(g.Options.LayerInfoWriter, g.allLayers)
 	}
 	return nil
 }

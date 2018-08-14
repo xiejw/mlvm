@@ -10,8 +10,8 @@ import (
 )
 
 type DebuggingOptions struct {
-	// Prints all debugging information for layers.
-	PrintAllLayers io.Writer
+	// Writes all debugging information for layers. `nil` if not needed.
+	LayerInfoWriter io.Writer
 }
 
 // Builds an inference graph and compile.
@@ -24,7 +24,7 @@ func NewInferenceGraph(ctx *c.Context, outputs []layers.Layer, options *Debuggin
 		compilationOpt = &compilation.Options{}
 	} else {
 		compilationOpt = &compilation.Options{
-			PrintAllLayers: options.PrintAllLayers,
+			LayerInfoWriter: options.LayerInfoWriter,
 		}
 	}
 

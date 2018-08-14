@@ -28,7 +28,7 @@ func main() {
 	activation := functions.Relu(ctx, denseLayer)
 
 	_,err := g.NewInferenceGraph(ctx, []layers.Layer{activation}, &g.DebuggingOptions{
-		PrintAllLayers: os.Stdout,
+		 LayerInfoWriter: os.Stdout,
 	})
 
 	if err != nil {
