@@ -26,8 +26,8 @@ func (g *LayerGraph) BuildGraph() error {
 	}
 
 	// Print layers.
-	if g.Options.PrintAllLayers {
-		printLayersDebuggingInfo(g.allLayers)
+	if g.Options.PrintAllLayers != nil {
+		printLayersDebuggingInfo(g.Options.PrintAllLayers, g.allLayers)
 	}
 	return nil
 }

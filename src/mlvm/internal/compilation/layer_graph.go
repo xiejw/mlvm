@@ -1,12 +1,14 @@
 package compilation
 
 import (
+	"io"
+
 	"mlvm/modules/layers"
 )
 
 type Options struct {
 	// Prints all debugging information for layers.
-	PrintAllLayers bool
+	PrintAllLayers io.Writer
 }
 
 // Represents a node for layer in graph.

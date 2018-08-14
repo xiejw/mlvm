@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	c "mlvm/base/context"
 	t "mlvm/base/tensor"
@@ -27,7 +28,7 @@ func main() {
 	activation := functions.Relu(ctx, denseLayer)
 
 	_,err := g.NewInferenceGraph(ctx, []layers.Layer{activation}, &g.DebuggingOptions{
-		PrintAllLayers: true,
+		PrintAllLayers: os.Stdout,
 	})
 
 	if err != nil {

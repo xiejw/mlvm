@@ -1,6 +1,8 @@
 package graph
 
 import (
+	"io"
+
 	c "mlvm/base/context"
 	"mlvm/modules/layers"
 
@@ -9,7 +11,7 @@ import (
 
 type DebuggingOptions struct {
 	// Prints all debugging information for layers.
-	PrintAllLayers bool
+	PrintAllLayers io.Writer
 }
 
 // Builds an inference graph and compile.

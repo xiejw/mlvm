@@ -2,15 +2,15 @@ package compilation
 
 import (
 	"fmt"
-	"os"
+	"io"
 	"text/tabwriter"
 
 	"mlvm/modules/layers"
 )
 
-func printLayersDebuggingInfo(allLayers []layers.Layer) {
+func printLayersDebuggingInfo(writer io.Writer, allLayers []layers.Layer) {
 	fmt.Println("## Layers:")
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.Debug)
+	w := tabwriter.NewWriter(writer, 0, 0, 1, ' ', tabwriter.Debug)
 	for _, layer := range allLayers {
 		fmt.Fprintln(w, layer.String())
 	}
