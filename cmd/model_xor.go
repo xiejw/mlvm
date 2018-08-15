@@ -29,9 +29,15 @@ func main() {
 	denseLayer_2 := layers.NewDense(ctx, "layer_2", activation_1, 3)
 	activation_2 := functions.Relu(ctx, denseLayer_2)
 
-	_,err := g.NewInferenceGraph(ctx, []layers.Layer{activation_2}, &g.DebuggingOptions{
+	dotFile, err := os.Create("/tmp/123.dot")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer dotFile.Close()
+
+	_,err= g.NewInferenceGraph(ctx, []layers.Layer{activation_2}, &g.DebuggingOptions{
 		 LayerInfoWriter: os.Stdout,
-		 LayerDotGraphWriter: os.Stdout,
+		 LayerDotGraphWriter: dotFile,
 	})
 
 	if err != nil {

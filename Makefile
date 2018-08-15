@@ -26,7 +26,7 @@ model_xor:
 	$(GO) build -o $(BIN)/model_xor $(MODEL_SRC)/model_xor.go
 
 run_model_xor: model_xor
-	$(BIN)/model_xor
+	$(BIN)/model_xor && dot -Tpng /tmp/123.dot > /tmp/123.png
 
 # {{{1 Maintenance.
 # {{{2 fmt

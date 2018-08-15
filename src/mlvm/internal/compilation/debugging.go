@@ -50,9 +50,10 @@ const (
   }
 `
 	weightsCluster = `
-  subgraph cluster_weights {
+  subgraph cluster_weights_%v {
 		style=dotted;
-    label = "Weights";
+    label = "Weights for %v";
+    labelloc="b";
 
 		%v
 
@@ -77,18 +78,24 @@ func PrintLayersDotGraph(w io.Writer, root *LayerNode) {
 
 	outputPlaceHolder := fmt.Sprintf(`"%v";`, rootNodeName)
 	inputs := make([]string, 0)
-	weights := make([]string, 0)
+	// For each group, []string contains the name of the layer and formatted
+	// wegiths string.
+	weightGroups := make([][]string, 0)
 
 	var emitFn func(io.Writer, *LayerNode)
+	// TODO: dedup layers.
 	emitFn = func(writer io.Writer, node *LayerNode) {
 
 		// Write weights.
 		if node.Layer != nil && node.Layer.Weights() != nil {
+			weights := make([]string, 0, len(node.Layer.Weights()))
 			for _, w := range node.Layer.Weights() {
 				n := w.Name()
 				weights = append(weights, n)
 				fmt.Fprintf(writer, dotGraphWeightLineFormat, node.Layer.Name(), n)
 			}
+			weightGroups = append(weightGroups,
+				[]string{node.Layer.Name(), joinNamesAsListForCluster(weights)})
 		}
 
 		if node.Children == nil {
@@ -118,7 +125,9 @@ func PrintLayersDotGraph(w io.Writer, root *LayerNode) {
 	// Writes clusters first, then nodes connection.
 	fmt.Fprintf(w, outputsCluster, outputPlaceHolder)
 	fmt.Fprintf(w, inputsCluster, joinNamesAsListForCluster(inputs))
-	fmt.Fprintf(w, weightsCluster, joinNamesAsListForCluster(weights))
+	for i, nameAndWeights := range weightGroups {
+		fmt.Fprintf(w, weightsCluster, i, nameAndWeights[0], nameAndWeights[1])
+	}
 	fmt.Fprintln(w)
 	fmt.Fprintf(w, buf.String())
 }
