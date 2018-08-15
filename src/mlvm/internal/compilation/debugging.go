@@ -22,7 +22,7 @@ func PrintLayersDebuggingInfo(w io.Writer, allLayers []layers.Layer) {
 
 const (
 	dotGraphLineFormat       = `  "%v" -> "%v" [label=" %v " dir=back];`
-	dotGraphWeightLineFormat = `  "%v" -> "%v"  [style=dashed, color=grey dir=back];`
+	dotGraphWeightLineFormat = `  "%v" -> "%v"  [label=" %v " style=dashed, color=grey dir=back];`
 	rootNodeName             = `(Outputs)`
 
 	outputsCluster = `
@@ -92,7 +92,7 @@ func PrintLayersDotGraph(w io.Writer, root *LayerNode) {
 			for _, w := range node.Layer.Weights() {
 				n := w.Name()
 				weights = append(weights, n)
-				fmt.Fprintf(writer, dotGraphWeightLineFormat, node.Layer.Name(), n)
+				fmt.Fprintf(writer, dotGraphWeightLineFormat, node.Layer.Name(), n, w.Shape())
 			}
 			weightGroups = append(weightGroups,
 				[]string{node.Layer.Name(), joinNamesAsListForCluster(weights)})
