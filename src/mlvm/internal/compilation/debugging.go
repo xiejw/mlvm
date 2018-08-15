@@ -10,11 +10,7 @@ import (
 	"mlvm/modules/layers"
 )
 
-const (
-	dotGraphLineFormat = `  "%v" -> "%v" [label=" %v " dir=back];`
-	rootNodeName       = `(Root)`
-)
-
+// Prints all debugging information about layers in lines (no hierarchy).
 func PrintLayersDebuggingInfo(w io.Writer, allLayers []layers.Layer) {
 	fmt.Fprintln(w, "## Layers:")
 	tabw := tabwriter.NewWriter(w, 0, 0, 1, ' ', tabwriter.Debug)
@@ -25,6 +21,10 @@ func PrintLayersDebuggingInfo(w io.Writer, allLayers []layers.Layer) {
 }
 
 const (
+	dotGraphLineFormat       = `  "%v" -> "%v" [label=" %v " dir=back];`
+	dotGraphWeightLineFormat = `  "%v" -> "%v"  [style=dashed, color=grey dir=back];`
+	rootNodeName             = `(Outputs)`
+
 	outputsCluster = `
   subgraph cluster_outputs {
     style=filled;
@@ -33,11 +33,10 @@ const (
 
 		%v
 
-    label = "Outpus";
+    label = "";
     labelloc="t";
   }
 `
-
 	inputsCluster = `
   subgraph cluster_inputs {
     style=filled;
@@ -50,7 +49,24 @@ const (
     labelloc="b";
   }
 `
+	weightsCluster = `
+  subgraph cluster_weights {
+		style=dotted;
+    label = "Weights";
+
+		%v
+
+  }
+`
 )
+
+func joinNamesAsListForCluster(names []string) string {
+	formattedNames := make([]string, 0, len(names))
+	for _, n := range names {
+		formattedNames = append(formattedNames, fmt.Sprintf(`"%v";`, n))
+	}
+	return strings.Join(formattedNames, " ")
+}
 
 func PrintLayersDotGraph(w io.Writer, root *LayerNode) {
 	fmt.Fprintln(w, "/* Layers Dot Graph. */")
@@ -59,18 +75,33 @@ func PrintLayersDotGraph(w io.Writer, root *LayerNode) {
 		fmt.Fprintln(w, "}")
 	}()
 
-	outputs := make([]string, 0, len(root.Children))
+	outputPlaceHolder := fmt.Sprintf(`"%v";`, rootNodeName)
 	inputs := make([]string, 0)
+	weights := make([]string, 0)
 
 	var emitFn func(io.Writer, *LayerNode)
 	emitFn = func(writer io.Writer, node *LayerNode) {
+
+		// Write weights.
+		if node.Layer != nil && node.Layer.Weights() != nil {
+			for _, w := range node.Layer.Weights() {
+				n := w.Name()
+				weights = append(weights, n)
+				fmt.Fprintln(writer, dotGraphWeightLineFormat, node.Layer.Name(), w)
+			}
+		}
+
 		if node.Children == nil {
 			// Use attributes, instead this logic.
-			inputs = append(inputs, fmt.Sprintf(`"%v";`, node.Layer.Name()))
+			inputs = append(inputs, node.Layer.Name())
 		}
+
+		// Write children.
 		for _, child := range node.Children {
 			if node.IsRoot {
-				outputs = append(outputs, fmt.Sprintf(`"%v";`, child.Layer.Name()))
+				fmt.Fprintln(writer,
+					fmt.Sprintf(dotGraphLineFormat,
+						rootNodeName, child.Layer.Name(), child.Layer.Output().Shape()))
 			} else {
 				fmt.Fprintln(writer,
 					fmt.Sprintf(dotGraphLineFormat,
@@ -85,8 +116,9 @@ func PrintLayersDotGraph(w io.Writer, root *LayerNode) {
 	emitFn(&buf, root)
 
 	// Writes clusters first, then nodes connection.
-	fmt.Fprintf(w, outputsCluster, strings.Join(outputs, " "))
-	fmt.Fprintf(w, inputsCluster, strings.Join(inputs, " "))
+	fmt.Fprintf(w, outputsCluster, outputPlaceHolder)
+	fmt.Fprintf(w, inputsCluster, joinNamesAsListForCluster(inputs))
+	fmt.Fprintf(w, weightsCluster, joinNamesAsListForCluster(weights))
 	fmt.Fprintln(w)
 	fmt.Fprintf(w, buf.String())
 }

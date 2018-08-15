@@ -3,6 +3,7 @@ package layers
 import (
 	c "mlvm/base/context"
 	t "mlvm/base/tensor"
+	w "mlvm/base/weight"
 )
 
 // A input layer representation.
@@ -22,6 +23,10 @@ type inputLayer struct {
 	name   string
 	inputs Inputs
 	output Output
+}
+
+func (layer *inputLayer) Weights() []w.Weight {
+	return nil
 }
 
 func (layer *inputLayer) Name() string {

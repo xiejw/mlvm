@@ -3,7 +3,7 @@ package layers
 import (
 	c "mlvm/base/context"
 	t "mlvm/base/tensor"
-	_ "mlvm/base/weight"
+	w "mlvm/base/weight"
 )
 
 func NewDense(
@@ -37,6 +37,10 @@ type denseImpl struct {
 	name   string
 	inputs Inputs
 	output Output
+}
+
+func (layer *denseImpl) Weights() []w.Weight {
+	return nil
 }
 
 func (layer *denseImpl) Name() string {

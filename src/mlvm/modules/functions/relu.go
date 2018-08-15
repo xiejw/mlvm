@@ -2,6 +2,7 @@ package functions
 
 import (
 	c "mlvm/base/context"
+	w "mlvm/base/weight"
 	"mlvm/modules/layers"
 )
 
@@ -22,6 +23,10 @@ type reluLayer struct {
 	name   string
 	inputs layers.Inputs
 	output layers.Output
+}
+
+func (layer *reluLayer) Weights() []w.Weight {
+	return nil
 }
 
 func (layer *reluLayer) Name() string {

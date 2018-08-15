@@ -3,6 +3,7 @@ package functions
 import (
 	c "mlvm/base/context"
 	t "mlvm/base/tensor"
+	w "mlvm/base/weight"
 	"mlvm/modules/layers"
 )
 
@@ -38,6 +39,10 @@ type concatLayer struct {
 	name   string
 	inputs layers.Inputs
 	output layers.Output
+}
+
+func (layer *concatLayer) Weights() []w.Weight {
+	return nil
 }
 
 func (layer *concatLayer) Name() string {
