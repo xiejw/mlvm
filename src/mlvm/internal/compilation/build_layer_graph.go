@@ -6,7 +6,6 @@ import (
 	"mlvm/modules/layers"
 )
 
-// TODO: dedup layer based on name.
 func (g *LayerGraph) BuildGraph() error {
 	g.allLayers = make([]layers.Layer, 0)
 
@@ -19,8 +18,9 @@ func (g *LayerGraph) BuildGraph() error {
 	root := &LayerNode{IsRoot: true}
 	root.Children = make([]*LayerNode, 0, len(outputs))
 
+	visitedLayers := make(map[string]*LayerNode)
 	for _, outputLayer := range outputs {
-		node := g.buildNodeForLayerGraph(outputLayer)
+		node := g.buildNodeForLayerGraph(outputLayer, visitedLayers)
 		node.IsOutput = true
 		root.Children = append(root.Children, node)
 	}
@@ -35,13 +35,18 @@ func (g *LayerGraph) BuildGraph() error {
 }
 
 // Builds a node for the graph. Registers layers.
-func (g *LayerGraph) buildNodeForLayerGraph(layer layers.Layer) *LayerNode {
-	// TODO(xiejw): dedup.
+func (g *LayerGraph) buildNodeForLayerGraph(layer layers.Layer, visitedLayers map[string]*LayerNode) *LayerNode {
+	if oldNode, existed := visitedLayers[layer.Name()]; existed {
+		return oldNode
+	}
+
 	g.allLayers = append(g.allLayers, layer)
 
 	node := &LayerNode{
 		Layer: layer,
 	}
+
+	visitedLayers[layer.Name()] = node
 
 	layerInputs := layer.Inputs()
 	if layerInputs == nil {
@@ -51,7 +56,7 @@ func (g *LayerGraph) buildNodeForLayerGraph(layer layers.Layer) *LayerNode {
 	node.Children = make([]*LayerNode, 0, layerInputs.Count())
 
 	for childLayer := range layerInputs.Iterator() {
-		childNode := g.buildNodeForLayerGraph(childLayer)
+		childNode := g.buildNodeForLayerGraph(childLayer, visitedLayers)
 		node.Children = append(node.Children, childNode)
 	}
 

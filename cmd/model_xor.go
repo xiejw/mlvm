@@ -24,10 +24,16 @@ func main() {
 		ctx, "concat_inputs", []layers.Layer{inputX, inputY})
 
 	// NN.
-	denseLayer_1 := layers.NewDense(ctx, "layer_1", concatLayer, 4)
+	denseLayer_1 := layers.NewDense(ctx, "common_layer", concatLayer, 4)
 	activation_1 := functions.Relu(ctx, denseLayer_1)
-	denseLayer_2 := layers.NewDense(ctx, "layer_2", activation_1, 3)
-	activation_2 := functions.Relu(ctx, denseLayer_2)
+
+	// Output 1 For XOR
+	denseLayer_2 := layers.NewDense(ctx, "layer_xor", activation_1, 3)
+	output_1 := functions.Relu(ctx, denseLayer_2)
+
+	// OUtput 2 For AND
+	denseLayer_3 := layers.NewDense(ctx, "layer_and", activation_1, 3)
+	output_2 := functions.Relu(ctx, denseLayer_3)
 
 	dotFile, err := os.Create("/tmp/123.dot")
 	if err != nil {
@@ -35,7 +41,7 @@ func main() {
 	}
 	defer dotFile.Close()
 
-	_,err= g.NewInferenceGraph(ctx, []layers.Layer{activation_2}, &g.DebuggingOptions{
+	_,err= g.NewInferenceGraph(ctx, []layers.Layer{output_1,output_2}, &g.DebuggingOptions{
 		 LayerInfoWriter: os.Stdout,
 		 LayerDotGraphWriter: dotFile,
 	})

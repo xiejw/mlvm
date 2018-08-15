@@ -81,10 +81,21 @@ func PrintLayersDotGraph(w io.Writer, root *LayerNode) {
 	// For each group, []string contains the name of the layer and formatted
 	// wegiths string.
 	weightGroups := make([][]string, 0)
+	// node's layer name as key.
+	visitedNodes := make(map[string]bool)
 
 	var emitFn func(io.Writer, *LayerNode)
 	// TODO: dedup layers.
 	emitFn = func(writer io.Writer, node *LayerNode) {
+
+		if node.Layer != nil {
+			n := node.Layer.Name()
+			if _, exited := visitedNodes[n]; exited {
+				return
+			}
+
+			visitedNodes[n] = true
+		}
 
 		// Write weights.
 		if node.Layer != nil && node.Layer.Weights() != nil {
