@@ -87,7 +87,7 @@ func PrintLayersDotGraph(w io.Writer, root *LayerNode) {
 			for _, w := range node.Layer.Weights() {
 				n := w.Name()
 				weights = append(weights, n)
-				fmt.Fprintln(writer, dotGraphWeightLineFormat, node.Layer.Name(), w)
+				fmt.Fprintf(writer, dotGraphWeightLineFormat, node.Layer.Name(), n)
 			}
 		}
 
