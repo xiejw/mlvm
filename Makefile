@@ -43,3 +43,9 @@ doc:
 	@echo "**** Open http://localhost:6060/pkg/mlvm/ ****\n"
 	$(GO_DOC) -v --http=:6060
 
+# {{{2 dependency tree
+dependency_tree:
+	${GO_PATH} goimportdot -pkg=mlvm > /tmp/pkg.dot && \
+		dot -Tsvg /tmp/pkg.dot > /tmp/pkg.svg && \
+		echo "Open /tmp/pkg.svg with your viewer."
+
