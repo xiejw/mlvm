@@ -27,7 +27,11 @@ type LayerGraph struct {
 	Outputs []layers.Layer
 
 	// Internal state.
-	allLayers []layers.Layer
+	dag *LayersDAG
+}
+
+// A topologyci sorted sort of the layers in DAG.
+type LayersDAG struct {
 }
 
 func (g *LayerGraph) Compile() error {
