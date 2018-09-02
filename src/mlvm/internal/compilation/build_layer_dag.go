@@ -19,7 +19,7 @@ type LayerNode struct {
 type LayerDAG struct {
 	Outputs []*LayerNode
 	Inputs  []*LayerNode
-	Layers  []*LayerNode // sorted in topological order.
+	Nodes   []*LayerNode // sorted in topological order.
 }
 
 func (dag *LayerDAG) Build(outputs []layers.Layer) error {
@@ -32,7 +32,7 @@ func (dag *LayerDAG) Build(outputs []layers.Layer) error {
 		return errors.New("Outpus of Graph should not be empty.")
 	}
 
-	dag.Layers = make([]*LayerNode, 0)
+	dag.Nodes = make([]*LayerNode, 0)
 	dag.Outputs = make([]*LayerNode, 0, len(outputs))
 	for _, o := range outputs {
 		node := visit(o, dag, nodesPool, visited)
@@ -42,7 +42,9 @@ func (dag *LayerDAG) Build(outputs []layers.Layer) error {
 	return nil
 }
 
-func visit(layer layers.Layer, dag *LayerDAG, nodesPool map[string]*LayerNode, visited map[string]bool) *LayerNode {
+func visit(layer layers.Layer, dag *LayerDAG,
+	nodesPool map[string]*LayerNode, visited map[string]bool) *LayerNode {
+
 	name := layer.Name()
 	if node, existed := nodesPool[name]; existed {
 		return node // Permanent.
@@ -55,18 +57,22 @@ func visit(layer layers.Layer, dag *LayerDAG, nodesPool map[string]*LayerNode, v
 	// Mark temporary.
 	visited[name] = true
 
-	inputs := layer.Inputs()
 	node := &LayerNode{
-		Layer:    layer,
-		Children: make([]*LayerNode, 0, inputs.Count()),
+		Layer: layer,
 	}
-	for inputLayer := range inputs.Iterator() {
-		inputNode := visit(inputLayer, dag, nodesPool, visited)
-		node.Children = append(node.Children, inputNode)
+
+	if inputs := layer.Inputs(); inputs != nil {
+		node.Children = make([]*LayerNode, 0, inputs.Count())
+		for inputLayer := range inputs.Iterator() {
+			inputNode := visit(inputLayer, dag, nodesPool, visited)
+			node.Children = append(node.Children, inputNode)
+		}
+	} else {
+		node.IsInput = true
 	}
 
 	// Mark permanent.
 	nodesPool[name] = node
-	dag.Layers = append(dag.Layers, node)
+	dag.Nodes = append(dag.Nodes, node)
 	return node
 }

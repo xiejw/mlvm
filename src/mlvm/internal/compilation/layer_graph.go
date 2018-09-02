@@ -30,9 +30,9 @@ func (g *LayerGraph) Compile() error {
 		return err
 	}
 	// FIXME add debugging.
-	// if g.Options.LayerInfoWriter != nil {
-	// 	PrintLayersDebuggingInfo(g.Options.LayerInfoWriter, g.allLayers)
-	// }
+	if g.Options.LayerInfoWriter != nil {
+		PrintLayersDebuggingInfo(g.Options.LayerInfoWriter, dag)
+	}
 	// if g.Options.LayerDotGraphWriter != nil {
 	// 	PrintLayersDotGraph(g.Options.LayerDotGraphWriter, root)
 	// }

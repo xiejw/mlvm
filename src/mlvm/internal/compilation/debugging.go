@@ -1,24 +1,25 @@
 package compilation
 
-// import (
-// 	"bytes"
-// 	"fmt"
-// 	"io"
-// 	"strings"
-// 	"text/tabwriter"
-//
-// 	"mlvm/modules/layers"
-// )
+import (
+	_ "bytes"
+	"fmt"
+	"io"
+	_ "strings"
+	"text/tabwriter"
 
-// // Prints all debugging information about layers in lines (no hierarchy).
-// func PrintLayersDebuggingInfo(w io.Writer, allLayers []layers.Layer) {
-// 	fmt.Fprintln(w, "## Layers:")
-// 	tabw := tabwriter.NewWriter(w, 0, 0, 1, ' ', tabwriter.Debug)
-// 	for _, layer := range allLayers {
-// 		fmt.Fprintln(tabw, layer.String())
-// 	}
-// 	tabw.Flush()
-// }
+	_ "mlvm/modules/layers"
+)
+
+// Prints all debugging information about layers in lines (no hierarchy).
+func PrintLayersDebuggingInfo(w io.Writer, dag *LayerDAG) {
+	fmt.Fprintln(w, "## Layers:")
+	tabw := tabwriter.NewWriter(w, 0, 0, 1, ' ', tabwriter.Debug)
+	for _, node := range dag.Nodes {
+		fmt.Fprintln(tabw, node.Layer.String())
+	}
+	tabw.Flush()
+}
+
 //
 // const (
 // 	dotGraphLineFormat       = `  "%v" -> "%v" [label=" %v " dir=back];`
