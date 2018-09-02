@@ -12,34 +12,31 @@ type Options struct {
 	LayerDotGraphWriter io.Writer
 }
 
-// Represents a node for layer in graph.
-type LayerNode struct {
-	Layer    layers.Layer
-	Children []*LayerNode
-	IsRoot   bool // Is this node a root node.
-	IsInput  bool // Is this layer input
-	IsOutput bool // Is this layer output
-}
-
 type LayerGraph struct {
 	// Sets by constructor.
 	Options *Options
 	Outputs []layers.Layer
 
 	// Internal state.
-	dag *LayersDAG
-}
-
-// A topologyci sorted sort of the layers in DAG.
-type LayersDAG struct {
+	dag *LayerDAG
 }
 
 func (g *LayerGraph) Compile() error {
 	// TODO: Check has not compiled yet.
+	// TODO(xiejw): Verify layer names are different.
 
-	if err := g.BuildGraph(); err != nil {
+	dag := new(LayerDAG)
+	if err := dag.Build(g.Outputs); err != nil {
 		return err
 	}
+	// FIXME add debugging.
+	// if g.Options.LayerInfoWriter != nil {
+	// 	PrintLayersDebuggingInfo(g.Options.LayerInfoWriter, g.allLayers)
+	// }
+	// if g.Options.LayerDotGraphWriter != nil {
+	// 	PrintLayersDotGraph(g.Options.LayerDotGraphWriter, root)
+	// }
+
 	// Tracs back to inputs
 	// Color outputs and inputs
 	// Save to graph

@@ -18,24 +18,24 @@ type DebuggingOptions struct {
 // Builds an inference graph and compile.
 // Graph is DAG.
 func NewInferenceGraph(ctx *c.Context, outputs []layers.Layer, options *DebuggingOptions) (InferenceGraph, error) {
-
-	// Copy cover.
-	var compilationOpt *compilation.Options
-	if options == nil {
-		compilationOpt = &compilation.Options{}
-	} else {
-		compilationOpt = &compilation.Options{
-			LayerInfoWriter:     options.LayerInfoWriter,
-			LayerDotGraphWriter: options.LayerDotGraphWriter,
-		}
-	}
-
 	g := &compilation.LayerGraph{
 		Outputs: outputs,
-		Options: compilationOpt,
+		Options: convertOptions(options),
 	}
 	if err := g.Compile(); err != nil {
 		return nil, err
 	}
 	return nil, nil
+}
+
+// Converts user provided DebuggingOptions to compilation options.
+func convertOptions(options *DebuggingOptions) *compilation.Options {
+	if options == nil {
+		return &compilation.Options{}
+	}
+	// Copy cover.
+	return &compilation.Options{
+		LayerInfoWriter:     options.LayerInfoWriter,
+		LayerDotGraphWriter: options.LayerDotGraphWriter,
+	}
 }
