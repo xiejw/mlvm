@@ -3,6 +3,7 @@ package compilation
 import (
 	"errors"
 
+	w "mlvm/base/weight"
 	"mlvm/modules/layers"
 )
 
@@ -19,7 +20,8 @@ type LayerNode struct {
 type LayerDAG struct {
 	Outputs []*LayerNode
 	Inputs  []*LayerNode
-	Nodes   []*LayerNode // sorted in topological order.
+	Nodes   []*LayerNode          // sorted in topological order.
+	Weights map[string][]w.Weight // layer name to weights.
 }
 
 func (dag *LayerDAG) Build(outputs []layers.Layer) error {
@@ -33,7 +35,10 @@ func (dag *LayerDAG) Build(outputs []layers.Layer) error {
 	}
 
 	dag.Nodes = make([]*LayerNode, 0)
+	dag.Inputs = make([]*LayerNode, 0)
 	dag.Outputs = make([]*LayerNode, 0, len(outputs))
+	dag.Weights = make(map[string][]w.Weight)
+
 	for _, o := range outputs {
 		node := visit(o, dag, nodesPool, visited)
 		node.IsOutput = true
@@ -61,6 +66,12 @@ func visit(layer layers.Layer, dag *LayerDAG,
 		Layer: layer,
 	}
 
+	// Weights
+	for _, weight := range layer.Weights() {
+		dag.Weights[name] = append(dag.Weights[name], weight)
+	}
+
+	// Inputs
 	if inputs := layer.Inputs(); inputs != nil {
 		node.Children = make([]*LayerNode, 0, inputs.Count())
 		for inputLayer := range inputs.Iterator() {
@@ -69,6 +80,7 @@ func visit(layer layers.Layer, dag *LayerDAG,
 		}
 	} else {
 		node.IsInput = true
+		dag.Inputs = append(dag.Inputs, node)
 	}
 
 	// Mark permanent.

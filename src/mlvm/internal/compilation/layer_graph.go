@@ -29,13 +29,15 @@ func (g *LayerGraph) Compile() error {
 	if err := dag.Build(g.Outputs); err != nil {
 		return err
 	}
-	// FIXME add debugging.
+
+	// Debugging information.
 	if g.Options.LayerInfoWriter != nil {
 		PrintLayersDebuggingInfo(g.Options.LayerInfoWriter, dag)
 	}
-	// if g.Options.LayerDotGraphWriter != nil {
-	// 	PrintLayersDotGraph(g.Options.LayerDotGraphWriter, root)
-	// }
+
+	if g.Options.LayerDotGraphWriter != nil {
+		PrintLayersDotGraph(g.Options.LayerDotGraphWriter, dag)
+	}
 
 	// Tracs back to inputs
 	// Color outputs and inputs
