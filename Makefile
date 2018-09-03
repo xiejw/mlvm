@@ -10,7 +10,6 @@ BIN=$(PWD)/bin
 TOOLS=$(PWD)/tools
 TOOLS_BIN=$(TOOLS)/bin
 
-
 MODEL_SRC=$(PWD)/cmd
 
 # {{{1 Actions
@@ -39,6 +38,7 @@ clean:
 	rm -f $(BIN)/*
 
 # {{{2 doc
+.PHONY: doc
 doc:
 	@echo "**** Open http://localhost:6060/pkg/mlvm/ ****\n"
 	$(GO_DOC) -v --http=:6060
