@@ -3,6 +3,7 @@
 
 #include "gflags/gflags.h"
 
+#include "mlvm/lib/Comp/Computation.h"
 #include "mlvm/lib/Tensor/Shape.h"
 #include "mlvm/lib/Tensor/Tensor.h"
 
@@ -13,4 +14,7 @@ int main(int argc, char* argv[]) {
   auto t1 = mlvm::tensor::Tensor::newConstant("t1", {1,2}, {2.12, 3.13});
   std::cout << "Hello " << shape << "\n";
   std::cout << "Hello " << t1.data() << "\n";
+
+  auto comp = mlvm::comp::Computation();
+  comp.newInstruction("ins");
 }
