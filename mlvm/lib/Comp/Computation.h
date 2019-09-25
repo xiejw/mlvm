@@ -5,12 +5,10 @@
 #include <string>
 #include <vector>
 
+#include "mlvm/lib/Comp/Instruction.h"
+
 namespace mlvm {
 namespace comp {
-
-struct Instruction {
-  std::string name;
-};
 
 class Computation {
  public:

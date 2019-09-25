@@ -5,7 +5,7 @@ clean:
 	rm -rf build
 
 fmt:
-	docker run --rm -ti -v `pwd`:/source xiejw/clang-format /clang-format.sh mlvm
+	docker run --rm -ti --user `id -u ${USER}` -v `pwd`:/source xiejw/clang-format /clang-format.sh mlvm
 
 run:
 	./build/test_app

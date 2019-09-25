@@ -2,6 +2,7 @@
 #include <sstream>
 
 #include "mlvm/lib/Comp/Computation.h"
+#include "mlvm/lib/Comp/Instruction.h"
 
 namespace mlvm {
 namespace comp {
