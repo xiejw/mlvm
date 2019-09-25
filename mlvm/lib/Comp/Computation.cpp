@@ -7,8 +7,17 @@ namespace mlvm {
 namespace comp {
 
 const Instruction& Computation::newInstruction(std::string name) {
-  return Instruction();
+  Instruction ins{name};
+  ins_.push_back(std::move(ins));
+  return ins_.back();
 }
 
-}  // namespace tensor
+std::string Computation::DebugString() const {
+  std::stringstream ss;
+  for (auto& ins : ins_) ss << ins.name << "\n";
+
+  return ss.str();
+}
+
+}  // namespace comp
 }  // namespace mlvm
