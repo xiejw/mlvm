@@ -7,6 +7,8 @@
 #include "mlvm/lib/Tensor/Shape.h"
 #include "mlvm/lib/Tensor/Tensor.h"
 
+using mlvm::comp::OpType;
+
 int main(int argc, char* argv[]) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
 
@@ -16,6 +18,6 @@ int main(int argc, char* argv[]) {
   std::cout << "Hello " << t1.data() << "\n";
 
   auto comp = mlvm::comp::Computation();
-  comp.newInstruction("ins", mlvm::comp::OpType::Add());
+  comp.newInstruction("ins", OpType::Add());
   std::cout << "Comp: " << comp.DebugString();
 }

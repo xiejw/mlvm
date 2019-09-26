@@ -13,13 +13,16 @@ class OpType {
 
  public:
   /// All singletone for OpTypes.
-  static OpType &Add() {
-    static OpType *singleton = new OpType(OpAdd);
+  static OpType& Add() {
+    static OpType* singleton = new OpType(OpAdd);
     return *singleton;
   }
 
  public:
   Kind kind() const { return kind_; }
+
+ private:
+  friend std::ostream& operator<<(std::ostream& os, const OpType& op);
 
  private:
   explicit OpType(Kind kind) : kind_{kind} {};

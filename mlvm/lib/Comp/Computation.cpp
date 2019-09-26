@@ -15,7 +15,7 @@ const Instruction& Computation::newInstruction(std::string name,
 
 std::string Computation::DebugString() const {
   std::stringstream ss;
-  for (auto& ins : ins_) ss << ins.name << "\n";
+  for (auto& ins : ins_) ss << ins.DebugString() << "\n";
 
   return ss.str();
 }

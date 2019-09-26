@@ -1,9 +1,7 @@
 #ifndef MLVM_COMP_INSTRUCTION
 #define MLVM_COMP_INSTRUCTION
 
-#include <memory>
 #include <string>
-#include <vector>
 
 #include "mlvm/lib/Comp/OpType.h"
 
@@ -13,6 +11,9 @@ namespace comp {
 struct Instruction {
   std::string name;
   OpType op_type;
+
+ public:
+  std::string DebugString() const;
 };
 
 }  // namespace comp
