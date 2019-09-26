@@ -6,13 +6,14 @@
 #include <vector>
 
 #include "mlvm/lib/Comp/Instruction.h"
+#include "mlvm/lib/Comp/OpType.h"
 
 namespace mlvm {
 namespace comp {
 
 class Computation {
  public:
-  const Instruction& newInstruction(std::string name);
+  const Instruction& newInstruction(std::string name, OpType op_type);
 
   std::string DebugString() const;
 

@@ -2,13 +2,12 @@
 #include <sstream>
 
 #include "mlvm/lib/Comp/Computation.h"
-#include "mlvm/lib/Comp/Instruction.h"
 
 namespace mlvm {
 namespace comp {
 
-const Instruction& Computation::newInstruction(std::string name) {
-  Instruction ins{name};
+const Instruction& Computation::newInstruction(std::string name, OpType op_type) {
+  Instruction ins{name, op_type};
   ins_.push_back(std::move(ins));
   return ins_.back();
 }

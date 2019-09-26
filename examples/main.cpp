@@ -16,6 +16,7 @@ int main(int argc, char* argv[]) {
   std::cout << "Hello " << t1.data() << "\n";
 
   auto comp = mlvm::comp::Computation();
-  comp.newInstruction("ins");
+  // comp.newInstruction("ins", mlvm::comp::OpType::create(mlvm::comp::OpType::Add));
+  comp.newInstruction("ins", mlvm::comp::OpType::create(Add));
   std::cout << "Comp: " << comp.DebugString();
 }
