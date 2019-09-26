@@ -6,7 +6,8 @@
 namespace mlvm {
 namespace comp {
 
-const Instruction& Computation::newInstruction(std::string name, OpType op_type) {
+const Instruction& Computation::newInstruction(std::string name,
+                                               OpType op_type) {
   Instruction ins{name, op_type};
   ins_.push_back(std::move(ins));
   return ins_.back();

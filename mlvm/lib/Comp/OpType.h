@@ -11,8 +11,14 @@ class OpType {
     OpMul,
   };
 
-  static OpType Add = OpType(OpAdd);
+ public:
+  /// All singletone for OpTypes.
+  static OpType &Add() {
+    static OpType *singleton = new OpType(OpAdd);
+    return *singleton;
+  }
 
+ public:
   Kind kind() const { return kind_; }
 
  private:
