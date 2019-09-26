@@ -18,6 +18,6 @@ int main(int argc, char* argv[]) {
   std::cout << "Hello " << t1.data() << "\n";
 
   auto comp = mlvm::comp::Computation();
-  comp.newInstruction("ins", OpType::Add(), {t1});
+  comp.newInstruction("ins", OpType::Add(), {t1, t1});
   std::cout << "Comp: " << comp.DebugString();
 }

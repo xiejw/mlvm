@@ -1,6 +1,7 @@
 #include <sstream>
 
 #include "mlvm/lib/Comp/Instruction.h"
+#include "mlvm/lib/Support/OstreamVector.h"
 
 namespace mlvm {
 namespace comp {
@@ -17,9 +18,7 @@ std::ostream &operator<<(std::ostream &out, const Instruction &s) {
 
   // Operands
   out << " (";
-  for (auto &o: s.operands) {
-    out << o;
-  }
+  support::OutputVector(out, s.operands);
   out << ") -> ";
 
   // Results
