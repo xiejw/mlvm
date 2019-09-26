@@ -13,6 +13,7 @@ struct Instruction {
   OpType op_type;
 
  public:
+  friend std::ostream& operator<<(std::ostream& os, const Instruction& ins);
   std::string DebugString() const;
 };
 

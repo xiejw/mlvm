@@ -1,4 +1,3 @@
-#include <iomanip>
 #include <sstream>
 
 #include "mlvm/lib/Comp/Instruction.h"
@@ -8,10 +7,13 @@ namespace comp {
 
 std::string Instruction::DebugString() const {
   std::stringstream ss;
-
-  ss << "\"" << name << "\" (" << op_type << ")";
-
+  ss << *this;
   return ss.str();
+}
+
+std::ostream &operator<<(std::ostream &out, const Instruction &s) {
+  out << "\"" << s.name << "\" (" << s.op_type << ")";
+  return out;
 }
 
 }  // namespace comp
