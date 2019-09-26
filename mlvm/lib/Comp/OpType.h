@@ -13,7 +13,7 @@ class OpType {
 
  public:
   /// All singletone for OpTypes.
-  static OpType& Add() {
+  static const OpType& Add() {
     static OpType* singleton = new OpType(OpAdd);
     return *singleton;
   }

@@ -2,8 +2,10 @@
 #define MLVM_COMP_INSTRUCTION
 
 #include <string>
+#include <vector>
 
 #include "mlvm/lib/Comp/OpType.h"
+#include "mlvm/lib/Tensor/Tensor.h"
 
 namespace mlvm {
 namespace comp {
@@ -11,6 +13,7 @@ namespace comp {
 struct Instruction {
   std::string name;
   OpType op_type;
+  std::vector<tensor::Tensor> operands;
 
  public:
   friend std::ostream& operator<<(std::ostream& os, const Instruction& ins);

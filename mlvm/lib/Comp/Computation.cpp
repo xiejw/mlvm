@@ -1,4 +1,3 @@
-#include <iomanip>
 #include <sstream>
 
 #include "mlvm/lib/Comp/Computation.h"
@@ -6,9 +5,10 @@
 namespace mlvm {
 namespace comp {
 
-const Instruction& Computation::newInstruction(std::string name,
-                                               OpType op_type) {
-  Instruction ins{name, op_type};
+const Instruction& Computation::newInstruction(
+    std::string name, OpType op_type,
+    std::initializer_list<tensor::Tensor> operands) {
+  Instruction ins{name, op_type, operands};
   ins_.push_back(std::move(ins));
   return ins_.back();
 }
