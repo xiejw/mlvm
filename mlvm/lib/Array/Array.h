@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 
-#include "mlvm/lib/Tensor/Data.h"
-#include "mlvm/lib/Tensor/Shape.h"
+#include "mlvm/lib/Array/Data.h"
+#include "mlvm/lib/Array/Shape.h"
 
 namespace mlvm {
 namespace tensor {

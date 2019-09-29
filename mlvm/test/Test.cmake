@@ -1,1 +1,1 @@
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/mlvm/test/Tensor)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/mlvm/test/Array)

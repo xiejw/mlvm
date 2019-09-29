@@ -16,7 +16,7 @@ include_directories(${GFLAGS_INCLUDES})
 
 # All libraries for MLVM. Due to static libraries linking order requiment, put
 # supporting libraries in end.
-add_subdirectory (mlvm/lib/Tensor)
+add_subdirectory (mlvm/lib/Array)
 add_subdirectory (mlvm/lib/Comp)
 add_subdirectory (mlvm/lib/Support)
 

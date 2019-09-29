@@ -1,6 +1,6 @@
 #include <sstream>
 
-#include "mlvm/lib/Tensor/Tensor.h"
+#include "mlvm/lib/Array/Array.h"
 
 namespace mlvm {
 namespace tensor {

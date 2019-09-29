@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "mlvm/lib/Tensor/Tensor.h"
+#include "mlvm/lib/Array/Array.h"
 
 namespace mlvm {
 namespace tensor {

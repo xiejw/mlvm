@@ -4,8 +4,7 @@
 #include "gflags/gflags.h"
 
 #include "mlvm/lib/Comp/Computation.h"
-#include "mlvm/lib/Tensor/Shape.h"
-#include "mlvm/lib/Tensor/Tensor.h"
+#include "mlvm/lib/Array/Array.h"
 
 using mlvm::comp::OpType;
 

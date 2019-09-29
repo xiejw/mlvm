@@ -2,7 +2,7 @@
 #include <sstream>
 
 #include "mlvm/lib/Support/OstreamVector.h"
-#include "mlvm/lib/Tensor/Data.h"
+#include "mlvm/lib/Array/Data.h"
 
 namespace mlvm {
 namespace tensor {
