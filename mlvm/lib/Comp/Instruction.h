@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "mlvm/lib/Comp/OpType.h"
-#include "mlvm/lib/Tensor/Tensor.h"
+#include "mlvm/lib/Comp/Tensor.h"
 
 namespace mlvm {
 namespace comp {
@@ -13,7 +13,7 @@ namespace comp {
 struct Instruction {
   std::string name;
   OpType op_type;
-  std::vector<tensor::Tensor> operands;
+  std::vector<Tensor> operands;
 
  public:
   friend std::ostream& operator<<(std::ostream& os, const Instruction& ins);

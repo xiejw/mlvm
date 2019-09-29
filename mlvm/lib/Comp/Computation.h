@@ -7,16 +7,15 @@
 
 #include "mlvm/lib/Comp/Instruction.h"
 #include "mlvm/lib/Comp/OpType.h"
-#include "mlvm/lib/Tensor/Tensor.h"
+#include "mlvm/lib/Comp/Tensor.h"
 
 namespace mlvm {
 namespace comp {
 
 class Computation {
  public:
-  const Instruction& newInstruction(
-      std::string name, OpType op_type,
-      std::initializer_list<tensor::Tensor> operands);
+  const Instruction& newInstruction(std::string name, OpType op_type,
+                                    std::initializer_list<Tensor> operands);
 
   std::string DebugString() const;
 

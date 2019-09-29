@@ -11,37 +11,24 @@
 namespace mlvm {
 namespace tensor {
 
-// Immutable structure holding the Tensor information.
-//
-// Copy is recommended to share the Tensor.
-class Tensor {
+// Immutable structure holding the Constant Tensor information.
+class Array {
  public:
-  enum Kind { Constant };
-
-  Tensor() = delete;
+  explicit Array(std::string name, std::initializer_list<int> shape,
+                 std::initializer_list<Float> data)
+      : name_{name}, shape_{shape}, data_{data} {}
 
   std::string DebugString() const;
-
- public:
-  static Tensor newConstant(std::string name, std::initializer_list<int> shape,
-                            std::initializer_list<Float> data) {
-    return Tensor(Kind::Constant, name, shape, data);
-  }
 
   const Data& data() const;
 
  private:
-  explicit Tensor(Kind kind, std::string name, std::initializer_list<int> shape,
-                  std::initializer_list<Float> data)
-      : kind_{kind}, name_{name}, shape_{shape}, data_{new Data{data}} {}
-
-  friend std::ostream& operator<<(std::ostream& os, const Tensor& s);
+  friend std::ostream& operator<<(std::ostream& os, const Array& arr);
 
  private:
-  Kind kind_;
   std::string name_;
   Shape shape_;
-  std::shared_ptr<Data> data_;
+  Data data_;
 };
 
 }  // namespace tensor
