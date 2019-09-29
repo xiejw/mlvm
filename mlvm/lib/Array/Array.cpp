@@ -7,6 +7,8 @@ namespace tensor {
 
 const Data &Array::data() const { return data_; }
 
+const Shape &Array::shape() const { return shape_; }
+
 std::string Array::DebugString() const {
   std::stringstream ss;
   ss << *this;

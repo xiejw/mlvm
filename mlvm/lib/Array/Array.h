@@ -22,6 +22,8 @@ class Array {
 
   const Data& data() const;
 
+  const Shape& shape() const;
+
  private:
   friend std::ostream& operator<<(std::ostream& os, const Array& arr);
 
