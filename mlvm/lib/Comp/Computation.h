@@ -15,7 +15,7 @@ namespace comp {
 class Computation {
  public:
   const Instruction& newInstruction(std::string name, OpType op_type,
-                                    std::initializer_list<Tensor> operands);
+                                    std::initializer_list<Tensor*> operands);
 
   std::string DebugString() const;
 
