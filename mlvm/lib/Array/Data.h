@@ -5,7 +5,7 @@
 #include <vector>
 
 namespace mlvm {
-namespace tensor {
+namespace array {
 
 using Float = float;
 
@@ -25,7 +25,7 @@ class Data {
   std::vector<Float> data_;
 };
 
-}  // namespace tensor
+}  // namespace array
 }  // namespace mlvm
 
 #endif

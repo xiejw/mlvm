@@ -3,7 +3,7 @@
 #include "mlvm/lib/Array/Array.h"
 
 namespace mlvm {
-namespace tensor {
+namespace array {
 
 const Data &Array::data() const { return data_; }
 
@@ -21,5 +21,5 @@ std::ostream &operator<<(std::ostream &out, const Array &arr) {
   return out;
 }
 
-}  // namespace tensor
+}  // namespace array
 }  // namespace mlvm

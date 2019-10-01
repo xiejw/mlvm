@@ -6,7 +6,7 @@
 #include <vector>
 
 namespace mlvm {
-namespace tensor {
+namespace array {
 
 // Immutable structure holding the shape information.
 //
@@ -27,7 +27,7 @@ class Shape {
   std::shared_ptr<std::vector<int>> dims_;
 };
 
-}  // namespace tensor
+}  // namespace array
 }  // namespace mlvm
 
 #endif

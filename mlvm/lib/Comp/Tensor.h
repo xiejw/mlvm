@@ -16,7 +16,7 @@ class Tensor {
   Kind kind() const { return kind_; }
 
  private:
-  explicit Tensor(Kind kind, std::unique_ptr<tensor::Array> arr)
+  explicit Tensor(Kind kind, std::unique_ptr<array::Array> arr)
       : kind_{kind}, array_{arr.release()} {}
 
   friend std::ostream& operator<<(std::ostream& os, const Tensor& arr) {
@@ -25,7 +25,7 @@ class Tensor {
 
  private:
   Kind kind_;
-  std::unique_ptr<tensor::Array> array_;
+  std::unique_ptr<array::Array> array_;
 };
 
 }  // namespace comp

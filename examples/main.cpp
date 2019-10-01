@@ -6,8 +6,8 @@
 #include "mlvm/lib/Comp/Computation.h"
 #include "mlvm/lib/Array/Array.h"
 
-using mlvm::tensor::Array;
-using mlvm::tensor::Shape;
+using mlvm::array::Array;
+using mlvm::array::Shape;
 using mlvm::comp::OpType;
 
 int main(int argc, char* argv[]) {

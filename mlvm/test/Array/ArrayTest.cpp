@@ -3,7 +3,7 @@
 #include "mlvm/lib/Array/Array.h"
 
 namespace mlvm {
-namespace tensor {
+namespace array {
 
 class ArrayTest : public ::testing::Test {};
 
@@ -26,5 +26,5 @@ TEST_F(ArrayTest, CheckData) {
   ASSERT_STREQ("[1.000, 2.000]", t0.data().DebugString().c_str());
 }
 
-}  // namespace tensor
+}  // namespace array
 }  // namespace mlvm

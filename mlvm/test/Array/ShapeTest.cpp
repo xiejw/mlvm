@@ -3,7 +3,7 @@
 #include "mlvm/lib/Array/Shape.h"
 
 namespace mlvm {
-namespace tensor {
+namespace array {
 
 class ShapeTest : public ::testing::Test {};
 
@@ -18,5 +18,5 @@ TEST_F(ShapeTest, CheckCopy) {
   ASSERT_EQ(&a.dims(), &b.dims());
 }
 
-}  // namespace tensor
+}  // namespace array
 }  // namespace mlvm

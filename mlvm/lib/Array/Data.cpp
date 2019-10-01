@@ -5,7 +5,7 @@
 #include "mlvm/lib/Support/OstreamVector.h"
 
 namespace mlvm {
-namespace tensor {
+namespace array {
 
 std::string Data::DebugString() const {
   std::stringstream ss;
@@ -20,5 +20,5 @@ std::ostream &operator<<(std::ostream &out, const Data &s) {
   return out;
 }
 
-}  // namespace tensor
+}  // namespace array
 }  // namespace mlvm

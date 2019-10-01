@@ -3,7 +3,7 @@
 #include "mlvm/lib/Array/Shape.h"
 
 namespace mlvm {
-namespace tensor {
+namespace array {
 
 std::string Shape::DebugString() const {
   std::stringstream ss;
@@ -27,5 +27,5 @@ std::ostream &operator<<(std::ostream &out, const Shape &s) {
   return out;
 }
 
-}  // namespace tensor
+}  // namespace array
 }  // namespace mlvm

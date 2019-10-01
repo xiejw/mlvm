@@ -9,7 +9,7 @@
 #include "mlvm/lib/Array/Shape.h"
 
 namespace mlvm {
-namespace tensor {
+namespace array {
 
 // Immutable structure holding the Constant Tensor information.
 class Array {
@@ -33,7 +33,7 @@ class Array {
   Data data_;
 };
 
-}  // namespace tensor
+}  // namespace array
 }  // namespace mlvm
 
 #endif
