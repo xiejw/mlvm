@@ -15,7 +15,7 @@ namespace comp {
 
 class Computation {
  public:
-  const Instruction& newInstruction(std::string name, OpType op_type,
+  const Instruction* newInstruction(std::string name, OpType op_type,
                                     std::initializer_list<Tensor*> operands);
 
   const Tensor* newConstant(std::string name, std::initializer_list<int> shape,
@@ -24,7 +24,7 @@ class Computation {
   std::string DebugString() const;
 
  private:
-  std::vector<Instruction> ins_;
+  std::vector<std::unique_ptr<Instruction>> ins_;
   std::vector<std::unique_ptr<Tensor>> tensors_;
 };
 

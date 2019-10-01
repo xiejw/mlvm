@@ -18,7 +18,8 @@ int main(int argc, char* argv[]) {
   std::cout << "Hello " << shape << "\n";
   std::cout << "Hello " << t1.data() << "\n";
 
-  // auto comp = mlvm::comp::Computation();
+  auto comp = mlvm::comp::Computation();
+  comp.newInstruction("ins", OpType::Add(), {});
   // comp.newInstruction("ins", OpType::Add(), {t1, t1});
-  // std::cout << "Comp: " << comp.DebugString();
+  std::cout << "Comp: " << comp.DebugString();
 }
