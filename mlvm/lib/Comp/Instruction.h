@@ -16,8 +16,10 @@ struct Instruction {
   std::vector<Tensor*> operands;
 
  public:
-  friend std::ostream& operator<<(std::ostream& os, const Instruction& ins);
   std::string DebugString() const;
+
+ private:
+  friend std::ostream& operator<<(std::ostream& os, const Instruction& ins);
 };
 
 }  // namespace comp

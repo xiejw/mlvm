@@ -6,13 +6,15 @@
 #include "mlvm/lib/Comp/Computation.h"
 #include "mlvm/lib/Array/Array.h"
 
+using mlvm::tensor::Array;
+using mlvm::tensor::Shape;
 using mlvm::comp::OpType;
 
 int main(int argc, char* argv[]) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-  mlvm::tensor::Shape shape {1,2};
-  auto t1 = mlvm::tensor::Array("t1", {1,2}, {2.12, 3.13});
+  Shape shape {1,2};
+  auto t1 = Array("t1", {1,2}, {2.12, 3.13});
   std::cout << "Hello " << shape << "\n";
   std::cout << "Hello " << t1.data() << "\n";
 
