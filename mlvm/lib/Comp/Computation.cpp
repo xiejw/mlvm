@@ -12,6 +12,16 @@ const Instruction& Computation::newInstruction(
   return ins_.back();
 }
 
+const Tensor* Computation::newConstant(
+    std::string name, std::initializer_list<int> shape,
+    std::initializer_list<array::Float> data) {
+
+  std::unique_ptr<array::Array> arr{new array::Array(name, shape, data)};
+  std::unique_ptr<Tensor> t{new Tensor(std::move(arr))};
+  tensors_.push_back(std::move(t));
+  return tensors_.back().get();
+}
+
 std::string Computation::DebugString() const {
   std::stringstream ss;
   for (auto& ins : ins_) ss << ins << "\n";
