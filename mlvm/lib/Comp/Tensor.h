@@ -6,8 +6,6 @@
 
 #include "mlvm/lib/Array/Array.h"
 
-class Computation;
-
 namespace mlvm {
 namespace comp {
 
@@ -21,6 +19,7 @@ class Tensor {
   explicit Tensor(std::unique_ptr<array::Array> arr)
       : kind_{Kind::Constant}, array_{arr.release()} {}
 
+ private:
   friend std::ostream& operator<<(std::ostream& os, const Tensor& arr) {
     return os;
   }

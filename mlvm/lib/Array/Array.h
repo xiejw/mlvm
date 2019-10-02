@@ -18,11 +18,12 @@ class Array {
                  std::initializer_list<Float> data)
       : name_{name}, shape_{shape}, data_{data} {}
 
-  std::string DebugString() const;
-
   const Data& data() const;
 
   const Shape& shape() const;
+
+ public:
+  std::string DebugString() const;
 
  private:
   friend std::ostream& operator<<(std::ostream& os, const Array& arr);

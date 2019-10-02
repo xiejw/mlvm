@@ -13,9 +13,7 @@ using mlvm::comp::OpType;
 int main(int argc, char* argv[]) {
   gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-  Shape shape {1,2};
   auto t1 = Array("t1", {1,2}, {2.12, 3.13});
-  std::cout << "Hello " << shape << "\n";
   std::cout << "Hello " << t1.data() << "\n";
 
   auto comp = mlvm::comp::Computation();

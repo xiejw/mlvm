@@ -16,9 +16,10 @@ class Shape {
   explicit Shape(std::initializer_list<int> dim)
       : dims_{new std::vector<int>{dim}} {}
 
-  std::string DebugString() const;
-
   const std::vector<int>& dims() const { return *dims_; };
+
+ public:
+  std::string DebugString() const;
 
  private:
   friend std::ostream& operator<<(std::ostream& os, const Shape& s);
