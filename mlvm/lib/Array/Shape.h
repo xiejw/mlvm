@@ -1,5 +1,5 @@
-#ifndef MLVM_TENSOR_SHAPE
-#define MLVM_TENSOR_SHAPE
+#ifndef MLVM_ARRAY_SHAPE
+#define MLVM_ARRAY_SHAPE
 
 #include <memory>
 #include <string>

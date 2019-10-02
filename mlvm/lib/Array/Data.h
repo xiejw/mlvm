@@ -1,5 +1,5 @@
-#ifndef MLVM_TENSOR_DATA
-#define MLVM_TENSOR_DATA
+#ifndef MLVM_ARRAY_DATA
+#define MLVM_ARRAY_DATA
 
 #include <string>
 #include <vector>

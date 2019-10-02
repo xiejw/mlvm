@@ -1,5 +1,5 @@
-#ifndef MLVM_TENSOR_TENSOR
-#define MLVM_TENSOR_TENSOR
+#ifndef MLVM_ARRAY_ARRAY
+#define MLVM_ARRAY_ARRAY
 
 #include <memory>
 #include <string>
