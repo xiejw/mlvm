@@ -1,6 +1,3 @@
-# cmake outputs
-build
-
 # vim
 *.swo
 *.swp
