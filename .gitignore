@@ -1,3 +1,6 @@
+# Go output
+build
+
 # vim
 *.swo
 *.swp
