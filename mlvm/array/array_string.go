@@ -9,8 +9,7 @@ import (
 func (arr *Array) String() string {
 	buf := new(bytes.Buffer)
 
-	// First, gets how many elements in each dim. For shape [3,2,3], eleCount
-	// should be [6, 3, 1].
+	// First, gets how many elements in each dim. For shape [3,2,3], eleCount should be [6, 3, 1].
 	shape := arr.Shape()
 	rank := shape.Rank()
 	dims := shape.Dims()

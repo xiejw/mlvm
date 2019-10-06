@@ -7,6 +7,17 @@ import (
 // Returns an Array for the data with given shape.
 //
 // All data passed in should not be not mutated in future.
+func NewArrayOrDie(name string, dims []Dimension, value []Float) *Array {
+	arr, err := NewArray(name, dims, value)
+	if err != nil {
+		panic(fmt.Sprintf("Unexpected error: %v", err))
+	}
+	return arr
+}
+
+// Returns an Array for the data with given shape.
+//
+// All data passed in should not be not mutated in future.
 func NewArray(name string, dims []Dimension, value []Float) (*Array, error) {
 
 	shape := &Shape{dims: dims}

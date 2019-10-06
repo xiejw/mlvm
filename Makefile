@@ -1,11 +1,16 @@
-default: compile
+BUILD=build
+FMT=gofmt -w -l
+
+default: compile run
 
 compile:
-	go build -o build/main examples/main.go
+	go build -o ${BUILD}/main examples/main.go
+
+run:
+	./${BUILD}/main
 
 clean:
-	rm -rf build
+	rm -rf ${BUILD}
 
 fmt:
-	gofmt -w -l .
-
+	${FMT} mlvm && ${FMT} examples
