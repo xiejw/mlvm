@@ -9,6 +9,9 @@ compile:
 run:
 	./${BUILD}/main
 
+test:
+	go test -v github.com/xiejw/mlvm/mlvm/...
+
 clean:
 	rm -rf ${BUILD}
 
