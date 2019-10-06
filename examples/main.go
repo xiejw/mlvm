@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/xiejw/mlvm/mlvm/array"
+	_ "github.com/xiejw/mlvm/mlvm/compile/ast"
 )
 
 func main() {
