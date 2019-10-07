@@ -17,7 +17,9 @@ const (
 // }
 
 type Module struct {
-	freezed bool // If true, the module cannot be modified anymore.
+	freezed     bool                   // If true, the module cannot be modified anymore.
+	opNameIndex int                    // The index to generate default name for Op.
+	nameStore   map[string]interface{} // Name to object mapping.
 
 	// Internal fields to store instructions, outputs, updates.
 	// instructions []*ast.Instruction
@@ -25,7 +27,6 @@ type Module struct {
 	// updates      []*VariableUpdate
 
 	// Internal fields to store the name of objects.
-	nameStore map[string]interface{}
 	// instructionMap  map[string]*ast.Instruction
 }
 

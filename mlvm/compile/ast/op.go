@@ -19,6 +19,16 @@ func (op *Op) Kind() OpKind {
 	return op.kind
 }
 
+func (op *Op) BaseName() string {
+	switch op.kind {
+	case opAdd:
+		return "op_add"
+	default:
+		panic("Op Kind is not expected.")
+	}
+
+}
+
 func OpAdd() *Op {
 	return opConstAdd
 }

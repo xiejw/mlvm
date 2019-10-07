@@ -19,5 +19,6 @@ func main() {
 	fmt.Printf("Tensor %v: %v\n", ta.Name(), ta)
 	fmt.Printf("Tensor %v: %v\n", tb.Name(), tb)
 
-	m.NewInstruction("add", ast.OpAdd(), ta, tb)
+	ins := m.NewInstruction(ast.OpAdd(), ta, tb)
+	fmt.Printf("Instruction: %v\n", ins)
 }

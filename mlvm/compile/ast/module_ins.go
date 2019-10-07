@@ -1,9 +1,24 @@
 package ast
 
-import ()
+import (
+	"fmt"
+)
 
 // Creates a new Instruction in Module.
-func (m *Module) NewInstruction(name string, op *Op, operands ...*Tensor) *Instruction {
+func (m *Module) NewInstruction(op *Op, operands ...*Tensor) *Instruction {
+	baseName := op.BaseName()
+	var name string
+	for {
+		m.opNameIndex += 1
+		name = fmt.Sprintf("%v_%03v", baseName, m.opNameIndex)
+		if m.nameStore[name] == nil {
+			break
+		}
+	}
+	return m.NewInstructionWithName(name, op, operands...)
+}
+
+func (m *Module) NewInstructionWithName(name string, op *Op, operands ...*Tensor) *Instruction {
 	ins := &Instruction{
 		name:     name,
 		op:       op,
