@@ -1,6 +1,10 @@
 BUILD=build
 FMT=gofmt -w -l
 
+ifdef VERBOSE
+	TEST_VERBOSE=-v
+endif
+
 default: compile run
 
 compile:
@@ -10,7 +14,7 @@ run:
 	./${BUILD}/main
 
 test:
-	go test -v github.com/xiejw/mlvm/mlvm/...
+	go test ${TEST_VERBOSE} github.com/xiejw/mlvm/mlvm/...
 
 clean:
 	rm -rf ${BUILD}
