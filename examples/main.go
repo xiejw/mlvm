@@ -18,4 +18,6 @@ func main() {
 	tb := m.NewConstant(b)
 	fmt.Printf("Tensor %v: %v\n", ta.Name(), ta)
 	fmt.Printf("Tensor %v: %v\n", tb.Name(), tb)
+
+	m.NewInstruction("add", ast.OpAdd(), ta, tb)
 }
