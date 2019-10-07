@@ -1,9 +1,9 @@
 package ast
 
 import (
-	_ "fmt"
+	"fmt"
 
-	_ "github.com/xiejw/mlvm/mlvm/array"
+	"github.com/xiejw/mlvm/mlvm/array"
 )
 
 const (
@@ -27,6 +27,12 @@ type Module struct {
 	// Internal fields to store the name of objects.
 	nameStore map[string]interface{}
 	// instructionMap  map[string]*ast.Instruction
+}
+
+// Register a constant (array.Array) as Tensor in Module.
+func (m *Module) NewConstant(arr *array.Array) *Tensor {
+	m.registerName(arr.Name(), arr, true /* registerOnce */)
+	return newConstantTensor(arr)
 }
 
 func NewModule() *Module {
@@ -83,6 +89,28 @@ func NewModule() *Module {
 // 	// }
 // 	// return engine.Run()
 // }
+//
+
+// Register a `name` into Module with instance as `item`.
+//
+// If `registerOnce` is true, `name` must never be seen before. Otherwise, it is expected to be the
+// same instance.
+func (m *Module) registerName(name string, item interface{}, registerOnce bool) {
+	existedItem, existed := m.nameStore[name]
+	if !existed {
+		m.nameStore[name] = item
+		return
+	}
+
+	if registerOnce {
+		panic(fmt.Sprintf("Name (\"%v\") has been used in Module already. Only allow once.", name))
+	}
+
+	if existedItem != item {
+		panic(fmt.Sprintf("In Module, tensor/instruction name must be unique. "+
+			"\"%v\" has been used already.", name))
+	}
+}
 
 func (m *Module) mustNotFreezed() {
 	if m.freezed {
