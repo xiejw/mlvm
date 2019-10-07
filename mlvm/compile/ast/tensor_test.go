@@ -22,6 +22,9 @@ func TestNewConstantTensor(t *testing.T) {
 		t.Fatalf("Tensor kind mismatch.")
 	}
 	if tensor.Array() != arr {
-		t.Fatalf("Tensor arry instance mismatch.")
+		t.Fatalf("Tensor Array() instance mismatch.")
+	}
+	if tensor.String() != "Constant{\"a\", <2, 1>}" {
+		t.Fatalf("Tensor String() mismatch.")
 	}
 }

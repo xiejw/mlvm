@@ -5,7 +5,28 @@ import (
 	"fmt"
 )
 
-// Returns the string for debugging. See test for how it looks.
+// Returns the string for Shape.
+//
+// <1> or <2, 1>
+func (shape *Shape) String() string {
+	buf := new(bytes.Buffer)
+	finalIndex := len(shape.dims) - 1
+
+	buf.WriteString("<")
+	for i, dim := range shape.dims {
+		if i == finalIndex {
+			buf.WriteString(fmt.Sprintf("%v", dim))
+		} else {
+			buf.WriteString(fmt.Sprintf("%v, ", dim))
+		}
+	}
+	buf.WriteString(">")
+	return buf.String()
+}
+
+// Returns the string for debugging.
+//
+// See test for how it looks.
 func (arr *Array) String() string {
 	buf := new(bytes.Buffer)
 

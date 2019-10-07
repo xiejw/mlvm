@@ -6,18 +6,33 @@ import (
 
 func TestRankOneTensor(t *testing.T) {
 	a := NewArrayOrDie("a", []Dimension{4}, []Float{1.0, 2.0, 3.0, 4.0})
+
+	if a.Shape().String() != "<4>" {
+		t.Errorf("Shape mismatch.")
+	}
+	if a.Name() != "a" {
+		t.Errorf("Name mismatch.")
+	}
+
 	got := a.String()
 	expected := "[ 1.000 2.000 3.000 4.000 ]"
-
 	if got != expected {
 		t.Errorf("Expected: %v\nGot: %v\n", expected, got)
 	}
+
 }
 
 func TestRankTwoVerticalTensor(t *testing.T) {
 	a := NewArrayOrDie("a", []Dimension{4, 1}, []Float{1.0, 2.0, 3.0, 4.0})
-	got := a.String()
 
+	if a.Shape().String() != "<4, 1>" {
+		t.Errorf("Shape mismatch.")
+	}
+	if a.Name() != "a" {
+		t.Errorf("Name mismatch.")
+	}
+
+	got := a.String()
 	expected := `
 [ [ 1.000 ]
   [ 2.000 ]
@@ -32,8 +47,15 @@ func TestRankTwoVerticalTensor(t *testing.T) {
 
 func TestRankTwoHorizontalTensor(t *testing.T) {
 	a := NewArrayOrDie("a", []Dimension{1, 4}, []Float{1.0, 2.0, 3.0, 4.0})
-	got := a.String()
 
+	if a.Shape().String() != "<1, 4>" {
+		t.Errorf("Shape mismatch.")
+	}
+	if a.Name() != "a" {
+		t.Errorf("Name mismatch.")
+	}
+
+	got := a.String()
 	expected := `
 [ [ 1.000 2.000 3.000 4.000 ]
 ]
@@ -45,8 +67,15 @@ func TestRankTwoHorizontalTensor(t *testing.T) {
 
 func TestRankTwoMatrixTensor(t *testing.T) {
 	a := NewArrayOrDie("a", []Dimension{2, 2}, []Float{1.0, 2.0, 3.0, 4.0})
-	got := a.String()
 
+	if a.Shape().String() != "<2, 2>" {
+		t.Errorf("Shape mismatch.")
+	}
+	if a.Name() != "a" {
+		t.Errorf("Name mismatch.")
+	}
+
+	got := a.String()
 	expected := `
 [ [ 1.000 2.000 ]
   [ 3.000 4.000 ]
@@ -59,8 +88,15 @@ func TestRankTwoMatrixTensor(t *testing.T) {
 
 func TestRankTreeMatrixTensor(t *testing.T) {
 	a := NewArrayOrDie("a", []Dimension{2, 2, 1}, []Float{1.0, 2.0, 3.0, 4.0})
-	got := a.String()
 
+	if a.Shape().String() != "<2, 2, 1>" {
+		t.Errorf("Shape mismatch.")
+	}
+	if a.Name() != "a" {
+		t.Errorf("Name mismatch.")
+	}
+
+	got := a.String()
 	expected := `
 [ [ [ 1.000 ]
     [ 2.000 ]
