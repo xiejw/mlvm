@@ -2,8 +2,6 @@ package ast
 
 import (
 	"fmt"
-
-	"github.com/xiejw/mlvm/mlvm/array"
 )
 
 const (
@@ -28,12 +26,6 @@ type Module struct {
 
 	// Internal fields to store the name of objects.
 	// instructionMap  map[string]*ast.Instruction
-}
-
-// Register a constant (array.Array) as Tensor in Module.
-func (m *Module) NewConstant(arr *array.Array) *Tensor {
-	m.registerName(arr.Name(), arr, true /* registerOnce */)
-	return newConstantTensor(arr)
 }
 
 func NewModule() *Module {
