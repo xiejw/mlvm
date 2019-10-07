@@ -14,6 +14,8 @@ const (
 )
 
 // Operands/Results of Instructions in Module.
+//
+// Should be treated as immutable structure.
 type Tensor struct {
 	kind TensorKind
 
@@ -34,7 +36,12 @@ func (t *Tensor) Name() string {
 }
 
 func (t *Tensor) Shape() *array.Shape {
-	return t.arr.Shape()
+	switch t.kind {
+	case KConstant:
+		return t.arr.Shape()
+	default:
+		panic(fmt.Sprintf("Tensor kind %v is not expected.", t.kind))
+	}
 }
 
 func (t *Tensor) Array() *array.Array {
@@ -42,11 +49,4 @@ func (t *Tensor) Array() *array.Array {
 		panic("Array is allowed only for KConstant.")
 	}
 	return t.arr
-}
-
-func newConstantTensor(arr *array.Array) *Tensor {
-	return &Tensor{
-		kind: KConstant,
-		arr:  arr,
-	}
 }
