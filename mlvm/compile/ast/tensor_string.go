@@ -14,6 +14,8 @@ func (t *Tensor) String() string {
 	switch t.kind {
 	case KConstant:
 		buf.WriteString("Constant{")
+	case KResult:
+		buf.WriteString("Result{")
 	default:
 		panic(fmt.Sprintf("Tensor kind %v is not expected.", t.kind))
 	}

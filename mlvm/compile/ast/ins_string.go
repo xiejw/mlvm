@@ -14,6 +14,7 @@ func (ins *Instruction) String() string {
 	buf.WriteString(fmt.Sprintf(
 		"Ins{\"%v\", (", ins.Name()))
 
+	// Write Operands
 	operands := ins.Operands()
 	for i, t := range operands {
 		buf.WriteString(fmt.Sprintf("%v", t))
@@ -22,8 +23,17 @@ func (ins *Instruction) String() string {
 		}
 	}
 
-	buf.WriteString(") -> ()")
-	buf.WriteString("}")
+	buf.WriteString(") -> (")
+
+	// Write Results
+	results := ins.Results()
+	for i, t := range results {
+		buf.WriteString(fmt.Sprintf("%v", t))
+		if i != len(results)-1 {
+			buf.WriteString(", ")
+		}
+	}
+	buf.WriteString(")}")
 
 	return buf.String()
 }
