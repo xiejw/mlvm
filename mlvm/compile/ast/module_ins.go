@@ -19,6 +19,7 @@ func (m *Module) NewInstruction(op *Op, operands ...*Tensor) *Instruction {
 }
 
 func (m *Module) NewInstructionWithName(name string, op *Op, operands ...*Tensor) *Instruction {
+	m.mustNotFreezed()
 	ins := &Instruction{
 		name:     name,
 		op:       op,
