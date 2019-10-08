@@ -3,11 +3,11 @@ package ast
 type OpKind int
 
 const (
-	opAdd OpKind = iota + 1 // 0 Is invalid.
+	OpKAdd OpKind = iota + 1 // 0 Is invalid.
 )
 
 var (
-	opConstAdd = &Op{kind: opAdd}
+	opConstAdd = &Op{kind: OpKAdd}
 )
 
 // Oper
@@ -21,7 +21,7 @@ func (op *Op) Kind() OpKind {
 
 func (op *Op) BaseName() string {
 	switch op.kind {
-	case opAdd:
+	case OpKAdd:
 		return "opAdd"
 	default:
 		panic("Op Kind is not expected.")
