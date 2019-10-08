@@ -19,23 +19,9 @@ const (
 type Tensor struct {
 	kind TensorKind
 
+	// Union struct.
 	arr    *array.Array
 	result *Result
-}
-
-type Result struct {
-	name  string
-	shape *array.Shape
-	ins   *Instruction
-	index int // Result index in Instruction
-}
-
-// TODO: move this method.
-func newResultTensor(result *Result) *Tensor {
-	return &Tensor{
-		kind:   KResult,
-		result: result,
-	}
 }
 
 func (t *Tensor) Kind() TensorKind {
@@ -71,10 +57,9 @@ func (t *Tensor) Array() *array.Array {
 	return t.arr
 }
 
-func (r *Result) Name() string {
-	return r.name
-}
-
-func (r *Result) Shape() *array.Shape {
-	return r.shape
+func (t *Tensor) Result() *Result {
+	if t.kind != KResult {
+		panic("Result() is allowed only for KResult.")
+	}
+	return t.result
 }
