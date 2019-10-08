@@ -26,5 +26,6 @@ func (m *Module) NewInstructionWithName(name string, op *Op, operands ...*Tensor
 		operands: operands,
 	}
 	m.registerName(name, ins, true /* registerOnce */)
+	m.instructions = append(m.instructions, ins)
 	return ins
 }

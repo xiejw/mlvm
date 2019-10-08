@@ -22,7 +22,7 @@ func (op *Op) Kind() OpKind {
 func (op *Op) BaseName() string {
 	switch op.kind {
 	case opAdd:
-		return "op_add"
+		return "opAdd"
 	default:
 		panic("Op Kind is not expected.")
 	}

@@ -5,9 +5,11 @@ import (
 )
 
 var (
+	// Shape related errors.
 	ErrEmptyShape     = fmt.Errorf("Shape must be non-empty (rank >= 1).")
 	ErrNonPositiveDim = fmt.Errorf("Dimension must be positive.")
 
+	// Data related errors.
 	ErrEmptyData = fmt.Errorf("Data must be non-empty.")
 )
 
