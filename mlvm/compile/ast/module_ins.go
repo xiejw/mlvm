@@ -21,21 +21,7 @@ func (m *Module) NewInstruction(op *Op, operands ...*Tensor) *Instruction {
 func (m *Module) NewInstructionWithName(name string, op *Op, operands ...*Tensor) *Instruction {
 	m.mustNotFreezed()
 
-	ins := &Instruction{
-		name:     name,
-		op:       op,
-		operands: operands,
-	}
-
-	// TODO: Remove the hard code.
-	result := &Result{
-		name:  "%o_0",
-		shape: operands[0].Shape(),
-		ins:   ins,
-		index: 0,
-	}
-
-	ins.results = []*Tensor{newResultTensor(result)}
+	ins := newInstruction(name, op, operands...)
 
 	m.registerName(name, ins, true /* registerOnce */)
 	m.instructions = append(m.instructions, ins)

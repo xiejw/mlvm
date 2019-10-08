@@ -1,11 +1,11 @@
 package ast
 
 import (
-	"fmt"
 	"bytes"
+	"fmt"
 )
 
-func (m *Module) String() string  {
+func (m *Module) String() string {
 	buf := new(bytes.Buffer)
 	buf.WriteString("Module {\n")
 
@@ -23,4 +23,3 @@ func (m *Module) String() string  {
 	buf.WriteString("}\n")
 	return buf.String()
 }
-
