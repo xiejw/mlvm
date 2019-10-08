@@ -9,7 +9,6 @@ TODO
 - Move new instruction into Instruction logic so we can test it easily (without
   creating a module.)
 - Added shapes mod for shap inference.
-- Added module print.
 - Added module eager run.
 
 Arxived
