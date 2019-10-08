@@ -23,6 +23,10 @@ func NewModule() *Module {
 	return m
 }
 
+func (m *Module) Instructions() []*Instruction {
+	return m.instructions
+}
+
 // Register a `name` into Module with instance as `item`.
 //
 // If `registerOnce` is true, `name` must never be seen before. Otherwise, it is expected to be the

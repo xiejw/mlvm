@@ -1,6 +1,7 @@
 package ast
 
 import (
+	"reflect"
 	"strings"
 	"testing"
 
@@ -67,5 +68,8 @@ func TestNewInstruction(t *testing.T) {
 	ins := m.NewInstruction(OpAdd(), ta, ta)
 	if ins.Name() != "opAdd_001" {
 		t.Fatalf("Instruction name mismatch. Got: %v.", ins.Name())
+	}
+	if !reflect.DeepEqual([]*Instruction{ins}, m.Instructions()) {
+		t.Fatalf("Instructions in Module mismatch.")
 	}
 }
