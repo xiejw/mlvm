@@ -22,6 +22,7 @@ var (
 
 	// Errors
 	errInvalidArrayName = "Array name `%v` is invalid. Must be legal identifier name."
+	errInvalidInstructionName = "Instruction name `%v` is invalid. Must be legal identifier name."
 )
 
 const (
@@ -39,6 +40,14 @@ func ValidateArrayName(name string) error {
 		return nil
 	}
 	return fmt.Errorf(errInvalidArrayName, name)
+}
+
+// Validates whether array name is valid.
+func ValidateInstructionName(name string) error {
+	if userInstructionNameRegexp.MatchString(name) {
+		return nil
+	}
+	return fmt.Errorf(errInvalidInstructionName, name)
 }
 
 // Returns canonical name for result.

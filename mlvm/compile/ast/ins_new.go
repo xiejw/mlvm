@@ -5,6 +5,11 @@ import (
 )
 
 func newInstruction(name string, op *Op, operands ...*Tensor) *Instruction {
+
+	if err := naming.ValidateInstructionName(name); err != nil {
+		panic(err)
+	}
+
 	ins := &Instruction{
 		name:     name,
 		op:       op,
