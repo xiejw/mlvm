@@ -1,5 +1,9 @@
 package ast
 
+import (
+	"github.com/xiejw/mlvm/mlvm/compile/internal/naming"
+)
+
 func newInstruction(name string, op *Op, operands ...*Tensor) *Instruction {
 	ins := &Instruction{
 		name:     name,
@@ -8,11 +12,14 @@ func newInstruction(name string, op *Op, operands ...*Tensor) *Instruction {
 	}
 
 	// TODO: Remove the hard code.
+	index := 0
+	resultName := naming.CanonicalNameForResult(name, index)
+
 	result := &Result{
-		name:  "%o_0",
+		name:  resultName,
 		shape: operands[0].Shape(),
 		ins:   ins,
-		index: 0,
+		index: index,
 	}
 
 	ins.results = []*Tensor{newResultTensor(result)}

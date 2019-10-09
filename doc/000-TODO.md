@@ -5,7 +5,6 @@ Topic: TODO
 
 TODO
 ----
-- Added result with good names.
 - Added shapes mod for shap inference.
 - Added module eager run.
 
