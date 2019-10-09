@@ -21,17 +21,13 @@ var (
 	userInstructionNameRegexp = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_]*$`)
 
 	// Errors
-	errInvalidArrayName = "Array name `%v` is invalid. Must be legal identifier name."
+	errInvalidArrayName       = "Array name `%v` is invalid. Must be legal identifier name."
 	errInvalidInstructionName = "Instruction name `%v` is invalid. Must be legal identifier name."
 )
 
 const (
-	resultTensorLeandingCharactor = "%"
+	resultTensorLeandingCharactor = "%o"
 	// GraphRewritePrefix            = "#"
-)
-
-const (
-	DefaultContainerName = "*"
 )
 
 // Validates whether array name is valid.
@@ -42,7 +38,7 @@ func ValidateArrayName(name string) error {
 	return fmt.Errorf(errInvalidArrayName, name)
 }
 
-// Validates whether array name is valid.
+// Validates whether user provided instruction name is valid.
 func ValidateInstructionName(name string) error {
 	if userInstructionNameRegexp.MatchString(name) {
 		return nil
@@ -53,14 +49,11 @@ func ValidateInstructionName(name string) error {
 // Returns canonical name for result.
 //
 // %{i,insName}
-func CanonicalNameForResult(insName string, index int) string {
+func CanonicalResultName(insName string, index int) string {
 	return fmt.Sprintf("%s{%v,%v}", resultTensorLeandingCharactor, index, insName)
 }
 
-// func CanonicalNameForVariable(containerName, varName string) string {
-// 	if containerName == "*" {
-// 		return containerName + varName
-// 	} else {
-// 		return containerName + "/" + varName
-// 	}
-// }
+// Returns a default name for instruction based on baseName and globalIndex.
+func DefaultInstructionName(baseName string, globalIndex int) string {
+	return fmt.Sprintf("%v_%03v", baseName, globalIndex)
+}

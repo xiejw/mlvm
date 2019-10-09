@@ -18,7 +18,7 @@ func newInstruction(name string, op *Op, operands ...*Tensor) *Instruction {
 
 	// TODO: Remove the hard code.
 	index := 0
-	resultName := naming.CanonicalNameForResult(name, index)
+	resultName := naming.CanonicalResultName(name, index)
 
 	result := &Result{
 		name:  resultName,

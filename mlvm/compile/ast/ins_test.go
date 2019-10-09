@@ -14,7 +14,7 @@ func TestInstructionAdd(t *testing.T) {
 
 	got := ins.String()
 	expected := `Ins{"add", (Constant{"a", <2, 1>}, Constant{"a", <2, 1>}) -> ` +
-		`(Result{"%{0,add}", <2, 1>})}`
+		`(Result{"%o{0,add}", <2, 1>})}`
 	if expected != got {
 		t.Errorf("Ins mismatch: Expected: %v, Got: %v", expected, got)
 	}

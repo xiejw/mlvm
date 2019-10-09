@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"fmt"
+	"github.com/xiejw/mlvm/mlvm/internal/naming"
 )
 
 // Creates a new Instruction in Module.
@@ -10,8 +10,7 @@ func (m *Module) NewInstruction(op *Op, operands ...*Tensor) *Instruction {
 	var name string
 	for {
 		m.opNameIndex += 1
-		// TODO Move this into nameing.
-		name = fmt.Sprintf("%v_%03v", baseName, m.opNameIndex)
+		name = naming.DefaultInstructionName(baseName, m.opNameIndex)
 		if m.nameStore[name] == nil {
 			break
 		}
