@@ -19,6 +19,6 @@ func main() {
 	fmt.Printf("Tensor %v: %v\n", ta.Name(), ta)
 	fmt.Printf("Tensor %v: %v\n", tb.Name(), tb)
 
-	m.NewInstruction(ast.OpAdd(), ta, tb)
+	m.NewInstructionOrDie(ast.OpAdd(), ta, tb)
 	fmt.Printf("Module: %v\n", m)
 }

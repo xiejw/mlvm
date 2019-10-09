@@ -5,6 +5,7 @@ Topic: TODO
 
 TODO
 ----
+- Remove all panic.
 - Added shapes mod for shap inference.
 - Added module eager run.
 

@@ -5,7 +5,10 @@ import (
 )
 
 // Creates a new Instruction in Module.
-func (m *Module) NewInstruction(op *Op, operands ...*Tensor) *Instruction {
+//
+// This is convenient to use given it will try to auto generate the Instruction name and it will
+// panic for any error.
+func (m *Module) NewInstructionOrDie(op *Op, operands ...*Tensor) *Instruction {
 	baseName := op.BaseName()
 	var name string
 	for {
@@ -15,15 +18,25 @@ func (m *Module) NewInstruction(op *Op, operands ...*Tensor) *Instruction {
 			break
 		}
 	}
-	return m.NewInstructionWithName(name, op, operands...)
+	ins, err := m.NewInstructionWithName(name, op, operands...)
+	if err != nil {
+		panic(err)
+	}
+	return ins
 }
 
-func (m *Module) NewInstructionWithName(name string, op *Op, operands ...*Tensor) *Instruction {
+func (m *Module) NewInstructionWithName(
+	name string, op *Op, operands ...*Tensor,
+) (*Instruction, error) {
+
 	m.mustNotFreezed()
 
-	ins := newInstruction(name, op, operands...)
+	ins, err := newInstruction(name, op, operands...)
+	if err != nil {
+		return nil, err
+	}
 
 	m.registerName(name, ins, true /* registerOnce */)
 	m.instructions = append(m.instructions, ins)
-	return ins
+	return ins, nil
 }

@@ -65,7 +65,7 @@ func TestNewInstruction(t *testing.T) {
 	a := array.NewArrayOrDie("a", []array.Dimension{2, 1}, []array.Float{1.0, 2.0})
 	ta := m.NewConstant(a)
 
-	ins := m.NewInstruction(OpAdd(), ta, ta)
+	ins := m.NewInstructionOrDie(OpAdd(), ta, ta)
 	if ins.Name() != "opAdd_001" {
 		t.Fatalf("Instruction name mismatch. Got: %v.", ins.Name())
 	}

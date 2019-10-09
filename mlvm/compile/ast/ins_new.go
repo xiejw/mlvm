@@ -4,10 +4,9 @@ import (
 	"github.com/xiejw/mlvm/mlvm/internal/naming"
 )
 
-func newInstruction(name string, op *Op, operands ...*Tensor) *Instruction {
-
+func newInstruction(name string, op *Op, operands ...*Tensor) (*Instruction, error) {
 	if err := naming.ValidateInstructionName(name); err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	ins := &Instruction{
@@ -28,5 +27,5 @@ func newInstruction(name string, op *Op, operands ...*Tensor) *Instruction {
 	}
 
 	ins.results = []*Tensor{newResultTensor(result)}
-	return ins
+	return ins, nil
 }
