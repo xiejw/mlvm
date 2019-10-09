@@ -8,19 +8,20 @@ import (
 
 // Naming policy
 // - All user provided tensor and instruction names should NOT have special
-//   charactors. See `UserTensorNameRegexp` and `UserInstructionNameRegexp`.
+//   charactors. See `arrayNameRegexp` and `userInstructionNameRegexp`.
 //
 // - Special characters.
 //   - `%` is the leading charactor for result.
-//   - `::` is the separator for result name and index.
 //   - `#` is used as leading char for graph rewrites, like inserted op, added
 //     contant tensor, etc.
 
 var (
-	userTensorNameRegexp      = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_]*$`)
+	// Regexp
+	arrayNameRegexp           = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_]*$`)
 	userInstructionNameRegexp = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_]*$`)
-	// ContainerNameRegexp       = regexp.MustCompile(`^[a-zA-Z]+$`)
-	// VariableNameRegexp        = regexp.MustCompile(`^[a-zA-Z]+$`)
+
+	// Errors
+	errInvalidArrayName = "Array name `%v` is invalid. Must be legal identifier name."
 )
 
 const (
@@ -32,10 +33,17 @@ const (
 	DefaultContainerName = "*"
 )
 
-func ValidateUserTensor(name string) error {
-	return nil
+// Validates whether array name is valid.
+func ValidateArrayName(name string) error {
+	if arrayNameRegexp.MatchString(name) {
+		return nil
+	}
+	return fmt.Errorf(errInvalidArrayName, name)
 }
 
+// Returns canonical name for result.
+//
+// %{i,insName}
 func CanonicalNameForResult(insName string, index int) string {
 	return fmt.Sprintf("%s{%v,%v}", resultTensorLeandingCharactor, index, insName)
 }

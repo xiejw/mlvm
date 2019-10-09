@@ -4,6 +4,14 @@ import (
 	"testing"
 )
 
+func TestInvalid(t *testing.T) {
+	_, err := NewArray("_a", []Dimension{4}, []Float{1.0, 2.0, 3.0, 4.0})
+
+	if err == nil {
+		t.Errorf("Expected error.")
+	}
+}
+
 func TestRankOneTensor(t *testing.T) {
 	a := NewArrayOrDie("a", []Dimension{4}, []Float{1.0, 2.0, 3.0, 4.0})
 

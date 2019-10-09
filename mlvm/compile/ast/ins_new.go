@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"github.com/xiejw/mlvm/mlvm/compile/internal/naming"
+	"github.com/xiejw/mlvm/mlvm/internal/naming"
 )
 
 func newInstruction(name string, op *Op, operands ...*Tensor) *Instruction {
