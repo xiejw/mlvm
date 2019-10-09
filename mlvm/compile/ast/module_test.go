@@ -15,7 +15,7 @@ func TestNewModule(t *testing.T) {
 func TestNewConstant(t *testing.T) {
 	m := NewModule()
 	arr := array.NewArrayOrDie("a", []array.Dimension{2, 1}, []array.Float{1.0, 2.0})
-	tensor := m.NewConstant(arr)
+	tensor := m.NewConstantOrDie(arr)
 	if tensor.Array() != arr {
 		t.Errorf("Expected same array.")
 	}
@@ -25,8 +25,8 @@ func TestNewConstants(t *testing.T) {
 	m := NewModule()
 	a := array.NewArrayOrDie("a", []array.Dimension{2, 1}, []array.Float{1.0, 2.0})
 	b := array.NewArrayOrDie("b", []array.Dimension{2, 1}, []array.Float{1.0, 2.0})
-	m.NewConstant(a)
-	m.NewConstant(b)
+	m.NewConstantOrDie(a)
+	m.NewConstantOrDie(b)
 }
 
 func TestNewConstantsWithSameArray(t *testing.T) {
@@ -36,11 +36,11 @@ func TestNewConstantsWithSameArray(t *testing.T) {
 
 	defer func() {
 		r := recover()
-		if !strings.Contains(r.(string), "allow once") {
+		if !strings.Contains(r.(error).Error(), "allow once") {
 			t.Fatalf("Wrong error message: %v", r)
 		}
 	}()
-	m.NewConstant(arr)
+	m.NewConstantOrDie(arr)
 	t.Fail()
 }
 
@@ -48,22 +48,22 @@ func TestNewConstantsWithSameNames(t *testing.T) {
 	m := NewModule()
 	a := array.NewArrayOrDie("a", []array.Dimension{2, 1}, []array.Float{1.0, 2.0})
 	b := array.NewArrayOrDie("a", []array.Dimension{2, 1}, []array.Float{1.0, 2.0})
-	m.NewConstant(a)
+	m.NewConstantOrDie(a)
 
 	defer func() {
 		r := recover()
-		if !strings.Contains(r.(string), "allow once") {
+		if !strings.Contains(r.(error).Error(), "allow once") {
 			t.Fatalf("Wrong error message: %v", r)
 		}
 	}()
-	m.NewConstant(b)
+	m.NewConstantOrDie(b)
 	t.Fail()
 }
 
 func TestNewInstruction(t *testing.T) {
 	m := NewModule()
 	a := array.NewArrayOrDie("a", []array.Dimension{2, 1}, []array.Float{1.0, 2.0})
-	ta := m.NewConstant(a)
+	ta := m.NewConstantOrDie(a)
 
 	ins := m.NewInstructionOrDie(OpAdd(), ta, ta)
 	if ins.Name() != "opAdd_001" {

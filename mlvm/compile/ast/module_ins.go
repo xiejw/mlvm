@@ -29,14 +29,21 @@ func (m *Module) NewInstructionWithName(
 	name string, op *Op, operands ...*Tensor,
 ) (*Instruction, error) {
 
-	m.mustNotFreezed()
+	err := m.mustNotFreezed()
+	if err != nil {
+		return nil, err
+	}
 
 	ins, err := newInstruction(name, op, operands...)
 	if err != nil {
 		return nil, err
 	}
 
-	m.registerName(name, ins, true /* registerOnce */)
+	err = m.registerName(name, ins, true /* registerOnce */)
+	if err != nil {
+		return nil, err
+	}
+
 	m.instructions = append(m.instructions, ins)
 	return ins, nil
 }

@@ -14,8 +14,8 @@ func main() {
 	fmt.Printf("Array %v: %v", b.Name(), b)
 
 	m := ast.NewModule()
-	ta := m.NewConstant(a)
-	tb := m.NewConstant(b)
+	ta := m.NewConstantOrDie(a)
+	tb := m.NewConstantOrDie(b)
 	fmt.Printf("Tensor %v: %v\n", ta.Name(), ta)
 	fmt.Printf("Tensor %v: %v\n", tb.Name(), tb)
 
