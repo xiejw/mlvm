@@ -5,6 +5,7 @@ Topic: TODO
 
 TODO
 ----
+- Make broadcast visiable on output and graph??
 - Added shapes mod for shap inference.
 - Added module eager run.
 
