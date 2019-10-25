@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/xiejw/mlvm/mlvm/array"
-	"github.com/xiejw/mlvm/mlvm/compile/ast"
+	"github.com/xiejw/mlvm/mlvm/compile/ir"
 )
 
 func main() {
@@ -13,12 +13,12 @@ func main() {
 	fmt.Printf("Array %v: %v", a.Name(), a)
 	fmt.Printf("Array %v: %v", b.Name(), b)
 
-	m := ast.NewModule()
+	m := ir.NewModule()
 	ta := m.NewConstantOrDie(a)
 	tb := m.NewConstantOrDie(b)
 	fmt.Printf("Tensor %v: %v\n", ta.Name(), ta)
 	fmt.Printf("Tensor %v: %v\n", tb.Name(), tb)
 
-	m.NewInstructionOrDie(ast.OpAdd(), ta, tb)
+	m.NewInstructionOrDie(ir.OpAdd(), ta, tb)
 	fmt.Printf("Module: %v\n", m)
 }

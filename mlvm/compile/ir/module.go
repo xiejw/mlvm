@@ -1,4 +1,4 @@
-package ast
+package ir
 
 type Module struct {
 	// Internal fields to store instructions, outputs, updates.

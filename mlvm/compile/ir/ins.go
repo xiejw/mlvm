@@ -1,4 +1,4 @@
-package ast
+package ir
 
 // Instruction in Module.
 type Instruction struct {
