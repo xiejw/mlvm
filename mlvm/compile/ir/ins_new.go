@@ -15,17 +15,22 @@ func newInstruction(name string, op *Op, operands ...*Tensor) (*Instruction, err
 		operands: operands,
 	}
 
-	// TODO: Remove the hard code.
-	index := 0
-	resultName := naming.CanonicalResultName(name, index)
-
-	result := &Result{
-		name:  resultName,
-		shape: operands[0].Shape(),
-		ins:   ins,
-		index: index,
+	resultShapes, err := op.InferShapes(operands...)
+	if err != nil {
+		return nil, err
 	}
 
-	ins.results = []*Tensor{newResultTensor(result)}
+	results := make([]*Tensor, 0, len(resultShapes))
+	for i, resultShape := range resultShapes {
+		result := &Result{
+			name:  naming.CanonicalResultName(name, i),
+			shape: resultShape,
+			ins:   ins,
+			index: i,
+		}
+		results = append(results, newResultTensor(result))
+	}
+
+	ins.results = results
 	return ins, nil
 }

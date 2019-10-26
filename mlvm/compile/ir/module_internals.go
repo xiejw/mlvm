@@ -38,3 +38,12 @@ func (m *Module) mustNotFreezed() error {
 	}
 	return nil
 }
+
+func (m *Module) freeze() error {
+	err := m.mustNotFreezed()
+	if err != nil {
+		return err
+	}
+	m.freezed = true
+	return nil
+}

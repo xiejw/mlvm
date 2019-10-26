@@ -1,5 +1,10 @@
 package ir
 
+import (
+	"github.com/xiejw/mlvm/mlvm/array"
+	"github.com/xiejw/mlvm/mlvm/internal/shapes"
+)
+
 type OpKind int
 
 const (
@@ -31,4 +36,17 @@ func (op *Op) BaseName() string {
 
 func OpAdd() *Op {
 	return opConstAdd
+}
+
+func (op *Op) InferShapes(operands ...*Tensor) ([]*array.Shape, error) {
+	switch op.kind {
+
+	case OpKAdd:
+		return shapes.InferResultShapesForElementWiseOp([]*array.Shape{
+			operands[0].Shape(),
+			operands[1].Shape(),
+		}), nil
+	default:
+		panic("Op Kind is not expected.")
+	}
 }
