@@ -49,3 +49,18 @@ func (shape *Shape) ElementCount() int {
 	}
 	return count
 }
+
+// Checks whether two shapes are equal.
+func ShapesEqual(a, b *Shape) bool {
+	if len(a.dims) != len(b.dims) {
+		return false
+	}
+
+	for i, d := range a.dims {
+		if b.dims[i] != d {
+			return false
+		}
+	}
+
+	return true
+}
