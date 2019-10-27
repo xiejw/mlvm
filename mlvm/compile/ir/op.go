@@ -1,11 +1,15 @@
 package ir
 
 import (
+	"fmt"
+
 	"github.com/xiejw/mlvm/mlvm/array"
 	"github.com/xiejw/mlvm/mlvm/internal/shapes"
 )
 
 type OpKind int
+
+type ResultShapesInferenceFn func([]*array.Shape) ([]*array.Shape, error)
 
 const (
 	OpKAdd OpKind = iota + 1 // 0 Is invalid.
@@ -39,14 +43,26 @@ func OpAdd() *Op {
 }
 
 func (op *Op) InferShapes(operands ...*Tensor) ([]*array.Shape, error) {
+	// Convert operands array to shape array.
+	operandShapes := make([]*array.Shape, 0, len(operands))
+	for _, operand := range operands {
+		operandShapes = append(operandShapes, operand.Shape())
+	}
+
+	var resultShapes []*array.Shape
+	var err error
+
 	switch op.kind {
 
 	case OpKAdd:
-		return shapes.InferResultShapesForElementWiseOp([]*array.Shape{
-			operands[0].Shape(),
-			operands[1].Shape(),
-		}), nil
+		resultShapes, err = shapes.InferResultShapesForElementWiseOp(operandShapes)
 	default:
 		panic("Op Kind is not expected.")
 	}
+
+	if err != nil {
+		return nil, fmt.Errorf("Fail to infer result shapes for %v: %w", op.BaseName(), err)
+	}
+
+	return resultShapes, nil
 }

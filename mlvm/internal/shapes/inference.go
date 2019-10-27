@@ -2,11 +2,16 @@
 package shapes
 
 import (
+	"fmt"
+
 	"github.com/xiejw/mlvm/mlvm/array"
 )
 
-type BroadcastMode int
+func InferResultShapesForElementWiseOp(operands []*array.Shape) ([]*array.Shape, error) {
+	if len(operands) != 2 {
+		return nil, fmt.Errorf("Expected two operands, got: %v", len(operands))
+	}
 
-func InferResultShapesForElementWiseOp(operands []*array.Shape) []*array.Shape {
-	return nil
+	// TODO: Check shape compatible
+	return []*array.Shape{operands[0]}, nil
 }
