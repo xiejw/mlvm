@@ -5,11 +5,11 @@ import (
 	"fmt"
 )
 
-func (m *Module) String() string {
+func (f *Func) String() string {
 	buf := new(bytes.Buffer)
-	buf.WriteString("Module {\n")
+	buf.WriteString("Func {\n")
 
-	instructions := m.Instructions()
+	instructions := f.Instructions()
 
 	if len(instructions) == 0 {
 		buf.WriteString("  (empty)\n")

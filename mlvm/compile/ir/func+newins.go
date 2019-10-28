@@ -6,32 +6,32 @@ import (
 	"github.com/xiejw/mlvm/mlvm/internal/naming"
 )
 
-// Creates a new Instruction in Module.
+// Creates a new Instruction in Func.
 //
 // This is convenient to use given it will try to auto generate the Instruction name and it will
 // panic for any error.
-func (m *Module) NewInstructionOrDie(op *Op, operands ...*Tensor) *Instruction {
+func (f *Func) NewInstructionOrDie(op *Op, operands ...*Tensor) *Instruction {
 	baseName := op.BaseName()
 	var name string
 	for {
-		m.opNameIndex += 1
-		name = naming.DefaultInstructionName(baseName, m.opNameIndex)
-		if m.nameStore[name] == nil {
+		f.opNameIndex += 1
+		name = naming.DefaultInstructionName(baseName, f.opNameIndex)
+		if f.nameStore[name] == nil {
 			break
 		}
 	}
-	ins, err := m.NewInstructionWithName(name, op, operands...)
+	ins, err := f.NewInstructionWithName(name, op, operands...)
 	if err != nil {
 		panic(fmt.Errorf("Unexpected error during creating instruction for %v: %w", name, err))
 	}
 	return ins
 }
 
-func (m *Module) NewInstructionWithName(
+func (f *Func) NewInstructionWithName(
 	name string, op *Op, operands ...*Tensor,
 ) (*Instruction, error) {
 
-	err := m.mustNotFreezed()
+	err := f.mustNotFreezed()
 	if err != nil {
 		return nil, err
 	}
@@ -41,11 +41,11 @@ func (m *Module) NewInstructionWithName(
 		return nil, err
 	}
 
-	err = m.registerName(name, ins, true /* registerOnce */)
+	err = f.registerName(name, ins, true /* registerOnce */)
 	if err != nil {
 		return nil, err
 	}
 
-	m.instructions = append(m.instructions, ins)
+	f.instructions = append(f.instructions, ins)
 	return ins, nil
 }

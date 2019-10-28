@@ -13,13 +13,13 @@ func main() {
 	fmt.Printf("Array %v: %v", a.Name(), a)
 	fmt.Printf("Array %v: %v", b.Name(), b)
 
-	m := ir.NewModule()
-	ta := m.NewConstantOrDie(a)
-	tb := m.NewConstantOrDie(b)
+	fn := ir.NewFunc()
+	ta := fn.NewConstantOrDie(a)
+	tb := fn.NewConstantOrDie(b)
 	fmt.Printf("Tensor %v: %v\n", ta.Name(), ta)
 	fmt.Printf("Tensor %v: %v\n", tb.Name(), tb)
 
-	m.NewInstructionOrDie(ir.OpAdd(), ta, tb)
+	fn.NewInstructionOrDie(ir.OpAdd(), ta, tb)
 
-	m.CompileOrDie()
+	// m.CompileOrDie()
 }

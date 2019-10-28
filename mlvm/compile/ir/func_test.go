@@ -8,31 +8,31 @@ import (
 	"github.com/xiejw/mlvm/mlvm/array"
 )
 
-func TestNewModule(t *testing.T) {
-	_ = NewModule()
+func TestNewFunc(t *testing.T) {
+	_ = NewFunc()
 }
 
 func TestNewConstant(t *testing.T) {
-	m := NewModule()
+	fn := NewFunc()
 	arr := array.NewArrayOrDie("a", []array.Dimension{2, 1}, []array.Float{1.0, 2.0})
-	tensor := m.NewConstantOrDie(arr)
+	tensor := fn.NewConstantOrDie(arr)
 	if tensor.Array() != arr {
 		t.Errorf("Expected same array.")
 	}
 }
 
 func TestNewConstants(t *testing.T) {
-	m := NewModule()
+	fn := NewFunc()
 	a := array.NewArrayOrDie("a", []array.Dimension{2, 1}, []array.Float{1.0, 2.0})
 	b := array.NewArrayOrDie("b", []array.Dimension{2, 1}, []array.Float{1.0, 2.0})
-	m.NewConstantOrDie(a)
-	m.NewConstantOrDie(b)
+	fn.NewConstantOrDie(a)
+	fn.NewConstantOrDie(b)
 }
 
 func TestNewConstantsWithSameArray(t *testing.T) {
-	m := NewModule()
+	fn := NewFunc()
 	arr := array.NewArrayOrDie("a", []array.Dimension{2, 1}, []array.Float{1.0, 2.0})
-	m.NewConstant(arr)
+	fn.NewConstant(arr)
 
 	defer func() {
 		r := recover()
@@ -40,15 +40,15 @@ func TestNewConstantsWithSameArray(t *testing.T) {
 			t.Fatalf("Wrong error message: %v", r)
 		}
 	}()
-	m.NewConstantOrDie(arr)
+	fn.NewConstantOrDie(arr)
 	t.Fail()
 }
 
 func TestNewConstantsWithSameNames(t *testing.T) {
-	m := NewModule()
+	fn := NewFunc()
 	a := array.NewArrayOrDie("a", []array.Dimension{2, 1}, []array.Float{1.0, 2.0})
 	b := array.NewArrayOrDie("a", []array.Dimension{2, 1}, []array.Float{1.0, 2.0})
-	m.NewConstantOrDie(a)
+	fn.NewConstantOrDie(a)
 
 	defer func() {
 		r := recover()
@@ -56,20 +56,20 @@ func TestNewConstantsWithSameNames(t *testing.T) {
 			t.Fatalf("Wrong error message: %v", r)
 		}
 	}()
-	m.NewConstantOrDie(b)
+	fn.NewConstantOrDie(b)
 	t.Fail()
 }
 
 func TestNewInstruction(t *testing.T) {
-	m := NewModule()
+	fn := NewFunc()
 	a := array.NewArrayOrDie("a", []array.Dimension{2, 1}, []array.Float{1.0, 2.0})
-	ta := m.NewConstantOrDie(a)
+	ta := fn.NewConstantOrDie(a)
 
-	ins := m.NewInstructionOrDie(OpAdd(), ta, ta)
+	ins := fn.NewInstructionOrDie(OpAdd(), ta, ta)
 	if ins.Name() != "opAdd_001" {
 		t.Fatalf("Instruction name mismatch. Got: %v.", ins.Name())
 	}
-	if !reflect.DeepEqual([]*Instruction{ins}, m.Instructions()) {
-		t.Fatalf("Instructions in Module mismatch.")
+	if !reflect.DeepEqual([]*Instruction{ins}, fn.Instructions()) {
+		t.Fatalf("Instructions in Func mismatch.")
 	}
 }
