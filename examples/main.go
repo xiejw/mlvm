@@ -19,7 +19,7 @@ func main() {
 	fmt.Printf("Tensor %v: %v\n", ta.Name(), ta)
 	fmt.Printf("Tensor %v: %v\n", tb.Name(), tb)
 
-	fn.NewInstructionOrDie(ir.OpAdd(), ta, tb)
+	ins := fn.NewInstructionOrDie(ir.OpAdd(), ta, tb)
 
-	// m.CompileOrDie()
+	fn.SetOutputsOrDie([]*ir.Tensor{ins.OnlyResult()})
 }
