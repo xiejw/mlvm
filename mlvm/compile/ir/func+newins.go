@@ -1,8 +1,7 @@
 package ir
 
 import (
-	"fmt"
-
+	"github.com/xiejw/mlvm/mlvm/internal/errors"
 	"github.com/xiejw/mlvm/mlvm/internal/naming"
 )
 
@@ -22,7 +21,7 @@ func (f *Func) NewInstructionOrDie(op *Op, operands ...*Tensor) *Instruction {
 	}
 	ins, err := f.NewInstructionWithName(name, op, operands...)
 	if err != nil {
-		panic(fmt.Errorf("Unexpected error during creating instruction for %v: %w", name, err))
+		panic(errors.ErrorfW(err, "Unexpected error during creating instruction for %v", name))
 	}
 	return ins
 }

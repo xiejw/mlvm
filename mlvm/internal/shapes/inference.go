@@ -2,14 +2,15 @@
 package shapes
 
 import (
-	"fmt"
-
 	"github.com/xiejw/mlvm/mlvm/array"
+	"github.com/xiejw/mlvm/mlvm/internal/errors"
 )
+
+var ()
 
 func InferResultShapesForElementWiseOp(operands []*array.Shape) ([]*array.Shape, error) {
 	if len(operands) != 2 {
-		return nil, fmt.Errorf("Expected two operands, got: %v", len(operands))
+		return nil, errors.Errorf("Expected two operands, got: %v", len(operands))
 	}
 
 	// TODO: Check shape compatible

@@ -1,9 +1,8 @@
 package ir
 
 import (
-	"fmt"
-
 	"github.com/xiejw/mlvm/mlvm/array"
+	"github.com/xiejw/mlvm/mlvm/internal/errors"
 	"github.com/xiejw/mlvm/mlvm/internal/shapes"
 )
 
@@ -61,7 +60,8 @@ func (op *Op) InferShapes(operands ...*Tensor) ([]*array.Shape, error) {
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("Fail to infer result shapes for %v: %w", op.BaseName(), err)
+		return nil, errors.ErrorfW(
+			err, "Fail to infer result shapes for Op kind `%v`", op.BaseName())
 	}
 
 	return resultShapes, nil
