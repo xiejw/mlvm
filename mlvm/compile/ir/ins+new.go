@@ -1,11 +1,11 @@
 package ir
 
 import (
-	"github.com/xiejw/mlvm/mlvm/internal/naming"
+	"github.com/xiejw/mlvm/mlvm/internal/names"
 )
 
 func newInstruction(name string, op *Op, operands ...*Tensor) (*Instruction, error) {
-	if err := naming.ValidateInstructionName(name); err != nil {
+	if err := names.ValidateInstructionName(name); err != nil {
 		return nil, err
 	}
 
@@ -23,7 +23,7 @@ func newInstruction(name string, op *Op, operands ...*Tensor) (*Instruction, err
 	results := make([]*Tensor, 0, len(resultShapes))
 	for i, resultShape := range resultShapes {
 		result := &Result{
-			name:  naming.CanonicalResultName(name, i),
+			name:  names.CanonicalResultName(name, i),
 			shape: resultShape,
 			ins:   ins,
 			index: i,

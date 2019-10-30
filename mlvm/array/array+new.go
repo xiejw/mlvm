@@ -3,7 +3,7 @@ package array
 import (
 	"fmt"
 
-	"github.com/xiejw/mlvm/mlvm/internal/naming"
+	"github.com/xiejw/mlvm/mlvm/internal/names"
 )
 
 // Returns an Array for the data with given shape.
@@ -22,7 +22,7 @@ func NewArrayOrDie(name string, dims []Dimension, value []Float) *Array {
 // All data passed in should not be not mutated in future.
 func NewArray(name string, dims []Dimension, value []Float) (*Array, error) {
 
-	if err := naming.ValidateArrayName(name); err != nil {
+	if err := names.ValidateArrayName(name); err != nil {
 		return nil, err
 	}
 

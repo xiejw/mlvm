@@ -2,7 +2,7 @@ package ir
 
 import (
 	"github.com/xiejw/mlvm/mlvm/internal/errors"
-	"github.com/xiejw/mlvm/mlvm/internal/naming"
+	"github.com/xiejw/mlvm/mlvm/internal/names"
 )
 
 // Creates a new Instruction in Func.
@@ -14,7 +14,7 @@ func (f *Func) NewInstructionOrDie(op *Op, operands ...*Tensor) *Instruction {
 	var name string
 	for {
 		f.opNameIndex += 1
-		name = naming.DefaultInstructionName(baseName, f.opNameIndex)
+		name = names.DefaultInstructionName(baseName, f.opNameIndex)
 		if f.nameStore[name] == nil {
 			break
 		}
