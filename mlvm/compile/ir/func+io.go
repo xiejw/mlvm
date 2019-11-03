@@ -1,11 +1,11 @@
 package ir
 
 import (
-	"fmt"
+	"github.com/xiejw/mlvm/mlvm/internal/errors"
 )
 
 var (
-	errEmptyOutputs = fmt.Errorf("Func should have at least one output.")
+	errEmptyOutputs = errors.Errorf("Func should have at least one output.")
 )
 
 // Set the outputs.
@@ -20,8 +20,6 @@ func (fn *Func) SetOutputs(outputs []*Tensor) error {
 	if err != nil {
 		return err
 	}
-
-	fmt.Printf("Compiling: %v\n", fn)
 
 	return nil
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/xiejw/mlvm/mlvm/array"
 	"github.com/xiejw/mlvm/mlvm/compile/ir"
+	"github.com/xiejw/mlvm/mlvm/runtime/eager"
 )
 
 func main() {
@@ -28,4 +29,6 @@ func main() {
 	ins := fn.NewInstructionOrDie(ir.OpAdd(), ta, tb)
 
 	fn.SetOutputsOrDie([]*ir.Tensor{ins.OnlyResult()})
+
+	eager.RunFunc(fn)
 }
