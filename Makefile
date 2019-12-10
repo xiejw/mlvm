@@ -1,5 +1,5 @@
-BUILD=build
-FMT=gofmt -w -l
+DEBUG=.debug
+RELEASE=.release
 
 ifdef VERBOSE
 	TEST_VERBOSE=-v
@@ -8,16 +8,19 @@ endif
 default: compile run
 
 compile:
-	go build -o ${BUILD}/main examples/main.go
+	mkdir -p ${DEBUG} && cd ${DEBUG} && CLICOLOR_FORCE=1 cmake .. && make -j
 
 run:
-	./${BUILD}/main
+	${DEBUG}/example
 
 test:
-	go test ${TEST_VERBOSE} github.com/xiejw/mlvm/mlvm/...
+	echo "Hello"
 
 clean:
 	rm -rf ${BUILD}
 
 fmt:
-	${FMT} mlvm && ${FMT} examples
+	docker run --rm -ti \
+    --user `id -u ${USER}`:`id -g ${USER}` \
+    -v `pwd`:/source xiejw/clang-format \
+    /clang-format.sh .
