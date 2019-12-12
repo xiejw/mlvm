@@ -9,7 +9,7 @@ void Data::Reset(double* new_data, std::size_t size) {
   buf_.reset(new_data);
 }
 
-void Data::Reset(std::initializer_list<double> list) {
+void Data::Reset(const std::initializer_list<double>& list) {
   auto size = list.size();
   auto new_data = new double[size];
 

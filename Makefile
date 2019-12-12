@@ -13,8 +13,8 @@ compile:
 run:
 	${DEBUG}/example
 
-test:
-	echo "Hello"
+test: compile
+	${DEBUG}/test
 
 clean:
 	rm -rf ${BUILD}

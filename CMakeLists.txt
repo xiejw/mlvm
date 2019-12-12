@@ -31,3 +31,15 @@ new_executable(example cmd/main.cpp)
 
 target_link_libraries(example ${MLVM_LIBS})
 
+# {{{2 Tests.
+if (NOT "${CMAKE_BUILD_TYPE}" STREQUAL "RELEASE")
+  message("Generate test for debug mode")
+  new_test_exec(test cmd/tests/main.cpp)
+
+  # We combine all tests in one binary for convenience.
+  target_link_libraries(test ${MLVM_LIBS})
+  target_link_libraries(test ${TEST_MLVM_LIBS})
+else()
+  message("Skip test for release mode")
+endif ()
+

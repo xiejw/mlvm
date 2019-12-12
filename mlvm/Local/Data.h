@@ -20,7 +20,7 @@ class Data {
   void Reset(double* new_data, std::size_t size);
 
   // Copy the `list` into this strucuture.
-  void Reset(std::initializer_list<double> list);
+  void Reset(const std::initializer_list<double>& list);
 
  private:
   std::unique_ptr<double[]> buf_;
