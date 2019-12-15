@@ -1,8 +1,21 @@
 #include "mlvm/Local/Data.h"
 
+#include <iomanip>
+#include <sstream>
+
 namespace mlvm::local {
 
-std::string Data::DebugString() const { return "Hello from Data"; }
+std::string Data::DebugString() const {
+  std::stringstream ss;
+  ss << std::fixed << std::setprecision(3);
+  ss << "{";
+  for (int i = 0; i < size_; i++) {
+    ss << buf_[i];
+    if (i != size_ - 1) ss << ", ";
+  }
+  ss << "}";
+  return ss.str();
+}
 
 void Data::Reset(double* new_data, std::size_t size) {
   size_ = size;
