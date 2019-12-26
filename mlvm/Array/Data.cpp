@@ -5,7 +5,7 @@
 
 namespace mlvm::array {
 
-std::string Data::DebugString() const {
+std::string Data::ToString() const {
   std::stringstream ss;
   ss << std::fixed << std::setprecision(3);
   ss << "{";

@@ -15,7 +15,7 @@ namespace mlvm::array {
 class Data {
  public:
   // Debug string.
-  std::string DebugString() const;
+  std::string ToString() const;
 
   // Check whether the data has been allocated.
   bool IsAllocated() const { return size_ > 0; }
@@ -30,7 +30,7 @@ class Data {
   void Reset(const std::initializer_list<double>& list);
 
  public:
-  Data() {}
+  Data() : buf_{nullptr}, size_{0} {}
   Data(Data&&) = default;
 
   // Not allowed.
@@ -39,7 +39,7 @@ class Data {
 
  private:
   std::unique_ptr<double[]> buf_;
-  int size_;
+  std::size_t size_;
 };
 
 }  // namespace mlvm::array

@@ -11,14 +11,17 @@ namespace mlvm::array {
 // This should be super cheap to copy.
 class Shape {
  public:
-  Shape(std::initializer_list<unsigned int> shape)
-      : shape_{std::move(shape)} {
+  Shape(std::initializer_list<unsigned int> shape) : shape_{std::move(shape)} {
+    if (shape.size() == 0) throw "Empty shape is not allowed.";
 
-        };
+    for (auto dim : shape) {
+      if (dim <= 0) throw "Non-positive dim is not allowed.";
+    }
+  }
 
  public:
   // Debug string.
-  std::string DebugString() const;
+  std::string ToString() const;
 
   unsigned int Rank() const { return shape_.size(); };
 

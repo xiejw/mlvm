@@ -4,7 +4,7 @@
 
 namespace mlvm::array {
 
-std::string Shape::DebugString() const {
+std::string Shape::ToString() const {
   std::stringstream ss;
   ss << "<";
   int size = shape_.size();
