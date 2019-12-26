@@ -1,20 +1,15 @@
 #include <iostream>
 #include <iterator>
 
-#include "mlvm/Array/Data.h"
+#include "mlvm/Array/Array.h"
 
 using namespace mlvm::array;
 
 int main(int argc, char** argv) {
   Data data{};
-  std::cout << data.DebugString() << "\n";
-  std::cout << data.Size() << "\n";
-
-  data.Reset(new double[3]{1, 2, 3}, 3);
-  std::cout << data.DebugString() << "\n";
-  std::cout << data.Size() << "\n";
-
   data.Reset({1, 2, 3, 4, 5});
-  std::cout << data.DebugString() << "\n";
-  std::cout << data.Size() << "\n";
+  std::cout << "Data: " << data.DebugString() << "\n";
+
+  Shape shape{1, 2};
+  std::cout << "Shape: " << shape.DebugString() << "\n";
 }

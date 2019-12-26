@@ -33,4 +33,4 @@ void Data::Reset(const std::initializer_list<double>& list) {
   Reset(new_data, size);
 }
 
-}  // namespace mlvm::local
+}  // namespace mlvm::array

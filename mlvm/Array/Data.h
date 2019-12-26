@@ -14,7 +14,6 @@ namespace mlvm::array {
 // - Buffer alias is not allowed.
 class Data {
  public:
-
   // Debug string.
   std::string DebugString() const;
 
