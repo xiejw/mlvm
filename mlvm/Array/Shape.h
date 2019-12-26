@@ -11,14 +11,19 @@ namespace mlvm::array {
 // This should be super cheap to copy.
 class Shape {
  public:
-  Shape(std::initializer_list<int> shape) : shape_{std::move(shape)} {};
+  Shape(std::initializer_list<unsigned int> shape)
+      : shape_{std::move(shape)} {
+
+        };
 
  public:
   // Debug string.
   std::string DebugString() const;
 
+  unsigned int Rank() const { return shape_.size(); };
+
  private:
-  std::vector<int> shape_;
+  std::vector<unsigned int> shape_;
 };
 
 }  // namespace mlvm::array
