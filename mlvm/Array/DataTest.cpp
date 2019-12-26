@@ -1,22 +1,22 @@
-#include "mlvm/Local/Data.h"
+#include "mlvm/Array/Data.h"
 
 #include "gtest/gtest.h"
 
-namespace mlvm::local {
+namespace mlvm::array {
 
 namespace {
 
 class DataTest : public ::testing::Test {};
 
 TEST_F(DataTest, CheckEmptyData) {
-  local::Data data{};
+  Data data{};
   ASSERT_FALSE(data.IsAllocated());
   ASSERT_EQ(0, data.Size());
   ASSERT_STREQ("{}", data.DebugString().c_str());
 }
 
 TEST_F(DataTest, CheckArray) {
-  local::Data data{};
+  Data data{};
   data.Reset(new double[3]{1, 2, 3}, 3);
   ASSERT_TRUE(data.IsAllocated());
   ASSERT_EQ(3, data.Size());
@@ -24,7 +24,7 @@ TEST_F(DataTest, CheckArray) {
 }
 
 TEST_F(DataTest, CheckInitList) {
-  local::Data data{};
+  Data data{};
   data.Reset({1, 2, 3, 4, 5});
   ASSERT_TRUE(data.IsAllocated());
   ASSERT_EQ(5, data.Size());
@@ -34,4 +34,4 @@ TEST_F(DataTest, CheckInitList) {
 
 }  // namespace
 
-}  // namespace mlvm::local
+}  // namespace mlvm::array

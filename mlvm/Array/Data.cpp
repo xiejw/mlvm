@@ -1,9 +1,9 @@
-#include "mlvm/Local/Data.h"
+#include "mlvm/Array/Data.h"
 
 #include <iomanip>
 #include <sstream>
 
-namespace mlvm::local {
+namespace mlvm::array {
 
 std::string Data::DebugString() const {
   std::stringstream ss;

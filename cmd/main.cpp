@@ -1,12 +1,12 @@
 #include <iostream>
 #include <iterator>
 
-#include "mlvm/Local/Data.h"
+#include "mlvm/Array/Data.h"
 
-using namespace mlvm;
+using namespace mlvm::array;
 
 int main(int argc, char** argv) {
-  local::Data data{};
+  Data data{};
   std::cout << data.DebugString() << "\n";
   std::cout << data.Size() << "\n";
 

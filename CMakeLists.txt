@@ -1,4 +1,5 @@
 # vim: foldenable foldmethod=marker foldlevel=1
+
 cmake_minimum_required(VERSION 3.5)
 project(mlvm)
 
@@ -23,7 +24,7 @@ include_directories(.)
 # {{{2 Dependencies.
 #
 # Putting supporting dependencies in bottom.
-add_subdirectory (mlvm/Local)
+add_subdirectory (mlvm/Array)
 
 # {{{2 Executables.
 # {{{3 Main

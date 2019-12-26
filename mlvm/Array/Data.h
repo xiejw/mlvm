@@ -1,12 +1,12 @@
-#ifndef MLVM_LOCAL_DATA_
-#define MLVM_LOCAL_DATA_
+#ifndef MLVM_ARRAY_DATA_
+#define MLVM_ARRAY_DATA_
 
 #include <cstddef>
 #include <initializer_list>
 #include <memory>
 #include <string>
 
-namespace mlvm::local {
+namespace mlvm::array {
 
 // Represents a data buffer.
 //
@@ -35,6 +35,6 @@ class Data {
   int size_;
 };
 
-}  // namespace mlvm::local
+}  // namespace mlvm::array
 
 #endif
