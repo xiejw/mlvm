@@ -29,6 +29,14 @@ class Data {
   // Copy the `list` into this strucuture.
   void Reset(const std::initializer_list<double>& list);
 
+ public:
+  Data() {}
+  Data(Data&&) = default;
+
+  // Not allowed.
+  Data(const Data&) = delete;
+  Data& operator=(const Data&) = delete;
+
  private:
   std::unique_ptr<double[]> buf_;
   int size_;
