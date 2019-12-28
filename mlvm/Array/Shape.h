@@ -8,8 +8,6 @@
 
 namespace mlvm::array {
 
-using namespace mlvm::foundation;
-
 // Represents a Shape.
 //
 // This should be super cheap to copy.
@@ -25,16 +23,8 @@ class Shape {
       : shape_{std::move(shape)} {};
 
  public:
-  static StatusOr<Shape> New(std::initializer_list<unsigned int> shape) {
-    if (shape.size() == 0)
-      return Status::InvalidArguments("Empty shape is not allowed.");
-
-    for (auto dim : shape) {
-      if (dim <= 0)
-        return Status::InvalidArguments("Non-positive dim is not allowed.");
-    }
-    return Shape(std::move(shape));
-  }
+  static foundation::StatusOr<Shape> New(
+      std::initializer_list<unsigned int> shape);
 
  private:
   std::vector<unsigned int> shape_;
