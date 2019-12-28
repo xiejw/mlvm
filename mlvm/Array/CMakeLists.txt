@@ -12,6 +12,7 @@ set(MLVM_LIBS ${MLVM_LIBS} Array PARENT_SCOPE)
 add_library(TestArray OBJECT
   DataTest.cpp
   ShapeTest.cpp
+  ArrayTest.cpp
 )
 
 target_include_directories(TestArray PUBLIC ${GTEST_INCLUDES})

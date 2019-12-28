@@ -8,6 +8,8 @@ using namespace foundation;
 
 StatusOr<Array> Array::New(const std::initializer_list<double>& data,
                            std::initializer_list<unsigned int> shape) {
+  // noo-zero
+  // element match.
   Data d{};
   d.Reset(data);
   auto s = Shape::New(shape).ConsumeValue();
