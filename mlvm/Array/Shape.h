@@ -27,12 +27,11 @@ class Shape {
  public:
   static StatusOr<Shape> New(std::initializer_list<unsigned int> shape) {
     if (shape.size() == 0)
-      return Status::InvalidArguments;  //"Empty shape is not allowed.";
+      return Status::InvalidArguments("Empty shape is not allowed.");
 
     for (auto dim : shape) {
       if (dim <= 0)
-        return Status::InvalidArguments;  // throw "Non-positive dim is not
-                                          // allowed.";
+        return Status::InvalidArguments("Non-positive dim is not allowed.");
     }
     return Shape(std::move(shape));
   }

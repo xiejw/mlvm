@@ -9,9 +9,12 @@ namespace {
 class StatusOrTest : public ::testing::Test {};
 
 TEST_F(StatusOrTest, CheckStatus) {
-  auto status_or = StatusOr<std::string>{Status::InvalidArguments};
+  auto status_or = StatusOr<std::string>{Status::InvalidArguments()};
   ASSERT_FALSE(status_or.Ok());
-  ASSERT_EQ(ErrorCode::INVALID_ARGUMENTS, status_or.StatusOrDie().Error());
+
+  auto status = status_or.StatusOrDie();
+  ASSERT_EQ(ErrorCode::INVALID_ARGUMENTS, status.Error());
+  ASSERT_FALSE(status.Message().has_value());
 }
 
 TEST_F(StatusOrTest, CheckValue) {

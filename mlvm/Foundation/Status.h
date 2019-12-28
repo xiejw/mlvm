@@ -23,7 +23,9 @@ class Status {
   };
 
   static const Status OK;
-  static const Status InvalidArguments;
+  static Status InvalidArguments(std::optional<std::string> msg = {}) {
+    return Status(ErrorCode::INVALID_ARGUMENTS, msg);
+  };
 
  public:
   // Returns true if no error.
