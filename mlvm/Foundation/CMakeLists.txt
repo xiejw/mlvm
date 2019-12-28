@@ -1,12 +1,15 @@
 add_library(Foundation
   Status.h
   Status.cpp
+  StatusOr.h
+  # StatusOr.cpp
 )
 
 set(MLVM_LIBS ${MLVM_LIBS} Foundation PARENT_SCOPE)
 
 add_library(TestFoundation OBJECT
   StatusTest.cpp
+  StatusOrTest.cpp
 )
 
 target_include_directories(TestFoundation PUBLIC ${GTEST_INCLUDES})
