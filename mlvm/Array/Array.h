@@ -14,6 +14,9 @@ class Array {
       const std::initializer_list<double>& data,
       std::initializer_list<unsigned int> shape);
 
+  Array(Array&&) = default;
+  Array& operator=(Array&& other) = default;
+
  public:
   std::string ToString() const;
 

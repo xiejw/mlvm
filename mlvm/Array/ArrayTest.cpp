@@ -6,27 +6,37 @@ namespace mlvm::array {
 
 namespace {
 
+using namespace foundation;
+
 class ArrayTest : public ::testing::Test {};
 
-// TEST_F(ArrayTest, CheckEmptyData) {
-//   Data data{};
-//   ASSERT_FALSE(data.IsAllocated());
-//   ASSERT_EQ(0, data.Size());
-//   ASSERT_STREQ("{}", data.ToString().c_str());
-// }
+void inline ASSERT_STATUS_MESSAGE(const StatusOr<Array>& status_or, const std::string& sub_msg) {
+  auto err_msg = status_or.StatusOrDie().Message().value();
+  if (err_msg.find(sub_msg) == std::string::npos) {
+    FAIL() << "Expected to find: " << sub_msg << "\nBut got: " << err_msg << "\n";
+  }
+}
 
 TEST_F(ArrayTest, CheckArray) {
   auto arr = Array::New({1, 2, 3}, {3}).ConsumeValue();
   ASSERT_STREQ("[<3> {1.000, 2.000, 3.000}]", arr.ToString().c_str());
 }
 
-// TEST_F(ArrayTest, CheckInitList) {
-//   Data data{};
-//   data.Reset({1, 2, 3, 4, 5});
-//   ASSERT_TRUE(data.IsAllocated());
-//   ASSERT_EQ(5, data.Size());
-//   ASSERT_STREQ("{1.000, 2.000, 3.000, 4.000, 5.000}", data.ToString().c_str());
-// }
+TEST_F(ArrayTest, CheckInvalidData) {
+  auto arr_or = Array::New({}, {3});
+  ASSERT_FALSE(arr_or.Ok());
+  ASSERT_STATUS_MESSAGE(arr_or, "Data buffer");
+}
+
+TEST_F(ArrayTest, CheckInvalidShape) {
+  auto arr_or = Array::New({3}, {});
+  ASSERT_FALSE(arr_or.Ok());
+  ASSERT_STATUS_MESSAGE(arr_or, "Empty shape");
+
+  arr_or = Array::New({3}, {1, 0});
+  ASSERT_FALSE(arr_or.Ok());
+  ASSERT_STATUS_MESSAGE(arr_or, "Non-positive dim");
+}
 
 }  // namespace
 

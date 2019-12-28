@@ -8,12 +8,17 @@ using namespace foundation;
 
 StatusOr<Array> Array::New(const std::initializer_list<double>& data,
                            std::initializer_list<unsigned int> shape) {
-  // noo-zero
+  if (data.size() == 0)
+    return Status::InvalidArguments("Data buffer for Array cannot be empty.");
+
   // element match.
   Data d{};
   d.Reset(data);
-  auto s = Shape::New(shape).ConsumeValue();
-  return Array{std::move(d), std::move(s)};
+
+  auto shape_or = Shape::New(shape);
+  if (!shape_or.Ok()) return shape_or.StatusOrDie();
+
+  return Array{std::move(d), shape_or.ConsumeValue()};
 };
 
 std::string Array::ToString() const {

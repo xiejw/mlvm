@@ -18,6 +18,11 @@ class StatusOr {
     assert(!status_.value().Ok());
   };
 
+  StatusOr(StatusOr&&) = default;
+  StatusOr& operator=(StatusOr&&) = default;
+  StatusOr(const StatusOr&) = default;
+  StatusOr& operator=(const StatusOr&) = default;
+
  public:
   bool Ok() const { return value_.has_value(); };
 

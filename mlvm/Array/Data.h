@@ -32,6 +32,7 @@ class Data {
  public:
   Data() : buf_{nullptr}, size_{0} {}
   Data(Data&&) = default;
+  Data& operator=(Data&& other) = default;
 
   // Not allowed.
   Data(const Data&) = delete;
