@@ -5,6 +5,8 @@
 
 namespace mlvm::array {
 
+using namespace foundation;
+
 std::string Data::ToString() const {
   std::stringstream ss;
   ss << std::fixed << std::setprecision(3);
@@ -17,12 +19,17 @@ std::string Data::ToString() const {
   return ss.str();
 }
 
-void Data::Reset(double* new_data, std::size_t size) {
+Status Data::Reset(double* new_data, std::size_t size) {
+  if (size == 0) return Status::InvalidArguments("Data cannot be empty.");
+  if (new_data == nullptr)
+    return Status::InvalidArguments("Cannot take nullptr buffer.");
+
   size_ = size;
   buf_.reset(new_data);
+  return Status::OK;
 }
 
-void Data::Reset(const std::initializer_list<double>& list) {
+Status Data::Reset(const std::initializer_list<double>& list) {
   auto size = list.size();
   auto new_data = new double[size];
 
@@ -30,7 +37,7 @@ void Data::Reset(const std::initializer_list<double>& list) {
   for (auto& el : list) {
     new_data[i++] = el;
   }
-  Reset(new_data, size);
+  return Reset(new_data, size);
 }
 
 }  // namespace mlvm::array

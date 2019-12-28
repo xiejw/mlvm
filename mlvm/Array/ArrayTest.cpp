@@ -27,7 +27,7 @@ TEST_F(ArrayTest, CheckArray) {
 TEST_F(ArrayTest, CheckInvalidData) {
   auto arr_or = Array::New({}, {3});
   ASSERT_FALSE(arr_or.Ok());
-  ASSERT_STATUS_MESSAGE(arr_or, "Data buffer");
+  ASSERT_STATUS_MESSAGE(arr_or, "Data cannot be empty");
 }
 
 TEST_F(ArrayTest, CheckInvalidShape) {

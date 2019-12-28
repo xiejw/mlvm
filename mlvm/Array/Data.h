@@ -6,6 +6,8 @@
 #include <memory>
 #include <string>
 
+#include "mlvm/Foundation/Status.h"
+
 namespace mlvm::array {
 
 // Represents a data buffer.
@@ -24,10 +26,10 @@ class Data {
   int Size() const { return size_; }
 
   // Move the `new_data` into this strucuture. So, owns the `new_data`.
-  void Reset(double* new_data, std::size_t size);
+  foundation::Status Reset(double* new_data, std::size_t size);
 
   // Copy the `list` into this strucuture.
-  void Reset(const std::initializer_list<double>& list);
+  foundation::Status Reset(const std::initializer_list<double>& list);
 
  public:
   Data() : buf_{nullptr}, size_{0} {}
