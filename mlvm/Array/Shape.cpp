@@ -15,7 +15,13 @@ StatusOr<Shape> Shape::New(std::initializer_list<unsigned int> shape) {
       return Status::InvalidArguments("Non-positive dim is not allowed.");
   }
   return Shape(std::move(shape));
-};
+}
+
+unsigned int Shape::ElementSize() const {
+  unsigned int size = 1;
+  for (auto dim : shape_) size *= dim;
+  return size;
+}
 
 std::string Shape::ToString() const {
   std::stringstream ss;
