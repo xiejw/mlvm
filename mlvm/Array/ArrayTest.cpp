@@ -10,10 +10,12 @@ using namespace foundation;
 
 class ArrayTest : public ::testing::Test {};
 
-void inline ASSERT_STATUS_MESSAGE(const StatusOr<Array>& status_or, const std::string& sub_msg) {
+void inline ASSERT_STATUS_MESSAGE(const StatusOr<Array>& status_or,
+                                  const std::string& sub_msg) {
   auto err_msg = status_or.StatusOrDie().Message().value();
   if (err_msg.find(sub_msg) == std::string::npos) {
-    FAIL() << "Expected to find: " << sub_msg << "\nBut got: " << err_msg << "\n";
+    FAIL() << "Expected to find: " << sub_msg << "\nBut got: " << err_msg
+           << "\n";
   }
 }
 
@@ -36,6 +38,12 @@ TEST_F(ArrayTest, CheckInvalidShape) {
   arr_or = Array::New({3}, {1, 0});
   ASSERT_FALSE(arr_or.Ok());
   ASSERT_STATUS_MESSAGE(arr_or, "Non-positive dim");
+}
+
+TEST_F(ArrayTest, CheckSizeMismatch) {
+  auto arr_or = Array::New({1, 2, 3}, {4});
+  ASSERT_FALSE(arr_or.Ok());
+  ASSERT_STATUS_MESSAGE(arr_or, "mismatch");
 }
 
 }  // namespace

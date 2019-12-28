@@ -21,7 +21,6 @@ class Shape {
   // For <3, 2>, rank is 2.
   unsigned int Rank() const { return shape_.size(); };
 
-
   // Returns number of elements represented by this shape.
   //
   // For <3, 2>, element size is 3 * 2 = 6.

@@ -11,14 +11,17 @@ StatusOr<Array> Array::New(const std::initializer_list<double>& data,
   if (data.size() == 0)
     return Status::InvalidArguments("Data buffer for Array cannot be empty.");
 
-  // element match.
   Data d{};
   d.Reset(data);
 
   auto shape_or = Shape::New(shape);
   if (!shape_or.Ok()) return shape_or.StatusOrDie();
 
-  return Array{std::move(d), shape_or.ConsumeValue()};
+  auto s = shape_or.ConsumeValue();
+  if (s.ElementSize() != d.Size())
+    return Status::InvalidArguments("Data and Shape sizes mismatch.");
+
+  return Array{std::move(d), std::move(s)};
 };
 
 std::string Array::ToString() const {
