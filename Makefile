@@ -17,7 +17,7 @@ test: compile
 	${DEBUG}/test
 
 clean:
-	rm -rf ${BUILD}
+	rm -rf ${DEBUG} ${RELEASE}
 
 fmt:
 	docker run --rm -ti \

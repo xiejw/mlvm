@@ -2,6 +2,7 @@
 #include <iterator>
 
 #include "mlvm/Array/Array.h"
+#include "mlvm/Foundation/Status.h"
 
 using namespace mlvm::array;
 
