@@ -13,6 +13,12 @@ compile:
 run:
 	${DEBUG}/example
 
+release:
+		mkdir -p ${RELEASE} && \
+			cd ${RELEASE} && \
+			CLICOLOR_FORCE=1 cmake -DCMAKE_BUILD_TYPE=RELEASE .. && \
+			make -j
+
 test: compile
 	${DEBUG}/test
 

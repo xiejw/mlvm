@@ -21,14 +21,34 @@ class StatusOr {
  public:
   bool Ok() const { return value_.has_value(); };
 
+  // Requests Ok() == false
   const Status& StatusOrDie() const { return status_.value(); };
-  const T& ValueOrDie() const { return value_.value(); };
+  // Requests Ok() == true
+  const T& ValueOrDie() const {
+    AssertNotReleased();
+    return value_.value();
+  };
 
-  T&& ConsumeValue() { return std::move(value_.value()); };
+  // Requests Ok() == true. Should be called at most once.
+  T&& ConsumeValue() {
+    AssertNotReleased();
+    Release();
+    return std::move(value_.value());
+  };
 
  private:
   std::optional<T> value_ = {};
   std::optional<Status> status_ = {};
+
+ private:
+#ifndef NDEBUG
+  bool released_ = false;
+  void AssertNotReleased() const { assert(!released_); };
+  void Release() { released_ = true; }
+#else
+  void inline AssertNotReleased() const {};
+  void inline Release(){};
+#endif
 };
 
 }  // namespace mlvm::foundation

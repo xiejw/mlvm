@@ -20,6 +20,14 @@ TEST_F(StatusOrTest, CheckValue) {
   ASSERT_STREQ("hello", status_or.ValueOrDie().c_str());
 }
 
+TEST_F(StatusOrTest, ConsumeValue) {
+  auto status_or = StatusOr<std::string>{"hello"};
+  ASSERT_TRUE(status_or.Ok());
+
+  auto value = status_or.ConsumeValue();
+  ASSERT_STREQ("hello", value.c_str());
+}
+
 }  // namespace
 
 }  // namespace mlvm::foundation
