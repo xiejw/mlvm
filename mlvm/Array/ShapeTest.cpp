@@ -9,27 +9,22 @@ namespace {
 class ShapeTest : public ::testing::Test {};
 
 TEST_F(ShapeTest, CheckRankAndString) {
-  Shape shape{12, 3};
+  auto shape_or = Shape::New({12, 3});
+  ASSERT_TRUE(shape_or.Ok());
+
+  auto shape = shape_or.ValueOrDie();
   ASSERT_EQ(2, shape.Rank());
   ASSERT_STREQ("<12, 3>", shape.ToString().c_str());
 }
 
 TEST_F(ShapeTest, InvalidEmptyShape) {
-  try {
-    Shape shape{};
-    FAIL() << "Should not reach here.";
-  } catch (const char* msg) {
-    ASSERT_STREQ("Empty shape is not allowed.", msg);
-  }
+  auto shape_or = Shape::New({});
+  ASSERT_FALSE(shape_or.Ok());
 }
 
 TEST_F(ShapeTest, InvalidDim) {
-  try {
-    Shape shape{1, 0};
-    FAIL() << "Should not reach here.";
-  } catch (const char* msg) {
-    ASSERT_STREQ("Non-positive dim is not allowed.", msg);
-  }
+  auto shape_or = Shape::New({1, 0});
+  ASSERT_FALSE(shape_or.Ok());
 }
 
 }  // namespace

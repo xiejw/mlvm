@@ -11,6 +11,6 @@ int main(int argc, char** argv) {
   data.Reset({1, 2, 3, 4, 5});
   std::cout << "Data: " << data.ToString() << "\n";
 
-  Shape shape{1, 2};
-  std::cout << "Shape: " << shape.ToString() << "\n";
+  // Shape shape{1, 2};
+  // std::cout << "Shape: " << shape.ToString() << "\n";
 }

@@ -11,9 +11,9 @@ namespace mlvm::foundation {
 template <class T>
 class StatusOr {
  public:
-  explicit StatusOr(T t) : value_{std::move(t)} {};
+  StatusOr(T t) : value_{std::move(t)} {};
 
-  explicit StatusOr(Status status) : status_{std::move(status)} {
+  StatusOr(Status status) : status_{std::move(status)} {
     assert(status_.has_value());
     assert(!status_.value().Ok());
   };
@@ -22,15 +22,20 @@ class StatusOr {
   bool Ok() const { return value_.has_value(); };
 
   // Requests Ok() == false
-  const Status& StatusOrDie() const { return status_.value(); };
+  const Status& StatusOrDie() const {
+    AssertNotHoldValue();
+    return status_.value();
+  };
   // Requests Ok() == true
   const T& ValueOrDie() const {
+    AssertHoldValue();
     AssertNotReleased();
     return value_.value();
   };
 
   // Requests Ok() == true. Should be called at most once.
   T&& ConsumeValue() {
+    AssertHoldValue();
     AssertNotReleased();
     Release();
     return std::move(value_.value());
@@ -45,9 +50,13 @@ class StatusOr {
   bool released_ = false;
   void AssertNotReleased() const { assert(!released_); };
   void Release() { released_ = true; }
+  void AssertHoldValue() const { assert(value_.has_value()); };
+  void AssertNotHoldValue() const { assert(!value_.has_value()); };
 #else
   void inline AssertNotReleased() const {};
   void inline Release(){};
+  void inline AssertHoldValue() const {};
+  void inline AssertNotHoldValue() const {};
 #endif
 };
 
