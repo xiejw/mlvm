@@ -23,6 +23,10 @@ class StatusOr {
   StatusOr(const StatusOr&) = default;
   StatusOr& operator=(const StatusOr&) = default;
 
+  // Converts from another non-OK StatusOr.
+  template <class U>
+  StatusOr(StatusOr<U>&& o) : status_{std::move(o.StatusOrDie())} {}
+
  public:
   bool Ok() const { return value_.has_value(); };
 

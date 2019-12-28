@@ -9,13 +9,10 @@ using namespace foundation;
 StatusOr<Array> Array::New(const std::initializer_list<double>& data,
                            std::initializer_list<unsigned int> shape) {
   Data d{};
-  auto status = d.Reset(data);
-  if (!status.Ok()) return status;
+  MLVM_RETURN_IF_ERROR(d.Reset(data));
 
-  auto shape_or = Shape::New(shape);
-  if (!shape_or.Ok()) return shape_or.StatusOrDie();
+  MLVM_ASSIGN_OR_RETURN(s, Shape::New(shape));
 
-  auto s = shape_or.ConsumeValue();
   if (s.ElementSize() != d.Size())
     return Status::InvalidArguments("Data and Shape sizes mismatch.");
 

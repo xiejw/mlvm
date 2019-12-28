@@ -8,6 +8,23 @@
 
 namespace mlvm::foundation {
 
+#define MLVM_RETURN_IF_ERROR(x)      \
+  {                                  \
+    auto status = (x);               \
+    if (!status.Ok()) return status; \
+  }
+
+#define MLVM_STATUS_MACRO_CONCAT(x, y) x##y
+
+#define MLVM_ASSIGN_OR_RETURN_IMPL(s, x, y) \
+  auto s = (y);                             \
+  if (!s.Ok()) return s;                    \
+  auto x = s.ConsumeValue();
+
+#define MLVM_ASSIGN_OR_RETURN(x, y)                                            \
+  MLVM_ASSIGN_OR_RETURN_IMPL(MLVM_STATUS_MACRO_CONCAT(status_or, __COUNTER__), \
+                             x, y)
+
 enum class ErrorCode {
   INVALID_ARGUMENTS,
 };
