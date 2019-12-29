@@ -4,9 +4,9 @@
 #include <initializer_list>
 #include <vector>
 
-#include "mlvm/Foundation/StatusOr.h"
-
 namespace mlvm::array {
+
+class ShapeLike;
 
 // Represents a Shape.
 //
@@ -27,12 +27,10 @@ class Shape {
   unsigned int ElementSize() const;
 
  private:
+  friend class ShapeLike;
+
   Shape(std::initializer_list<unsigned int> shape)
       : shape_{std::move(shape)} {};
-
- public:
-  static foundation::StatusOr<Shape> New(
-      std::initializer_list<unsigned int> shape);
 
  private:
   std::vector<unsigned int> shape_;

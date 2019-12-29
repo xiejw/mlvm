@@ -11,7 +11,7 @@ StatusOr<Array> Array::New(const std::initializer_list<double>& data,
   Data d{};
   MLVM_RETURN_IF_ERROR(d.Reset(data));
 
-  MLVM_ASSIGN_OR_RETURN(s, Shape::New(shape));
+  MLVM_ASSIGN_OR_RETURN(s, ShapeLike(shape).Release());
 
   if (s.ElementSize() != d.Size())
     return Status::InvalidArguments("Data and Shape sizes mismatch.");

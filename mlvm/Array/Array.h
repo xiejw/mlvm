@@ -3,6 +3,7 @@
 
 #include "mlvm/Array/Data.h"
 #include "mlvm/Array/Shape.h"
+#include "mlvm/Array/ShapeLike.h"
 
 #include "mlvm/Foundation/StatusOr.h"
 

@@ -3,6 +3,8 @@ add_library(Array
   Data.cpp
   Shape.h
   Shape.cpp
+  ShapeLike.h
+  ShapeLike.cpp
   Array.h
   Array.cpp
 )
