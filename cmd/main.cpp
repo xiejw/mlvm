@@ -12,8 +12,13 @@ int main(int argc, char** argv) {
   auto arr = Array::New({1, 2, 3, 4, 5}, {4, 1}).ConsumeValue();
   std::cout << "Array: " << arr.ToString() << "\n";
 
-  Tuple tuple{};
-  tuple.Add({1, 2});
+  Program p{"test"};
+  auto fn = p.makeFunc("main");
+  TensorLike lhs{}, rhs{};
+  auto ins = fn->addBinaryInst(OpCode::Add, lhs, rhs).ConsumeValue();
+  auto outputs = fn->addTupleInst(ins->getOutputs(0)).ConsumeValue();
+  fn->setOutput(outputs);
 
-  // std::cout << "Shape: " << shape.ToString() << "\n";
+  // auto compiledVersion = compile(p);
+  // compiledVersion.execute();
 }
