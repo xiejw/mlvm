@@ -13,8 +13,7 @@ int main(int argc, char** argv) {
   std::cout << "Array: " << arr.ToString() << "\n";
 
   Tuple tuple{};
-  // tuple.Add(
+  tuple.Add({1, 2});
 
-  // Shape shape{1, 2};
   // std::cout << "Shape: " << shape.ToString() << "\n";
 }

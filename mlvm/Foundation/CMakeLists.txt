@@ -2,7 +2,6 @@ add_library(Foundation
   Status.h
   Status.cpp
   StatusOr.h
-  # StatusOr.cpp
 )
 
 set(MLVM_LIBS ${MLVM_LIBS} Foundation PARENT_SCOPE)

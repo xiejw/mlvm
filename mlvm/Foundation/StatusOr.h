@@ -23,10 +23,6 @@ class StatusOr {
   StatusOr(const StatusOr&) = default;
   StatusOr& operator=(const StatusOr&) = default;
 
-  // Converts from another non-OK StatusOr.
-  template <class U>
-  StatusOr(StatusOr<U>&& o) : status_{std::move(o.StatusOrDie())} {}
-
  public:
   bool Ok() const { return value_.has_value(); };
 
@@ -40,6 +36,12 @@ class StatusOr {
     AssertHoldValue();
     AssertNotReleased();
     return value_.value();
+  };
+
+  // Requests Ok() == false. Should be called at most once.
+  Status&& ConsumeStatus() {
+    AssertNotHoldValue();
+    return std::move(status_.value());
   };
 
   // Requests Ok() == true. Should be called at most once.

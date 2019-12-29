@@ -24,6 +24,7 @@ include_directories(.)
 # {{{2 Dependencies.
 #
 # Putting supporting dependencies in bottom.
+add_subdirectory (mlvm/Computation)
 add_subdirectory (mlvm/Array)
 add_subdirectory (mlvm/Foundation)
 

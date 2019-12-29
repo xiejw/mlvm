@@ -16,10 +16,10 @@ namespace mlvm::foundation {
 
 #define MLVM_STATUS_MACRO_CONCAT(x, y) x##y
 
-#define MLVM_ASSIGN_OR_RETURN_IMPL(s, x, y) \
-  auto s = (y);                             \
-  if (!s.Ok()) return s;                    \
-  auto x = s.ConsumeValue();
+#define MLVM_ASSIGN_OR_RETURN_IMPL(so, x, y) \
+  auto so = (y);                             \
+  if (!so.Ok()) return so.ConsumeStatus();   \
+  auto x = so.ConsumeValue();
 
 #define MLVM_ASSIGN_OR_RETURN(x, y)                                            \
   MLVM_ASSIGN_OR_RETURN_IMPL(MLVM_STATUS_MACRO_CONCAT(status_or, __COUNTER__), \

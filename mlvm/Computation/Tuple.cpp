@@ -1,0 +1,18 @@
+#include "mlvm/Computation/Tuple.h"
+
+#include <sstream>
+
+namespace mlvm::computation {
+
+using namespace array;
+using namespace foundation;
+
+Status Tuple::Add(ShapeLike shape_like) {
+  MLVM_ASSIGN_OR_RETURN(shape, shape_like.Get());
+
+  auto item = new Item{std::move(shape)};
+  items_.push_back(std::unique_ptr<Item>{item});
+  return Status::OK;
+}
+
+}  // namespace mlvm::computation
