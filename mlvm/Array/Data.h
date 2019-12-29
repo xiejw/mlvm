@@ -17,19 +17,19 @@ namespace mlvm::array {
 class Data {
  public:
   // Debug string.
-  std::string ToString() const;
+  std::string string() const;
 
   // Check whether the data has been allocated.
-  bool IsAllocated() const { return size_ > 0; }
+  bool isAllocated() const { return size_ > 0; }
 
   // Returns the number of elements.
-  int Size() const { return size_; }
+  int size() const { return size_; }
 
   // Move the `new_data` into this strucuture. So, owns the `new_data`.
-  foundation::Status Reset(double* new_data, std::size_t size);
+  foundation::Status reset(double* new_data, std::size_t size);
 
   // Copy the `list` into this strucuture.
-  foundation::Status Reset(const std::initializer_list<double>& list);
+  foundation::Status reset(const std::initializer_list<double>& list);
 
  public:
   Data() : buf_{nullptr}, size_{0} {}

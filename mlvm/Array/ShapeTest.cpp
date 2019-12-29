@@ -11,17 +11,17 @@ class ShapeTest : public ::testing::Test {};
 
 TEST_F(ShapeTest, CheckElementSize) {
   auto shape = ShapeLike({12, 3}).Get().ConsumeValue();
-  ASSERT_EQ(36, shape.ElementSize());
+  ASSERT_EQ(36, shape.elementSize());
 }
 
 TEST_F(ShapeTest, CheckRank) {
   auto shape = ShapeLike({12, 3}).Get().ConsumeValue();
-  ASSERT_EQ(2, shape.Rank());
+  ASSERT_EQ(2, shape.rank());
 }
 
 TEST_F(ShapeTest, CheckString) {
   auto shape = ShapeLike({12, 3}).Get().ConsumeValue();
-  ASSERT_STREQ("<12, 3>", shape.ToString().c_str());
+  ASSERT_STREQ("<12, 3>", shape.string().c_str());
 }
 
 }  // namespace

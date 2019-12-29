@@ -14,17 +14,17 @@ class ShapeLike;
 class Shape {
  public:
   // Debug string.
-  std::string ToString() const;
+  std::string string() const;
 
   // Returns number of dimensions, i.e., Rank.
   //
   // For <3, 2>, rank is 2.
-  unsigned int Rank() const { return shape_.size(); };
+  unsigned int rank() const { return shape_.size(); };
 
   // Returns number of elements represented by this shape.
   //
   // For <3, 2>, element size is 3 * 2 = 6.
-  unsigned int ElementSize() const;
+  unsigned int elementSize() const;
 
  private:
   friend class ShapeLike;

@@ -19,7 +19,7 @@ class Array {
   Array& operator=(Array&& other) = default;
 
  public:
-  std::string ToString() const;
+  std::string string() const;
 
  private:
   Array(Data data, Shape shape)

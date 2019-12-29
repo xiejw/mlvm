@@ -4,13 +4,13 @@
 
 namespace mlvm::array {
 
-unsigned int Shape::ElementSize() const {
+unsigned int Shape::elementSize() const {
   unsigned int size = 1;
   for (auto dim : shape_) size *= dim;
   return size;
 }
 
-std::string Shape::ToString() const {
+std::string Shape::string() const {
   std::stringstream ss;
   ss << "<";
   int size = shape_.size();

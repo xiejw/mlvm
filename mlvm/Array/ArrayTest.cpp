@@ -21,7 +21,7 @@ void inline ASSERT_STATUS_MESSAGE(const StatusOr<Array>& status_or,
 
 TEST_F(ArrayTest, CheckArray) {
   auto arr = Array::New({1, 2, 3}, {3}).ConsumeValue();
-  ASSERT_STREQ("[<3> {1.000, 2.000, 3.000}]", arr.ToString().c_str());
+  ASSERT_STREQ("[<3> {1.000, 2.000, 3.000}]", arr.string().c_str());
 }
 
 TEST_F(ArrayTest, CheckInvalidData) {
