@@ -14,6 +14,7 @@ set(MLVM_LIBS ${MLVM_LIBS} Array PARENT_SCOPE)
 add_library(TestArray OBJECT
   DataTest.cpp
   ShapeTest.cpp
+  ShapeLikeTest.cpp
   ArrayTest.cpp
 )
 
