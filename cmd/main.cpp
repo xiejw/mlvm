@@ -10,7 +10,7 @@ using namespace mlvm::array;
 using namespace mlvm::computation;
 
 int main(int argc, char** argv) {
-  auto arr = ArrayLike({1, 2, 3, 4, 5}, {4, 1}).get().consumeValue();
+  auto arr = ArrayLike({1, 2, 3, 4}, {4, 1}).get().consumeValue();
   std::cout << "Array: " << arr->string() << "\n";
 
   // Program p{"test"};
