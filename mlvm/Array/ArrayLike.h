@@ -1,7 +1,7 @@
 #ifndef MLVM_ARRAY_ARRAY_LIKE_
 #define MLVM_ARRAY_ARRAY_LIKE_
 
-#include "mlvm/Array/Array.h"
+#include "mlvm/Array/ArrayImpl.h"
 
 #include "mlvm/Foundation/StatusOr.h"
 

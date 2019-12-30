@@ -1,4 +1,4 @@
-#include "mlvm/Array/Array.h"
+#include "mlvm/Array/ArrayImpl.h"
 
 #include <sstream>
 

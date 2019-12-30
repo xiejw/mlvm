@@ -6,7 +6,8 @@ add_library(Array
   ShapeLike.h
   ShapeLike.cpp
   Array.h
-  Array.cpp
+  ArrayImpl.h
+  ArrayImpl.cpp
   ArrayLike.h
   ArrayLike.cpp
 )
@@ -17,7 +18,7 @@ add_library(TestArray OBJECT
   DataTest.cpp
   ShapeTest.cpp
   ShapeLikeTest.cpp
-  ArrayTest.cpp
+  ArrayImplTest.cpp
 )
 
 target_include_directories(TestArray PUBLIC ${GTEST_INCLUDES})
