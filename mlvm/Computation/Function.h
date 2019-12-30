@@ -1,6 +1,7 @@
 #ifndef MLVM_COMPUTATION_FUNCTION_
 #define MLVM_COMPUTATION_FUNCTION_
 
+#include "mlvm/Array/Array.h"
 #include "mlvm/Computation/Instruction.h"
 #include "mlvm/Computation/OpCode.h"
 #include "mlvm/Computation/TensorLike.h"
@@ -18,9 +19,7 @@ class Function {
   Function(std::string name) : ins_vec_{}, name_{name} {};
 
  public:
-  foundation::StatusOr<TensorLike*> makeTensor(
-      const std::initializer_list<double>& data,
-      std::initializer_list<unsigned int> shape);
+  foundation::StatusOr<TensorLike*> makeTensor(array::ArrayLike arr);
 
   foundation::StatusOr<Instruction*> makeBinaryInst(OpCode op,
                                                     TensorLike* const lhs,
