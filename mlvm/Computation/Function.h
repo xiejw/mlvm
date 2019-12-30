@@ -22,13 +22,13 @@ class Function {
       const std::initializer_list<double>& data,
       std::initializer_list<unsigned int> shape);
 
-  foundation::StatusOr<Instruction*> addBinaryInst(OpCode op,
+  foundation::StatusOr<Instruction*> makeBinaryInst(OpCode op,
                                                    TensorLike* const lhs,
                                                    TensorLike* const rhs) {
     return nullptr;
   };
 
-  foundation::StatusOr<Instruction*> addTupleInst(TensorLike* const lhs) {
+  foundation::StatusOr<Instruction*> makeTupleInst(TensorLike* const lhs) {
     return nullptr;
   };
 

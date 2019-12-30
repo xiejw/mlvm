@@ -15,8 +15,8 @@ int main(int argc, char** argv) {
   // Program p{"test"};
   // auto fn = p.makeFunc("main");
   // auto t0 = fn->makeTensor({1, 2, 3, 4, 5}, {4, 1}).consumeValue();
-  // auto ins = fn->addBinaryInst(OpCode::Add, *t0, *t0).consumeValue();
-  // auto outputs = fn->addTupleInst(ins->getOutputs(0)).consumeValue();
+  // auto ins = fn->makeBinaryInst(OpCode::Add, *t0, *t0).consumeValue();
+  // auto outputs = fn->makeTupleInst(ins->getOutputs(0)).consumeValue();
   // fn->setOutput(outputs);
 
   // auto compiledVersion = compile(p);
