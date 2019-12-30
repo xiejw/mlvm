@@ -1,13 +1,12 @@
 #ifndef MLVM_COMPUTATION_INSTRUCTION_
 #define MLVM_COMPUTATION_INSTRUCTION_
 
-#include "mlvm/Computation/TensorLike.h"
 #include "mlvm/Computation/OpCode.h"
+#include "mlvm/Computation/TensorLike.h"
 
 #include <vector>
 
 namespace mlvm::computation {
-
 
 class Instruction {
  public:
@@ -21,7 +20,6 @@ class Instruction {
   std::vector<TensorLike*> inputs_;
   std::vector<TensorLike> outputs_;
 };
-
 
 }  // namespace mlvm::computation
 

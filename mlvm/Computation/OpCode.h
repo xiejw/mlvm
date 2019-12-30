@@ -3,11 +3,9 @@
 
 namespace mlvm::computation {
 
-
 enum class OpCode {
   Add,
 };
-
 
 }  // namespace mlvm::computation
 

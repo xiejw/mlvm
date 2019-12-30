@@ -2,6 +2,8 @@
 
 #include <sstream>
 
+#include "mlvm/Foundation/Macros.h"
+
 namespace mlvm::computation {
 
 using namespace array;

@@ -1,4 +1,6 @@
 add_library(Computation
+  Program.h
+  Function.h
   Instruction.h
   OpCode.h
   TensorLike.h

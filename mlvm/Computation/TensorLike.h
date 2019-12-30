@@ -3,9 +3,7 @@
 
 namespace mlvm::computation {
 
-
 class TensorLike {};
-
 
 }  // namespace mlvm::computation
 
