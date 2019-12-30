@@ -1,4 +1,5 @@
 add_library(Foundation
+  Macros.h
   Status.h
   Status.cpp
   StatusOr.h

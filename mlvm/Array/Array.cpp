@@ -1,4 +1,5 @@
 #include "mlvm/Array/Array.h"
+#include "mlvm/Foundation/Macros.h"
 
 #include <sstream>
 

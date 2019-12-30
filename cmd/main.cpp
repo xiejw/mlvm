@@ -3,7 +3,7 @@
 
 #include "mlvm/Array/Array.h"
 #include "mlvm/Computation/Tuple.h"
-#include "mlvm/Foundation/Status.h"
+#include "mlvm/Foundation/Foundation.h"
 
 using namespace mlvm::array;
 using namespace mlvm::computation;
