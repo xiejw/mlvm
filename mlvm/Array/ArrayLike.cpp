@@ -12,24 +12,28 @@ ArrayLike::ArrayLike(const std::initializer_list<double>& data,
   {
     auto status = d.reset(data);
     if (!status.ok()) {
-      result_ = std::move(status);
+      array_or_ = std::move(status);
       return;
     }
   }
 
   auto shape_or = ShapeLike(shape).get();
   if (!shape_or.ok()) {
-    result_ = shape_or.consumeStatus();
+    array_or_ = shape_or.consumeStatus();
     return;
   }
   auto s = shape_or.consumeValue();
 
   if (s.elementSize() != d.size()) {
-    result_ = Status::InvalidArguments("Data and Shape sizes mismatch.");
+    array_or_ = Status::InvalidArguments("Data and Shape sizes mismatch.");
     return;
   }
 
-  result_ = std::unique_ptr<Array>{new Array{std::move(d), std::move(s)}};
+  array_or_ = std::unique_ptr<Array>{new Array{std::move(d), std::move(s)}};
+};
+
+ArrayLike::ArrayLike(std::unique_ptr<Array> arr) {
+  array_or_ = std::move(arr);
 };
 
 }  // namespace mlvm::array

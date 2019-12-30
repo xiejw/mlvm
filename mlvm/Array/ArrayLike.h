@@ -11,22 +11,26 @@
 
 namespace mlvm::array {
 
-// A friendly builder for Array.
+// A friendly constructor for Array.
 class ArrayLike {
-  using StatusOrArray = foundation::StatusOr<std::unique_ptr<Array>>;
+  using StatusOrPtrArray = foundation::StatusOr<std::unique_ptr<Array>>;
 
  public:
+  // Accepts initialization values.
   ArrayLike(const std::initializer_list<double>& data,
             const std::initializer_list<unsigned int>& shape);
 
+  // Accepts an Array in heap.
+  ArrayLike(std::unique_ptr<Array> arr);
+
  public:
-  StatusOrArray&& get() {
-    assert(result_.has_value());
-    return std::move(result_.value());
+  StatusOrPtrArray&& get() {
+    assert(array_or_.has_value());
+    return std::move(array_or_.value());
   };
 
  private:
-  std::optional<StatusOrArray> result_ = {};
+  std::optional<StatusOrPtrArray> array_or_ = {};
 };
 
 }  // namespace mlvm::array

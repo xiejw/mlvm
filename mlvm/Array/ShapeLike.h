@@ -10,14 +10,15 @@
 
 namespace mlvm::array {
 
-// Represents a Shape Constructor.
-//
-// This makes constructing Shape much easier.
+// A friendly constructor for Shape.
 class ShapeLike {
   using StatusOrShape = foundation::StatusOr<Shape>;
 
  public:
+  // Accepts initialization values.
   ShapeLike(const std::initializer_list<unsigned int>& shape);
+
+  // Accepts a (moved) Shape.
   ShapeLike(Shape&& shape) : shape_or_{std::move(shape)} {};
 
  public:
