@@ -2,6 +2,7 @@ add_library(Computation
   Program.h
   Function.h
   Instruction.h
+  Instruction.cpp
   OpCode.h
   TensorLike.h
   Tuple.h

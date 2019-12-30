@@ -10,7 +10,8 @@ using namespace foundation;
 
 class ArrayTest : public ::testing::Test {};
 
-void inline ASSERT_STATUS_MESSAGE(const StatusOr<Array>& status_or,
+template <class T>
+void inline ASSERT_STATUS_MESSAGE(const StatusOr<T>& status_or,
                                   const std::string& sub_msg) {
   auto err_msg = status_or.statusOrDie().message().value();
   if (err_msg.find(sub_msg) == std::string::npos) {
@@ -21,7 +22,7 @@ void inline ASSERT_STATUS_MESSAGE(const StatusOr<Array>& status_or,
 
 TEST_F(ArrayTest, CheckArray) {
   auto arr = Array::New({1, 2, 3}, {3}).consumeValue();
-  ASSERT_STREQ("[<3> {1.000, 2.000, 3.000}]", arr.string().c_str());
+  ASSERT_STREQ("[<3> {1.000, 2.000, 3.000}]", arr->string().c_str());
 }
 
 TEST_F(ArrayTest, CheckInvalidData) {

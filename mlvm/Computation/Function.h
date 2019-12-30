@@ -18,13 +18,17 @@ class Function {
   Function(std::string name) : ins_vec_{}, name_{name} {};
 
  public:
+  foundation::StatusOr<TensorLike*> makeTensor(
+      const std::initializer_list<double>& data,
+      std::initializer_list<unsigned int> shape);
+
   foundation::StatusOr<Instruction*> addBinaryInst(OpCode op,
-                                                   const TensorLike& lhs,
-                                                   const TensorLike& rhs) {
+                                                   TensorLike* const lhs,
+                                                   TensorLike* const rhs) {
     return nullptr;
   };
 
-  foundation::StatusOr<Instruction*> addTupleInst(const TensorLike& lhs) {
+  foundation::StatusOr<Instruction*> addTupleInst(TensorLike* const lhs) {
     return nullptr;
   };
 
@@ -34,7 +38,6 @@ class Function {
 
  private:
   std::vector<std::unique_ptr<Instruction>> ins_vec_;
-  ;
   std::string name_;
 };
 

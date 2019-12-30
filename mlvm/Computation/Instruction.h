@@ -8,12 +8,16 @@
 
 namespace mlvm::computation {
 
+class Function;
+
 class Instruction {
  public:
-  Instruction(OpCode op) : opCode_{op} {};
-
- public:
   const TensorLike& getOutputs(int i) { return outputs_[i]; };
+
+ private:
+  friend class Instruction;
+
+  Instruction(OpCode op, std::vector<TensorLike*>&& inputs);
 
  private:
   OpCode opCode_;

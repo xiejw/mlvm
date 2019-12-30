@@ -7,11 +7,13 @@
 
 #include "mlvm/Foundation/StatusOr.h"
 
+#include "memory"
+
 namespace mlvm::array {
 
 class Array {
  public:
-  static foundation::StatusOr<Array> New(
+  static foundation::StatusOr<std::unique_ptr<Array>> New(
       const std::initializer_list<double>& data,
       std::initializer_list<unsigned int> shape);
 
