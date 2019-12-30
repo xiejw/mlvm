@@ -7,6 +7,8 @@ add_library(Array
   ShapeLike.cpp
   Array.h
   Array.cpp
+  ArrayLike.h
+  ArrayLike.cpp
 )
 
 set(MLVM_LIBS ${MLVM_LIBS} Array PARENT_SCOPE)

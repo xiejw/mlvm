@@ -3,9 +3,6 @@
 
 #include "mlvm/Array/Data.h"
 #include "mlvm/Array/Shape.h"
-#include "mlvm/Array/ShapeLike.h"
-
-#include "mlvm/Foundation/StatusOr.h"
 
 #include "memory"
 
@@ -13,10 +10,6 @@ namespace mlvm::array {
 
 class Array {
  public:
-  static foundation::StatusOr<std::unique_ptr<Array>> New(
-      const std::initializer_list<double>& data,
-      std::initializer_list<unsigned int> shape);
-
   Array(Array&&) = default;
   Array& operator=(Array&& other) = default;
 
@@ -24,6 +17,8 @@ class Array {
   std::string string() const;
 
  private:
+  friend class ArrayLike;
+
   Array(Data data, Shape shape)
       : data_{std::move(data)}, shape_{std::move(shape)} {};
 

@@ -4,7 +4,7 @@ namespace mlvm::array {
 
 using namespace foundation;
 
-ShapeLike::ShapeLike(std::initializer_list<unsigned int> shape) {
+ShapeLike::ShapeLike(const std::initializer_list<unsigned int>& shape) {
   if (shape.size() == 0) {
     shape_or_ = Status::InvalidArguments("Empty shape is not allowed.");
     return;
@@ -16,7 +16,7 @@ ShapeLike::ShapeLike(std::initializer_list<unsigned int> shape) {
       return;
     }
   }
-  shape_or_ = Shape(std::move(shape));
+  shape_or_ = Shape(shape);
 }
 
 }  // namespace mlvm::array

@@ -15,8 +15,8 @@ namespace mlvm::array {
 // This makes constructing Shape much easier.
 class ShapeLike {
  public:
-  ShapeLike(std::initializer_list<unsigned int> shape);
-  ShapeLike(Shape shape) : shape_or_{std::move(shape)} {};
+  ShapeLike(const std::initializer_list<unsigned int>& shape);
+  ShapeLike(Shape&& shape) : shape_or_{std::move(shape)} {};
 
  public:
   foundation::StatusOr<Shape>&& Get() {

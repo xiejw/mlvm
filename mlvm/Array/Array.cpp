@@ -1,25 +1,10 @@
 #include "mlvm/Array/Array.h"
-#include "mlvm/Foundation/Macros.h"
 
 #include <sstream>
 
 namespace mlvm::array {
 
 using namespace foundation;
-
-StatusOr<std::unique_ptr<Array>> Array::New(
-    const std::initializer_list<double>& data,
-    std::initializer_list<unsigned int> shape) {
-  Data d{};
-  MLVM_RETURN_IF_ERROR(d.reset(data));
-
-  MLVM_ASSIGN_OR_RETURN(s, ShapeLike(shape).Get());
-
-  if (s.elementSize() != d.size())
-    return Status::InvalidArguments("Data and Shape sizes mismatch.");
-
-  return std::unique_ptr<Array>{new Array{std::move(d), std::move(s)}};
-};
 
 std::string Array::string() const {
   std::stringstream ss;

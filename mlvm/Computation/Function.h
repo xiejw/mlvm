@@ -23,8 +23,8 @@ class Function {
       std::initializer_list<unsigned int> shape);
 
   foundation::StatusOr<Instruction*> makeBinaryInst(OpCode op,
-                                                   TensorLike* const lhs,
-                                                   TensorLike* const rhs) {
+                                                    TensorLike* const lhs,
+                                                    TensorLike* const rhs) {
     return nullptr;
   };
 

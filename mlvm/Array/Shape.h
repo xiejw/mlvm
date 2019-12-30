@@ -29,8 +29,7 @@ class Shape {
  private:
   friend class ShapeLike;
 
-  Shape(std::initializer_list<unsigned int> shape)
-      : shape_{std::move(shape)} {};
+  Shape(const std::initializer_list<unsigned int>& shape) : shape_{shape} {};
 
  private:
   std::vector<unsigned int> shape_;
