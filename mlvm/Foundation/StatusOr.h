@@ -11,41 +11,44 @@ namespace mlvm::foundation {
 template <class T>
 class StatusOr {
  public:
-  StatusOr(T t) : value_{std::move(t)} {};
+  StatusOr(T&& t) : value_{std::move(t)} {};
 
-  StatusOr(Status status) : status_{std::move(status)} {
+  StatusOr(Status&& status) : status_{std::move(status)} {
     assert(status_.has_value());
     assert(!status_.value().ok());
   };
 
   StatusOr(StatusOr&&) = default;
   StatusOr& operator=(StatusOr&&) = default;
-  StatusOr(const StatusOr&) = default;
-  StatusOr& operator=(const StatusOr&) = default;
+
+  // Copy is now allowed.
+  StatusOr(const StatusOr&) = delete;
+  StatusOr& operator=(const StatusOr&) = delete;
 
  public:
   bool ok() const { return value_.has_value(); };
 
   // Requests ok() == false
-  const Status& StatusOrDie() const {
+  const Status& statusOrDie() const {
     AssertNotHoldValue();
     return status_.value();
   };
+
   // Requests ok() == true
-  const T& ValueOrDie() const {
+  T& valueOrDie() {
     AssertHoldValue();
     AssertNotReleased();
     return value_.value();
   };
 
   // Requests ok() == false. Should be called at most once.
-  Status&& ConsumeStatus() {
+  Status&& consumeStatus() {
     AssertNotHoldValue();
     return std::move(status_.value());
   };
 
   // Requests ok() == true. Should be called at most once.
-  T&& ConsumeValue() {
+  T&& consumeValue() {
     AssertHoldValue();
     AssertNotReleased();
     Release();
