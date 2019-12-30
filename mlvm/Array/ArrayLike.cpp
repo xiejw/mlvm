@@ -17,7 +17,7 @@ ArrayLike::ArrayLike(const std::initializer_list<double>& data,
     }
   }
 
-  auto shape_or = ShapeLike(shape).Get();
+  auto shape_or = ShapeLike(shape).get();
   if (!shape_or.ok()) {
     result_ = shape_or.consumeStatus();
     return;

@@ -9,7 +9,7 @@ namespace {
 class ShapeLikeTest : public ::testing::Test {};
 
 TEST_F(ShapeLikeTest, CheckListConstructor) {
-  auto shape_or = ShapeLike({12, 3}).Get();
+  auto shape_or = ShapeLike({12, 3}).get();
   ASSERT_TRUE(shape_or.ok());
 }
 
@@ -20,12 +20,12 @@ TEST_F(ShapeLikeTest, CheckMoveConstructor) {
 }
 
 TEST_F(ShapeLikeTest, InvalidEmptyShape) {
-  auto shape_or = ShapeLike({}).Get();
+  auto shape_or = ShapeLike({}).get();
   ASSERT_FALSE(shape_or.ok());
 }
 
 TEST_F(ShapeLikeTest, InvalidDim) {
-  auto shape_or = ShapeLike({1, 0}).Get();
+  auto shape_or = ShapeLike({1, 0}).get();
   ASSERT_FALSE(shape_or.ok());
 }
 

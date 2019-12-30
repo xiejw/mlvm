@@ -14,12 +14,14 @@ namespace mlvm::array {
 //
 // This makes constructing Shape much easier.
 class ShapeLike {
+  using StatusOrShape = foundation::StatusOr<Shape>;
+
  public:
   ShapeLike(const std::initializer_list<unsigned int>& shape);
   ShapeLike(Shape&& shape) : shape_or_{std::move(shape)} {};
 
  public:
-  foundation::StatusOr<Shape>&& Get() {
+  StatusOrShape&& get() {
     assert(shape_or_.has_value());
     return std::move(shape_or_.value());
   }
@@ -30,7 +32,7 @@ class ShapeLike {
   }
 
  private:
-  std::optional<foundation::StatusOr<Shape>> shape_or_ = {};
+  std::optional<StatusOrShape> shape_or_ = {};
 };
 
 }  // namespace mlvm::array
