@@ -26,11 +26,6 @@ class ShapeLike {
     return std::move(shape_or_.value());
   }
 
-  Shape&& ShapeOrDie() {
-    assert(shape_or_.has_value() && shape_or_.value().ok());
-    return shape_or_.value().consumeValue();
-  }
-
  private:
   std::optional<StatusOrShape> shape_or_ = {};
 };

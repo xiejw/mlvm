@@ -14,8 +14,8 @@ TEST_F(ShapeLikeTest, CheckListConstructor) {
 }
 
 TEST_F(ShapeLikeTest, CheckMoveConstructor) {
-  auto shape_1 = ShapeLike({12, 3}).ShapeOrDie();
-  auto shape_2 = ShapeLike(std::move(shape_1)).ShapeOrDie();
+  auto shape_1 = ShapeLike({12, 3}).get().consumeValue();
+  auto shape_2 = ShapeLike(std::move(shape_1)).get().consumeValue();
   ASSERT_EQ(36, shape_2.elementSize());
 }
 
