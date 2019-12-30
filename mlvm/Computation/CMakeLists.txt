@@ -1,4 +1,5 @@
 add_library(Computation
+  OpCode.h
   TensorLike.h
   Tuple.h
   Tuple.cpp

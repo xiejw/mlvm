@@ -9,6 +9,7 @@
 
 #include "mlvm/Array/ShapeLike.h"
 #include "mlvm/Computation/TensorLike.h"
+#include "mlvm/Computation/OpCode.h"
 #include "mlvm/Foundation/Macros.h"
 #include "mlvm/Foundation/Status.h"
 #include "mlvm/Foundation/StatusOr.h"
@@ -30,9 +31,6 @@ class Tuple {
   std::vector<std::unique_ptr<Item>> items_;
 };
 
-enum class OpCode {
-  Add,
-};
 
 class Instruction {
  public:
