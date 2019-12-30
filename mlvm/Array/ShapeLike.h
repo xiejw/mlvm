@@ -25,7 +25,7 @@ class ShapeLike {
   }
 
   Shape&& ShapeOrDie() {
-    assert(shape_or_.has_value() && shape_or_.value().Ok());
+    assert(shape_or_.has_value() && shape_or_.value().ok());
     return shape_or_.value().ConsumeValue();
   }
 

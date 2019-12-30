@@ -15,7 +15,7 @@ class StatusOr {
 
   StatusOr(Status status) : status_{std::move(status)} {
     assert(status_.has_value());
-    assert(!status_.value().Ok());
+    assert(!status_.value().ok());
   };
 
   StatusOr(StatusOr&&) = default;
@@ -24,27 +24,27 @@ class StatusOr {
   StatusOr& operator=(const StatusOr&) = default;
 
  public:
-  bool Ok() const { return value_.has_value(); };
+  bool ok() const { return value_.has_value(); };
 
-  // Requests Ok() == false
+  // Requests ok() == false
   const Status& StatusOrDie() const {
     AssertNotHoldValue();
     return status_.value();
   };
-  // Requests Ok() == true
+  // Requests ok() == true
   const T& ValueOrDie() const {
     AssertHoldValue();
     AssertNotReleased();
     return value_.value();
   };
 
-  // Requests Ok() == false. Should be called at most once.
+  // Requests ok() == false. Should be called at most once.
   Status&& ConsumeStatus() {
     AssertNotHoldValue();
     return std::move(status_.value());
   };
 
-  // Requests Ok() == true. Should be called at most once.
+  // Requests ok() == true. Should be called at most once.
   T&& ConsumeValue() {
     AssertHoldValue();
     AssertNotReleased();

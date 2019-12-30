@@ -11,14 +11,14 @@ namespace mlvm::foundation {
 #define MLVM_RETURN_IF_ERROR(x)      \
   {                                  \
     auto status = (x);               \
-    if (!status.Ok()) return status; \
+    if (!status.ok()) return status; \
   }
 
 #define MLVM_STATUS_MACRO_CONCAT(x, y) x##y
 
 #define MLVM_ASSIGN_OR_RETURN_IMPL(so, x, y) \
   auto so = (y);                             \
-  if (!so.Ok()) return so.ConsumeStatus();   \
+  if (!so.ok()) return so.ConsumeStatus();   \
   auto x = so.ConsumeValue();
 
 #define MLVM_ASSIGN_OR_RETURN(x, y)                                            \
@@ -26,7 +26,7 @@ namespace mlvm::foundation {
                              x, y)
 
 enum class ErrorCode {
-  INVALID_ARGUMENTS,
+  InvalidArguments,
 };
 
 class Status {
@@ -40,16 +40,17 @@ class Status {
   };
 
   static const Status OK;
+
   static Status InvalidArguments(std::optional<std::string> msg = {}) {
-    return Status(ErrorCode::INVALID_ARGUMENTS, msg);
+    return Status(ErrorCode::InvalidArguments, msg);
   };
 
  public:
   // Returns true if no error.
-  bool Ok() const { return !err_.has_value(); }
+  bool ok() const { return !err_.has_value(); }
 
-  const ErrorCode& Error() const { return err_.value(); }
-  const std::optional<std::string>& Message() const { return msg_; }
+  const ErrorCode& errorCode() const { return err_.value(); }
+  const std::optional<std::string>& message() const { return msg_; }
 
  private:
   std::optional<ErrorCode> err_;
