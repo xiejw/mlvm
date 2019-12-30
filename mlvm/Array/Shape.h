@@ -1,6 +1,7 @@
 #ifndef MLVM_ARRAY_SHAPE_
 #define MLVM_ARRAY_SHAPE_
 
+#include <string>
 #include <initializer_list>
 #include <vector>
 
