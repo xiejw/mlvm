@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "mlvm/Array/ShapeLike.h"
+#include "mlvm/Computation/TensorLike.h"
 #include "mlvm/Foundation/Macros.h"
 #include "mlvm/Foundation/Status.h"
 #include "mlvm/Foundation/StatusOr.h"
@@ -28,8 +29,6 @@ class Tuple {
  private:
   std::vector<std::unique_ptr<Item>> items_;
 };
-
-class TensorLike {};
 
 enum class OpCode {
   Add,
