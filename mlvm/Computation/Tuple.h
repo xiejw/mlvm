@@ -10,6 +10,7 @@
 #include "mlvm/Array/ShapeLike.h"
 #include "mlvm/Computation/TensorLike.h"
 #include "mlvm/Computation/OpCode.h"
+#include "mlvm/Computation/Instruction.h"
 #include "mlvm/Foundation/Macros.h"
 #include "mlvm/Foundation/Status.h"
 #include "mlvm/Foundation/StatusOr.h"
@@ -31,19 +32,6 @@ class Tuple {
   std::vector<std::unique_ptr<Item>> items_;
 };
 
-
-class Instruction {
- public:
-  Instruction(OpCode op) : opCode_{op} {};
-
- public:
-  const TensorLike& getOutputs(int i) { return outputs_[i]; };
-
- private:
-  OpCode opCode_;
-  std::vector<TensorLike*> inputs_;
-  std::vector<TensorLike> outputs_;
-};
 
 class Function {
  public:
