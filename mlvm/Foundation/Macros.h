@@ -21,6 +21,9 @@
   if (!so.ok()) return so.consumeStatus();   \
   auto x = so.consumeValue();
 
-#define CHECK(x) assert(x)
+#define MLVM_CHECK(x) assert(x)
+
+// Fail the check with an error message.
+#define MLVM_FAIL(err_msg) assert(((err_msg) && false))
 
 #endif

@@ -20,7 +20,7 @@ class Status {
                   std::optional<std::string> msg = std::optional<std::string>{})
       : err_{std::move(err)}, msg_{std::move(msg)} {
     // `msg_` is present only if `err_` is present.
-    CHECK(err_.has_value() || !msg_.has_value());
+    MLVM_CHECK(err_.has_value() || !msg_.has_value());
   };
 
   static const Status OK;

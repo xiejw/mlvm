@@ -25,7 +25,7 @@ class ArrayLike {
 
  public:
   StatusOrPtrArray&& get() {
-    CHECK(array_or_.has_value());
+    MLVM_CHECK(array_or_.has_value());
     return std::move(array_or_.value());
   };
 

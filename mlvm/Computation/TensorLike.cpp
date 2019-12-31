@@ -23,14 +23,14 @@ std::string TensorLike::string() const {
       return ss.str();
     }
     default:
-      CHECK(false);
+      MLVM_FAIL("Unknown Tensor Type.");
   }
 }
 
 const array::Shape& TensorLike::shape() const {
   if (type_ == Type::Constant) return array_->shape();
 
-  CHECK(type_ == Type::Output);
+  MLVM_CHECK(type_ == Type::Output);
   return output_shape_.value();
 }
 

@@ -14,8 +14,8 @@ class StatusOr {
   StatusOr(T&& t) : value_{std::move(t)} {};
 
   StatusOr(Status&& status) : status_{std::move(status)} {
-    CHECK(status_.has_value());
-    CHECK(!status_.value().ok());
+    MLVM_CHECK(status_.has_value());
+    MLVM_CHECK(!status_.value().ok());
   };
 
   StatusOr(StatusOr&&) = default;
@@ -62,10 +62,10 @@ class StatusOr {
  private:
 #ifndef NDEBUG
   bool released_ = false;
-  void inline AssertNotReleased() const { CHECK(!released_); };
+  void inline AssertNotReleased() const { MLVM_CHECK(!released_); };
   void inline Release() { released_ = true; }
-  void inline AssertHoldValue() const { CHECK(value_.has_value()); };
-  void inline AssertNotHoldValue() const { CHECK(!value_.has_value()); };
+  void inline AssertHoldValue() const { MLVM_CHECK(value_.has_value()); };
+  void inline AssertNotHoldValue() const { MLVM_CHECK(!value_.has_value()); };
 #else
   void inline AssertNotReleased() const {};
   void inline Release(){};

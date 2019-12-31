@@ -26,7 +26,7 @@ class ShapeLike {
 
  public:
   StatusOrShape&& get() {
-    CHECK(shape_or_.has_value());
+    MLVM_CHECK(shape_or_.has_value());
     return std::move(shape_or_.value());
   }
 
