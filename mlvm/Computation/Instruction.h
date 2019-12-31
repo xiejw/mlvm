@@ -14,7 +14,7 @@ class Function;
 
 class Instruction {
  public:
-  TensorLike* const getOutputs(int i) { return outputs_[i].get(); };
+  TensorLike* const getOutput(int i) { return outputs_[i].get(); };
 
  public:
   OpCode opCode() const { return opCode_; }

@@ -29,5 +29,22 @@ TEST_F(TensorLikeTest, CheckArrayTensor) {
                tensor->string().c_str());
 }
 
+TEST_F(TensorLikeTest, ChecOutputTensor) {
+  Function fn{"test"};
+  auto c = fn.makeTensor({{1, 2, 3, 4, 5}, {5, 1}}).consumeValue();
+  auto ins_or = fn.makeBinaryInst(OpCode::Add, c, c);
+  ASSERT_TRUE(ins_or.ok());
+
+  auto ins = ins_or.consumeValue();
+  auto output = ins->getOutput(0);
+
+  ASSERT_STREQ("%0_0", output->name().c_str());
+  ASSERT_EQ(TensorLike::Type::Output, output->type());
+  ASSERT_STREQ("<5, 1>", output->shape().string().c_str());
+  ASSERT_EQ(&fn, output->parentFunc());
+  ASSERT_EQ(ins, output->parentIns());
+  ASSERT_STREQ("`%0_0`: O@[<5, 1>]", output->string().c_str());
+}
+
 }  // namespace
 }  // namespace mlvm::computation

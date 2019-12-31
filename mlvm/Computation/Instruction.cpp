@@ -14,13 +14,17 @@ Instruction::Instruction(std::string name, OpCode op,
       inputs_{inputs},
       outputs_{},
       parentFunc_{parentFunc} {
-  CHECK(op == OpCode::Add);
-  // Assert shape equal or compatible.
-  //
-  // TODO: generate name
-  auto o = new TensorLike{"%o", inputs_[0]->shape(), parentFunc_, this};
-
-  outputs_.emplace_back(o);
+  switch (op) {
+    case OpCode::Add: {
+      // Assert shape equal or compatible.
+      auto o =
+          new TensorLike{name_ + "_0", inputs_[0]->shape(), parentFunc_, this};
+      outputs_.emplace_back(o);
+      break;
+    }
+    default:
+      assert(false);
+  }
 }
 
 std::string Instruction::string() const {

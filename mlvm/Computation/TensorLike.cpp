@@ -7,11 +7,24 @@
 namespace mlvm::computation {
 
 std::string TensorLike::string() const {
-  CHECK(type_ == Type::Constant);
-  std::stringstream ss;
-  ss << "`" << name_ << "`: C@";
-  ss << array_->string();
-  return ss.str();
+  switch (type_) {
+    case Type::Constant: {
+      std::stringstream ss;
+      ss << "`" << name_ << "`: C@";
+      ss << array_->string();
+      return ss.str();
+    }
+    case Type::Output: {
+      std::stringstream ss;
+      ss << "`" << name_ << "`: O@";
+      ss << "[";
+      ss << shape().string();
+      ss << "]";
+      return ss.str();
+    }
+    default:
+      CHECK(false);
+  }
 }
 
 const array::Shape& TensorLike::shape() const {
