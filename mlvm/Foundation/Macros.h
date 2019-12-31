@@ -19,5 +19,4 @@
   if (!so.ok()) return so.consumeStatus();   \
   auto x = so.consumeValue();
 
-
 #endif

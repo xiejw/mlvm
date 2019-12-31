@@ -22,7 +22,10 @@ class TensorLike {
 
   const std::string& name() const { return name_; }
 
+  const array::Shape& shape() const;
+
   Function* parentFunc() const { return parent_fn_; }
+
   Instruction* parentIns() const { return parent_ins_; }
 
   std::string string() const;

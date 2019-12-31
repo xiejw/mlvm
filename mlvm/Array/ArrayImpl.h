@@ -14,6 +14,8 @@ class Array {
   Array& operator=(Array&& other) = default;
 
  public:
+  const Shape& shape() const { return shape_; }
+
   std::string string() const;
 
  private:

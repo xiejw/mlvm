@@ -16,7 +16,7 @@ class Instruction {
  public:
   OpCode opCode() const { return opCode_; }
 
-  std::string string() const {return std::string{"ins"} + name_; }
+  std::string string() const;
 
  private:
   friend class Function;
