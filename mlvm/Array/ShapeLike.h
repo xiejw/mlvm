@@ -21,6 +21,9 @@ class ShapeLike {
   // Accepts a (moved) Shape.
   ShapeLike(Shape&& shape) : shape_or_{std::move(shape)} {};
 
+  // Accepts a (copied) Shape.
+  ShapeLike(const Shape& shape);
+
  public:
   StatusOrShape&& get() {
     assert(shape_or_.has_value());

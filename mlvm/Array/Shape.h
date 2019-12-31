@@ -14,6 +14,12 @@ class ShapeLike;
 // This should be super cheap to copy.
 class Shape {
  public:
+  Shape(const Shape&) = default;
+  Shape& operator=(const Shape&) = default;
+  Shape(Shape&&) = default;
+  Shape& operator=(Shape&&) = default;
+
+ public:
   // Debug string.
   std::string string() const;
 

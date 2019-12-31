@@ -19,6 +19,14 @@ TEST_F(ShapeLikeTest, CheckMoveConstructor) {
   ASSERT_EQ(36, shape_2.elementSize());
 }
 
+TEST_F(ShapeLikeTest, CheckCopyConstructor) {
+  Shape shape_1 = ShapeLike({12, 3}).get().consumeValue();
+  ASSERT_EQ(36, shape_1.elementSize());
+
+  Shape shape_2 = ShapeLike(shape_1).get().consumeValue();
+  ASSERT_EQ(36, shape_2.elementSize());
+}
+
 TEST_F(ShapeLikeTest, InvalidEmptyShape) {
   auto shape_or = ShapeLike({}).get();
   ASSERT_FALSE(shape_or.ok());

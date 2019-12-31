@@ -19,4 +19,9 @@ ShapeLike::ShapeLike(const std::initializer_list<unsigned int>& shape) {
   shape_or_ = Shape(shape);
 }
 
+ShapeLike::ShapeLike(const Shape& shape) {
+  Shape copy{shape};
+  shape_or_ = std::move(copy);
+}
+
 }  // namespace mlvm::array
