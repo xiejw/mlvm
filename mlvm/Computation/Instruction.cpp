@@ -2,6 +2,8 @@
 
 #include <sstream>
 
+#include "mlvm/Foundation/Macros.h"
+
 namespace mlvm::computation {
 
 Instruction::Instruction(std::string name, OpCode op,
@@ -12,7 +14,7 @@ Instruction::Instruction(std::string name, OpCode op,
       inputs_{inputs},
       outputs_{},
       parentFunc_{parentFunc} {
-  assert(op == OpCode::Add);
+  CHECK(op == OpCode::Add);
   // Assert shape equal or compatible.
   //
   // TODO: generate name

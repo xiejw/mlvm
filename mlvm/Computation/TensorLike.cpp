@@ -2,10 +2,12 @@
 
 #include <sstream>
 
+#include "mlvm/Foundation/Macros.h"
+
 namespace mlvm::computation {
 
 std::string TensorLike::string() const {
-  assert(type_ == Type::Constant);
+  CHECK(type_ == Type::Constant);
   std::stringstream ss;
   ss << "`" << name_ << "`: C@";
   ss << array_->string();
@@ -15,7 +17,7 @@ std::string TensorLike::string() const {
 const array::Shape& TensorLike::shape() const {
   if (type_ == Type::Constant) return array_->shape();
 
-  assert(type_ == Type::Output);
+  CHECK(type_ == Type::Output);
   return output_shape_.value();
 }
 

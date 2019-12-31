@@ -1,10 +1,11 @@
 #ifndef MLVM_FOUNDATION_STATUS_
 #define MLVM_FOUNDATION_STATUS_
 
-#include <cassert>
 #include <memory>
 #include <optional>
 #include <string>
+
+#include "mlvm/Foundation/Macros.h"
 
 namespace mlvm::foundation {
 
@@ -19,7 +20,7 @@ class Status {
                   std::optional<std::string> msg = std::optional<std::string>{})
       : err_{std::move(err)}, msg_{std::move(msg)} {
     // `msg_` is present only if `err_` is present.
-    assert(err_.has_value() || !msg_.has_value());
+    CHECK(err_.has_value() || !msg_.has_value());
   };
 
   static const Status OK;

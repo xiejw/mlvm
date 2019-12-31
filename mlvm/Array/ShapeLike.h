@@ -1,11 +1,11 @@
 #ifndef MLVM_ARRAY_SHAPE_LIKE_
 #define MLVM_ARRAY_SHAPE_LIKE_
 
-#include <cassert>
 #include <initializer_list>
 #include <vector>
 
 #include "mlvm/Array/Shape.h"
+#include "mlvm/Foundation/Macros.h"
 #include "mlvm/Foundation/StatusOr.h"
 
 namespace mlvm::array {
@@ -26,7 +26,7 @@ class ShapeLike {
 
  public:
   StatusOrShape&& get() {
-    assert(shape_or_.has_value());
+    CHECK(shape_or_.has_value());
     return std::move(shape_or_.value());
   }
 

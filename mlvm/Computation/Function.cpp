@@ -26,7 +26,7 @@ Function::StatusOrPtrTensor Function::makeTensor(ArrayLike arr) {
 Function::StatusOrPtrIns Function::makeBinaryInst(OpCode op,
                                                   TensorLike* const lhs,
                                                   TensorLike* const rhs) {
-  assert(op == OpCode::Add);
+  CHECK(op == OpCode::Add);
 
   // Instruction name.
   auto next_id = ins_vec_.size();

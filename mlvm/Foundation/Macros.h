@@ -1,6 +1,8 @@
 #ifndef MLVM_FOUNDATION_MACROS_
 #define MLVM_FOUNDATION_MACROS_
 
+#include <cassert>
+
 #define MLVM_RETURN_IF_ERROR(x)      \
   {                                  \
     auto status = (x);               \
@@ -18,5 +20,7 @@
   auto so = (y);                             \
   if (!so.ok()) return so.consumeStatus();   \
   auto x = so.consumeValue();
+
+#define CHECK(x) assert(x)
 
 #endif

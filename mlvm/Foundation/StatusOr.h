@@ -1,9 +1,9 @@
 #ifndef MLVM_FOUNDATION_STATUSOR_
 #define MLVM_FOUNDATION_STATUSOR_
 
-#include <cassert>
 #include <optional>
 
+#include "mlvm/Foundation/Macros.h"
 #include "mlvm/Foundation/Status.h"
 
 namespace mlvm::foundation {
@@ -14,8 +14,8 @@ class StatusOr {
   StatusOr(T&& t) : value_{std::move(t)} {};
 
   StatusOr(Status&& status) : status_{std::move(status)} {
-    assert(status_.has_value());
-    assert(!status_.value().ok());
+    CHECK(status_.has_value());
+    CHECK(!status_.value().ok());
   };
 
   StatusOr(StatusOr&&) = default;
@@ -62,10 +62,10 @@ class StatusOr {
  private:
 #ifndef NDEBUG
   bool released_ = false;
-  void AssertNotReleased() const { assert(!released_); };
-  void Release() { released_ = true; }
-  void AssertHoldValue() const { assert(value_.has_value()); };
-  void AssertNotHoldValue() const { assert(!value_.has_value()); };
+  void inline AssertNotReleased() const { CHECK(!released_); };
+  void inline Release() { released_ = true; }
+  void inline AssertHoldValue() const { CHECK(value_.has_value()); };
+  void inline AssertNotHoldValue() const { CHECK(!value_.has_value()); };
 #else
   void inline AssertNotReleased() const {};
   void inline Release(){};

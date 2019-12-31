@@ -3,9 +3,9 @@
 
 #include "mlvm/Array/ArrayImpl.h"
 
+#include "mlvm/Foundation/Macros.h"
 #include "mlvm/Foundation/StatusOr.h"
 
-#include "cassert"
 #include "memory"
 #include "optional"
 
@@ -25,7 +25,7 @@ class ArrayLike {
 
  public:
   StatusOrPtrArray&& get() {
-    assert(array_or_.has_value());
+    CHECK(array_or_.has_value());
     return std::move(array_or_.value());
   };
 
