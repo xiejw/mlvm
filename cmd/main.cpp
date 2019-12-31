@@ -13,11 +13,15 @@ using namespace mlvm::foundation;
 StatusOr<Program> buildProgram() {
   Program p{"test"};
   auto fn = p.makeFunc("main");
+
   MLVM_ASSIGN_OR_RETURN(t0, fn->makeTensor({{1, 2, 3, 4, 5}, {5, 1}}));
-  std::cout << fn->string() << "\n";
-  // auto ins = fn->makeBinaryInst(OpCode::Add, *t0, *t0).consumeValue();
+  assert(t0->parentFunc() == fn);
+
+  MLVM_ASSIGN_OR_RETURN(ins, fn->makeBinaryInst(OpCode::Add, t0, t0));
   // auto outputs = fn->makeTupleInst(ins->getOutputs(0)).consumeValue();
   // fn->setOutput(outputs);
+
+  std::cout << fn->string() << "\n";
 
   // auto compiledVersion = compile(p);
   // compiledVersion.execute();

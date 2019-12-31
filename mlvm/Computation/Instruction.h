@@ -4,11 +4,10 @@
 #include "mlvm/Computation/OpCode.h"
 #include "mlvm/Computation/TensorLike.h"
 
+#include <string>
 #include <vector>
 
 namespace mlvm::computation {
-
-class Function;
 
 class Instruction {
  public:
@@ -17,8 +16,10 @@ class Instruction {
  public:
   OpCode opCode() const { return opCode_; }
 
+  std::string string() const {return "ins"; }
+
  private:
-  friend class Instruction;
+  friend class Function;
 
   Instruction(OpCode op, std::vector<TensorLike*>&& inputs);
 

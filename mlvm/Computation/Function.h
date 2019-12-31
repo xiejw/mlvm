@@ -16,17 +16,16 @@ namespace mlvm::computation {
 
 class Function {
   using StatusOrPtrIns = foundation::StatusOr<Instruction*>;
+  using StatusOrPtrTensor = foundation::StatusOr<TensorLike*>;
 
  public:
   Function(std::string name) : name_{name} {};
 
  public:
-  foundation::StatusOr<TensorLike*> makeTensor(array::ArrayLike arr);
+  StatusOrPtrTensor makeTensor(array::ArrayLike arr);
 
   StatusOrPtrIns makeBinaryInst(OpCode op, TensorLike* const lhs,
-                                TensorLike* const rhs) {
-    return nullptr;
-  };
+                                TensorLike* const rhs);
 
   // Creates an Instruction grouping tensors as a Tuple.
   StatusOrPtrIns makeTupleInst(TensorLike* const lhs) { return nullptr; };
