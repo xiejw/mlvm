@@ -14,6 +14,9 @@ class Instruction {
  public:
   const TensorLike& getOutputs(int i) { return outputs_[i]; };
 
+ public:
+  OpCode opCode() const { return opCode_; }
+
  private:
   friend class Instruction;
 

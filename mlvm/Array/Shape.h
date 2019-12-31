@@ -1,8 +1,8 @@
 #ifndef MLVM_ARRAY_SHAPE_
 #define MLVM_ARRAY_SHAPE_
 
-#include <string>
 #include <initializer_list>
+#include <string>
 #include <vector>
 
 namespace mlvm::array {

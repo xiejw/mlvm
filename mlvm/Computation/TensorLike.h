@@ -13,7 +13,12 @@ class TensorLike {
     Array,
   };
 
+ public:
+  Type type() const { return type_; }
+
  private:
+  friend class Function;
+
   TensorLike(std::unique_ptr<array::Array> arr) : type_{Type::Array} {
     array_.swap(arr);
   };

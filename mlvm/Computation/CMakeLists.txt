@@ -1,6 +1,7 @@
 add_library(Computation
   Program.h
   Function.h
+  Function.cpp
   Instruction.h
   Instruction.cpp
   OpCode.h
