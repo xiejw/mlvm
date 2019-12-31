@@ -2,7 +2,6 @@
 #define MLVM_COMPUTATION_TENSORLIKE_
 
 #include <memory>
-#include <sstream>
 #include <string>
 
 #include "mlvm/Array/Array.h"
@@ -19,13 +18,7 @@ class TensorLike {
   Type type() const { return type_; }
   const std::string& name() const { return name_; }
 
-  std::string string() const {
-    assert(type_ == Type::Array);
-    std::stringstream ss;
-    ss << "`" << name_ << "`: C@";
-    ss << array_->string();
-    return ss.str();
-  }
+  std::string string() const;
 
  private:
   friend class Function;

@@ -6,6 +6,7 @@ add_library(Computation
   Instruction.cpp
   OpCode.h
   TensorLike.h
+  TensorLike.cpp
   Tuple.h
   Tuple.cpp
 )
