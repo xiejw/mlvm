@@ -13,8 +13,10 @@ std::string TensorLike::string() const {
 }
 
 const array::Shape& TensorLike::shape() const {
-  assert(type_ == Type::Constant);
-  return array_->shape();
+  if (type_ == Type::Constant) return array_->shape();
+
+  assert(type_ == Type::Output);
+  return output_shape_.value();
 }
 
 }  // namespace mlvm::computation

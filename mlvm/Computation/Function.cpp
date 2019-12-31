@@ -33,7 +33,8 @@ Function::StatusOrPtrIns Function::makeBinaryInst(OpCode op,
   std::stringstream name;
   name << "%" << next_id;
 
-  auto ins = new Instruction{name.str(), op, {lhs, rhs}};
+  // Deduce output.
+  auto ins = new Instruction{name.str(), op, {lhs, rhs}, this};
   ins_vec_.emplace_back(ins);
   return ins_vec_.back().get();
 }

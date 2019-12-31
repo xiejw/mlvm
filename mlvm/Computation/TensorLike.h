@@ -1,8 +1,8 @@
 #ifndef MLVM_COMPUTATION_TENSORLIKE_
 #define MLVM_COMPUTATION_TENSORLIKE_
 
-#include <optional>
 #include <memory>
+#include <optional>
 #include <string>
 
 #include "mlvm/Array/Array.h"
@@ -34,6 +34,7 @@ class TensorLike {
 
  private:
   friend class Function;
+  friend class Instruction;
 
   // Constant has no parent Instruction
   TensorLike(std::string name, std::unique_ptr<array::Array> arr,
@@ -46,12 +47,12 @@ class TensorLike {
   };
 
   // Sets the output.
-  TensorLike(std::string name, array::ShapeLike output_shape, Function* parent_fn, Instruction* parent_ins)
+  TensorLike(std::string name, array::ShapeLike output_shape,
+             Function* parent_fn, Instruction* parent_ins)
       : name_{std::move(name)},
         type_{Type::Output},
         parent_fn_{parent_fn},
         parent_ins_{parent_ins} {
-
     output_shape_ = output_shape.get().consumeValue();
   };
 
