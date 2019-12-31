@@ -6,7 +6,10 @@ namespace mlvm::computation {
 
 Instruction::Instruction(std::string name, OpCode op,
                          std::vector<TensorLike*>&& inputs)
-    : name_{std::move(name)}, opCode_{op}, inputs_{inputs}, outputs_{} {}
+    : name_{std::move(name)}, opCode_{op}, inputs_{inputs}, outputs_{} {
+      assert(op == OpCode::Add);
+      // Assert shape equal or compatible.
+}
 
 std::string Instruction::string() const {
   std::stringstream str;
