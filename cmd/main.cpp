@@ -29,8 +29,6 @@ StatusOr<Program> buildProgram() {
 }
 
 int main(int argc, char** argv) {
-  auto arr = ArrayLike({1, 2, 3, 4}, {4, 1}).get().consumeValue();
-  std::cout << "Array: " << arr->string() << "\n";
   auto p_or = buildProgram();
   if (!p_or.ok()) {
     std::cout << "Failed to build program: "
