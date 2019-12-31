@@ -12,15 +12,23 @@ using namespace foundation;
 StatusOr<TensorLike*> Function::makeTensor(ArrayLike arr) {
   MLVM_ASSIGN_OR_RETURN(arr_ptr, arr.get());
 
-  auto tensor = new TensorLike{std::move(arr_ptr)};
+  auto next_id = constants_.size();
+  std::stringstream name;
+  name << "%c_" << next_id;
+
+  auto tensor = new TensorLike{name.str(), std::move(arr_ptr)};
   constants_.emplace_back(tensor);
 
-  return Status::InvalidArguments("1");
+  return constants_.back().get();
 }
 
 std::string Function::string() const {
   std::stringstream ss;
   ss << "Function \"" << name_ << "\" {\n";
+  ss << "  Constants:\n";
+  for (auto& c : constants_) {
+    ss << "    " << c->string() << "\n";
+  }
   ss << "}";
   return ss.str();
 }
