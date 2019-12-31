@@ -28,6 +28,11 @@ TEST_F(ArrayTest, CheckArray) {
   ASSERT_STREQ("[<3> {1.000, 2.000, 3.000}]", arr->string().c_str());
 }
 
+TEST_F(ArrayTest, CheckArrayShape) {
+  auto arr = ArrayLike({1, 2, 3}, {3}).get().consumeValue();
+  ASSERT_STREQ("<3>", arr->shape().string().c_str());
+}
+
 TEST_F(ArrayTest, CheckInvalidData) {
   auto arr_or = ArrayLike({}, {3}).get();
   ASSERT_FALSE(arr_or.ok());
