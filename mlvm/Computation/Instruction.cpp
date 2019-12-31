@@ -2,7 +2,7 @@
 
 namespace mlvm::computation {
 
-Instruction::Instruction(OpCode op, std::vector<TensorLike*>&& inputs)
-    : opCode_{op}, inputs_{inputs}, outputs_{} {}
+Instruction::Instruction(std::string name, OpCode op, std::vector<TensorLike*>&& inputs)
+    : name_{std::move(name)}, opCode_{op}, inputs_{inputs}, outputs_{} {}
 
 }  // namespace mlvm::computation

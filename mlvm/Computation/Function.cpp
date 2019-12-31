@@ -12,6 +12,7 @@ using namespace foundation;
 Function::StatusOrPtrTensor Function::makeTensor(ArrayLike arr) {
   MLVM_ASSIGN_OR_RETURN(arr_ptr, arr.get());
 
+  // Constant name.
   auto next_id = constants_.size();
   std::stringstream name;
   name << "%c_" << next_id;
@@ -26,7 +27,13 @@ Function::StatusOrPtrIns Function::makeBinaryInst(OpCode op,
                                                   TensorLike* const lhs,
                                                   TensorLike* const rhs) {
   assert(op == OpCode::Add);
-  auto ins = new Instruction {op, {lhs, rhs}};
+
+  // Instruction name.
+  auto next_id = ins_vec_.size();
+  std::stringstream name;
+  name << "%" << next_id;
+
+  auto ins = new Instruction {name.str(), op, {lhs, rhs}};
   ins_vec_.emplace_back(ins);
   return ins_vec_.back().get();
 }

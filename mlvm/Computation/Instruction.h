@@ -16,14 +16,15 @@ class Instruction {
  public:
   OpCode opCode() const { return opCode_; }
 
-  std::string string() const {return "ins"; }
+  std::string string() const {return std::string{"ins"} + name_; }
 
  private:
   friend class Function;
 
-  Instruction(OpCode op, std::vector<TensorLike*>&& inputs);
+  Instruction(std::string name, OpCode op, std::vector<TensorLike*>&& inputs);
 
  private:
+  std::string name_;
   OpCode opCode_;
   std::vector<TensorLike*> inputs_;
   std::vector<TensorLike> outputs_;
