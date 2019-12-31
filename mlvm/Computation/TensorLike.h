@@ -8,29 +8,44 @@
 
 namespace mlvm::computation {
 
+class Function;
+class Instruction;
+
 class TensorLike {
  public:
   enum class Type {
-    Array,
+    Constant,
   };
 
  public:
   Type type() const { return type_; }
+
   const std::string& name() const { return name_; }
+
+  Function* parentFunc() const { return parent_fn_; }
+  Instruction* parentIns() const { return parent_ins_; }
 
   std::string string() const;
 
  private:
   friend class Function;
 
-  TensorLike(std::string name, std::unique_ptr<array::Array> arr)
-      : name_{std::move(name)}, type_{Type::Array} {
+  // Constant has no parent Instruction
+  TensorLike(std::string name, std::unique_ptr<array::Array> arr,
+             Function* parent_fn)
+      : name_{std::move(name)},
+        type_{Type::Constant},
+        parent_fn_{parent_fn},
+        parent_ins_{nullptr} {
     array_.swap(arr);
   };
 
  private:
   std::string name_;
   Type type_;
+
+  Function* parent_fn_;
+  Instruction* parent_ins_;
 
   std::unique_ptr<array::Array> array_ = {};
 };

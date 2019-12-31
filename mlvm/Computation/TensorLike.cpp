@@ -5,7 +5,7 @@
 namespace mlvm::computation {
 
 std::string TensorLike::string() const {
-  assert(type_ == Type::Array);
+  assert(type_ == Type::Constant);
   std::stringstream ss;
   ss << "`" << name_ << "`: C@";
   ss << array_->string();

@@ -16,7 +16,7 @@ StatusOr<TensorLike*> Function::makeTensor(ArrayLike arr) {
   std::stringstream name;
   name << "%c_" << next_id;
 
-  auto tensor = new TensorLike{name.str(), std::move(arr_ptr)};
+  auto tensor = new TensorLike{name.str(), std::move(arr_ptr), this};
   constants_.emplace_back(tensor);
 
   return constants_.back().get();
