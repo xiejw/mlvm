@@ -2,7 +2,6 @@
 #include <iterator>
 
 #include "mlvm/Array/Array.h"
-#include "mlvm/Array/ArrayLike.h"
 #include "mlvm/Computation/Computation.h"
 #include "mlvm/Foundation/Foundation.h"
 
@@ -15,10 +14,13 @@ StatusOr<Program> buildProgram() {
   auto fn = p.makeFunc("main");
 
   MLVM_ASSIGN_OR_RETURN(t0, fn->makeTensor({{1, 2, 3, 4, 5}, {5, 1}}));
-  assert(t0->parentFunc() == fn);
+  MLVM_CHECK(t0->parentFunc() == fn);
 
   MLVM_ASSIGN_OR_RETURN(ins, fn->makeBinaryInst(OpCode::Add, t0, t0));
-  // auto outputs = fn->makeTupleInst(ins->getOutputs(0)).consumeValue();
+  MLVM_CHECK(1 == ins->outputsCount());
+
+  auto tuple = new Tuple{{ins->getOutput(0)}};
+  MLVM_CHECK(1 == tuple->items().size());
   // fn->setOutput(outputs);
 
   std::cout << fn->string() << "\n";

@@ -1,30 +1,21 @@
 #ifndef MLVM_COMPUTATION_TUPLE_
 #define MLVM_COMPUTATION_TUPLE_
 
-#include <memory>
-#include <optional>
-#include <string>
 #include <vector>
 
-#include "mlvm/Array/ShapeLike.h"
 #include "mlvm/Computation/TensorLike.h"
-#include "mlvm/Foundation/Status.h"
 
 namespace mlvm::computation {
 
-using namespace foundation;
-
-struct Item {
-  array::Shape shape;
-  std::optional<std::string> name;
-};
-
+// Immutable structure for inputs and outputs.
 class Tuple {
  public:
-  foundation::Status Add(array::ShapeLike shape_like);
+  Tuple(std::vector<TensorLike*> items) : items_{std::move(items)} {};
+
+  const std::vector<TensorLike*> items() const { return items_; }
 
  private:
-  std::vector<std::unique_ptr<Item>> items_;
+  std::vector<TensorLike*> items_;
 };
 
 }  // namespace mlvm::computation
