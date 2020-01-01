@@ -1,3 +1,4 @@
+#include <memory>
 #include <iostream>
 #include <iterator>
 
@@ -19,9 +20,9 @@ StatusOr<Program> buildProgram() {
   MLVM_ASSIGN_OR_RETURN(ins, fn->makeBinaryInst(OpCode::Add, t0, t0));
   MLVM_CHECK(1 == ins->outputsCount());
 
-  auto tuple = new Tuple{{ins->getOutput(0)}};
+  auto tuple = std::unique_ptr<Tuple>{new Tuple{{ins->getOutput(0)}}};
   MLVM_CHECK(1 == tuple->items().size());
-  // fn->setOutput(outputs);
+  fn->setOutput(std::move(tuple));
 
   std::cout << fn->string() << "\n";
 

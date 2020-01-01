@@ -4,6 +4,7 @@
 #include "mlvm/Array/Array.h"
 #include "mlvm/Computation/Instruction.h"
 #include "mlvm/Computation/OpCode.h"
+#include "mlvm/Computation/Tuple.h"
 #include "mlvm/Computation/TensorLike.h"
 #include "mlvm/Foundation/Macros.h"
 #include "mlvm/Foundation/Status.h"
@@ -27,20 +28,25 @@ class Function {
   StatusOrPtrIns makeBinaryInst(OpCode op, TensorLike* const lhs,
                                 TensorLike* const rhs);
 
-  // Creates an Instruction grouping tensors as a Tuple.
-  StatusOrPtrIns makeTupleInst(TensorLike* const lhs) { return nullptr; };
-
   // Sets the Output.
-  StatusOrPtrIns setOutput(Instruction* const ins) { return nullptr; }
+  foundation::Status setOutput(std::unique_ptr<Tuple> output) {
+    // Output cannot be Placeholder.
+    output_.swap(output);
+    return foundation::Status::OK;
+  }
 
  public:
   // Debug string.
   std::string string() const;
 
+  const Tuple* output() const { return output_.get(); }
+
  private:
   std::string name_;
   std::vector<std::unique_ptr<Instruction>> ins_vec_ = {};
   std::vector<std::unique_ptr<TensorLike>> constants_ = {};
+
+  std::unique_ptr<Tuple> output_ = {};
 };
 
 }  // namespace mlvm::computation
