@@ -15,6 +15,7 @@ set(MLVM_LIBS ${MLVM_LIBS} Computation PARENT_SCOPE)
 
 add_library(TestComputation OBJECT
   TensorLikeTest.cpp
+  InstructionTest.cpp
 )
 
 target_include_directories(TestComputation PUBLIC ${GTEST_INCLUDES})

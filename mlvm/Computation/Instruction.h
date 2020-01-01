@@ -14,23 +14,22 @@ class Function;
 
 class Instruction {
  public:
-  TensorLike* const getOutput(int i) { return outputs_[i].get(); };
+  Instruction(std::string name, OpCode op, std::vector<TensorLike*>&& inputs,
+              Function* parentFunc);
 
  public:
+  std::string name() const { return name_; }
+
   OpCode opCode() const { return opCode_; }
+
+  TensorLike* const getOutput(int i) { return outputs_[i].get(); }
+  int outputsCount() const { return outputs_.size(); }
 
   std::string string() const;
 
  private:
-  friend class Function;
-
-  Instruction(std::string name, OpCode op, std::vector<TensorLike*>&& inputs,
-              Function* parentFunc);
-
- private:
   std::string name_;
   OpCode opCode_;
-
   std::vector<TensorLike*> inputs_;
   std::vector<std::unique_ptr<TensorLike>> outputs_;
 
