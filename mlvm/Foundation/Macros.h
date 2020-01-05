@@ -9,6 +9,8 @@
     if (!status.ok()) return status; \
   }
 
+// For the reason why we need two macros here, check
+// https://github.com/xiejw/eva/blob/master/docs/notes/iso.md#1933-the--operator-cppconcat
 #define MLVM_STATUS_MACRO_CONCAT(x, y) MLVM_STATUS_MACRO_CONCAT_IMPL(x, y)
 #define MLVM_STATUS_MACRO_CONCAT_IMPL(x, y) x##y
 
