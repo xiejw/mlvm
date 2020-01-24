@@ -1,32 +1,20 @@
-DEBUG=.debug
-RELEASE=.release
+BUILD=.build
 
 ifdef VERBOSE
 	TEST_VERBOSE=-v
 endif
 
-default: compile run
+default: compile
 
 compile:
-	mkdir -p ${DEBUG} && cd ${DEBUG} && CLICOLOR_FORCE=1 cmake .. && make -j
+	@echo "Dummy compile."
 
-run:
-	${DEBUG}/example
-
-release:
-		mkdir -p ${RELEASE} && \
-			cd ${RELEASE} && \
-			CLICOLOR_FORCE=1 cmake -DCMAKE_BUILD_TYPE=RELEASE .. && \
-			make -j
-
-test: compile
-	${DEBUG}/test
+test: fmt
+	go test -v github.com/xiejw/mlvm/lib/...
 
 clean:
-	rm -rf ${DEBUG} ${RELEASE}
+	rm -rf ${BUILD} ${RELEASE}
 
 fmt:
-	docker run --rm -ti \
-    --user `id -u ${USER}`:`id -g ${USER}` \
-    -v `pwd`:/source xiejw/clang-format \
-    /clang-format.sh .
+	go mod tidy
+	gofmt -w -l lib
