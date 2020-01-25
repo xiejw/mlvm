@@ -6,8 +6,11 @@ endif
 
 default: compile
 
-compile:
-	@echo "Dummy compile."
+init:
+	mkdir -p ${BUILD}
+
+compile: init
+	go build -o ${BUILD}/hello cmd/main.go
 
 test: fmt
 	go test -v github.com/xiejw/mlvm/lib/...

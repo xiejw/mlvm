@@ -1,6 +1,5 @@
-# Cpp outputs (CMake)
-.debug
-.release
+# Go outputs
+.build
 
 # vim
 *.swo
