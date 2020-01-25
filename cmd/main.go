@@ -7,6 +7,5 @@ import (
 )
 
 func main() {
-	 fmt.Printf("Hello\n")
+	fmt.Printf("Hello\n")
 }
-

@@ -12,6 +12,9 @@ init:
 compile: init
 	go build -o ${BUILD}/hello cmd/main.go
 
+run:
+	${BUILD}/hello
+
 test: fmt
 	go test -v github.com/xiejw/mlvm/lib/...
 
@@ -20,4 +23,4 @@ clean:
 
 fmt:
 	go mod tidy
-	gofmt -w -l lib
+	gofmt -w -l lib cmd
