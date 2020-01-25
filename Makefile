@@ -16,7 +16,7 @@ run:
 	${BUILD}/hello
 
 test: fmt
-	go test -v github.com/xiejw/mlvm/lib/...
+	go test ${TEST_VERBOSE} github.com/xiejw/mlvm/lib/...
 
 clean:
 	rm -rf ${BUILD} ${RELEASE}
