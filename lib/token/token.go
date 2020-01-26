@@ -12,6 +12,7 @@ const (
 	EOF     = "EOF"
 
 	IDENTIFIER = "IDENTIFIER"
+	INT        = "INT"
 	FLOAT      = "FLOAT"
 
 	// Operators

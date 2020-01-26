@@ -29,7 +29,7 @@ func (l *Lexer) readChar() {
 
 // Returns the token, including the EOF.
 //
-// - Invocation advances the input reading.
+// - Invocation advances the lexer's position.
 // - Behavior is undefined after EOF is returned.
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
@@ -62,6 +62,11 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdentifier(tok.Literal)
 			return tok // Returns immediately to avoid readChar() again.
+		} else if isDigit(ch) {
+			tok.Type = token.INT
+			tok.Literal = l.readNumber()
+			return tok // Returns immediately to avoid readChar() again.
+
 		} else {
 			tok = newToken(token.ILLEGAL, ch)
 		}
@@ -78,10 +83,19 @@ func (l *Lexer) skipWhitespace() {
 	}
 }
 
-// Reads (and thereby advances internal reader) the identifier.
+// Reads (and thereby advances lexer's position) the identifier.
 func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for isLetter(l.ch) {
+		l.readChar()
+	}
+	return l.input[position:l.position]
+}
+
+// Reads (and thereby advances lexer's position) the number.
+func (l *Lexer) readNumber() string {
+	position := l.position
+	for isDigit(l.ch) {
 		l.readChar()
 	}
 	return l.input[position:l.position]
@@ -95,4 +109,9 @@ func newToken(tokenType token.TokenType, ch byte) token.Token {
 // Helper method to check whether a byte is considerd as letter.
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+}
+
+// Helper method to check whether a byte is considerd as digit.
+func isDigit(ch byte) bool {
+	return '0' <= ch && ch <= '9'
 }
