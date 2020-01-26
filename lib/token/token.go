@@ -31,3 +31,19 @@ const (
 	FUNC = "FUNC"
 	LET  = "LET"
 )
+
+var keywords = map[string]TokenType{
+	"func": FUNC,
+	"let":  LET,
+}
+
+// Returns the TokenType for the identifier.
+//
+// - Returns the corresponding keyword token type.
+// - Otherwise, returns IDENTIFIER as type.
+func LookupIdentifier(id string) TokenType {
+	if tok, ok := keywords[id]; ok {
+		return tok
+	}
+	return IDENTIFIER
+}
