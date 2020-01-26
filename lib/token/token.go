@@ -16,8 +16,14 @@ const (
 	FLOAT      = "FLOAT"
 
 	// Operators
-	ASSIGN = "="
-	PLUS   = "+"
+	ASSIGN   = "="
+	PLUS     = "+"
+	MINUS    = "-"
+	ASTERISK = "*"
+	SLASH    = "/"
+	BANG     = "!"
+	LT       = "<"
+	GT       = ">"
 
 	// Delimiters
 	COMMA     = ","

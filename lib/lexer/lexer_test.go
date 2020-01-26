@@ -12,11 +12,17 @@ type ExpectedToken struct {
 }
 
 func TestNextTokenWithBasicChars(t *testing.T) {
-	input := `=+(){},;`
+	input := `=+-*/!<>(){},;`
 
 	expectedTokens := []ExpectedToken{
 		{token.ASSIGN, "="},
 		{token.PLUS, "+"},
+		{token.MINUS, "-"},
+		{token.ASTERISK, "*"},
+		{token.SLASH, "/"},
+		{token.BANG, "!"},
+		{token.LT, "<"},
+		{token.GT, ">"},
 		{token.LPAREN, "("},
 		{token.RPAREN, ")"},
 		{token.LBRACE, "{"},
