@@ -43,6 +43,21 @@ func TestNextTokenWithIdentifiers(t *testing.T) {
 	assertTokens(t, input, expectedTokens)
 }
 
+func TestNextTokenWithInvalidIdentifiers(t *testing.T) {
+	input := `ab.c d123`
+
+	expectedTokens := []ExpectedToken{
+		{token.IDENTIFIER, "ab"},
+		{token.ILLEGAL, "."},
+		{token.IDENTIFIER, "c"},
+		{token.IDENTIFIER, "d"},
+		{token.INT, "123"},
+		{token.EOF, ""},
+	}
+
+	assertTokens(t, input, expectedTokens)
+}
+
 func TestNextTokenWithNumbers(t *testing.T) {
 	input := `20  20.  3.23 `
 
