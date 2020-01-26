@@ -11,8 +11,31 @@ type ExpectedToken struct {
 	expectedLiteral string
 }
 
-func TestNextToken(t *testing.T) {
+func TestNextTokenWithBasicChars(t *testing.T) {
 	input := `=+(){},;`
+
+	expectedTokens := []ExpectedToken{
+		{token.ASSIGN, "="},
+		{token.PLUS, "+"},
+		{token.LPAREN, "."},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.RBRACE, "}"},
+		{token.COMMA, ","},
+		{token.SEMICOLON, ";"},
+		{token.EOF, ""},
+	}
+
+	assertTokens(t, input, expectedTokens)
+}
+
+func TestNextTokenWithIdAndInts(t *testing.T) {
+	input := `let five= 5;
+            let ten =10;
+            let add = func(x, y) {
+                x + y;
+            }
+            let result = add(five, ten);`
 
 	expectedTokens := []ExpectedToken{
 		{token.ASSIGN, "="},
