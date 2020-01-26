@@ -29,6 +29,46 @@ func TestNextTokenWithBasicChars(t *testing.T) {
 	assertTokens(t, input, expectedTokens)
 }
 
+func TestNextTokenWithIdentifiers(t *testing.T) {
+	input := `abc e_f ghhh_ _hi`
+
+	expectedTokens := []ExpectedToken{
+		{token.IDENTIFIER, "abc"},
+		{token.IDENTIFIER, "e_f"},
+		{token.IDENTIFIER, "ghhh_"},
+		{token.IDENTIFIER, "_hi"},
+		{token.EOF, ""},
+	}
+
+	assertTokens(t, input, expectedTokens)
+}
+
+func TestNextTokenWithNumbers(t *testing.T) {
+	input := `20  20.  3.23 `
+
+	expectedTokens := []ExpectedToken{
+		{token.INT, "20"},
+		{token.FLOAT, "20."},
+		{token.FLOAT, "3.23"},
+		{token.EOF, ""},
+	}
+
+	assertTokens(t, input, expectedTokens)
+}
+
+func TestNextTokenWithInvalidNumbers(t *testing.T) {
+	input := `3.23. .45 `
+
+	expectedTokens := []ExpectedToken{
+		{token.FLOAT, "3.23"},
+		{token.ILLEGAL, "."},
+		{token.ILLEGAL, "."},
+		{token.INT, "45"},
+	}
+
+	assertTokens(t, input, expectedTokens)
+}
+
 func TestNextTokenWithFuncIdAndInts(t *testing.T) {
 	input := `let five= 5;
             let ten =10;

@@ -63,8 +63,7 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Type = token.LookupIdentifier(tok.Literal)
 			return tok // Returns immediately to avoid readChar() again.
 		} else if isDigit(ch) {
-			tok.Type = token.INT
-			tok.Literal = l.readNumber()
+			tok.Literal, tok.Type = l.readNumber()
 			return tok // Returns immediately to avoid readChar() again.
 
 		} else {
@@ -84,6 +83,9 @@ func (l *Lexer) skipWhitespace() {
 }
 
 // Reads (and thereby advances lexer's position) the identifier.
+//
+// identifier = letter +
+// letter = [a-zA-Z_]
 func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for isLetter(l.ch) {
@@ -93,12 +95,33 @@ func (l *Lexer) readIdentifier() string {
 }
 
 // Reads (and thereby advances lexer's position) the number.
-func (l *Lexer) readNumber() string {
+//
+// number = (digit+ | digit+ `.` digit*)
+// digit = [0-9]
+func (l *Lexer) readNumber() (string, token.TokenType) {
 	position := l.position
+
+	// Stage 1: Read enough digits.
 	for isDigit(l.ch) {
 		l.readChar()
 	}
-	return l.input[position:l.position]
+
+	// If it is an int, fast return.
+	if l.ch != '.' {
+		literal := l.input[position:l.position]
+		return literal, token.INT
+	}
+
+	// Eat the period `.`
+	l.readChar()
+
+	// Stage 2: Read enough digits.
+	for isDigit(l.ch) {
+		l.readChar()
+	}
+
+	literal := l.input[position:l.position]
+	return literal, token.FLOAT
 }
 
 // Helper method to create a new Token.
@@ -111,7 +134,7 @@ func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }
 
-// Helper method to check whether a byte is considerd as digit.
+// Helper method to check whether a byte is considerd as a digit.
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
 }
