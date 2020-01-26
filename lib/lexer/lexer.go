@@ -29,8 +29,7 @@ func (l *Lexer) readChar() {
 
 // Returns the token, including the EOF.
 //
-// - Invocation advances the lexer's position.
-// - Behavior is undefined after EOF is returned.
+// Invocation advances the lexer's position. Behavior is undefined after EOF is returned.
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
@@ -83,8 +82,8 @@ func (l *Lexer) skipWhitespace() {
 
 // Reads (and thereby advances lexer's position) the identifier.
 //
-// identifier = letter +
-// letter = [a-zA-Z_]
+//     identifier = letter +
+//     letter = [a-zA-Z_]
 func (l *Lexer) readIdentifier() (string, token.TokenType) {
 	position := l.position
 	for isLetter(l.ch) {
@@ -96,8 +95,8 @@ func (l *Lexer) readIdentifier() (string, token.TokenType) {
 
 // Reads (and thereby advances lexer's position) the number.
 //
-// number = (digit+ | digit+ `.` digit*)
-// digit = [0-9]
+//     number = (digit+ | digit+ `.` digit*)
+//     digit = [0-9]
 func (l *Lexer) readNumber() (string, token.TokenType) {
 	position := l.position
 
