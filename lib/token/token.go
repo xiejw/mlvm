@@ -35,13 +35,23 @@ const (
 	RBRACE = "}"
 
 	// Keywords
-	FUNC = "FUNC"
-	LET  = "LET"
+	FUNC   = "FUNC"
+	LET    = "LET"
+	RETURN = "RETURN"
+	IF     = "IF"
+	ELSE   = "ELSE"
+	TRUE   = "TRUE"
+	FALSE  = "FALSE"
 )
 
 var keywords = map[string]TokenType{
-	"func": FUNC,
-	"let":  LET,
+	"func":   FUNC,
+	"let":    LET,
+	"return": RETURN,
+	"if":     IF,
+	"else":   ELSE,
+	"true":   TRUE,
+	"false":  FALSE,
 }
 
 // Returns the TokenType for the identifier.

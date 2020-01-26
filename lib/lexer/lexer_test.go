@@ -91,12 +91,13 @@ func TestNextTokenWithInvalidNumbers(t *testing.T) {
 }
 
 func TestNextTokenWithFuncIdAndInts(t *testing.T) {
-	input := `let five= 5;
-            let ten =10;
-            let add = func(x, y) {
-                x + y;
-            }
-            let result = add(five, ten);`
+	input := `
+let five= 5;
+let ten =10;
+let add = func(x, y) {
+    x + y;
+}
+let result = add(five, ten);`
 
 	expectedTokens := []ExpectedToken{
 		/*  0 */ {token.LET, "let"},
@@ -139,6 +140,52 @@ func TestNextTokenWithFuncIdAndInts(t *testing.T) {
 		/* 34 */ {token.RPAREN, ")"},
 		/* 35 */ {token.SEMICOLON, ";"},
 		/* 36 */ {token.EOF, ""},
+	}
+
+	assertTokens(t, input, expectedTokens)
+}
+
+func TestNextTokenWithControlFlow(t *testing.T) {
+	input := `
+let gt = func(x, y) {
+    if (x > y) {
+        return true;
+    } else {
+        return false;
+    }
+}`
+
+	expectedTokens := []ExpectedToken{
+		/*  0 */ {token.LET, "let"},
+		/*  1 */ {token.IDENTIFIER, "gt"},
+		/*  2 */ {token.ASSIGN, "="},
+		/*  3 */ {token.FUNC, "func"},
+		/*  4 */ {token.LPAREN, "("},
+		/*  5 */ {token.IDENTIFIER, "x"},
+		/*  6 */ {token.COMMA, ","},
+		/*  7 */ {token.IDENTIFIER, "y"},
+		/*  8 */ {token.RPAREN, ")"},
+		/*  9 */ {token.LBRACE, "{"},
+		/*    */ // Func body
+		/* 10 */ {token.IF, "if"},
+		/* 11 */ {token.LPAREN, "("},
+		/* 12 */ {token.IDENTIFIER, "x"},
+		/* 13 */ {token.GT, ">"},
+		/* 14 */ {token.IDENTIFIER, "y"},
+		/* 15 */ {token.RPAREN, ")"},
+		/* 16 */ {token.LBRACE, "{"},
+		/* 17 */ {token.RETURN, "return"},
+		/* 18 */ {token.TRUE, "true"},
+		/* 19 */ {token.SEMICOLON, ";"},
+		/* 20 */ {token.RBRACE, "}"},
+		/* 21 */ {token.ELSE, "else"},
+		/* 22 */ {token.LBRACE, "{"},
+		/* 23 */ {token.RETURN, "return"},
+		/* 24 */ {token.FALSE, "false"},
+		/* 25 */ {token.SEMICOLON, ";"},
+		/* 26 */ {token.RBRACE, "}"},
+		/* 27 */ {token.RBRACE, "}"},
+		/* 28 */ {token.EOF, ""},
 	}
 
 	assertTokens(t, input, expectedTokens)
