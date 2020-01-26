@@ -16,3 +16,17 @@ func TestTokenEqualness(t *testing.T) {
 		t.Errorf("Not expected equal tokens")
 	}
 }
+
+func TestLookupKeywords(t *testing.T) {
+	tokenType := LookupIdentifier("hello")
+	expected := IDENTIFIER
+	if string(tokenType) != expected {
+		t.Errorf("Expect type %q, got %q", expected, tokenType)
+	}
+
+	tokenType = LookupIdentifier("func")
+	expected = FUNC
+	if string(tokenType) != expected {
+		t.Errorf("Expect type %q, got %q", expected, tokenType)
+	}
+}

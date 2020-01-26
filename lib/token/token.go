@@ -43,8 +43,8 @@ var keywords = map[string]TokenType{
 // - Returns the corresponding keyword token type.
 // - Otherwise, returns IDENTIFIER as type.
 func LookupIdentifier(id string) TokenType {
-	if tok, ok := keywords[id]; ok {
-		return tok
+	if tokenType, ok := keywords[id]; ok {
+		return tokenType
 	}
 	return IDENTIFIER
 }
