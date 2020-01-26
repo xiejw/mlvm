@@ -19,7 +19,7 @@ test: fmt
 	go test ${TEST_VERBOSE} github.com/xiejw/mlvm/lib/...
 
 clean:
-	rm -rf ${BUILD} ${RELEASE}
+	rm -rf ${BUILD}
 
 fmt:
 	go mod tidy

@@ -6,17 +6,18 @@ import (
 	"github.com/xiejw/mlvm/lib/token"
 )
 
-func TestNextToken(t *testing.T) {
+type ExpectedToken struct {
+	expectedType    token.TokenType
+	expectedLiteral string
+}
 
+func TestNextToken(t *testing.T) {
 	input := `=+(){},;`
 
-	tests := []struct {
-		expectedType    token.TokenType
-		expectedLiteral string
-	}{
+	expectedTokens := []ExpectedToken{
 		{token.ASSIGN, "="},
 		{token.PLUS, "+"},
-		{token.LPAREN, "("},
+		{token.LPAREN, "."},
 		{token.RPAREN, ")"},
 		{token.LBRACE, "{"},
 		{token.RBRACE, "}"},
@@ -25,9 +26,15 @@ func TestNextToken(t *testing.T) {
 		{token.EOF, ""},
 	}
 
+	assertTokens(t, input, expectedTokens)
+}
+
+func assertTokens(t *testing.T, input string, expectedTokens []ExpectedToken) {
+	t.Helper()
+
 	l := New(input)
 
-	for i, tt := range tests {
+	for i, tt := range expectedTokens {
 		tok := l.NextToken()
 		if tok.Type != tt.expectedType {
 			t.Errorf("tests[%d] - token type wrong. expected=%q, got=%q",
@@ -38,4 +45,5 @@ func TestNextToken(t *testing.T) {
 				i, tt.expectedLiteral, tok.Literal)
 		}
 	}
+
 }
