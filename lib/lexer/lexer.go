@@ -59,8 +59,7 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Type = token.EOF
 	default:
 		if isLetter(ch) {
-			tok.Literal = l.readIdentifier()
-			tok.Type = token.LookupIdentifier(tok.Literal)
+			tok.Literal, tok.Type = l.readIdentifier()
 			return tok // Returns immediately to avoid readChar() again.
 		} else if isDigit(ch) {
 			tok.Literal, tok.Type = l.readNumber()
@@ -86,12 +85,13 @@ func (l *Lexer) skipWhitespace() {
 //
 // identifier = letter +
 // letter = [a-zA-Z_]
-func (l *Lexer) readIdentifier() string {
+func (l *Lexer) readIdentifier() (string, token.TokenType) {
 	position := l.position
 	for isLetter(l.ch) {
 		l.readChar()
 	}
-	return l.input[position:l.position]
+	literal := l.input[position:l.position]
+	return literal, token.LookupIdentifier(literal)
 }
 
 // Reads (and thereby advances lexer's position) the number.
