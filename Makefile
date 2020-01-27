@@ -1,4 +1,5 @@
 BUILD=.build
+PACKAGE=github.com/xiejw/mlvm
 
 ifdef VERBOSE
 	TEST_VERBOSE=-v
@@ -6,21 +7,22 @@ endif
 
 default: compile
 
-init:
-	mkdir -p ${BUILD}
-
 compile: init
 	go build -o ${BUILD}/hello cmd/main.go
 
 run:
 	${BUILD}/hello
 
-test: fmt
-	go test ${TEST_VERBOSE} github.com/xiejw/mlvm/lib/...
+# {{{2 Maintainence
+init:
+	mkdir -p ${BUILD}
 
 clean:
 	rm -rf ${BUILD}
 
 fmt:
 	go mod tidy
-	gofmt -w -l lib cmd
+	go fmt ${PACKAGE}/...
+
+test: fmt
+	go test ${TEST_VERBOSE} ${PACKAGE}/...
