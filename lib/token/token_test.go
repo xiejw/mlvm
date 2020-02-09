@@ -5,9 +5,10 @@ import (
 )
 
 func TestTokenEqualness(t *testing.T) {
-	tok1 := Token{Type: PLUS, Literal: "+"}
-	tok2 := Token{Type: PLUS, Literal: "+"}
-	tok3 := Token{Type: ASSIGN, Literal: "="}
+	loc := Loc{1, 2}
+	tok1 := Token{Type: PLUS, Literal: "+", Loc: loc}
+	tok2 := Token{Type: PLUS, Literal: "+", Loc: loc}
+	tok3 := Token{Type: ASSIGN, Literal: "=", Loc: loc}
 
 	if tok1 != tok2 {
 		t.Errorf("Expected equal tokens")
@@ -17,16 +18,32 @@ func TestTokenEqualness(t *testing.T) {
 	}
 }
 
-func TestLookupKeywords(t *testing.T) {
+func TestLookupNonKeywords(t *testing.T) {
 	tokenType := LookupIdentifier("hello")
 	expected := IDENTIFIER
 	if string(tokenType) != expected {
 		t.Errorf("Expect type %q, got %q", expected, tokenType)
 	}
+}
 
-	tokenType = LookupIdentifier("func")
-	expected = FUNC
-	if string(tokenType) != expected {
-		t.Errorf("Expect type %q, got %q", expected, tokenType)
+func TestLookupKeywords(t *testing.T) {
+	expectedKeywords := []struct {
+		literal   string
+		tokenType TokenType
+	}{
+		{"func", FUNC},
+		{"let", LET},
+		{"return", RETURN},
+		{"if", IF},
+		{"else", ELSE},
+		{"true", TRUE},
+		{"false", FALSE},
+	}
+
+	for _, expected := range expectedKeywords {
+		got := LookupIdentifier(expected.literal)
+		if got != expected.tokenType {
+			t.Errorf("Expect type %q, got %q", expected, got)
+		}
 	}
 }

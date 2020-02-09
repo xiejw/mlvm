@@ -3,11 +3,12 @@ package token
 type TokenType string
 
 type Token struct {
-	Type    TokenType
-	Literal string
-	Loc     Loc
+	Type    TokenType // Token type.
+	Literal string    // The Literal in the source file.
+	Loc     Loc       // Location of the Token. Length can be deduced by Literal
 }
 
+// TokenTypes
 const (
 	ILLEGAL = "ILLEGAL"
 	EOF     = "EOF"
@@ -45,6 +46,7 @@ const (
 	FALSE  = "FALSE"
 )
 
+// Keywords.
 var keywords = map[string]TokenType{
 	"func":   FUNC,
 	"let":    LET,
