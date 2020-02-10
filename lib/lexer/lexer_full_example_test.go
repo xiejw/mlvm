@@ -8,8 +8,8 @@ import (
 
 func TestLexerWithOneFullExample(t *testing.T) {
 	input := `
-let x = 3;
-let y = 4;
+let x = 3 / 1 - 10 ;
+let y = 4 + 5 * 2;
 let gt = func(x, y) {
     if (x > y) {
         return true;
@@ -17,7 +17,8 @@ let gt = func(x, y) {
         return false;
     }
 }
-let result = gt(3, 4);
+let result = !gt(3, 4);
+let expected = 3 < 4;
 `
 	l := New(input)
 
@@ -29,7 +30,7 @@ let result = gt(3, 4);
 		}
 		i += 1
 	}
-	expected := 5 + 5 + 10 + 7 + 3 + 3 + 3 + 1 + 1 + 10
+	expected := 9 + 9 + 10 + 7 + 3 + 3 + 3 + 1 + 1 + 11 + 7
 	if i != expected {
 		t.Errorf("Token count mismatch: expected %v got %v", expected, i)
 	}
