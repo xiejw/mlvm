@@ -17,16 +17,6 @@ func New(input string) *Lexer {
 	return l
 }
 
-func (l *Lexer) readChar() {
-	if l.readPosition >= len(l.input) {
-		l.ch = 0
-	} else {
-		l.ch = l.input[l.readPosition]
-	}
-	l.position = l.readPosition
-	l.readPosition += 1
-}
-
 // Returns the token, including the EOF.
 //
 // Invocation advances the lexer's position. Behavior is undefined after EOF is returned.
@@ -84,6 +74,7 @@ func (l *Lexer) NextToken() token.Token {
 	return tok
 }
 
+// Skips all white space including newline.
 func (l *Lexer) skipWhitespace() {
 	ch := l.ch
 	for ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r' {
@@ -92,7 +83,18 @@ func (l *Lexer) skipWhitespace() {
 	}
 }
 
-// Reads (and thereby advances lexer's position) the identifier.
+// Reads next character.
+func (l *Lexer) readChar() {
+	if l.readPosition >= len(l.input) {
+		l.ch = 0
+	} else {
+		l.ch = l.input[l.readPosition]
+	}
+	l.position = l.readPosition
+	l.readPosition += 1
+}
+
+// Reads the identifier.
 //
 //     identifier = letter +
 //     letter = [a-zA-Z_]
@@ -105,7 +107,7 @@ func (l *Lexer) readIdentifier() (string, token.TokenType) {
 	return literal, token.LookupIdentifier(literal)
 }
 
-// Reads (and thereby advances lexer's position) the number.
+// Reads the number.
 //
 //     number = (digit+ | digit+ `.` digit*)
 //     digit = [0-9]
