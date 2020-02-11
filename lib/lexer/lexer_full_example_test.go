@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/xiejw/mlvm/lib/token"
@@ -22,16 +23,17 @@ let expected = 3 < 4;
 `
 	l := New(input)
 
-	i := 0
+	expectedNumTokensPerLine := []int{0, 0, 9, 9, 10, 7, 3, 3, 3, 1, 1, 11, 7} // Line is 1-based.
+	gotNumTokensPerLine := make([]int, len(expectedNumTokensPerLine))
 	for {
 		tok := l.NextToken()
 		if tok.Type == token.EOF {
 			break
 		}
-		i += 1
+		gotNumTokensPerLine[tok.Loc.L]++
 	}
-	expected := 9 + 9 + 10 + 7 + 3 + 3 + 3 + 1 + 1 + 11 + 7
-	if i != expected {
-		t.Errorf("Token count mismatch: expected %v got %v", expected, i)
+	if !reflect.DeepEqual(expectedNumTokensPerLine, gotNumTokensPerLine) {
+		t.Errorf("Token count mismatch: expected %v got %v",
+			expectedNumTokensPerLine, gotNumTokensPerLine)
 	}
 }
