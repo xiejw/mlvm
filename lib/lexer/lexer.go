@@ -6,13 +6,15 @@ import (
 
 type Lexer struct {
 	input        string
-	position     int  // Points to current char
-	readPosition int  // After position
-	ch           byte // Current char
+	loc          token.Loc // Current Location. This respects new line `\n`. 1-based index.
+	position     int       // Points to current char. This and the companion below do not handle new line differently.
+	readPosition int       // After position
+	ch           byte      // Current char
 }
 
 func New(input string) *Lexer {
 	l := &Lexer{input: input}
+	l.loc.L, l.loc.C = 1, 0
 	l.readChar()
 	return l
 }
@@ -25,36 +27,37 @@ func (l *Lexer) NextToken() token.Token {
 
 	l.skipWhitespace()
 
+	tok.Loc = l.loc // Make a copy.
 	ch := l.ch
 	switch ch {
 	case '=':
-		tok = newToken(token.ASSIGN, ch)
+		fillToken(&tok, token.ASSIGN, ch)
 	case '+':
-		tok = newToken(token.PLUS, ch)
+		fillToken(&tok, token.PLUS, ch)
 	case '-':
-		tok = newToken(token.MINUS, ch)
+		fillToken(&tok, token.MINUS, ch)
 	case '*':
-		tok = newToken(token.ASTERISK, ch)
+		fillToken(&tok, token.ASTERISK, ch)
 	case '/':
-		tok = newToken(token.SLASH, ch)
+		fillToken(&tok, token.SLASH, ch)
 	case '!':
-		tok = newToken(token.BANG, ch)
+		fillToken(&tok, token.BANG, ch)
 	case '<':
-		tok = newToken(token.LT, ch)
+		fillToken(&tok, token.LT, ch)
 	case '>':
-		tok = newToken(token.GT, ch)
+		fillToken(&tok, token.GT, ch)
 	case ',':
-		tok = newToken(token.COMMA, ch)
+		fillToken(&tok, token.COMMA, ch)
 	case ';':
-		tok = newToken(token.SEMICOLON, ch)
+		fillToken(&tok, token.SEMICOLON, ch)
 	case '(':
-		tok = newToken(token.LPAREN, ch)
+		fillToken(&tok, token.LPAREN, ch)
 	case ')':
-		tok = newToken(token.RPAREN, ch)
+		fillToken(&tok, token.RPAREN, ch)
 	case '{':
-		tok = newToken(token.LBRACE, ch)
+		fillToken(&tok, token.LBRACE, ch)
 	case '}':
-		tok = newToken(token.RBRACE, ch)
+		fillToken(&tok, token.RBRACE, ch)
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
@@ -65,13 +68,34 @@ func (l *Lexer) NextToken() token.Token {
 		} else if isDigit(ch) {
 			tok.Literal, tok.Type = l.readNumber()
 			return tok // Returns immediately to avoid readChar() again.
-
 		} else {
-			tok = newToken(token.ILLEGAL, ch)
+			fillToken(&tok, token.ILLEGAL, ch)
 		}
 	}
 	l.readChar()
 	return tok
+}
+
+// Reads next character.
+func (l *Lexer) readChar() {
+	var ch byte // Zero value.
+	if l.readPosition < len(l.input) {
+		ch = l.input[l.readPosition]
+	}
+
+	// Updates the loc in lexer.
+	switch ch {
+	case '\r': // no-op
+	case '\n':
+		l.loc.L += 1
+		l.loc.C = 0
+	default:
+		l.loc.C += 1
+	}
+
+	l.ch = ch
+	l.position = l.readPosition
+	l.readPosition += 1
 }
 
 // Skips all white space including newline.
@@ -81,17 +105,6 @@ func (l *Lexer) skipWhitespace() {
 		l.readChar()
 		ch = l.ch
 	}
-}
-
-// Reads next character.
-func (l *Lexer) readChar() {
-	if l.readPosition >= len(l.input) {
-		l.ch = 0
-	} else {
-		l.ch = l.input[l.readPosition]
-	}
-	l.position = l.readPosition
-	l.readPosition += 1
 }
 
 // Reads the identifier.
@@ -138,8 +151,9 @@ func (l *Lexer) readNumber() (string, token.TokenType) {
 }
 
 // Helper method to create a new Token.
-func newToken(tokenType token.TokenType, ch byte) token.Token {
-	return token.Token{Type: tokenType, Literal: string(ch)}
+func fillToken(tok *token.Token, tokenType token.TokenType, ch byte) {
+	tok.Type = tokenType
+	tok.Literal = string(ch)
 }
 
 // Helper method to check whether a byte is considerd as letter.

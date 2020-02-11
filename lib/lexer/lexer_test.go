@@ -191,6 +191,29 @@ let gt = func(x, y) {
 	assertTokens(t, input, expectedTokens)
 }
 
+func TestLocInTokens(t *testing.T) {
+	input := "abc e_f\nghhh_  123\n    {"
+	expectedLoc := []token.Loc{
+		{1, 1}, // abc
+		{1, 5}, // e_f
+		{2, 1}, // ghhh_
+		{2, 8}, // 123
+		{3, 5}, // {
+	}
+
+	l := New(input)
+	for i, loc := range expectedLoc {
+		tok := l.NextToken()
+		if tok.Loc != loc {
+			t.Errorf("tests[index: %2d] - loc wrong. expected=%v, got=%v",
+				i, loc, tok.Loc)
+		}
+	}
+	if l.NextToken().Type != token.EOF {
+		t.Errorf("Expect eof.")
+	}
+}
+
 func assertTokens(t *testing.T, input string, expectedTokens []ExpectedToken) {
 	t.Helper()
 
