@@ -1,5 +1,6 @@
-# Go outputs
-.build
+# CXX outputs
+.debug
+.release
 
 # vim
 *.swo

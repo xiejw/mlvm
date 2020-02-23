@@ -1,0 +1,55 @@
+# vim: foldenable foldmethod=marker foldlevel=1
+cmake_minimum_required(VERSION 3.5)
+project(mlvm)
+
+# {{{2 Configurations.
+
+# {{{3 Compiler Part.
+# Set the C++20 standard and Clang for compiler.
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_CXX_COMPILER clang++)
+
+# Adjust some options.
+add_compile_options(-Wall)
+
+# {{{3 Common Libraries, like gflags, gtest.
+include(${CMAKE_CURRENT_SOURCE_DIR}/../common-lib/CommonLib.cmake)
+
+# I../includes
+include_directories(.)
+
+# {{{2 Dependencies.
+#
+# Putting supporting dependencies in bottom.
+# add_subdirectory (eva/Cron)
+
+# {{{2 Executables.
+# {{{3 Compile
+new_executable(compile cmd/compile/main.cpp)
+
+# target_include_directories(cron PUBLIC ${GFLAGS_INCLUDES})
+
+# target_link_libraries(cron ${EVA_CRON_LIBS})
+
+
+# # {{{2 Tests.
+# if (NOT "${CMAKE_BUILD_TYPE}" STREQUAL "RELEASE")
+#   message("Generate test for debug mode")
+#   new_test_exec(test cmd/tests/main.cpp)
+#
+#   # We combine all tests in one binary for convenience.
+#   target_link_libraries(test ${EVA_CRON_LIBS})
+#   target_link_libraries(test ${TEST_EVA_CRON_LIBS})
+#
+#   target_link_libraries(test ${EVA_CRYPTO_LIBS})
+#   target_link_libraries(test ${TEST_EVA_CRYPTO_LIBS})
+#
+#   target_link_libraries(test ${EVA_FILESYSTEM_LIBS})
+#   target_link_libraries(test ${TEST_EVA_FILESYSTEM_LIBS})
+#
+#   target_link_libraries(test ${EVA_FOUNDATION_LIBS})
+#   target_link_libraries(test ${TEST_EVA_FOUNDATION_LIBS})
+# else()
+#   message("Skip test for release mode")
+# endif ()

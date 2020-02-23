@@ -1,28 +1,23 @@
-BUILD=.build
-PACKAGE=github.com/xiejw/mlvm
+DEBUG=./.debug
+RELEASE=./.release
 
-ifdef VERBOSE
-	TEST_VERBOSE=-v
-endif
+compile:
+	mkdir -p ${DEBUG} && cd ${DEBUG} && CLICOLOR_FORCE=1 cmake .. && make -j
 
-default: compile
+compile_only:
+	@cd ${DEBUG} && make -j --no-print-directory
 
-compile: init
-	go build -o ${BUILD}/hello cmd/main.go
+run: compile_only
+	@${DEBUG}/compile
 
-run:
-	${BUILD}/hello
-
-# {{{2 Maintainence
-init:
-	mkdir -p ${BUILD}
-
-clean:
-	rm -rf ${BUILD}
+test: compile
+	SKIP_LONG_TEST=1 ${DEBUG}/test
 
 fmt:
-	go mod tidy
-	go fmt ${PACKAGE}/...
+	docker run --rm -ti \
+      --user `id -u ${USER}`:`id -g ${USER}` \
+      -v `pwd`:/source xiejw/clang-format \
+      /clang-format.sh .
 
-test: fmt
-	go test ${TEST_VERBOSE} ${PACKAGE}/...
+clean:
+	rm -rf ${DEBUG} ${RELEASE}
