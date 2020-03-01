@@ -29,6 +29,22 @@ class TConst : public Tensor {
 
 class TResult : public Tensor {};
 
+enum class OpType { Add };
+
+class Instruction {
+ public:
+  std::string DebugString() const {
+    switch (op_) {
+      case OpType::Add:
+        return "Add";
+    }
+    return "Unknown";
+  }
+
+ private:
+  OpType op_;
+};
+
 }  // namespace mlvm
 
 int main() {
