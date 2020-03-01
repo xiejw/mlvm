@@ -10,21 +10,19 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
 
-# {{{2 Project
-# Set after compiler to avoid infinite loop.
-project(mlvm)
-
-# Adjust some options.
+# {{{3 Adjust some options for compiler globally.
 add_compile_options(-Wall)
+
+# {{{2 Project
+# Set after compiler to avoid infinite loop in absl.
+project(mlvm)
 
 # {{{3 Common Libraries, like gflags, gtest.
 include(${CMAKE_CURRENT_SOURCE_DIR}/../common-lib/CommonLib.cmake)
 
-add_subdirectory(libraries/absl)
-
 # {{{2 Dependencies.
-#
 # Putting supporting dependencies in bottom.
+add_subdirectory(libraries/absl)
 # add_subdirectory (eva/Cron)
 
 # {{{2 Executables.
