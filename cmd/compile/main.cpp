@@ -61,8 +61,9 @@ class Function {
   Function(std::string name) : name_{name} {};
 
   Tensor* newConst(TConst&& c) {
-    consts_.push_back(std::move(c));
-    return &consts_.back();
+    std::unique_ptr<TConst> p{new TConst{std::move(c)}};
+    consts_.push_back(std::move(p));
+    return consts_.back().get();
   };
 
   template <typename... T>
@@ -79,7 +80,7 @@ class Function {
     ss << "Function: `" << name_ << "`\n";
     ss << "  Consts:\n";
     for (auto& c : consts_) {
-      ss << "    - " << c.DebugString() << "\n";
+      ss << "    - " << c->DebugString() << "\n";
     }
 
     ss << "\n";
@@ -93,7 +94,7 @@ class Function {
 
  private:
   std::string name_;
-  std::vector<TConst> consts_;
+  std::vector<std::unique_ptr<TConst>> consts_;
   std::vector<std::unique_ptr<Instruction>> instructions_;
 };
 
