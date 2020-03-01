@@ -1,3 +1,4 @@
+#include <absl/strings/str_cat.h>
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -69,8 +70,8 @@ class Function {
   template <typename... T>
   Instruction* newInstruction(T&&... args) {
     int count = instructions_.size();
-    auto ins = new Instruction("ins_" + std::to_string(count),
-                               std::forward<T>(args)...);
+    auto ins =
+        new Instruction(absl::StrCat("ins_", count), std::forward<T>(args)...);
     instructions_.push_back(std::unique_ptr<Instruction>{ins});
     return instructions_.back().get();
   }
