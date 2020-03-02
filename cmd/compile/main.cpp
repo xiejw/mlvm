@@ -67,6 +67,10 @@ class Instruction {
     outputs_.emplace_back(result);
   };
 
+  std::string_view name() const { return name_; }
+
+  Tensor* outputAt(int i) const { return outputs_[i].get(); }
+
   std::string debugString() const {
     std::stringstream ss{};
     switch (op_) {
@@ -76,6 +80,7 @@ class Instruction {
       default:
         ss << "Unknown Op";
     }
+    ss << " `" << name_ << "`";
     ss << " (" << inputs_.size() << " inputs and " << outputs_.size()
        << " outputs)";
     return ss.str();
@@ -108,6 +113,9 @@ class Function {
     return instructions_.back().get();
   }
 
+  // TODO: status
+  void setOutput(Tensor* o) { outputs_.push_back(o); }
+
   std::string debugString() const {
     std::stringstream ss{};
     ss << "Function: `" << name_ << "`\n";
@@ -122,13 +130,20 @@ class Function {
       ss << "    - " << ins->debugString() << "\n";
     }
 
+    ss << "\n";
+    ss << "  Outputs:\n";
+    for (auto& o : outputs_) {
+      ss << "    - " << o->debugString() << "\n";
+    }
+
     return ss.str();
   };
 
  private:
   std::string name_;
-  std::vector<std::unique_ptr<TConst>> consts_;
-  std::vector<std::unique_ptr<Instruction>> instructions_;
+  std::vector<std::unique_ptr<TConst>> consts_ = {};
+  std::vector<std::unique_ptr<Instruction>> instructions_ = {};
+  std::vector<Tensor*> outputs_ = {};
 };
 
 }  // namespace mlvm
@@ -137,7 +152,11 @@ int main() {
   mlvm::Function fn{"main"};
   auto c0 = fn.newConst(mlvm::TConst{mlvm::Array{"c0"}});
 
-  fn.newInstruction(mlvm::OpType::Add, std::vector{c0, c0});
+  auto ins = fn.newInstruction(mlvm::OpType::Add, std::vector{c0, c0});
+  auto o0 = ins->outputAt(0);
+  ins = fn.newInstruction(mlvm::OpType::Add, std::vector{o0, o0});
+
+  fn.setOutput(ins->outputAt(0));
 
   std::cout << "const " << c0->debugString() << "\n";
   std::cout << "func " << fn.debugString() << "\n";
