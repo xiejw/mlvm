@@ -20,7 +20,7 @@ project(mlvm)
 
 # {{{3 Common Helpers
 #
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/CMake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 include(MLVMHelpers)
 
 # {{{2 Dependencies.
