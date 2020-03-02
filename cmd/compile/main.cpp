@@ -11,7 +11,7 @@ class Array {
  public:
   explicit Array(const char* value) : value_{std::string(value)} {};
 
-  std::string DebugString() const { return value_; }
+  std::string debugString() const { return value_; }
 
  private:
   std::string value_;
@@ -20,7 +20,7 @@ class Array {
 class Tensor {
  public:
   virtual ~Tensor(){};
-  virtual std::string DebugString() const = 0;
+  virtual std::string debugString() const = 0;
 };
 
 class TConst : public Tensor {
@@ -28,7 +28,7 @@ class TConst : public Tensor {
   explicit TConst(Array arr) : arr_{std::move(arr)} {};
   ~TConst() override{};
 
-  std::string DebugString() const override { return arr_.DebugString(); }
+  std::string debugString() const override { return arr_.debugString(); }
 
  private:
   Array arr_;
@@ -42,7 +42,7 @@ class TResult : public Tensor {
   TResult(std::string name, Instruction* src, int output_index)
       : name_{std::move(name)}, src_{src}, output_index_{output_index} {};
 
-  std::string DebugString() const override { return name_; }
+  std::string debugString() const override { return name_; }
 
   Instruction* srcInstructions() const { return src_; }
 
@@ -67,7 +67,7 @@ class Instruction {
     outputs_.emplace_back(result);
   };
 
-  std::string DebugString() const {
+  std::string debugString() const {
     std::stringstream ss{};
     switch (op_) {
       case OpType::Add:
@@ -108,18 +108,18 @@ class Function {
     return instructions_.back().get();
   }
 
-  std::string DebugString() const {
+  std::string debugString() const {
     std::stringstream ss{};
     ss << "Function: `" << name_ << "`\n";
     ss << "  Consts:\n";
     for (auto& c : consts_) {
-      ss << "    - " << c->DebugString() << "\n";
+      ss << "    - " << c->debugString() << "\n";
     }
 
     ss << "\n";
     ss << "  Instructions:\n";
     for (auto& ins : instructions_) {
-      ss << "    - " << ins->DebugString() << "\n";
+      ss << "    - " << ins->debugString() << "\n";
     }
 
     return ss.str();
@@ -139,6 +139,6 @@ int main() {
 
   fn.newInstruction(mlvm::OpType::Add, std::vector{c0, c0});
 
-  std::cout << "const " << c0->DebugString() << "\n";
-  std::cout << "func " << fn.DebugString() << "\n";
+  std::cout << "const " << c0->debugString() << "\n";
+  std::cout << "func " << fn.debugString() << "\n";
 }
