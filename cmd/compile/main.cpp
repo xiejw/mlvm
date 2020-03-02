@@ -62,16 +62,23 @@ class Instruction {
       : name_{std::move(name)}, op_{op}, inputs_{std::move(inputs)} {};
 
   // TODO: Use outputs.
-  void BuildOutputs(){
-
+  void BuildOutputs() {
+    auto result = new TResult{absl::StrCat("%o_{", name_, "}"), this, 0};
+    outputs_.emplace_back(result);
   };
 
   std::string DebugString() const {
+    std::stringstream ss{};
     switch (op_) {
       case OpType::Add:
-        return "Add";
+        ss << "Add";
+        break;
+      default:
+        ss << "Unknown Op";
     }
-    return "Unknown";
+    ss << " (" << inputs_.size() << " inputs and " << outputs_.size()
+       << " outputs)";
+    return ss.str();
   }
 
  private:
