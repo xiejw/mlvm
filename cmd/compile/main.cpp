@@ -34,7 +34,25 @@ class TConst : public Tensor {
   Array arr_;
 };
 
-class TResult : public Tensor {};
+// Forward declaration.
+class Instruction;
+
+class TResult : public Tensor {
+ public:
+  TResult(std::string name, Instruction* src, int output_index)
+      : name_{std::move(name)}, src_{src}, output_index_{output_index} {};
+
+  std::string DebugString() const override { return name_; }
+
+  Instruction* srcInstructions() const { return src_; }
+
+  int outputIndex() const { return output_index_; }
+
+ private:
+  std::string name_;
+  Instruction* src_;
+  int output_index_;
+};
 
 enum class OpType { Add };
 
@@ -42,6 +60,11 @@ class Instruction {
  public:
   Instruction(std::string name, OpType op, std::vector<Tensor*> inputs)
       : name_{std::move(name)}, op_{op}, inputs_{std::move(inputs)} {};
+
+  // TODO: Use outputs.
+  void BuildOutputs(){
+
+  };
 
   std::string DebugString() const {
     switch (op_) {
@@ -54,7 +77,8 @@ class Instruction {
  private:
   std::string name_;
   OpType op_;
-  std::vector<Tensor*> inputs_;
+  std::vector<Tensor*> inputs_;  // unowned.
+  std::vector<std::unique_ptr<Tensor>> outputs_ = {};
 };
 
 class Function {
@@ -72,6 +96,7 @@ class Function {
     int count = instructions_.size();
     auto ins =
         new Instruction(absl::StrCat("ins_", count), std::forward<T>(args)...);
+    ins->BuildOutputs();
     instructions_.push_back(std::unique_ptr<Instruction>{ins});
     return instructions_.back().get();
   }

@@ -12,7 +12,7 @@ compile:
 compile_only:
 	@cd ${DEBUG} && make -j --no-print-directory
 
-run: compile_only
+run:
 	@${DEBUG}/compile
 
 test: compile
