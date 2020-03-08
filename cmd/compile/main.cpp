@@ -158,6 +158,6 @@ int main() {
 
   fn.setOutput(ins->outputAt(0));
 
-  std::cout << "const " << c0->debugString() << "\n";
-  std::cout << "func " << fn.debugString() << "\n";
+  std::cout << "Const " << c0->debugString() << "\n";
+  std::cout << "Func:\n" << fn.debugString() << "\n";
 }
