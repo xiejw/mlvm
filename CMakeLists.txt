@@ -26,7 +26,7 @@ include(MLVMHelpers)
 # {{{2 Dependencies.
 #
 # Putting supporting dependencies in bottom.
-add_subdirectory(libraries/absl)
+add_subdirectory(.libraries/absl)
 
 # {{{2 Executables.
 #
