@@ -33,5 +33,8 @@ add_subdirectory(.libraries/absl)
 # {{{3 Binary compile
 #
 set(BINARY compile)
-add_mlvm_executable(${BINARY} cmd/compile/main.cpp)
+
+option(MLVM_BUILD_STATIC "If ON, builds static binary" OFF)
+
+add_mlvm_executable(${BINARY} cmd/compile/main.cpp ${MLVM_BUILD_STATIC})
 target_link_libraries(${BINARY} absl::strings)
