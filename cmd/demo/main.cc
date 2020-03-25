@@ -15,10 +15,10 @@ class Tensor {
   virtual std::string debugString() const = 0;
 };
 
-class TConst : public Tensor {
+class ConstTensor : public Tensor {
  public:
-  explicit TConst(Array arr) : arr_{std::move(arr)} {};
-  ~TConst() override{};
+  explicit ConstTensor(Array arr) : arr_{std::move(arr)} {};
+  ~ConstTensor() override{};
 
   std::string debugString() const override { return arr_.debugString(); }
 
@@ -29,14 +29,14 @@ class TConst : public Tensor {
 // Forward declaration.
 class Instruction;
 
-class TResult : public Tensor {
+class OutputTensor : public Tensor {
  public:
-  TResult(std::string name, Instruction* src, int output_index)
+  OutputTensor(std::string name, Instruction* src, int output_index)
       : name_{std::move(name)}, src_{src}, output_index_{output_index} {};
 
   std::string debugString() const override { return name_; }
 
-  Instruction* srcInstructions() const { return src_; }
+  Instruction* srcInstruction() const { return src_; }
 
   int outputIndex() const { return output_index_; }
 
@@ -55,7 +55,7 @@ class Instruction {
 
   // TODO: Use outputs.
   void BuildOutputs() {
-    auto result = new TResult{absl::StrCat("%o_{", name_, "}"), this, 0};
+    auto result = new OutputTensor{absl::StrCat("%o_{", name_, "}"), this, 0};
     outputs_.emplace_back(result);
   };
 
@@ -89,8 +89,8 @@ class Function {
  public:
   Function(std::string name) : name_{name} {};
 
-  Tensor* newConst(TConst&& c) {
-    std::unique_ptr<TConst> p{new TConst{std::move(c)}};
+  Tensor* newConst(ConstTensor&& c) {
+    std::unique_ptr<ConstTensor> p{new ConstTensor{std::move(c)}};
     consts_.push_back(std::move(p));
     return consts_.back().get();
   };
@@ -133,7 +133,7 @@ class Function {
 
  private:
   std::string name_;
-  std::vector<std::unique_ptr<TConst>> consts_ = {};
+  std::vector<std::unique_ptr<ConstTensor>> consts_ = {};
   std::vector<std::unique_ptr<Instruction>> instructions_ = {};
   std::vector<Tensor*> outputs_ = {};
 };
@@ -142,7 +142,7 @@ class Function {
 
 int main() {
   mlvm::Function fn{"main"};
-  auto c0 = fn.newConst(mlvm::TConst{mlvm::Array{"c0"}});
+  auto c0 = fn.newConst(mlvm::ConstTensor{mlvm::Array{"c0"}});
 
   auto ins = fn.newInstruction(mlvm::OpType::Add, std::vector{c0, c0});
   auto o0 = ins->outputAt(0);
@@ -150,6 +150,5 @@ int main() {
 
   fn.setOutput(ins->outputAt(0));
 
-  std::cout << "Const " << c0->debugString() << "\n";
   std::cout << "Func:\n" << fn.debugString() << "\n";
 }
