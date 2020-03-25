@@ -9,4 +9,6 @@ function(add_mlvm_executable NAME CPP_FILE STATIC)
   endif()
 endfunction()
 
-set(MLVM_COMMON_COMPILE_OPTIONS -Wall -Werror PARENT_SCOPE)
+# {{{1 Common Options
+set(MLVM_COMMON_COMPILE_OPTIONS -Wall -Werror -Wextra)
+set(MLVM_COMMON_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})

@@ -3,7 +3,7 @@ RELEASE=./.release
 
 FMT=docker run --rm -ti \
       --user `id -u ${USER}`:`id -g ${USER}` \
-      -v `pwd`:/source xiejw/clang-format \
+      -v `pwd`:/workdir xiejw/clang-format \
       /clang-format.sh
 
 .PHONY: default compile compile_only run test fmt clean
@@ -15,10 +15,10 @@ compile:
 	mkdir -p ${DEBUG} && cd ${DEBUG} && cmake -GNinja .. && ninja
 
 compile_only:
-	@echo "-> Compiling..." && cd ${DEBUG} && ninja
+	@echo "-> Compiling..." && cd ${DEBUG} && ninja -v
 
 run: compile_only
-	@echo "-> Running..." && ${DEBUG}/compile
+	@echo "-> Running..." && ${DEBUG}/demo
 
 test: compile_only
 	SKIP_LONG_TEST=1 ${DEBUG}/test

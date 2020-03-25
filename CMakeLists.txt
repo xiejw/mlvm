@@ -1,4 +1,4 @@
-# vim: foldenable foldmethod=marker foldlevel=1
+# vim: foldenable foldmethod=marker foldlevel=2
 cmake_minimum_required(VERSION 3.9)
 
 # {{{2 Configurations.
@@ -9,19 +9,15 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
 
-# {{{3 Adjust some options for compiler globally.
+# {{{3 Common Helpers
 #
-#add_compile_options(-Wall)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
+include(MLVMHelpers)
 
 # {{{2 Project
 #
 # Set after compiler to avoid infinite loop in absl.
 project(mlvm)
-
-# {{{3 Common Helpers
-#
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
-include(MLVMHelpers)
 
 # {{{2 Dependencies.
 #
