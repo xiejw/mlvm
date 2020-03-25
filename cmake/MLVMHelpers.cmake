@@ -1,3 +1,7 @@
+# {{{1 Common Options
+set(MLVM_COMMON_COMPILE_OPTIONS -Wall -Werror -Wextra)
+set(MLVM_COMMON_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
 # {{{1 Common Function
 function(add_mlvm_executable NAME CPP_FILE STATIC)
   add_executable(${NAME} ${CPP_FILE})
@@ -8,10 +12,6 @@ function(add_mlvm_executable NAME CPP_FILE STATIC)
     message("Disable build static binary for ${NAME}")
   endif()
 endfunction()
-
-# {{{1 Common Options
-set(MLVM_COMMON_COMPILE_OPTIONS -Wall -Werror -Wextra)
-set(MLVM_COMMON_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 function(add_mlvm_library)
   cmake_parse_arguments(
