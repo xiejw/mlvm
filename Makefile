@@ -11,7 +11,8 @@ FMT=docker run --rm -ti \
 default: run
 
 compile:
-	mkdir -p ${DEBUG} && cd ${DEBUG} && CLICOLOR_FORCE=1 cmake -GNinja .. && ninja
+	@echo "-> Bootstraping..."
+	mkdir -p ${DEBUG} && cd ${DEBUG} && cmake -GNinja .. && ninja
 
 compile_only:
 	@echo "-> Compiling..." && cd ${DEBUG} && ninja
@@ -19,7 +20,7 @@ compile_only:
 run: compile_only
 	@echo "-> Running..." && ${DEBUG}/compile
 
-test: compile
+test: compile_only
 	SKIP_LONG_TEST=1 ${DEBUG}/test
 
 fmt:

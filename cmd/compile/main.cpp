@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include "mlvm/Computation/Tensor.h"
+
 namespace mlvm {
 
 class Tensor {

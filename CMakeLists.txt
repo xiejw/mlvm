@@ -1,5 +1,5 @@
 # vim: foldenable foldmethod=marker foldlevel=1
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.9)
 
 # {{{2 Configurations.
 #
@@ -27,6 +27,7 @@ include(MLVMHelpers)
 #
 # Putting supporting dependencies in bottom.
 add_subdirectory(.libraries/absl)
+add_subdirectory(mlvm/Computation)
 
 # {{{2 Executables.
 #
@@ -37,4 +38,5 @@ set(BINARY compile)
 option(MLVM_BUILD_STATIC "If ON, builds static binary" OFF)
 
 add_mlvm_executable(${BINARY} cmd/compile/main.cpp ${MLVM_BUILD_STATIC})
+target_link_libraries(${BINARY} MLVM_COMPUTATION)
 target_link_libraries(${BINARY} absl::strings)
