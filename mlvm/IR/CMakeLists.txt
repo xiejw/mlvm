@@ -7,6 +7,8 @@ add_mlvm_library(
     Tensor.cc
     Instruction.h
     Instruction.cc
+    Function.h
+    Function.cc
 
   DEPS
 
