@@ -34,6 +34,6 @@ set(BINARY demo)
 option(MLVM_BUILD_STATIC "If ON, builds static binary" OFF)
 
 add_mlvm_executable(${BINARY} cmd/demo/main.cc ${MLVM_BUILD_STATIC})
-target_link_libraries(${BINARY} MLVM_COMPUTATION)
 target_link_libraries(${BINARY} absl::strings)
+target_link_libraries(${BINARY} mlvm::computation)
 target_compile_options(${BINARY} PUBLIC ${MLVM_COMMON_COMPILE_OPTIONS})
