@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "mlvm/Computation/Tensor.h"
+#include "mlvm/IR/Tensor.h"
 
 namespace mlvm {
 

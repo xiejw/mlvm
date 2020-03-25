@@ -1,6 +1,6 @@
 add_mlvm_library(
   NAME
-    computation
+    ir
 
   SRCS
     Tensor.h

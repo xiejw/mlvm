@@ -1,7 +1,6 @@
-#ifndef MLVM_COMPUTATION_H_
-#define MLVM_COMPUTATION_H_
+#ifndef MLVM_IR_H_
+#define MLVM_IR_H_
 
-#include <string>
 #include <string>
 
 namespace mlvm {
@@ -10,12 +9,12 @@ class Array {
  public:
   explicit Array(const char* value) : value_{std::string(value)} {};
 
-  std::string debugString() const { return value_; }
+  std::string debugString() const;
 
  private:
   std::string value_;
 };
 
-} // namespace mlvm
+}  // namespace mlvm
 
 #endif
