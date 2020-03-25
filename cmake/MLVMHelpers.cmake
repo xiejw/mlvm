@@ -18,7 +18,7 @@ function(add_mlvm_library)
     MLVM_LIBRARY_PREFIX
     ""
     "NAME"
-    "SRCS"
+    "SRCS;DEPS"
     ${ARGN}
   )
 
@@ -40,7 +40,9 @@ function(add_mlvm_library)
     $<BUILD_INTERFACE:${MLVM_COMMON_INCLUDE_DIR}>
   )
 
-  target_compile_options(${_INTERNAL_NAME} PUBLIC 
+  target_compile_options(${_INTERNAL_NAME} PUBLIC
     ${MLVM_COMMON_COMPILE_OPTIONS})
+
+  target_link_libraries(${_INTERNAL_NAME} ${MLVM_LIBRARY_PREFIX_DEPS})
 
 endfunction()

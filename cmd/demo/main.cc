@@ -1,89 +1,16 @@
-#include <absl/strings/str_cat.h>
 #include <iostream>
 #include <memory>
 #include <sstream>
+
 #include <string>
 #include <vector>
 
+#include <absl/strings/str_cat.h>
+
+#include "mlvm/IR/Instruction.h"
 #include "mlvm/IR/Tensor.h"
 
 namespace mlvm {
-
-class Tensor {
- public:
-  virtual ~Tensor(){};
-  virtual std::string debugString() const = 0;
-};
-
-class ConstTensor : public Tensor {
- public:
-  explicit ConstTensor(Array arr) : arr_{std::move(arr)} {};
-  ~ConstTensor() override{};
-
-  std::string debugString() const override { return arr_.debugString(); }
-
- private:
-  Array arr_;
-};
-
-// Forward declaration.
-class Instruction;
-
-class OutputTensor : public Tensor {
- public:
-  OutputTensor(std::string name, Instruction* src, int output_index)
-      : name_{std::move(name)}, src_{src}, output_index_{output_index} {};
-
-  std::string debugString() const override { return name_; }
-
-  Instruction* srcInstruction() const { return src_; }
-
-  int outputIndex() const { return output_index_; }
-
- private:
-  std::string name_;
-  Instruction* src_;
-  int output_index_;
-};
-
-enum class OpType { Add };
-
-class Instruction {
- public:
-  Instruction(std::string name, OpType op, std::vector<Tensor*> inputs)
-      : name_{std::move(name)}, op_{op}, inputs_{std::move(inputs)} {};
-
-  // TODO: Use outputs.
-  void BuildOutputs() {
-    auto result = new OutputTensor{absl::StrCat("%o_{", name_, "}"), this, 0};
-    outputs_.emplace_back(result);
-  };
-
-  std::string_view name() const { return name_; }
-
-  Tensor* outputAt(int i) const { return outputs_[i].get(); }
-
-  std::string debugString() const {
-    std::stringstream ss{};
-    switch (op_) {
-      case OpType::Add:
-        ss << "Add";
-        break;
-      default:
-        ss << "Unknown Op";
-    }
-    ss << " `" << name_ << "`";
-    ss << " (" << inputs_.size() << " inputs and " << outputs_.size()
-       << " outputs)";
-    return ss.str();
-  }
-
- private:
-  std::string name_;
-  OpType op_;
-  std::vector<Tensor*> inputs_;  // unowned.
-  std::vector<std::unique_ptr<Tensor>> outputs_ = {};
-};
 
 class Function {
  public:

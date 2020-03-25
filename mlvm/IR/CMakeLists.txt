@@ -5,4 +5,10 @@ add_mlvm_library(
   SRCS
     Tensor.h
     Tensor.cc
+    Instruction.h
+    Instruction.cc
+
+  DEPS
+
+    absl::strings
 )
