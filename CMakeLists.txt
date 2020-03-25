@@ -11,7 +11,7 @@ set(CMAKE_CXX_COMPILER clang++)
 
 # {{{3 Adjust some options for compiler globally.
 #
-add_compile_options(-Wall)
+#add_compile_options(-Wall)
 
 # {{{2 Project
 #
@@ -31,12 +31,13 @@ add_subdirectory(mlvm/Computation)
 
 # {{{2 Executables.
 #
-# {{{3 Binary compile
+# {{{3 Binary demo
 #
-set(BINARY compile)
+set(BINARY demo)
 
 option(MLVM_BUILD_STATIC "If ON, builds static binary" OFF)
 
-add_mlvm_executable(${BINARY} cmd/compile/main.cpp ${MLVM_BUILD_STATIC})
+add_mlvm_executable(${BINARY} cmd/demo/main.cc ${MLVM_BUILD_STATIC})
 target_link_libraries(${BINARY} MLVM_COMPUTATION)
 target_link_libraries(${BINARY} absl::strings)
+target_compile_options(${BINARY} PUBLIC ${MLVM_COMMON_COMPILE_OPTIONS})

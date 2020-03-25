@@ -8,3 +8,5 @@ function(add_mlvm_executable NAME CPP_FILE STATIC)
     message("Disable build static binary for ${NAME}")
   endif()
 endfunction()
+
+set(MLVM_COMMON_COMPILE_OPTIONS -Wall -Werror PARENT_SCOPE)
