@@ -22,26 +22,25 @@ function(add_mlvm_library)
     ${ARGN}
   )
 
-  # For name Foo
-  #   - _NAME is MLVM_FOO
-  #   - _LOWER_NAME is mlvm::foo
-  set(_NAME MLVM_${MLVM_LIBRARY_PREFIX_NAME})
-  string(TOUPPER ${_NAME} _NAME)
-  string(TOLOWER mlvm::${MLVM_LIBRARY_PREFIX_NAME} _LOWER_NAME)
+  # Set up some names used by later. For example, if the NAME is Foo, then
+  #
+  #   - `_PUBLIC_NAME` is `mlvm::foo`. This is user-facing name.
+  #   - `_INTERNAL_NAME` is `MLVM_FOO`. This is mainly used for internal target.
+  #
+  string(TOLOWER mlvm::${MLVM_LIBRARY_PREFIX_NAME} _PUBLIC_NAME)
+  string(TOUPPER MLVM_${MLVM_LIBRARY_PREFIX_NAME} _INTERNAL_NAME)
 
-  add_library(${_NAME}
+  add_library(${_INTERNAL_NAME}
     ${MLVM_LIBRARY_PREFIX_SRCS}
   )
 
-  add_library(${_LOWER_NAME}
-    ALIAS ${_NAME}
-  )
+  add_library(${_PUBLIC_NAME} ALIAS ${_INTERNAL_NAME})
 
-  target_include_directories(${_NAME} PUBLIC
+  target_include_directories(${_INTERNAL_NAME} PUBLIC
     $<BUILD_INTERFACE:${MLVM_COMMON_INCLUDE_DIR}>
   )
 
-  target_compile_options(${_NAME} PUBLIC
+  target_compile_options(${_INTERNAL_NAME} PUBLIC 
     ${MLVM_COMMON_COMPILE_OPTIONS})
 
 endfunction()
