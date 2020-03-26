@@ -25,6 +25,7 @@ project(mlvm)
 add_subdirectory(mlvm/IR)
 add_subdirectory(mlvm/Foundation)
 add_subdirectory(.libraries/absl)
+add_subdirectory(.libraries/gtest)
 
 # {{{2 Executables.
 #
@@ -39,3 +40,12 @@ target_link_libraries(${BINARY} mlvm::ir)
 target_link_libraries(${BINARY} mlvm::foundation)
 target_link_libraries(${BINARY} absl::strings)
 target_compile_options(${BINARY} PUBLIC ${MLVM_COMMON_COMPILE_OPTIONS})
+
+# {{{2 Tests.
+if (NOT "${CMAKE_BUILD_TYPE}" STREQUAL "RELEASE")
+  message("## Generate test for debug mode")
+  add_executable(test cmd/test/main.cc)
+  target_link_libraries(test gtest )
+else()
+  message("## Skip test for release mode")
+endif ()
