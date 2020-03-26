@@ -22,8 +22,9 @@ project(mlvm)
 # {{{2 Dependencies.
 #
 # Putting supporting dependencies in bottom.
-add_subdirectory(.libraries/absl)
 add_subdirectory(mlvm/IR)
+add_subdirectory(mlvm/Foundation)
+add_subdirectory(.libraries/absl)
 
 # {{{2 Executables.
 #
@@ -34,6 +35,7 @@ set(BINARY demo)
 option(MLVM_BUILD_STATIC "If ON, builds static binary" OFF)
 
 add_mlvm_executable(${BINARY} cmd/demo/main.cc ${MLVM_BUILD_STATIC})
-target_link_libraries(${BINARY} absl::strings)
 target_link_libraries(${BINARY} mlvm::ir)
+target_link_libraries(${BINARY} mlvm::foundation)
+target_link_libraries(${BINARY} absl::strings)
 target_compile_options(${BINARY} PUBLIC ${MLVM_COMMON_COMPILE_OPTIONS})

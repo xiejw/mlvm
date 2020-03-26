@@ -1,10 +1,11 @@
 #ifndef MLVM_IR_FUNCTION_H_
 #define MLVM_IR_FUNCTION_H_
 
+#include <absl/strings/str_cat.h>
+
+#include "mlvm/Foundation/Status.h"
 #include "mlvm/IR/Instruction.h"
 #include "mlvm/IR/Tensor.h"
-
-#include <absl/strings/str_cat.h>
 
 namespace mlvm {
 
@@ -28,8 +29,10 @@ class Function {
     return instructions_.back().get();
   }
 
-  // TODO: status
-  void setOutput(Tensor* o) { outputs_.push_back(o); }
+  Status setOutput(Tensor* o) {
+    outputs_.push_back(o);
+    return Status::OK;
+  }
 
   std::string debugString() const;
 
