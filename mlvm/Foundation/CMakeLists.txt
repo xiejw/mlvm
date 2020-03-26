@@ -5,4 +5,6 @@ add_mlvm_library(
   SRCS
     Status.h
     Status.cc
+    Utilities.h
+    Utilities.cc
 )

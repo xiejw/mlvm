@@ -19,8 +19,7 @@ int main() {
   auto o0 = ins->outputAt(0);
   ins = fn.newInstruction(mlvm::OpType::Add, std::vector{o0, o0});
 
-  auto status = fn.setOutput(ins->outputAt(0));
-  if (!status.ok()) return -1;
+  MLVM_FATAL_IF_ERROR(fn.setOutput(ins->outputAt(0)));
 
   std::cout << "Func:\n" << fn.debugString() << "\n";
 }
