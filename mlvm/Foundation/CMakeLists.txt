@@ -7,4 +7,8 @@ add_mlvm_library(
     Status.cc
     Utilities.h
     Utilities.cc
+
+  TESTS
+    StatusTest.cc
 )
+
