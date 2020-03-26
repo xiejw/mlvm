@@ -24,7 +24,7 @@ class Function {
     int count = instructions_.size();
     auto ins =
         new Instruction(absl::StrCat("ins_", count), std::forward<T>(args)...);
-    ins->BuildOutputs();
+    MLVM_FATAL_IF_ERROR(ins->buildOutputs());
     instructions_.push_back(std::unique_ptr<Instruction>{ins});
     return instructions_.back().get();
   }

@@ -40,7 +40,7 @@ class OutputTensor : public Tensor {
   OutputTensor(std::string name, Instruction* src, int output_index)
       : name_{std::move(name)}, src_{src}, output_index_{output_index} {};
 
-  std::string debugString() const override { return name_; }
+  std::string debugString() const override;
 
   Instruction* srcInstruction() const { return src_; }
 

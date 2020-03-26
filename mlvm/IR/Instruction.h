@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include "mlvm/Foundation/Status.h"
 #include "mlvm/IR/Tensor.h"
 
 namespace mlvm {
@@ -14,14 +15,13 @@ class Instruction {
   Instruction(std::string name, OpType op, std::vector<Tensor*> inputs)
       : name_{std::move(name)}, op_{op}, inputs_{std::move(inputs)} {};
 
-  // TODO: Use outputs.
-  void BuildOutputs();
-
   std::string_view name() const { return name_; }
 
-  Tensor* outputAt(int i) const { return outputs_[i].get(); }
-
   std::string debugString() const;
+
+  Status buildOutputs();
+
+  Tensor* outputAt(int i) const { return outputs_[i].get(); }
 
  private:
   std::string name_;

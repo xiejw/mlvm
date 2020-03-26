@@ -34,9 +34,12 @@ std::string Instruction::debugString() const {
   return ss.str();
 }
 
-void Instruction::BuildOutputs() {
-  auto result = new OutputTensor{absl::StrCat("%o_{", name_, "}"), this, 0};
+Status Instruction::buildOutputs() {
+  const int index = 0;
+  auto result = new OutputTensor{absl::StrCat("%o_{", name_, ", ", index, "}"),
+                                 this, index};
   outputs_.emplace_back(result);
+  return Status::OK;
 };
 
 }  // namespace mlvm
