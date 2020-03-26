@@ -18,13 +18,10 @@ TEST_F(FoundationStatusTest, CheckErrorCode) {
   ASSERT_EQ(ErrorCode::InvalidArguments, status.errorCode());
 }
 
-// TEST_F(FoundationStatusTest, CheckErrorMessage) {
-//   auto status = Status(ErrorCode::InvalidArguments, "Hello");
-//   ASSERT_STREQ("Hello", status.message().value().c_str());
-//
-//   status = Status(ErrorCode::InvalidArguments);
-//   ASSERT_FALSE(status.message().has_value());
-// }
+TEST_F(FoundationStatusTest, CheckErrorMessage) {
+  auto status = Status(ErrorCode::InvalidArguments, "Hello");
+  ASSERT_STREQ("Hello", status.message().c_str());
+}
 
 }  // namespace
 

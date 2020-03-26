@@ -13,13 +13,12 @@
   }
 
 // Fatal error if x.ok() == false.
-#define MLVM_FATAL_IF_ERROR(x)                                 \
-  {                                                            \
-    auto status = (x);                                         \
-    if (!status.ok()) {                                        \
-      mlvm::FatalError("Fatal error: %s",                      \
-                       std::string(status.message()).c_str()); \
-    }                                                          \
+#define MLVM_FATAL_IF_ERROR(x)                                       \
+  {                                                                  \
+    auto status = (x);                                               \
+    if (!status.ok()) {                                              \
+      mlvm::FatalError("Fatal error: %s", status.message().c_str()); \
+    }                                                                \
   }
 
 #endif

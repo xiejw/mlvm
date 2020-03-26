@@ -38,7 +38,8 @@ class [[nodiscard]] Status {
   bool ok() const { return !err_.has_value(); }
 
   const ErrorCode& errorCode() const { return err_.value(); }
-  std::string_view message() const {
+
+  std::string message() const {
     if (msg_.has_value()) return msg_.value();
     if (!err_.has_value()) return "(no error)";
 
