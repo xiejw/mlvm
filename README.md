@@ -8,9 +8,9 @@
 
 ## CXX Namespace
 
-| Folder     | Namespace |
-| ---------- | --------- |
-| Foundation | mlvm::    |
-| IR         | mlvm::IR  |
-| Runtime    | mlvm::RT  |
+| Folder     | Namespace   |
+| ---------- | ----------- |
+| Foundation | `mlvm::`    |
+| IR         | `mlvm::IR`  |
+| Runtime    | `mlvm::RT`  |
 
