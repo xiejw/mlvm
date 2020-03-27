@@ -1,8 +1,8 @@
 #ifndef MLVM_IR_FUNCTION_H_
 #define MLVM_IR_FUNCTION_H_
 
-#include <memory>
 #include <absl/strings/str_cat.h>
+#include <memory>
 
 #include "mlvm/Foundation/Status.h"
 #include "mlvm/IR/Instruction.h"
