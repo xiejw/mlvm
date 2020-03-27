@@ -1,13 +1,7 @@
 #include <iostream>
-#include <memory>
-#include <sstream>
-
-#include <string>
-#include <vector>
-
-#include <absl/strings/str_cat.h>
 
 #include "mlvm/IR/Function.h"
+#include "mlvm/Runtime/Evaluator.h"
 
 namespace mlvm {}  // namespace mlvm
 
@@ -22,4 +16,7 @@ int main() {
   MLVM_FATAL_IF_ERROR(fn.setOutput(ins->outputAt(0)));
 
   std::cout << "Func:\n" << fn.debugString() << "\n";
+
+  mlvm::RT::Evaluator eval{};
+  MLVM_FATAL_IF_ERROR(eval.run(fn));
 }

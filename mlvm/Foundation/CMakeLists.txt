@@ -12,5 +12,8 @@ add_mlvm_library(
   TESTS
     StatusTest.cc
     StatusOrTest.cc
+
+  DEPS
+    absl::strings
 )
 

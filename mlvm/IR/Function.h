@@ -35,6 +35,7 @@ class Function {
   }
 
   std::string debugString() const;
+  std::string_view name() const { return name_; }
 
  private:
   std::string name_;

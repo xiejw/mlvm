@@ -3,13 +3,16 @@
 
 #include <string>
 
+#include "mlvm/Foundation/StatusOr.h"
 #include "mlvm/IR/Function.h"
 
-namespace mlvm {
+namespace mlvm::RT {
 
 class Evaluator {
+ public:
+  Status run(const IR::Function& func);
 };
 
-}  // namespace mlvm
+}  // namespace mlvm::RT
 
 #endif

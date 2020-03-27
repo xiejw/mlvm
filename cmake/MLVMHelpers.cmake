@@ -44,7 +44,7 @@ function(add_mlvm_library)
   target_compile_options(${_INTERNAL_NAME} PUBLIC
     ${MLVM_COMMON_COMPILE_OPTIONS})
 
-  target_link_libraries(${_INTERNAL_NAME} ${MLVM_LIBRARY_PREFIX_DEPS})
+  target_link_libraries(${_INTERNAL_NAME} PUBLIC ${MLVM_LIBRARY_PREFIX_DEPS})
 
   ##############################################################################
   # Alias
