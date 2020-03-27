@@ -6,7 +6,7 @@
 #include "mlvm/Foundation/Status.h"
 #include "mlvm/IR/Tensor.h"
 
-namespace mlvm {
+namespace mlvm::IR {
 
 enum class OpType { Add };
 
@@ -30,6 +30,6 @@ class Instruction {
   std::vector<std::unique_ptr<Tensor>> outputs_ = {};
 };
 
-}  // namespace mlvm
+}  // namespace mlvm::IR
 
 #endif

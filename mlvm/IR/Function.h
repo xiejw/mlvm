@@ -7,7 +7,7 @@
 #include "mlvm/IR/Instruction.h"
 #include "mlvm/IR/Tensor.h"
 
-namespace mlvm {
+namespace mlvm::IR {
 
 class Function {
  public:
@@ -43,6 +43,6 @@ class Function {
   std::vector<Tensor*> outputs_ = {};
 };
 
-}  // namespace mlvm
+}  // namespace mlvm::IR
 
 #endif

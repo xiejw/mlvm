@@ -4,7 +4,7 @@
 
 #include <absl/strings/str_cat.h>
 
-namespace mlvm {
+namespace mlvm::IR {
 
 std::string Function::debugString() const {
   std::stringstream ss{};
@@ -29,4 +29,4 @@ std::string Function::debugString() const {
   return ss.str();
 };
 
-}  // namespace mlvm
+}  // namespace mlvm::IR

@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace mlvm {
+namespace mlvm::IR {
 
 class Array {
  public:
@@ -52,6 +52,6 @@ class OutputTensor : public Tensor {
   int output_index_;
 };
 
-}  // namespace mlvm
+}  // namespace mlvm::IR
 
 #endif
