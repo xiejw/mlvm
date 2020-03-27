@@ -1,6 +1,7 @@
 #ifndef MLVM_IR_INSTRUCTION_H_
 #define MLVM_IR_INSTRUCTION_H_
 
+#include <memory>
 #include <vector>
 
 #include "mlvm/Foundation/Status.h"
