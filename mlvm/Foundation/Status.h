@@ -17,9 +17,14 @@ enum class ErrorCode {
 
 class [[nodiscard]] Status {
  public:
-  // Sets the error code. If present, allows an error message to be set.
-  explicit Status(std::optional<ErrorCode> err,
-                  std::optional<std::string> msg = std::optional<std::string>{})
+  // Creates a Status without error code.
+  Status() : err_{std::nullopt} {};
+
+  // Sets the error code.
+  Status(ErrorCode err) : err_{std::move(err)} {};
+
+  // Sets the error code. In addition, allows an error message to be set.
+  Status(ErrorCode err, std::string msg)
       : err_{std::move(err)}, msg_{std::move(msg)} {};
 
   /// explicit Status(ErrorCode err) : err_{err} {};
@@ -57,7 +62,7 @@ class [[nodiscard]] Status {
 
  private:
   std::optional<ErrorCode> err_;
-  std::optional<std::string> msg_ = {};
+  std::optional<std::string> msg_ = std::nullopt;
 };
 
 }  // namespace mlvm

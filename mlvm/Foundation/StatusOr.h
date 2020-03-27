@@ -4,6 +4,7 @@
 #include <variant>
 
 #include "mlvm/Foundation/Status.h"
+#include "mlvm/Foundation/Utilities.h"
 
 namespace mlvm {
 
@@ -12,7 +13,11 @@ class StatusOr {
  public:
   StatusOr(T&& t) : value_{std::move(t)} {};
 
-  StatusOr(Status&& status) : value_{std::move(status)} { };
+  StatusOr(Status&& status) : value_{std::move(status)} {
+    if (status.ok()) {
+      FatalError("Status cannot be OK for StatusOK.");
+    }
+  };
 
   StatusOr(StatusOr&&) = default;
   StatusOr& operator=(StatusOr&&) = default;

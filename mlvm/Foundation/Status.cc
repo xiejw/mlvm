@@ -2,6 +2,6 @@
 
 namespace mlvm {
 
-const Status Status::OK = Status({}, {});
+const Status Status::OK = Status();
 
 }  // namespace mlvm
