@@ -9,13 +9,15 @@ namespace {
 class FoundationStatusOrTest : public ::testing::Test {};
 
 TEST_F(FoundationStatusOrTest, CheckOK) {
-  StatusOr<std::string> status{"Hello"};
-  ASSERT_TRUE(status.ok());
+  StatusOr<std::string> status_or{"Hello"};
+  ASSERT_TRUE(status_or.ok());
+  ASSERT_STREQ("Hello", status_or.valueOrDie().c_str());
 }
 
 TEST_F(FoundationStatusOrTest, CheckError) {
-  StatusOr<std::string> status{ErrorCode::InvalidArguments};
-  ASSERT_FALSE(status.ok());
+  StatusOr<std::string> status_or{ErrorCode::InvalidArguments};
+  ASSERT_FALSE(status_or.ok());
+  ASSERT_EQ(ErrorCode::InvalidArguments, status_or.statusOrDie().errorCode());
 }
 
 // TEST_F(FoundationStatusOrTest, CheckErrorCode) {

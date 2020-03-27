@@ -27,18 +27,17 @@ class StatusOr {
  public:
   bool ok() const { return value_.index() == 1; };
 
-  // // Requests ok() == false
-  // const Status& statusOrDie() const {
-  //   AssertNotHoldValue();
-  //   return status_.value();
-  // };
+  // Requests ok() == false
+  const Status& statusOrDie() const {
+    MLVM_PRECONDITION(!ok());
+    return std::get<0>(value_);
+  };
 
-  // // Requests ok() == true
-  // T& valueOrDie() {
-  //   AssertHoldValue();
-  //   AssertNotReleased();
-  //   return value_.value();
-  // };
+  // Requests ok() == true
+  T& valueOrDie() {
+    MLVM_PRECONDITION(ok());
+    return std::get<1>(value_);
+  };
 
   // // Requests ok() == false. Should be called at most once.
   // Status&& consumeStatus() {
