@@ -14,9 +14,7 @@ class StatusOr {
   StatusOr(T&& t) : value_{std::move(t)} {};
 
   StatusOr(Status&& status) : value_{std::move(status)} {
-    if (status.ok()) {
-      FatalError("Status cannot be OK for StatusOK.");
-    }
+    MLVM_PRECONDITION(!status.ok());
   };
 
   StatusOr(StatusOr&&) = default;
