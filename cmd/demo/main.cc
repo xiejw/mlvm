@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 
+#include "mlvm/Foundation/Macros.h"
 #include "mlvm/Foundation/StatusOr.h"
 #include "mlvm/IR/Function.h"
 #include "mlvm/Runtime/Evaluator.h"
@@ -12,19 +13,13 @@ mlvm::StatusOr<std::unique_ptr<mlvm::IR::Function>> buildFunction() {
   auto ins = fn->newInstruction(mlvm::IR::OpType::Add, std::vector{c0, c0});
   auto o0 = ins->outputAt(0);
   ins = fn->newInstruction(mlvm::IR::OpType::Add, std::vector{o0, o0});
-  MLVM_FATAL_IF_ERROR(fn->setOutput(ins->outputAt(0)));
+
+  MLVM_RETURN_IF_ERROR(fn->setOutput(ins->outputAt(0)));
   return fn;
 }
 
 int main() {
-  auto status_or = buildFunction();
-  if (!status_or.ok()) {
-    std::cout << "Error";
-    return -1;
-  }
-
-  auto fn = status_or.consumeValue();
-
+  MLVM_ASSIGN_OR_FATAL(auto fn, buildFunction());
   std::cout << "Func:\n" << fn->debugString() << "\n";
 
   mlvm::RT::Evaluator eval{};
