@@ -1,10 +1,11 @@
 #include <iostream>
 #include <memory>
 
+#include "mlvm/Foundation/StatusOr.h"
 #include "mlvm/IR/Function.h"
 #include "mlvm/Runtime/Evaluator.h"
-#include "mlvm/Foundation/StatusOr.h"
 
+// Builds a IR::Function.
 mlvm::StatusOr<std::unique_ptr<mlvm::IR::Function>> buildFunction() {
   auto fn = std::make_unique<mlvm::IR::Function>("main");
   auto c0 = fn->newConst(mlvm::IR::ConstTensor{mlvm::IR::Array{"c0"}});
@@ -16,15 +17,13 @@ mlvm::StatusOr<std::unique_ptr<mlvm::IR::Function>> buildFunction() {
 }
 
 int main() {
-
-
   auto status_or = buildFunction();
   if (!status_or.ok()) {
     std::cout << "Error";
     return -1;
   }
 
-  auto fn = status_or.comsumeValue();
+  auto fn = status_or.consumeValue();
 
   std::cout << "Func:\n" << fn->debugString() << "\n";
 
