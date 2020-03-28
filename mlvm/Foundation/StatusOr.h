@@ -33,25 +33,23 @@ class StatusOr {
     return std::get<0>(value_);
   };
 
+  // Requests ok() == false. Should be called at most once.
+  Status&& consumeStatus() {
+    MLVM_PRECONDITION(!ok());
+    return std::move(std::get<0>(value_));
+  };
+
   // Requests ok() == true
   T& valueOrDie() {
     MLVM_PRECONDITION(ok());
     return std::get<1>(value_);
   };
 
-  // // Requests ok() == false. Should be called at most once.
-  // Status&& consumeStatus() {
-  //   AssertNotHoldValue();
-  //   return std::move(status_.value());
-  // };
-
-  // // Requests ok() == true. Should be called at most once.
-  // T&& consumeValue() {
-  //   AssertHoldValue();
-  //   AssertNotReleased();
-  //   Release();
-  //   return std::move(value_.value());
-  // };
+  // Requests ok() == true. Should be called at most once.
+  T&& consumeValue() {
+    MLVM_PRECONDITION(ok());
+    return std::move(std::get<1>(value_));
+  };
 
  private:
   std::variant<Status, T> value_ = {};
