@@ -1,6 +1,6 @@
-#include <iostream>
 #include <memory>
 
+#include "mlvm/Foundation/Logging.h"
 #include "mlvm/Foundation/Macros.h"
 #include "mlvm/Foundation/StatusOr.h"
 #include "mlvm/IR/Function.h"
@@ -20,7 +20,8 @@ mlvm::StatusOr<std::unique_ptr<mlvm::IR::Function>> buildFunction() {
 
 int main() {
   MLVM_ASSIGN_OR_FATAL(auto fn, buildFunction());
-  std::cout << "Func:\n" << fn->debugString() << "\n";
+  LOG_INFO() << "Hello";
+  LOG_INFO() << "Func:\n" << fn->debugString();
 
   mlvm::RT::Evaluator eval{};
   MLVM_FATAL_IF_ERROR(eval.run(*fn));

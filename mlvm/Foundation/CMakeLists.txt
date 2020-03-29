@@ -3,9 +3,11 @@ add_mlvm_library(
     foundation
 
   SRCS
-    Status.h
     StatusOr.h
+    Status.h
     Status.cc
+    Logging.h
+    Logging.cc
     Utilities.h
     Utilities.cc
 
