@@ -25,4 +25,6 @@ int main() {
 
   mlvm::RT::Evaluator eval{};
   MLVM_FATAL_IF_ERROR(eval.run(*fn));
+
+  LOG_FLUSH();
 }
