@@ -1,7 +1,5 @@
 #include <memory>
 
-#include "absl/flags/parse.h"
-
 #include "mlvm/Foundation/Logging.h"
 #include "mlvm/Foundation/Macros.h"
 #include "mlvm/Foundation/StatusOr.h"
@@ -21,8 +19,7 @@ mlvm::StatusOr<std::unique_ptr<mlvm::IR::Function>> buildFunction() {
 }
 
 int main(int argc, char** argv) {
-  absl::ParseCommandLine(argc, argv);
-  mlvm::LoggerManager mgr{argc, argv};
+  mlvm::LoggerManager mgr{argc, argv, /*parse_command_line=*/true};
 
   MLVM_ASSIGN_OR_FATAL(auto fn, buildFunction());
   LOG_INFO() << "Hello";

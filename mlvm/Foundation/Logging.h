@@ -4,6 +4,8 @@
 #include <iostream>
 #include <type_traits>
 
+#include "absl/flags/parse.h"
+
 #include "mlvm/Foundation/Logger.h"
 
 // Checks with the `level` is on.
@@ -27,9 +29,8 @@ namespace mlvm {
 // Deconstruction will flush the logger.
 class LoggerManager {
  public:
-  LoggerManager(int argc, char** argv) {
-    (void)argc;
-    (void)argv;
+  LoggerManager(int argc, char** argv, bool parse_command_line) {
+    if (parse_command_line) absl::ParseCommandLine(argc, argv);
   };
 
   ~LoggerManager() { currentLogger().flush(); }
@@ -46,7 +47,7 @@ class LoggerManager {
   }
 
   // Returns the current debugging level.
-  static int currentLevel() { return 0; }
+  static int currentLevel();
 
  protected:
   static logging::Logger loggerInstance;

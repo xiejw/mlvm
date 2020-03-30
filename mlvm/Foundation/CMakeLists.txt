@@ -19,6 +19,7 @@ add_mlvm_library(
 
   DEPS
     absl::flags
+    absl::flags_parse # Required for Parsing CMD.
     absl::strings
 )
 
