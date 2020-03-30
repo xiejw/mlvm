@@ -2,7 +2,7 @@
 
 namespace mlvm::logging {
 
-Logger Logger::currenLogger = Logger{};
+Logger Logger::loggerInstance = Logger{};
 
 VoidType VoidType::instance = VoidType{};
 

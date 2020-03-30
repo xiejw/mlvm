@@ -18,13 +18,13 @@ mlvm::StatusOr<std::unique_ptr<mlvm::IR::Function>> buildFunction() {
   return fn;
 }
 
-int main() {
+int main(int argc, char** argv) {
+  mlvm::LoggerManager mgr{argc, argv};
+
   MLVM_ASSIGN_OR_FATAL(auto fn, buildFunction());
   LOG_INFO() << "Hello";
-  LOG_INFO() << "Func:\n" << fn->debugString();
+  // LOG_INFO() << "Func:\n" << fn->debugString();
 
   mlvm::RT::Evaluator eval{};
   MLVM_FATAL_IF_ERROR(eval.run(*fn));
-
-  LOG_FLUSH();
 }

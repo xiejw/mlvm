@@ -12,11 +12,10 @@
   static_assert(std::is_same<decltype(level), int>::value); \
   (!LOG_IS_ON(level)) ? (void)0                             \
                       : mlvm::logging::VoidType::instance&  \
-                        mlvm::logging::Logger::getCurrentLogger()
+                        mlvm::logging::Logger::currentLogger()
 
 #define LOG_INFO() LOG(static_cast<int>(mlvm::logging::Level::Info))
-
-#define LOG_FLUSH() mlvm::logging::Logger::getCurrentLogger().flush();
+#define LOG_DEBUG() LOG(static_cast<int>(mlvm::logging::Level::Debug))
 
 // Unexposed namespace.
 namespace mlvm::logging {
@@ -30,19 +29,21 @@ enum class Level : int {
 
 class Logger {
  public:
-  static Logger& getCurrentLogger() {
-    static bool logged = false;
-    if (logged) {
-      Logger::currenLogger.log("\n");
+  static Logger& currentLogger() {
+    static bool has_lines_emitted = false;
+    if (has_lines_emitted) {
+      // Append the end-of-line first.
+      Logger::loggerInstance.log("\n");
     }
-    logged = true;
-    return Logger::currenLogger;
+    has_lines_emitted = true;
+    return Logger::loggerInstance;
   }
 
+  // Returns the current debugging level.
   static int currentLevel() { return 0; }
 
  protected:
-  static Logger currenLogger;
+  static Logger loggerInstance;
 
  public:
   void flush() { std::cout << std::flush; }
@@ -71,5 +72,20 @@ class VoidType {
 };
 
 }  // namespace mlvm::logging
+
+namespace mlvm {
+
+// Should be created once, most likely in the `main()`.
+class LoggerManager {
+ public:
+  LoggerManager(int argc, char** argv) {
+    (void)argc;
+    (void)argv;
+  };
+
+  ~LoggerManager() { logging::Logger::currentLogger().flush(); }
+};
+
+}  // namespace mlvm
 
 #endif
