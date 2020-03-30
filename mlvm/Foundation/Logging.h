@@ -2,29 +2,33 @@
 #define MLVM_FOUNDATION_LOGGING_H_
 
 #include <iostream>
+#include <type_traits>
 
-#define LOG_IS_ON(level) \
-  (static_cast<int>(level) <= mlvm::logging::Logger::currentLevel())
+// Checks with the `level` is on.
+#define LOG_IS_ON(level) ((level) <= mlvm::logging::Logger::currentLevel())
 
-#define LOG_INFO()                                 \
-  (!LOG_IS_ON(mlvm::logging::Logger::Level::Info)) \
-      ? (void)0                                    \
-      : mlvm::logging::VoidType::instance&         \
-        mlvm::logging::Logger::getCurrentLogger()
+// `level` must be int type (static checked).
+#define LOG(level)                                          \
+  static_assert(std::is_same<decltype(level), int>::value); \
+  (!LOG_IS_ON(level)) ? (void)0                             \
+                      : mlvm::logging::VoidType::instance&  \
+                        mlvm::logging::Logger::getCurrentLogger()
+
+#define LOG_INFO() LOG(static_cast<int>(mlvm::logging::Level::Info))
 
 #define LOG_FLUSH() mlvm::logging::Logger::getCurrentLogger().flush();
 
+// Unexposed namespace.
 namespace mlvm::logging {
 
-class Logger {
- public:
-  enum class Level : int {
-    All = -99,
-    Fatal = -2,
-    Error = -1,
-    Info = 0,
-  };
+enum class Level : int {
+  All = -99,
+  Fatal = -2,
+  Error = -1,
+  Info = 0,
+};
 
+class Logger {
  public:
   static Logger& getCurrentLogger() {
     static bool logged = false;
@@ -56,10 +60,13 @@ class Logger {
   }
 };
 
+// Help class which converts the `Logger` to `(void)` so the LOG() macro can
+// work.
 class VoidType {
  public:
   static VoidType instance;
 
+ public:
   inline void operator&(Logger& logger) { (void)logger; };
 };
 
