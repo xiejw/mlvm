@@ -40,6 +40,7 @@ add_mlvm_executable(${BINARY} cmd/demo/main.cc ${MLVM_BUILD_STATIC})
 target_link_libraries(${BINARY} mlvm::ir)
 target_link_libraries(${BINARY} mlvm::rt)
 target_link_libraries(${BINARY} mlvm::foundation)
+target_link_libraries(${BINARY} absl::flags_parse)
 target_link_libraries(${BINARY} absl::strings)
 target_compile_options(${BINARY} PUBLIC ${MLVM_COMMON_COMPILE_OPTIONS})
 

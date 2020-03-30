@@ -18,6 +18,7 @@ add_mlvm_library(
     StatusOrTest.cc
 
   DEPS
+    absl::flags
     absl::strings
 )
 

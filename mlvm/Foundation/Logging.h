@@ -16,6 +16,7 @@
                       : mlvm::logging::VoidType::instance&  \
                         mlvm::LoggerManager::currentLogger()
 
+// Helpers
 #define LOG_INFO() LOG(static_cast<int>(mlvm::logging::Level::Info))
 #define LOG_DEBUG() LOG(static_cast<int>(mlvm::logging::Level::Debug))
 

@@ -9,6 +9,7 @@ enum class Level : int {
   Fatal = -2,
   Error = -1,
   Info = 0,
+  Debug = 1,
 };
 
 class Logger {
