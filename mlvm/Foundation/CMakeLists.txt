@@ -6,6 +6,8 @@ add_mlvm_library(
     StatusOr.h
     Status.h
     Status.cc
+    Logger.h
+    Logger.cc
     Logging.h
     Logging.cc
     Utilities.h
