@@ -1,7 +1,9 @@
 #include "mlvm/Foundation/Logging.h"
 
-namespace mlvm {
+namespace mlvm::logging {
 
 Logger Logger::currenLogger = Logger{};
 
-}  // namespace mlvm
+VoidType VoidType::instance = VoidType{};
+
+}  // namespace mlvm::logging
