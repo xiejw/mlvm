@@ -10,6 +10,7 @@ namespace mlvm::RT {
 
 Status Evaluator::run(const Function& func) {
   LOG_INFO() << "Run Func: " << func.name();
+  LOG_DEBUG() << "Func:\n" << func.debugString();
   return Status::OK;
 }
 

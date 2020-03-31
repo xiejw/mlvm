@@ -21,10 +21,10 @@ mlvm::StatusOr<std::unique_ptr<mlvm::IR::Function>> buildFunction() {
 int main(int argc, char** argv) {
   mlvm::LoggerManager mgr{argc, argv, /*parse_command_line=*/true};
 
+  LOG_INFO() << "Build function.";
   MLVM_ASSIGN_OR_FATAL(auto fn, buildFunction());
-  LOG_INFO() << "Hello";
-  // LOG_INFO() << "Func:\n" << fn->debugString();
 
   mlvm::RT::Evaluator eval{};
+  LOG_INFO() << "Run function.";
   MLVM_FATAL_IF_ERROR(eval.run(*fn));
 }
