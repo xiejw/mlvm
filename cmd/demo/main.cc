@@ -23,7 +23,6 @@ int main(int argc, char** argv) {
 
   MLVM_ASSIGN_OR_FATAL(auto fn, buildFunction());
   LOG_INFO() << "Hello";
-  LOG_DEBUG() << "Hello debug";
   // LOG_INFO() << "Func:\n" << fn->debugString();
 
   mlvm::RT::Evaluator eval{};
