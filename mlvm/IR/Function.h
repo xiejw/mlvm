@@ -12,6 +12,10 @@ namespace mlvm::IR {
 
 class Function {
  public:
+  template <typename T>
+  using Vec = std::vector<std::unique_ptr<T>>;
+
+ public:
   Function(std::string name) : name_{name} {};
 
   Tensor* newConst(ConstTensor&& c) {
@@ -38,10 +42,12 @@ class Function {
   std::string debugString() const;
   std::string_view name() const { return name_; }
 
+  const Vec<Instruction>& instructions() const { return instructions_; }
+
  private:
   std::string name_;
-  std::vector<std::unique_ptr<ConstTensor>> consts_ = {};
-  std::vector<std::unique_ptr<Instruction>> instructions_ = {};
+  Vec<ConstTensor> consts_ = {};
+  Vec<Instruction> instructions_ = {};
   std::vector<Tensor*> outputs_ = {};
 };
 
