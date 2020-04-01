@@ -7,5 +7,6 @@ add_mlvm_library(
     Evaluator.cc
 
   DEPS
+    mlvm::ir
     mlvm::foundation
 )

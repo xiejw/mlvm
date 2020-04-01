@@ -44,6 +44,9 @@ target_link_libraries(${BINARY} absl::strings)
 target_compile_options(${BINARY} PUBLIC ${MLVM_COMMON_COMPILE_OPTIONS})
 
 # {{{2 Tests.
+#
+# {{{3 Main Test.
+#
 if (NOT "${CMAKE_BUILD_TYPE}" STREQUAL "RELEASE")
   message("## Generate test for debug mode")
   add_executable(test cmd/test/main.cc)
