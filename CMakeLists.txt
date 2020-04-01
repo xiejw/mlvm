@@ -16,7 +16,17 @@ include(MLVMHelpers)
 
 # {{{2 Project
 #
-# Set after compiler to avoid infinite loop in absl.
+# {{{3 Set Project Name.
+#
+# Set after compiler before project.
+#
+# According to the CMake FAQ, Section "How do I use a different compiler",
+# compiler change must be done before langguage is set, as quoted here:
+#
+#   Set the appropriate CMAKE_FOO_COMPILER variable(s) to a valid compiler name
+#   or full path in a list file using set(). This must be done before any
+#   language is set(ie before any project() or enable_language() command).
+#
 project(mlvm)
 
 # {{{2 Dependencies.
