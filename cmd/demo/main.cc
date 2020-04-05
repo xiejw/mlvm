@@ -4,6 +4,7 @@
 #include "mlvm/Foundation/Macros.h"
 #include "mlvm/Foundation/StatusOr.h"
 #include "mlvm/IR/Function.h"
+#include "mlvm/Op/Einsum.h"
 #include "mlvm/Runtime/Evaluator.h"
 
 // Builds a IR::Function.
@@ -20,6 +21,11 @@ mlvm::StatusOr<std::unique_ptr<mlvm::IR::Function>> buildFunction() {
 
 int main(int argc, char** argv) {
   mlvm::LoggerManager mgr{argc, argv, /*parse_command_line=*/true};
+
+  mlvm::OP::EinsumHelper helper{};
+  helper.makePlan({'i', 'j'}, {'j', 'k'}, {'i', 'k'});
+  helper.makePlan({'b', 'i', 'j'}, {'b', 'j', 'k'}, {'i', 'k'});
+  helper.makePlan({'b', 'i', 'j'}, {'b', 'j', 'k'}, {'b', 'i', 'k'});
 
   LOG_INFO() << "Build function.";
   MLVM_ASSIGN_OR_FATAL(auto fn, buildFunction());
