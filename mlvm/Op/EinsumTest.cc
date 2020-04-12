@@ -8,10 +8,7 @@ namespace {
 
 class OpEinsumHelperTest : public ::testing::Test {};
 
-TEST_F(OpEinsumHelperTest, CheckOK) {
-  ASSERT_TRUE(true);
-}
-
+TEST_F(OpEinsumHelperTest, CheckOK) { ASSERT_TRUE(true); }
 
 }  // namespace
 
