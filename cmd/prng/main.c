@@ -4,12 +4,13 @@
 
 /*
  * rename prime
- * rename s in create.
+ * rename s in create. split?
+ * why 56
+ * why 53
  */
 
 static const uint64_t gamma_prime_ = (1L << 56) - 5;
 static const uint64_t gamma_gamma_ = 0x00281E2DBA6606F3L;
-static const uint64_t default_seed_gamma_ = 0xBD24B73A95FB84D9L;
 static const double double_ulp_ = 1.0 / (1L << 53);
 
 #ifndef NDEBUG
@@ -64,6 +65,8 @@ sprng64_t* sprng64_create(uint64_t seed, uint64_t s) {
 }
 
 sprng64_t* sprng64_split(sprng64_t* prng) {
+  /* Advance the seed for current `prng` and use it for the seed for splitted
+   * branch. */
   uint64_t seed = sprng64_next_raw64(prng);
   uint64_t s = prng->next_split_;
   return sprng64_create(seed, s);
@@ -71,10 +74,27 @@ sprng64_t* sprng64_split(sprng64_t* prng) {
 
 void sprng64_free(sprng64_t* prng) { free(prng); }
 
+uint64_t sprng64_next_int64(sprng64_t* prng) {
+  return sprng64_mix64(sprng64_next_raw64(prng));
+}
+
+uint32_t sprng64_next_int32(sprng64_t* prng) {
+  return (uint32_t)(sprng64_next_int64(prng));
+}
+
+/* 0 <= <=1 */
+double sprng64_next_double(sprng64_t* prng) {
+  return (sprng64_next_int64(prng) >> 11) * double_ulp_;
+}
+
 int main() {
   debug_printf("prime_ %llx\n", gamma_prime_);
   debug_printf("gamma_ %llx\n", gamma_gamma_);
-  debug_printf("default seed gamma_ %llx\n", default_seed_gamma_);
   debug_printf("double ulp_ %.54f\n", double_ulp_);
+
+  sprng64_t* prng = sprng64_create(456, 0L);
+  debug_printf("next double %.54f\n", sprng64_next_double(prng));
+  sprng64_free(prng);
+
   return 0;
 }
