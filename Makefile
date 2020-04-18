@@ -1,5 +1,5 @@
 DEBUG=.debug
-RELEASE=./.release
+RELEASE=.release
 
 FMT=docker run --rm -ti \
       --user `id -u ${USER}`:`id -g ${USER}` \
@@ -8,7 +8,7 @@ FMT=docker run --rm -ti \
 
 .PHONY: default compile compile_only run test fmt clean
 
-default: run
+default: prng
 
 compile:
 	@echo "-> Bootstraping..."
@@ -17,14 +17,14 @@ compile:
 compile_only:
 	@echo "-> Compiling..." && cd ${DEBUG} && ninja -v
 
-run: compile_only
-	@echo "-> Running..." && ${DEBUG}/demo
+prng: compile_only
+	@echo "-> Running..." && ${DEBUG}/prng
 
-test: compile_only
-	SKIP_LONG_TEST=1 ${DEBUG}/test
+# test: compile_only
+# 	SKIP_LONG_TEST=1 ${DEBUG}/test
 
 fmt:
-	@echo "-> Formatting..." && ${FMT} cmd mlvm
+	@echo "-> Formatting..." && ${FMT} cmd
 
 clean:
 	@echo "-> Cleaning..." && rm -rf ${DEBUG} ${RELEASE}
