@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+/*
+ * The implementation is based on "Fast Splittable Pseudorandom Number
+ * Generators".
+ */
 typedef struct {
   /* Internal fields. */
   uint64_t seed_;
@@ -10,7 +14,8 @@ typedef struct {
   uint64_t next_gamma_seed_;
 } sprng64_t;
 
-extern sprng64_t* sprng64_create(uint64_t seed, uint64_t s);
+extern sprng64_t* sprng64_create(uint64_t seed);
+extern sprng64_t* sprng64_create_with_gamma(uint64_t seed, uint64_t gamma_seed);
 extern void sprng64_free(sprng64_t* prng);
 extern sprng64_t* sprng64_split(sprng64_t* prng);
 

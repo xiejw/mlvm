@@ -73,7 +73,11 @@ static uint64_t sprng64_mix56(uint64_t z) {
   return z ^ (z >> 33);
 }
 
-sprng64_t* sprng64_create(uint64_t seed, uint64_t gamma_seed) {
+sprng64_t* sprng64_create(uint64_t seed) {
+  return sprng64_create_with_gamma(seed, /*gamma_seed=*/0L);
+}
+
+sprng64_t* sprng64_create_with_gamma(uint64_t seed, uint64_t gamma_seed) {
   assert(gamma_seed < gamma_prime_);
 
   sprng64_t* prng = malloc(sizeof(sprng64_t));
@@ -88,7 +92,7 @@ sprng64_t* sprng64_create(uint64_t seed, uint64_t gamma_seed) {
 sprng64_t* sprng64_split(sprng64_t* prng) {
   uint64_t seed = sprng64_advance_seed(prng);
   uint64_t gamma_seed = prng->next_gamma_seed_;
-  return sprng64_create(seed, gamma_seed);
+  return sprng64_create_with_gamma(seed, gamma_seed);
 }
 
 void sprng64_free(sprng64_t* prng) { free(prng); }
