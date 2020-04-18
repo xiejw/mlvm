@@ -24,7 +24,7 @@ prng: compile_only
 # 	SKIP_LONG_TEST=1 ${DEBUG}/test
 
 fmt:
-	@echo "-> Formatting..." && ${FMT} cmd
+	@echo "-> Formatting..." && ${FMT} cmd mlvm
 
 clean:
 	@echo "-> Cleaning..." && rm -rf ${DEBUG} ${RELEASE}
