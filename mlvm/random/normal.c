@@ -9,7 +9,7 @@
 static const double double_ulp_ = 1.0 / (1L << 53);
 static const double two_pi_ = 2.0 * 3.141592653589793238;
 
-void rng_normal(sprng_t* prng, size_t size, double* buffer) {
+void rng_standard_normal(sprng_t* prng, size_t size, double* buffer) {
   size_t i;
   size_t num_seeds = size % 2 == 0 ? size : size + 1;
   double* uniforms = malloc(num_seeds * sizeof(double));
