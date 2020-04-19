@@ -3,17 +3,18 @@
 #include "mlvm/random/normal.h"
 #include "mlvm/random/sprng.h"
 
+const int SIZE = 100;
+
 int main() {
   sprng_t* prng = sprng_create(456L);
-  double r_v[100];
+  double r_v[SIZE];
 
-  rng_normal(prng, 100, r_v);
+  rng_normal(prng, SIZE, r_v);
 
   {
     int i;
-    for (i = 0; i < 100; i++) {
-      printf("%.3f ", r_v[i]);
-      if (i % 10 == 9) printf("\n");
+    for (i = 0; i < SIZE; i++) {
+      printf("%.3f\n", r_v[i]);
     }
   }
 
