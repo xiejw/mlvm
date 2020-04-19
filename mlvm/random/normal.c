@@ -9,9 +9,15 @@
 static const double double_ulp_ = 1.0 / (1L << 53);
 static const double two_pi_ = 2.0 * 3.141592653589793238;
 
+/*
+ * The implementation is based on Box–Muller transform.
+ *
+ * For each pair of [0, 1) uniform rn, a pair of independent, standard,
+ * normally distributed rn are generated.
+ */
 void rng_standard_normal(sprng_t* prng, size_t size, double* buffer) {
   size_t i;
-  size_t num_seeds = size % 2 == 0 ? size : size + 1;
+  size_t num_seeds = size % 2 == 0 ? size : size + 1;  /* Must be even. */
   double* uniforms = malloc(num_seeds * sizeof(double));
 
   assert(size > 0);
@@ -19,6 +25,7 @@ void rng_standard_normal(sprng_t* prng, size_t size, double* buffer) {
   for (i = 0; i < num_seeds;) {
     uint64_t seed = sprng_next_int64(prng);
     double u = (seed >> 11) * double_ulp_;
+    /* The first rn in each pair is used by log, so cannot be zero. */
     if (i % 2 == 1 || u >= DBL_EPSILON) uniforms[i++] = u;
   }
 
