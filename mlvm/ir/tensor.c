@@ -35,16 +35,17 @@ extern mlvm_tensor_t* mlvm_tensor_create(uint32_t rank, uint32_t* shape,
     value_buffer = value;
   }
 
-  tensor->size  = size;
-  tensor->rank  = rank;
-  tensor->shape = shape_copy;
-  tensor->value = value_buffer;
+  tensor->size        = size;
+  tensor->rank        = rank;
+  tensor->shape       = shape_copy;
+  tensor->value       = value_buffer;
+  tensor->value_mode_ = value_mode;
   return tensor;
 }
 
 void mlvm_tensor_free(mlvm_tensor_t* tensor) {
   free(tensor->shape);
-  free(tensor->value);
+  if (tensor->value_mode_ != MLVM_ALIAS_VALUE) free(tensor->value);
   free(tensor);
 }
 

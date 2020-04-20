@@ -12,6 +12,9 @@ typedef struct {
   uint32_t  rank;  /* Must be positive (non-zero). */
   uint32_t* shape; /* length is `rank` above. */
   double*   value; /* The value buffer. */
+
+  /* Internal fields */
+  int value_mode_;
 } mlvm_tensor_t;
 
 /* The shape will be copied by the value is transfer to tensor. */

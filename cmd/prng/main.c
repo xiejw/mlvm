@@ -16,7 +16,7 @@ int main() {
   uint32_t shape[] = {10, 10};
 
   mlvm_tensor_t* tensor =
-      mlvm_tensor_create(/*rank=*/2, /*shape=*/shape, r_v, MLVM_COPY_VALUE);
+      mlvm_tensor_create(/*rank=*/2, /*shape=*/shape, r_v, MLVM_ALIAS_VALUE);
 
   mlvm_tensor_print(tensor, STDOUT_FILENO);
 
