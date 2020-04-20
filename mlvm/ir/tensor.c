@@ -53,11 +53,23 @@ int mlvm_tensor_print(mlvm_tensor_t* tensor, int fd) {
   int      n = 0;
   uint64_t i;
   uint64_t size = tensor->size;
+  uint32_t j;
+  uint32_t rank = tensor->rank;
   double*  buf  = tensor->value;
 
+  /* Print headline. */
+  n += dprintf(fd, "Tensor: <");
+  for (j = 0; j < rank - 1; j++) {
+    n += dprintf(fd, "%3d,", tensor->shape[j]);
+  }
+  n += dprintf(fd, "%3d", tensor->shape[rank - 1]);
+  n += dprintf(fd, ">\n[ ");
+
+  /* Printf value buffer. */
   for (i = 0; i < size; i++) {
     n += dprintf(fd, "%6.3f  ", buf[i]);
-    if (i % 10 == 9) n += dprintf(fd, "\n");
+    if (i % 10 == 9) n += dprintf(fd, i != size - 1 ? "\n  " : "\n");
   }
+  n += dprintf(fd, "]\n");
   return n;
 }
