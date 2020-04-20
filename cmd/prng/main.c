@@ -7,7 +7,7 @@ const int SIZE = 100;
 
 int main() {
   sprng_t* prng = sprng_create(456L);
-  double r_v[SIZE];
+  double   r_v[SIZE];
 
   rng_standard_normal(prng, SIZE, r_v);
 

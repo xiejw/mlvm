@@ -49,7 +49,7 @@
 
 static const uint64_t gamma_prime_ = (1L << 56) - 5; /* Percy. */
 static const uint64_t gamma_gamma_ = 0x00281E2DBA6606F3L;
-static const double double_ulp_ = 1.0 / (1L << 53);
+static const double   double_ulp_  = 1.0 / (1L << 53);
 
 static uint64_t sprng64_update(uint64_t seed, uint64_t gamma) {
   uint64_t p = seed + gamma;
@@ -81,16 +81,16 @@ sprng64_t* sprng64_create_with_gamma(uint64_t seed, uint64_t gamma_seed) {
   assert(gamma_seed < gamma_prime_);
 
   sprng64_t* prng = malloc(sizeof(sprng64_t));
-  prng->seed_ = seed;
+  prng->seed_     = seed;
   gamma_seed += gamma_gamma_;
   if (gamma_seed >= gamma_prime_) gamma_seed -= gamma_prime_;
-  prng->gamma_ = sprng64_mix56(gamma_seed) + 13;
+  prng->gamma_           = sprng64_mix56(gamma_seed) + 13;
   prng->next_gamma_seed_ = gamma_seed;
   return prng;
 }
 
 sprng64_t* sprng64_split(sprng64_t* prng) {
-  uint64_t seed = sprng64_advance_seed(prng);
+  uint64_t seed       = sprng64_advance_seed(prng);
   uint64_t gamma_seed = prng->next_gamma_seed_;
   return sprng64_create_with_gamma(seed, gamma_seed);
 }

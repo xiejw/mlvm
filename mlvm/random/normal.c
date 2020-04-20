@@ -7,7 +7,7 @@
 
 /* unit of least precision */
 static const double double_ulp_ = 1.0 / (1L << 53);
-static const double two_pi_ = 2.0 * 3.141592653589793238;
+static const double two_pi_     = 2.0 * 3.141592653589793238;
 
 /*
  * The implementation is based on Box–Muller transform.
@@ -16,15 +16,15 @@ static const double two_pi_ = 2.0 * 3.141592653589793238;
  * normally distributed rn are generated.
  */
 void rng_standard_normal(sprng_t* prng, size_t size, double* buffer) {
-  size_t i;
-  size_t num_seeds = size % 2 == 0 ? size : size + 1;  /* Must be even. */
-  double* uniforms = malloc(num_seeds * sizeof(double));
+  size_t  i;
+  size_t  num_seeds = size % 2 == 0 ? size : size + 1; /* Must be even. */
+  double* uniforms  = malloc(num_seeds * sizeof(double));
 
   assert(size > 0);
 
   for (i = 0; i < num_seeds;) {
     uint64_t seed = sprng_next_int64(prng);
-    double u = (seed >> 11) * double_ulp_;
+    double   u    = (seed >> 11) * double_ulp_;
     /* The first rn in each pair is used by log, so cannot be zero. */
     if (i % 2 == 1 || u >= DBL_EPSILON) uniforms[i++] = u;
   }
@@ -34,7 +34,7 @@ void rng_standard_normal(sprng_t* prng, size_t size, double* buffer) {
     double u_2 = uniforms[i + 1];
 
     double theta = two_pi_ * u_1;
-    double r = sqrt(-2.0 * log(u_2));
+    double r     = sqrt(-2.0 * log(u_2));
 
     buffer[i] = r * cos(theta);
     if (i + 1 < size) buffer[i + 1] = r * sin(theta);
