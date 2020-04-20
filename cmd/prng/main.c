@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <unistd.h>
 
+#include "mlvm/ir/tensor.h"
 #include "mlvm/random/normal.h"
 #include "mlvm/random/sprng.h"
 
@@ -11,13 +13,14 @@ int main() {
 
   rng_standard_normal(prng, SIZE, r_v);
 
-  {
-    int i;
-    for (i = 0; i < SIZE; i++) {
-      printf("%6.3f  ", r_v[i]);
-      if (i % 10 == 9) printf("\n");
-    }
-  }
+  uint32_t shape[] = {10, 10};
+
+  mlvm_tensor_t* tensor =
+      mlvm_tensor_create(/*rank=*/2, /*shape=*/shape, r_v, MLVM_COPY_VALUE);
+
+  mlvm_tensor_print(tensor, STDOUT_FILENO);
+
+  mlvm_tensor_free(tensor);
 
   sprng_free(prng);
   return 0;

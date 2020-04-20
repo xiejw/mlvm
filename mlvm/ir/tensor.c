@@ -1,22 +1,23 @@
 #include "mlvm/ir/tensor.h"
 
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-extern mlvm_tensor_t* mlvm_tensor_create(uint64_t rank, uint64_t* shape,
+extern mlvm_tensor_t* mlvm_tensor_create(uint32_t rank, uint32_t* shape,
                                          double* value, int value_mode) {
   /* Consider to check overflow of the size. */
   uint64_t  size;
-  uint64_t  i;
-  uint64_t* shape_copy;
+  uint32_t  i;
+  uint32_t* shape_copy;
   double*   value_buffer;
 
   mlvm_tensor_t* tensor = malloc(sizeof(mlvm_tensor_t));
   assert(rank >= 1);
 
-  shape_copy = malloc(rank * sizeof(uint64_t));
-  memcpy(shape_copy, shape, rank * sizeof(uint64_t));
+  shape_copy = malloc(rank * sizeof(uint32_t));
+  memcpy(shape_copy, shape, rank * sizeof(uint32_t));
 
   assert(shape[0] > 0);
   size = shape[0];
@@ -38,11 +39,24 @@ extern mlvm_tensor_t* mlvm_tensor_create(uint64_t rank, uint64_t* shape,
   tensor->rank  = rank;
   tensor->shape = shape_copy;
   tensor->value = value_buffer;
-  return NULL;
+  return tensor;
 }
 
 void mlvm_tensor_free(mlvm_tensor_t* tensor) {
   free(tensor->shape);
   free(tensor->value);
   free(tensor);
+}
+
+int mlvm_tensor_print(mlvm_tensor_t* tensor, int fd) {
+  int      n = 0;
+  uint64_t i;
+  uint64_t size = tensor->size;
+  double*  buf  = tensor->value;
+
+  for (i = 0; i < size; i++) {
+    n += dprintf(fd, "%6.3f  ", buf[i]);
+    if (i % 10 == 9) n += dprintf(fd, "\n");
+  }
+  return n;
 }
