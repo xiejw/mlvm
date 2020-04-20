@@ -12,7 +12,7 @@ default: prng
 
 compile:
 	@echo "-> Bootstraping..."
-	mkdir -p ${DEBUG} && cd ${DEBUG} && cmake -GNinja .. && ninja
+	mkdir -p ${DEBUG} && cd ${DEBUG} && cmake -GNinja .. && ninja -v
 
 compile_only:
 	@echo "-> Compiling..." && cd ${DEBUG} && ninja -v
