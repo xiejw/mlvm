@@ -32,6 +32,7 @@ project(mlvm)
 #
 # Putting supporting dependencies in bottom.
 add_subdirectory(mlvm/random)
+add_subdirectory(mlvm/ir)
 
 # {{{2 Executables.
 #
@@ -42,4 +43,5 @@ option(MLVM_BUILD_STATIC "If ON, builds static binary" OFF)
 
 add_mlvm_executable(${BINARY} cmd/prng/main.c ${MLVM_BUILD_STATIC})
 target_link_libraries(${BINARY} mlvm::random)
+target_link_libraries(${BINARY} mlvm::ir)
 
