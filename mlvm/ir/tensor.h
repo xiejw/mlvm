@@ -15,13 +15,13 @@ typedef struct {
 
   /* Internal fields */
   int value_mode_;
-} mlvm_tensor_t;
+} tensor_t;
 
 /* The shape will be copied by the value is transfer to tensor. */
-extern mlvm_tensor_t* mlvm_tensor_create(uint32_t rank, uint32_t* shape,
-                                         double* value, int value_mode);
-extern void           mlvm_tensor_free(mlvm_tensor_t* tensor);
+extern tensor_t* tensor_create(uint32_t rank, uint32_t* shape, double* value,
+                               int value_mode);
+extern void      tensor_free(tensor_t* tensor);
 
-extern int mlvm_tensor_print(mlvm_tensor_t* tensor, int fd);
+extern int tensor_print(tensor_t* tensor, int fd);
 
 #endif

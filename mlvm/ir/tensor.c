@@ -5,15 +5,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern mlvm_tensor_t* mlvm_tensor_create(uint32_t rank, uint32_t* shape,
-                                         double* value, int value_mode) {
+extern tensor_t* tensor_create(uint32_t rank, uint32_t* shape, double* value,
+                               int value_mode) {
   /* Consider to check overflow of the size. */
   uint64_t  size;
   uint32_t  i;
   uint32_t* shape_copy;
   double*   value_buffer;
 
-  mlvm_tensor_t* tensor = malloc(sizeof(mlvm_tensor_t));
+  tensor_t* tensor = malloc(sizeof(tensor_t));
   assert(rank >= 1);
 
   shape_copy = malloc(rank * sizeof(uint32_t));
@@ -43,13 +43,13 @@ extern mlvm_tensor_t* mlvm_tensor_create(uint32_t rank, uint32_t* shape,
   return tensor;
 }
 
-void mlvm_tensor_free(mlvm_tensor_t* tensor) {
+void tensor_free(tensor_t* tensor) {
   free(tensor->shape);
   if (tensor->value_mode_ != MLVM_ALIAS_VALUE) free(tensor->value);
   free(tensor);
 }
 
-int mlvm_tensor_print(mlvm_tensor_t* tensor, int fd) {
+int tensor_print(tensor_t* tensor, int fd) {
   int      n = 0;
   uint64_t i;
   uint64_t size = tensor->size;

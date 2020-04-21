@@ -3,8 +3,7 @@
 
 #include "mlvm/ir/tensor.h"
 
-int mlvm_runtime_kernel_add(mlvm_tensor_t* output, mlvm_tensor_t* arg_1,
-                            mlvm_tensor_t* arg_2) {
+int kernel_add(tensor_t* output, tensor_t* arg_1, tensor_t* arg_2) {
   uint64_t i;
   uint64_t size = arg_1->size;
   for (i = 0; i < size; i++) {

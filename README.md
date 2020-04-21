@@ -8,9 +8,9 @@
 
 ## C Namespace
 
-| Folder     | Namespace   |
-| ---------- | ----------- |
-| random     | `sprng_`    |
-| IR         | `mlvm::IR`  |
-| Runtime    | `mlvm::RT`  |
+| Folder          | Namespace   |
+| --------------- | ----------- |
+| random          | `sprng_`    |
+| ir/tensor       | `tensor_`  |
+| runtime/kernel  | `kernel_`  |
 
