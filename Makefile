@@ -20,8 +20,8 @@ compile_only:
 prng: compile_only
 	@echo "-> Running..." && ${DEBUG}/prng
 
-# test: compile_only
-# 	SKIP_LONG_TEST=1 ${DEBUG}/test
+test: compile_only
+	@echo "-> Testing..." && ${DEBUG}/test
 
 fmt:
 	@echo "-> Formatting..." && ${FMT} cmd mlvm

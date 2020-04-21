@@ -47,3 +47,10 @@ target_link_libraries(${BINARY} mlvm::random)
 target_link_libraries(${BINARY} mlvm::ir)
 target_link_libraries(${BINARY} mlvm::kernel)
 
+# {{{2 Test.
+set(BINARY test)
+
+add_mlvm_executable(${BINARY} cmd/test/main.c OFF)
+target_link_libraries(${BINARY} mlvm::random)
+target_link_libraries(${BINARY} mlvm::ir)
+target_link_libraries(${BINARY} mlvm::kernel)
