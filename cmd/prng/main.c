@@ -14,8 +14,8 @@ int main() {
   double   r_2[SIZE];
   double   r_3[SIZE];
 
-  rng_standard_normal(prng, SIZE, r_1);
-  rng_standard_normal(prng, SIZE, r_2);
+  srng_standard_normal(prng, SIZE, r_1);
+  srng_standard_normal(prng, SIZE, r_2);
 
   uint32_t       shape[] = {10, 10};
   mlvm_tensor_t* t_1 =

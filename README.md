@@ -6,11 +6,11 @@
 
 # Structure
 
-## CXX Namespace
+## C Namespace
 
 | Folder     | Namespace   |
 | ---------- | ----------- |
-| Foundation | `mlvm::`    |
+| random     | `sprng_`    |
 | IR         | `mlvm::IR`  |
 | Runtime    | `mlvm::RT`  |
 
