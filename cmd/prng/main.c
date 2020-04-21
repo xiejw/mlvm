@@ -35,6 +35,9 @@ int main() {
   kernel_mul(t_3, t_1, t_2);
   tensor_print(t_3, STDOUT_FILENO);
 
+  kernel_matmul(t_3, t_1, t_2);
+  tensor_print(t_3, STDOUT_FILENO);
+
   tensor_free(t_1);
   tensor_free(t_2);
   tensor_free(t_3);

@@ -6,4 +6,5 @@ add_mlvm_library(
     kernel.h
     add.c
     mul.c
+    matmul.c
 )
