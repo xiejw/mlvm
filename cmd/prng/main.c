@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "mlvm/container/list.h"
 #include "mlvm/ir/ir.h"
 #include "mlvm/random/random.h"
 #include "mlvm/runtime/kernel/kernel.h"
@@ -42,5 +43,18 @@ int main() {
   tensor_free(t_3);
 
   sprng_free(prng);
+
+  {
+    list_int_t lt;
+    list_init(&lt);
+    printf("List size %lld\n", list_size(&lt));
+    list_append(&lt, 123);
+    list_append(&lt, 456);
+    printf("List 0 %d\n", list_get(&lt, 0));
+    printf("List 1 %d\n", list_get(&lt, 1));
+    printf("List size %lld\n", list_size(&lt));
+
+    list_deinit(&lt);
+  }
   return 0;
 }
