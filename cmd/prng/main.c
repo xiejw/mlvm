@@ -4,7 +4,7 @@
 #include "mlvm/ir/tensor.h"
 #include "mlvm/random/normal.h"
 #include "mlvm/random/sprng.h"
-#include "mlvm/runtime/kernel.h"
+#include "mlvm/runtime/kernel/kernel.h"
 
 const int SIZE = 100;
 
@@ -30,6 +30,9 @@ int main() {
       tensor_create(/*rank=*/2, /*shape=*/shape, r_3, MLVM_ALIAS_VALUE);
 
   kernel_add(t_3, t_1, t_2);
+  tensor_print(t_3, STDOUT_FILENO);
+
+  kernel_mul(t_3, t_1, t_2);
   tensor_print(t_3, STDOUT_FILENO);
 
   tensor_free(t_1);
