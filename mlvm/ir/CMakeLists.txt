@@ -3,6 +3,7 @@ add_mlvm_library(
     ir
 
   SRCS
+    ir.h
     tensor.h
     tensor.c
 )

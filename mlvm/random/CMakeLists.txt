@@ -3,6 +3,7 @@ add_mlvm_library(
     random
 
   SRCS
+    random.h
     normal.h
     normal.c
     sprng64.h

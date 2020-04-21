@@ -5,7 +5,8 @@
 
 #define MLVM_COPY_VALUE  0 /* Copy value into Tensor. */
 #define MLVM_MOVE_VALUE  1 /* Move value into Tensor. */
-#define MLVM_ALIAS_VALUE 2 /* Alias value, who must have longer life time. */
+#define MLVM_ALIAS_VALUE 2 /* Alias value, which must have longer life time. \
+                            */
 
 typedef struct {
   uint64_t  size;  /* Total number of elements. */
@@ -17,7 +18,6 @@ typedef struct {
   int value_mode_;
 } tensor_t;
 
-/* The shape will be copied by the value is transfer to tensor. */
 extern tensor_t* tensor_create(uint32_t rank, uint32_t* shape, double* value,
                                int value_mode);
 extern void      tensor_free(tensor_t* tensor);

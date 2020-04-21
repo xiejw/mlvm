@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "mlvm/ir/tensor.h"
-#include "mlvm/random/normal.h"
-#include "mlvm/random/sprng.h"
+#include "mlvm/ir/ir.h"
+#include "mlvm/random/random.h"
 #include "mlvm/runtime/kernel/kernel.h"
 
 const int SIZE = 100;

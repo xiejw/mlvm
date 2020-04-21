@@ -1,5 +1,7 @@
 
 ## TODO List
 
-- Add `rng_normal` with sigma and mu.
+- Add `srng_normal` with sigma and mu.
+- Add function.
+- Add eager runtime.
 - Add test once stable.
