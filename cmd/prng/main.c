@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "mlvm/container/list.h"
 #include "mlvm/ir/ir.h"
+#include "mlvm/lib/list.h"
 #include "mlvm/random/random.h"
 #include "mlvm/runtime/kernel/kernel.h"
 

@@ -34,6 +34,7 @@ project(mlvm)
 add_subdirectory(mlvm/random)
 add_subdirectory(mlvm/ir)
 add_subdirectory(mlvm/runtime/kernel)
+add_subdirectory(mlvm/lib)
 add_subdirectory(mlvm/testing)
 
 # {{{2 Executables.
@@ -47,6 +48,7 @@ add_mlvm_executable(${BINARY} cmd/prng/main.c ${MLVM_BUILD_STATIC})
 target_link_libraries(${BINARY} mlvm::random)
 target_link_libraries(${BINARY} mlvm::ir)
 target_link_libraries(${BINARY} mlvm::kernel)
+target_link_libraries(${BINARY} mlvm::lib)
 
 # {{{2 Test.
 set(TEST test)
