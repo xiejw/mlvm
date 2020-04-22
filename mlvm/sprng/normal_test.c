@@ -1,6 +1,6 @@
 #include "mlvm/testing/test.h"
 
-#include "mlvm/random/random.h"
+#include "mlvm/sprng/sprng.h"
 
 static const int SIZE = 4;
 

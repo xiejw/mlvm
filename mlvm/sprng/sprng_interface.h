@@ -1,7 +1,7 @@
-#ifndef MLVM_RANDOM_SPRNG_H_
-#define MLVM_RANDOM_SPRNG_H_
+#ifndef MLVM_SPRNG_SPRNG_INTERFACE_H_
+#define MLVM_SPRNG_SPRNG_INTERFACE_H_
 
-#include "mlvm/random/sprng64.h"
+#include "mlvm/sprng/sprng64.h"
 
 typedef sprng64_t sprng_t;
 

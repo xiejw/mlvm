@@ -3,8 +3,8 @@
 
 #include "mlvm/ir/ir.h"
 #include "mlvm/lib/list.h"
-#include "mlvm/random/random.h"
 #include "mlvm/runtime/kernel/kernel.h"
+#include "mlvm/sprng/sprng.h"
 
 const int SIZE = 100;
 

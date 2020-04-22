@@ -10,7 +10,11 @@
 
 | Folder          | Namespace   |
 | --------------- | ----------- |
-| random          | `sprng_`    |
-| ir/tensor       | `tensor_`  |
-| runtime/kernel  | `kernel_`  |
+| sprng           | `sprng_`    |
+| ir/tensor       | `tensor_`   |
+| runtime/kernel  | `kernel_`   |
+
+## Lib
+
+`lib` folder provides the basic data structure and algorithrms.
 

@@ -1,5 +1,5 @@
-#ifndef MLVM_RANDOM_SPRNG64_H_
-#define MLVM_RANDOM_SPRNG64_H_
+#ifndef MLVM_SPRNG_SPRNG64_H_
+#define MLVM_SPRNG_SPRNG64_H_
 
 #include <stdint.h>
 

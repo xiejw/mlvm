@@ -1,6 +1,6 @@
 #include "mlvm/testing/test.h"
 
-/* list_test.c */
+/* normal_test.c */
 extern char* run_sprng_normal_test();
 
 char* run_sprng_test() {

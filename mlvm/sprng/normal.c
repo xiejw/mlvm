@@ -1,4 +1,4 @@
-#include "mlvm/random/normal.h"
+#include "mlvm/sprng/normal.h"
 
 #include <assert.h>
 #include <float.h>

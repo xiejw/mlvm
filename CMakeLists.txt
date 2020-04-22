@@ -31,7 +31,7 @@ project(mlvm)
 # {{{2 Dependencies.
 #
 # Putting supporting dependencies in bottom.
-add_subdirectory(mlvm/random)
+add_subdirectory(mlvm/sprng)
 add_subdirectory(mlvm/ir)
 add_subdirectory(mlvm/runtime/kernel)
 add_subdirectory(mlvm/lib)
@@ -45,7 +45,7 @@ set(BINARY prng)
 option(MLVM_BUILD_STATIC "If ON, builds static binary" OFF)
 
 add_mlvm_executable(${BINARY} cmd/prng/main.c ${MLVM_BUILD_STATIC})
-target_link_libraries(${BINARY} mlvm::random)
+target_link_libraries(${BINARY} mlvm::sprng)
 target_link_libraries(${BINARY} mlvm::ir)
 target_link_libraries(${BINARY} mlvm::kernel)
 target_link_libraries(${BINARY} mlvm::lib)
@@ -54,8 +54,5 @@ target_link_libraries(${BINARY} mlvm::lib)
 set(TEST test)
 
 add_mlvm_executable(${TEST} cmd/test/main.c OFF)
-# target_link_libraries(${TEST} mlvm::random)
-# target_link_libraries(${TEST} mlvm::ir)
-target_link_libraries(${TEST} mlvm::testing)
-target_link_mlvm_test_libraries(${TEST} mlvm::random)
+target_link_mlvm_test_libraries(${TEST} mlvm::sprng)
 target_link_mlvm_test_libraries(${TEST} mlvm::lib)

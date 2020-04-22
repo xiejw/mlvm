@@ -1,4 +1,4 @@
-#include "mlvm/random/sprng64.h"
+#include "mlvm/sprng/sprng64.h"
 
 #include <assert.h>
 #include <stdlib.h>

@@ -1,16 +1,17 @@
 add_mlvm_library(
   NAME
-    random
+    sprng
 
   SRCS
-    random.h
-    normal.h
-    normal.c
+    sprng.h
+    sprng_interface.h
     sprng64.h
     sprng64.c
+    normal.h
+    normal.c
 
   TESTS
-    random_test.h
+    sprng_test.h
     normal_test.c
 
   DEPS
