@@ -34,6 +34,7 @@ project(mlvm)
 add_subdirectory(mlvm/random)
 add_subdirectory(mlvm/ir)
 add_subdirectory(mlvm/runtime/kernel)
+add_subdirectory(mlvm/testing)
 
 # {{{2 Executables.
 #
@@ -48,9 +49,10 @@ target_link_libraries(${BINARY} mlvm::ir)
 target_link_libraries(${BINARY} mlvm::kernel)
 
 # {{{2 Test.
-set(BINARY test)
+set(TEST test)
 
-add_mlvm_executable(${BINARY} cmd/test/main.c OFF)
-target_link_libraries(${BINARY} mlvm::random)
-target_link_libraries(${BINARY} mlvm::ir)
-target_link_libraries(${BINARY} mlvm::kernel)
+add_mlvm_executable(${TEST} cmd/test/main.c OFF)
+target_link_libraries(${TEST} mlvm::random)
+target_link_libraries(${TEST} mlvm::ir)
+target_link_libraries(${TEST} mlvm::kernel)
+target_link_libraries(${TEST} mlvm::testing)
