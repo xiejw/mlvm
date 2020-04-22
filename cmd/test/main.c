@@ -5,6 +5,7 @@
 #include "mlvm/lib/lib_test.h"
 
 typedef char* (*test_fn_t)();
+
 typedef struct {
   char*     name;
   test_fn_t fn;

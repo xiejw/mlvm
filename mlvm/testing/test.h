@@ -20,6 +20,7 @@ extern int tests_run;
     }                              \
   } while (0)
 
+/* RUN_SUITE does not increase test count. */
 #define RUN_SUITE(test)          \
   do {                           \
     char *msg = (test)();        \
