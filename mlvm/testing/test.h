@@ -36,16 +36,27 @@ extern int tests_run;
     if (msg != NULL) return msg; \
   } while (0)
 
-#define ASSERT_TRUE(msg, test) \
-  do {                         \
-    if (!(test)) return msg;   \
+#define ASSERT_TRUE(msg, test) ASSERT_TRUE_IMPL(msg, test, __FILE__, __LINE__)
+
+#define ASSERT_TRUE_IMPL(msg, test, file, lineno) \
+  do {                                            \
+    if (!(test)) {                                \
+      printf("-> File: %s\n", file);              \
+      printf("-> Line: %d\n", lineno);            \
+      return msg;                                 \
+    }                                             \
   } while (0)
 
-#define ASSERT_ARRAY_CLOSE(msg, expected, got, size, tol)                     \
+#define ASSERT_ARRAY_CLOSE(msg, expected, got, size, tol) \
+  ASSERT_ARRAY_CLOSE_IMPL(msg, expected, got, size, tol, __FILE__, __LINE__)
+
+#define ASSERT_ARRAY_CLOSE_IMPL(msg, expected, got, size, tol, file, lineno)  \
   do {                                                                        \
     int i;                                                                    \
     for (i = 0; i < size; i++) {                                              \
       if (fabs(expected[i] - got[i]) >= tol) {                                \
+        printf("\n-> File: %s\n", file);                                      \
+        printf("-> Line: %d\n", lineno);                                      \
         DEBUG_TEST_PRINTF("\n-> at element %d\n-> got %f\n-> expect %f\n", i, \
                           expected[i], got[i]);                               \
         return msg;                                                           \
