@@ -2,6 +2,6 @@
 #define MLVM_SPRNG_SPRNG_H_
 
 #include "mlvm/sprng/normal.h"
-#include "mlvm/sprng/sprng_interface.h"
+#include "mlvm/sprng/sprng_api.h"
 
 #endif

@@ -3,6 +3,7 @@
 
 #include "mlvm/sprng/sprng64.h"
 
+/* Provides a public API for sprng. */
 typedef sprng64_t sprng_t;
 
 #define sprng_create(seed)     sprng64_create(seed)
