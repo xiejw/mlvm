@@ -5,10 +5,24 @@
 
 extern int tests_run;
 
-#define RUN_TEST(test)           \
+#define RUN_TEST(test) RUN_TEST_IMPL(test, #test)
+
+#define RUN_TEST_IMPL(test, name)  \
+  do {                             \
+    printf("  Running: %s", name); \
+    char *msg = (test)();          \
+    tests_run++;                   \
+    if (msg != NULL) {             \
+      printf("...Failed.\n");      \
+      return msg;                  \
+    } else {                       \
+      printf(".\n");               \
+    }                              \
+  } while (0)
+
+#define RUN_SUITE(test)          \
   do {                           \
     char *msg = (test)();        \
-    tests_run++;                 \
     if (msg != NULL) return msg; \
   } while (0)
 

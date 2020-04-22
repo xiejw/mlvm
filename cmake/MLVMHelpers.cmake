@@ -61,7 +61,7 @@ function(add_mlvm_library)
     # Test cases should be linked in cmake as OBJECT library.
     add_library(${_TEST_NAME} OBJECT ${MLVM_LIBRARY_PREFIX_TESTS})
     target_link_libraries(${_TEST_NAME} PUBLIC ${_INTERNAL_NAME})
-    target_link_libraries(${_TEST_NAME} PUBLIC gtest)
+    target_link_libraries(${_TEST_NAME} PUBLIC mlvm::testing)
 
     # Added an alias.
     add_library(test::${_PUBLIC_NAME} ALIAS ${_TEST_NAME})

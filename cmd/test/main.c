@@ -2,22 +2,27 @@
 
 #include "mlvm/testing/test.h"
 
-char *hello() {
-  ASSERT_TRUE("should be true.", 1 == 0);
-  return NULL;
-}
+#include "mlvm/lib/lib_test.h"
 
-char *run_suite() {
-  RUN_TEST(hello);
-  return NULL;
-}
+typedef char* (*test_fn_t)();
+typedef struct {
+  char*     name;
+  test_fn_t fn;
+} test_suite_t;
+
+test_suite_t test_suites[] = {{"mlvm/lib", run_lib_test}};
 
 int main() {
-  char *result = run_suite();
-  if (result != 0) {
-    printf("ERROR: %s\n", result);
-  } else {
-    printf("ALL TESTS PASSED\n");
+  int i;
+  int size = sizeof(test_suites) / sizeof(test_suite_t);
+  for (i = 0; i < size; i++) {
+    printf("Running suite: %s\n", test_suites[i].name);
+    char* result = test_suites[i].fn();
+    if (result != 0) {
+      printf("ERROR: %s\n", result);
+    } else {
+      printf("ALL TESTS PASSED\n");
+    }
   }
   printf("Tests run: %d\n", tests_run);
   return 0;
