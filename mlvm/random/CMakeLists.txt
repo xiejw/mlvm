@@ -9,6 +9,10 @@ add_mlvm_library(
     sprng64.h
     sprng64.c
 
+  TESTS
+    random_test.h
+    normal_test.c
+
   DEPS
     -lm
 )

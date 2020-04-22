@@ -1,6 +1,8 @@
 #ifndef MLVM_TESTING_TEST_H_
 #define MLVM_TESTING_TEST_H_
 
+#include <stdio.h>
+
 /* This unit testing framework is inspired by MinUnit. */
 
 extern int tests_run;

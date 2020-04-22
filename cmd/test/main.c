@@ -3,6 +3,7 @@
 #include "mlvm/testing/test.h"
 
 #include "mlvm/lib/lib_test.h"
+#include "mlvm/random/random_test.h"
 
 typedef char* (*test_fn_t)();
 
@@ -11,7 +12,10 @@ typedef struct {
   test_fn_t fn;
 } test_suite_t;
 
-test_suite_t test_suites[] = {{"mlvm/lib", run_lib_test}};
+test_suite_t test_suites[] = {
+    {"mlvm/lib", run_lib_test},
+    {"mlvm/random", run_sprng_test},
+};
 
 int main() {
   int i;
