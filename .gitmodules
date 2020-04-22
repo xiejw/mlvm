@@ -1,6 +1,0 @@
-[submodule ".libraries/absl"]
-	path = .libraries/absl
-	url = https://github.com/abseil/abseil-cpp.git
-[submodule ".libraries/gtest"]
-	path = .libraries/gtest
-	url = https://github.com/google/googletest.git
