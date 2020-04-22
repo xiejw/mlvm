@@ -50,8 +50,8 @@ int main() {
     printf("List size %lld\n", list_size(&lt));
     list_append(&lt, 123);
     list_append(&lt, 456);
-    printf("List 0 %d\n", list_get(&lt, 0));
-    printf("List 1 %d\n", list_get(&lt, 1));
+    printf("List 0 %d\n", lt.data[0]);
+    printf("List 1 %d\n", lt.data[1]);
     printf("List size %lld\n", list_size(&lt));
 
     list_deinit(&lt);
