@@ -37,6 +37,22 @@ static char* test_list_data() {
   return NULL;
 }
 
+typedef list_t(int*) list_int_ptr_t;
+
+static char* test_list_data_with_ptr_type() {
+  int            a = 123, b = 456;
+  list_int_ptr_t lt;
+  list_init(&lt);
+
+  list_append(&lt, &a);
+  list_append(&lt, &b);
+  ASSERT_TRUE("Expect 123.", 123 == *lt.data[0]);
+  ASSERT_TRUE("Expect 456.", 456 == *lt.data[1]);
+
+  list_deinit(&lt);
+  return NULL;
+}
+
 static char* test_list_set() {
   list_int_t lt;
   list_init(&lt);
@@ -66,9 +82,9 @@ static char* test_list_append_to_grow() {
   ASSERT_TRUE("Expect 1 ele.", 1 == list_size(&lt));
   ptr = lt.data;
 
+  /* Checks the buffer address before and after grow. */
   list_append(&lt, 456);
   ASSERT_TRUE("Buffer should be same.", ptr == lt.data);
-
   for (i = 2; i < 32; i++) list_append(&lt, 456 + i);
   ASSERT_TRUE("Buffer should be growed.", ptr != lt.data);
 
@@ -82,6 +98,7 @@ char* run_list_test() {
   RUN_TEST(test_list_empty);
   RUN_TEST(test_list_append_and_size);
   RUN_TEST(test_list_data);
+  RUN_TEST(test_list_data_with_ptr_type);
   RUN_TEST(test_list_set);
   RUN_TEST(test_list_append_to_grow);
   return NULL;
