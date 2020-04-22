@@ -72,6 +72,8 @@ static char* test_list_append_to_grow() {
   for (i = 2; i < 32; i++) list_append(&lt, 456 + i);
   ASSERT_TRUE("Buffer should be growed.", ptr != lt.data);
 
+  for (i = 2; i < 32; i++) ASSERT_TRUE("ele mismatch", 456 + i == lt.data[i]);
+
   list_deinit(&lt);
   return NULL;
 }
