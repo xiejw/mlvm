@@ -76,14 +76,12 @@ static char* test_list_append_to_grow() {
 
   list_int_t lt;
   list_init(&lt);
-
-  /* Push one to ensure the buffer is allocated.*/
-  list_append(&lt, 123);
-  ASSERT_TRUE("Expect 1 ele.", 1 == list_size(&lt));
   ptr = lt.data;
 
   /* Checks the buffer address before and after grow. */
+  list_append(&lt, 123);
   list_append(&lt, 456);
+  ASSERT_TRUE("Expect 1 ele.", 2 == list_size(&lt));
   ASSERT_TRUE("Buffer should be same.", ptr == lt.data);
   for (i = 2; i < 32; i++) list_append(&lt, 456 + i);
   ASSERT_TRUE("Buffer should be growed.", ptr != lt.data);

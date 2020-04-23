@@ -4,7 +4,7 @@ add_mlvm_library(
 
   SRCS
     sprng.h
-    sprng_interface.h
+    sprng_api.h
     sprng64.h
     sprng64.c
     normal.h

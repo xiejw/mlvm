@@ -10,7 +10,15 @@
 #define DEBUG_TEST_PRINTF(x, ...)
 #endif
 
-/* This unit testing framework is inspired by MinUnit. */
+/*
+ * This unit testing framework is inspired by MinUnit.
+ *
+ * ## Assertation
+ *
+ * ASSERT_TRUE(msg, condition)
+ * ASSERT_ARRAY_CLOSE(msg, expected, got, size, tol)
+ *
+ */
 
 extern int tests_run;
 
@@ -41,7 +49,7 @@ extern int tests_run;
 #define ASSERT_TRUE_IMPL(msg, test, file, lineno) \
   do {                                            \
     if (!(test)) {                                \
-      printf("-> File: %s\n", file);              \
+      printf("\n-> File: %s\n", file);            \
       printf("-> Line: %d\n", lineno);            \
       return msg;                                 \
     }                                             \
