@@ -7,4 +7,6 @@ add_mlvm_library(
     add.c
     mul.c
     matmul.c
+    shape_util.h
+    shape_util.c
 )

@@ -7,7 +7,10 @@
 #define POS(x, y, dim_y) ((x) * (dim_y) + (y))
 
 int kernel_matmul(tensor_t* output, tensor_t* arg_1, tensor_t* arg_2) {
-  uint32_t i, j, k, dim_i, dim_j, dim_k;
+  tensor_shape_t i, j, k, dim_i, dim_j, dim_k;
+  /* We support trivial stride so far.*/
+  assert(arg_1->stride[1] == 1);
+  assert(arg_2->stride[1] == 1);
 
   assert(arg_1->rank == arg_2->rank);
   assert(arg_1->rank == 2);

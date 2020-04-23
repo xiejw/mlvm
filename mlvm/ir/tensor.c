@@ -5,21 +5,21 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern tensor_t* tensor_create(uint32_t rank, uint32_t* shape, double* value,
-                               int value_mode) {
+extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
+                               double* value, int value_mode) {
   /* Consider to check overflow of the size. */
-  uint32_t  i;
-  uint64_t  size;
-  uint64_t* stride;
-  uint32_t* shape_copy;
-  double*   value_buffer;
+  tensor_size_t   size;
+  tensor_size_t*  stride;
+  tensor_shape_t  i;
+  tensor_shape_t* shape_copy;
+  double*         value_buffer;
 
   tensor_t* tensor = malloc(sizeof(tensor_t));
   assert(rank >= 1);
 
-  shape_copy = malloc(rank * sizeof(uint32_t));
-  memcpy(shape_copy, shape, rank * sizeof(uint32_t));
-  stride = malloc(rank * sizeof(uint64_t));
+  shape_copy = malloc(rank * sizeof(tensor_shape_t));
+  memcpy(shape_copy, shape, rank * sizeof(tensor_shape_t));
+  stride = malloc(rank * sizeof(tensor_size_t));
 
   /* Compuate the size and stride. */
   i    = rank - 1;
@@ -32,8 +32,8 @@ extern tensor_t* tensor_create(uint32_t rank, uint32_t* shape, double* value,
   }
 
   if (value_mode == MLVM_COPY_VALUE) {
-    uint64_t size_of_buffer = size * sizeof(double);
-    double*  value_copy     = malloc(size_of_buffer);
+    tensor_size_t size_of_buffer = size * sizeof(double);
+    double*       value_copy     = malloc(size_of_buffer);
     memcpy(value_copy, value, size_of_buffer);
     value_buffer = value_copy;
   } else {
@@ -57,12 +57,12 @@ void tensor_free(tensor_t* tensor) {
 }
 
 int tensor_print(tensor_t* tensor, int fd) {
-  int      n = 0;
-  uint64_t i;
-  uint64_t size = tensor->size;
-  uint32_t j;
-  uint32_t rank = tensor->rank;
-  double*  buf  = tensor->value;
+  int            n = 0;
+  tensor_size_t  i;
+  tensor_size_t  size = tensor->size;
+  tensor_shape_t j;
+  tensor_shape_t rank = tensor->rank;
+  double*        buf  = tensor->value;
 
   /* Print headline with shape and stride */
   n += dprintf(fd, "Tensor: <");
