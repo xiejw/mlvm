@@ -8,12 +8,14 @@ static char* test_matmul() {
   double output_value[4];
   double expected[4] = {82, 88, 199, 214};
 
-  tensor_t* t_1 =
-      tensor_create(2, (tensor_shape_t[]){2, 3}, value_1, MLVM_ALIAS_VALUE);
-  tensor_t* t_2 =
-      tensor_create(2, (tensor_shape_t[]){3, 2}, value_2, MLVM_ALIAS_VALUE);
-  tensor_t* t_output = tensor_create(2, (tensor_shape_t[]){2, 2}, output_value,
-                                     MLVM_ALIAS_VALUE);
+  tensor_shape_t shape_2x3[] = {2, 3};
+  tensor_shape_t shape_3x2[] = {3, 2};
+  tensor_shape_t shape_2x2[] = {2, 2};
+
+  tensor_t* t_1 = tensor_create(2, shape_2x3, value_1, MLVM_ALIAS_VALUE);
+  tensor_t* t_2 = tensor_create(2, shape_3x2, value_2, MLVM_ALIAS_VALUE);
+  tensor_t* t_output =
+      tensor_create(2, shape_2x2, output_value, MLVM_ALIAS_VALUE);
 
   ASSERT_TRUE("Should be succesful", 0 == kernel_matmul(t_output, t_1, t_2));
   ASSERT_ARRAY_CLOSE("Result mismatch", expected, t_output->value, 4, 1e-6);
