@@ -38,10 +38,13 @@ endfunction()
 #
 #       DEPS
 #         -lm
+#
+#       TEST_DPES
+#         mlvm::ir
 #     )
 #     ```
 #
-# where `TESTS` and `DEPS` are optional.
+# where `TESTS`, `DEPS`, `TEST_DPES` are optional.
 #
 # There are some internal names added to link targets. But public facing changes exposed
 # are:
@@ -73,7 +76,7 @@ function(add_mlvm_library)
     MLVM_LIBRARY_PREFIX
     ""
     "NAME"
-    "SRCS;TESTS;DEPS"
+    "SRCS;TESTS;DEPS;TEST_DEPS"
     ${ARGN}
   )
 
@@ -116,6 +119,7 @@ function(add_mlvm_library)
     # Test cases should be linked in cmake as OBJECT library.
     add_library(${_TEST_NAME} OBJECT ${MLVM_LIBRARY_PREFIX_TESTS})
     target_link_libraries(${_TEST_NAME} PUBLIC ${_INTERNAL_NAME})
+    target_link_libraries(${_TEST_NAME} PUBLIC ${MLVM_LIBRARY_PREFIX_TEST_DEPS})
     target_link_libraries(${_TEST_NAME} PUBLIC ${MLVM_COMMON_TESTING_LIB})
 
     # Added an alias.

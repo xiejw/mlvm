@@ -2,8 +2,6 @@
 
 #include "mlvm/runtime/kernel/kernel.h"
 
-#include <unistd.h>
-
 static char* test_matmul() {
   double value_1[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
   double value_2[] = {11.0, 12.0, 13.0, 14.0, 15.0, 16.0};
@@ -20,7 +18,6 @@ static char* test_matmul() {
       tensor_create(2, shape_2x2, output_value, MLVM_ALIAS_VALUE);
 
   ASSERT_TRUE("Should be succesful", 0 == kernel_matmul(t_output, t_1, t_2));
-  tensor_print(t_output, STDOUT_FILENO);
   ASSERT_ARRAY_CLOSE("Result mismatch", expected, t_output->value, 4, 1e-6);
 
   tensor_free(t_1);

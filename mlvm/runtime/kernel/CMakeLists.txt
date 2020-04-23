@@ -14,6 +14,6 @@ add_mlvm_library(
     test_suite.h
     matmul_test.c
 
-  DEPS
+  TEST_DEPS
     mlvm::ir
 )
