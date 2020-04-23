@@ -49,6 +49,10 @@ extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
   return tensor;
 }
 
+void tensor_set_stride(tensor_t* tensor, tensor_size_t* new_stride) {
+  memcpy(tensor->stride, new_stride, tensor->rank * sizeof(*tensor->stride));
+}
+
 void tensor_free(tensor_t* tensor) {
   free(tensor->shape);
   free(tensor->stride);

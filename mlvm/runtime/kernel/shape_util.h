@@ -5,5 +5,7 @@
 
 /* Returns 1 if stride is same. */
 extern int kernel_stripe_identical(tensor_t* arg_1, tensor_t* arg_2);
+/* Returns 1 if shape is same. */
+extern int kernel_shape_identical(tensor_t* arg_1, tensor_t* arg_2);
 
 #endif
