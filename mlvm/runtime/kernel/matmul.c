@@ -24,7 +24,7 @@ int kernel_matmul(tensor_t* output, tensor_t* arg_1, tensor_t* arg_2) {
     for (k = 0; k < dim_k; k++) {
       double v = 0;
       for (j = 0; j < dim_j; j++) {
-        v += arg_1->value[POS(i, j, dim_j)] + arg_2->value[POS(j, k, dim_k)];
+        v += arg_1->value[POS(i, j, dim_j)] * arg_2->value[POS(j, k, dim_k)];
       }
       output->value[POS(i, k, dim_k)] = v;
     }

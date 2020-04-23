@@ -55,4 +55,5 @@ set(TEST test)
 
 add_mlvm_executable(${TEST} cmd/test/main.c OFF)
 target_link_mlvm_test_libraries(${TEST} mlvm::sprng)
+target_link_mlvm_test_libraries(${TEST} mlvm::kernel)
 target_link_mlvm_test_libraries(${TEST} mlvm::lib)

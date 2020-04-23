@@ -9,4 +9,11 @@ add_mlvm_library(
     matmul.c
     shape_util.h
     shape_util.c
+
+  TESTS
+    test_suite.h
+    matmul_test.c
+
+  DEPS
+    mlvm::ir
 )
