@@ -46,5 +46,7 @@ int main() {
   }
 
   printf("Tests run: %d\n", tests_run);
+  if (suites_failed)
+    printf("\033[1;31mTest suites failed: %d\033[0m\n", suites_failed);
   return suites_failed ? -1 : 0;
 }
