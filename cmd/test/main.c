@@ -24,9 +24,9 @@ int main() {
     printf("Running suite: %s\n", test_suites[i].name);
     char* result = test_suites[i].fn();
     if (result != 0) {
-      printf("\033[1;31mERROR: %s\033[0m\n", result);
+      printf("\033[1;31mERROR: %s\033[0m\n", result); /* Red */
     } else {
-      printf("\033[1;32mALL TESTS PASSED\033[0m\n");
+      printf("\033[1;32mALL TESTS PASSED\033[0m\n"); /* Green */
     }
   }
   printf("Tests run: %d\n", tests_run);

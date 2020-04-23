@@ -13,7 +13,30 @@
 /*
  * This unit testing framework is inspired by MinUnit.
  *
- * ## Assertation
+ *     http://www.jera.com/techinfo/jtns/jtn002.html
+ *
+ * Core Idea.
+ * ----------
+ *
+ * The test method should have type
+ *
+ * ```
+ * char* test_foo() {
+ *   return NULL;
+ * }
+ * ```
+ * NULL means successful; any non-NULL string is the error message.
+ *
+ *
+ * Run Test and Suite.
+ * -------------------
+ *
+ * RUN_TEST(test_fn)    // Increase `tests_run`
+ * RUN_SUITE(test_fn)   // Does not increase `tests_run`
+ *
+ *
+ * Assertation.
+ * ------------
  *
  * ASSERT_TRUE(msg, condition)
  * ASSERT_ARRAY_CLOSE(msg, expected, got, size, tol)
@@ -37,20 +60,22 @@ extern int tests_run;
     }                              \
   } while (0)
 
-/* RUN_SUITE does not increase test count. */
 #define RUN_SUITE(test)          \
   do {                           \
     char *msg = (test)();        \
     if (msg != NULL) return msg; \
   } while (0)
 
+/******************************************************************************
+ * Assertation
+ *****************************************************************************/
+
 #define ASSERT_TRUE(msg, test) ASSERT_TRUE_IMPL(msg, test, __FILE__, __LINE__)
 
 #define ASSERT_TRUE_IMPL(msg, test, file, lineno) \
   do {                                            \
     if (!(test)) {                                \
-      printf("\n-> File: %s\n", file);            \
-      printf("-> Line: %d\n", lineno);            \
+      ASSERT_PRINT_LOC(file, lineno);             \
       return msg;                                 \
     }                                             \
   } while (0)
@@ -63,13 +88,16 @@ extern int tests_run;
     int i;                                                                    \
     for (i = 0; i < size; i++) {                                              \
       if (fabs(expected[i] - got[i]) >= tol) {                                \
-        printf("\n-> File: %s\n", file);                                      \
-        printf("-> Line: %d\n", lineno);                                      \
+        ASSERT_PRINT_LOC(file, lineno);                                       \
         DEBUG_TEST_PRINTF("\n-> at element %d\n-> got %f\n-> expect %f\n", i, \
                           expected[i], got[i]);                               \
         return msg;                                                           \
       }                                                                       \
     }                                                                         \
   } while (0)
+
+/* Prints the location in two lines with yellow color. */
+#define ASSERT_PRINT_LOC(file, lineno) \
+  printf("\n\033[1;33m-> File: %s\n-> Line %d\033[0m\n", file, lineno)
 
 #endif
