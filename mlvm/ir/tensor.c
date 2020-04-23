@@ -8,8 +8,9 @@
 extern tensor_t* tensor_create(uint32_t rank, uint32_t* shape, double* value,
                                int value_mode) {
   /* Consider to check overflow of the size. */
-  uint64_t  size;
   uint32_t  i;
+  uint64_t  size;
+  uint64_t* stride;
   uint32_t* shape_copy;
   double*   value_buffer;
 
@@ -18,12 +19,16 @@ extern tensor_t* tensor_create(uint32_t rank, uint32_t* shape, double* value,
 
   shape_copy = malloc(rank * sizeof(uint32_t));
   memcpy(shape_copy, shape, rank * sizeof(uint32_t));
+  stride = malloc(rank * sizeof(uint64_t));
 
-  assert(shape[0] > 0);
-  size = shape[0];
-  for (i = 1; i < rank; i++) {
+  /* Compuate the size and stride. */
+  i    = rank - 1;
+  size = 1;
+  for (;;) {
     assert(shape[i] > 0);
+    stride[i] = size;
     size *= shape[i];
+    if (i-- == 0) break;
   }
 
   if (value_mode == MLVM_COPY_VALUE) {
@@ -38,6 +43,7 @@ extern tensor_t* tensor_create(uint32_t rank, uint32_t* shape, double* value,
   tensor->size        = size;
   tensor->rank        = rank;
   tensor->shape       = shape_copy;
+  tensor->stride      = stride;
   tensor->value       = value_buffer;
   tensor->value_mode_ = value_mode;
   return tensor;
@@ -45,6 +51,7 @@ extern tensor_t* tensor_create(uint32_t rank, uint32_t* shape, double* value,
 
 void tensor_free(tensor_t* tensor) {
   free(tensor->shape);
+  free(tensor->stride);
   if (tensor->value_mode_ != MLVM_ALIAS_VALUE) free(tensor->value);
   free(tensor);
 }
@@ -57,15 +64,23 @@ int tensor_print(tensor_t* tensor, int fd) {
   uint32_t rank = tensor->rank;
   double*  buf  = tensor->value;
 
-  /* Print headline. */
+  /* Print headline with shape and stride */
   n += dprintf(fd, "Tensor: <");
   for (j = 0; j < rank - 1; j++) {
     n += dprintf(fd, "%3d,", tensor->shape[j]);
   }
   n += dprintf(fd, "%3d", tensor->shape[rank - 1]);
-  n += dprintf(fd, ">\n[ ");
+  n += dprintf(fd, ">");
+
+  n += dprintf(fd, " {");
+  for (j = 0; j < rank - 1; j++) {
+    n += dprintf(fd, "%3llu,", tensor->stride[j]);
+  }
+  n += dprintf(fd, "%3llu", tensor->stride[rank - 1]);
+  n += dprintf(fd, "}\n");
 
   /* Printf value buffer. */
+  n += dprintf(fd, "[ ");
   for (i = 0; i < size; i++) {
     n += dprintf(fd, "%6.3f  ", buf[i]);
     if (i % 10 == 9) n += dprintf(fd, i != size - 1 ? "\n  " : "\n");

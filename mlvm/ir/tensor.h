@@ -8,10 +8,11 @@
 #define MLVM_ALIAS_VALUE 2 /* Alias, which must have longer life time. */
 
 typedef struct {
-  uint64_t  size;  /* Total number of elements. */
-  uint32_t  rank;  /* Must be positive (non-zero). */
-  uint32_t* shape; /* Length is `rank` above. */
-  double*   value; /* The value buffer. */
+  uint64_t  size;   /* Total number of elements. */
+  uint32_t  rank;   /* Must be positive (non-zero). */
+  uint32_t* shape;  /* Length is `rank` above. */
+  uint64_t* stride; /* Stride for each dim. */
+  double*   value;  /* The value buffer. */
 
   /* Internal fields */
   int value_mode_;
