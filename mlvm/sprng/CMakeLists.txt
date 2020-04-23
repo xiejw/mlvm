@@ -11,7 +11,7 @@ add_mlvm_library(
     normal.c
 
   TESTS
-    sprng_test.h
+    test_suite.h
     normal_test.c
 
   DEPS

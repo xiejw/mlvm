@@ -7,6 +7,6 @@ add_mlvm_library(
     list.c
 
   TESTS
-    lib_test.h
+    test_suite.h
     list_test.c
 )
