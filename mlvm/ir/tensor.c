@@ -74,9 +74,9 @@ int tensor_print(tensor_t* tensor, int fd) {
 
   n += dprintf(fd, " {");
   for (j = 0; j < rank - 1; j++) {
-    n += dprintf(fd, "%3llu,", tensor->stride[j]);
+    n += dprintf(fd, "%3lu,", tensor->stride[j]);
   }
-  n += dprintf(fd, "%3llu", tensor->stride[rank - 1]);
+  n += dprintf(fd, "%3lu", tensor->stride[rank - 1]);
   n += dprintf(fd, "}\n");
 
   /* Printf value buffer. */
