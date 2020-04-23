@@ -16,5 +16,6 @@
 
 ## Lib
 
-`lib` folder provides the basic data structure and algorithrms.
+[`lib` folder](mlvm/lib) provides the basic data structure and algorithrms,
+e.g., list, map, etc.
 
