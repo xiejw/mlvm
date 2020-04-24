@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h> /* PRIxN */
 
 extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
                                double* value, int value_mode) {
@@ -78,9 +79,9 @@ int tensor_print(tensor_t* tensor, int fd) {
 
   n += dprintf(fd, " {");
   for (j = 0; j < rank - 1; j++) {
-    n += dprintf(fd, "%3lu,", tensor->stride[j]);
+    n += dprintf(fd, "%3" PRIu64 ",", tensor->stride[j]);
   }
-  n += dprintf(fd, "%3lu", tensor->stride[rank - 1]);
+  n += dprintf(fd, "%3" PRIu64, tensor->stride[rank - 1]);
   n += dprintf(fd, "}\n");
 
   /* Printf value buffer. */
