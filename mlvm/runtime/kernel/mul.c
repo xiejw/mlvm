@@ -5,7 +5,7 @@
 #include "mlvm/ir/tensor.h"
 #include "mlvm/runtime/kernel/shape_util.h"
 
-int kernel_mul(tensor_t* output, tensor_t* arg_1, tensor_t* arg_2) {
+void kernel_mul(tensor_t* output, tensor_t* arg_1, tensor_t* arg_2) {
   tensor_size_t i;
   tensor_size_t size = arg_1->size;
 
@@ -16,5 +16,4 @@ int kernel_mul(tensor_t* output, tensor_t* arg_1, tensor_t* arg_2) {
   for (i = 0; i < size; i++) {
     output->value[i] = arg_1->value[i] * arg_2->value[i];
   }
-  return 0;
 }

@@ -1,10 +1,10 @@
 #include "mlvm/ir/tensor.h"
 
 #include <assert.h>
+#include <inttypes.h> /* PRIxN */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <inttypes.h> /* PRIxN */
 
 extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
                                double* value, int value_mode) {

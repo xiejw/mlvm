@@ -17,7 +17,7 @@ static char* test_matmul() {
   tensor_t* t_output =
       tensor_create(2, shape_2x2, output_value, MLVM_ALIAS_VALUE);
 
-  ASSERT_TRUE("Should be succesful", 0 == kernel_matmul(t_output, t_1, t_2));
+  kernel_matmul(t_output, t_1, t_2);
   ASSERT_ARRAY_CLOSE("Result mismatch", expected, t_output->value, 4, 1e-6);
 
   tensor_free(t_1);
