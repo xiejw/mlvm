@@ -2,7 +2,7 @@
 
 #include "mlvm/sprng/sprng.h"
 
-static const int SIZE = 4;
+#define SIZE 4
 
 static char* test_sprng_normal() {
   sprng_t* prng = sprng_create(456L);

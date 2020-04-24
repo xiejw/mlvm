@@ -1,6 +1,6 @@
 # {{{1 Common Options
 #
-set(MLVM_COMMON_COMPILE_OPTIONS -Wall -Werror -Wextra)
+set(MLVM_COMMON_COMPILE_OPTIONS -Wall -Werror -Wextra -pedantic-errors)
 set(MLVM_COMMON_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(MLVM_COMMON_TESTING_LIB mlvm::testing)
 

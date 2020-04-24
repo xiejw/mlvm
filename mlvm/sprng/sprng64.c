@@ -78,10 +78,12 @@ sprng64_t* sprng64_create(uint64_t seed) {
 }
 
 sprng64_t* sprng64_create_with_gamma(uint64_t seed, uint64_t gamma_seed) {
-  assert(gamma_seed < gamma_prime_);
+  sprng64_t* prng;
 
-  sprng64_t* prng = malloc(sizeof(sprng64_t));
-  prng->seed_     = seed;
+  assert(gamma_seed < gamma_prime_);
+  prng = malloc(sizeof(sprng64_t));
+
+  prng->seed_ = seed;
   gamma_seed += gamma_gamma_;
   if (gamma_seed >= gamma_prime_) gamma_seed -= gamma_prime_;
   prng->gamma_           = sprng64_mix56(gamma_seed) + 13;

@@ -18,11 +18,13 @@ void list_allocate_(list_base_t* base, void** ref, int vsize) {
 }
 
 void list_may_grow_(list_base_t* base, void** ref, int vsize) {
-  assert(base->cap == base->size + 1);
-  DEBUG_LIST_PRINTF("Grow List buffer \n");
   uint64_t new_cap = base->cap * 2;
   void*    new_ptr = malloc(new_cap * vsize);
   void*    old_ptr = *ref;
+
+  assert(base->cap == base->size + 1);
+  DEBUG_LIST_PRINTF("Grow List buffer \n");
+
   memcpy(new_ptr, old_ptr, base->cap * vsize);
   *ref = new_ptr;
   free(old_ptr);

@@ -36,8 +36,9 @@ int main() {
   int suites_failed = 0;
 
   for (i = 0; i < size; i++) {
+    char* result;
     printf("Running suite: %s\n", test_suites[i].name);
-    char* result = test_suites[i].fn();
+    result = test_suites[i].fn();
 
     if (result != 0) {
       suites_failed++;
