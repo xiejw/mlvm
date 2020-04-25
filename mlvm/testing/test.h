@@ -84,7 +84,7 @@ extern int tests_run;
     for (i = 0; i < size; i++) {                                             \
       if (fabs(expected[i] - got[i]) >= tol) {                               \
         ASSERT_PRINT_LOC(file, lineno);                                      \
-        printf("\n-> at element %d\n-> got %f\n-> expect %f\n", i,           \
+        printf("\n-> at element %d\n-> expected %f\n-> got %f\n", i,         \
                expected[i], got[i]);                                         \
         return msg;                                                          \
       }                                                                      \

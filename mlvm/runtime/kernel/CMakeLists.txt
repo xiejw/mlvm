@@ -4,6 +4,7 @@ add_mlvm_library(
 
   SRCS
     kernel.h
+    macros.h
     add.c
     mul.c
     matmul.c
@@ -13,6 +14,7 @@ add_mlvm_library(
   TESTS
     test_suite.h
     matmul_test.c
+    mul_test.c
 
   TEST_DEPS
     mlvm::ir
