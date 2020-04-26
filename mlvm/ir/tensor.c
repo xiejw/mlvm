@@ -17,11 +17,12 @@ extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
 
   tensor_t* tensor;
 
+  assert(rank >= 1);
+  assert(value != NULL);
   assert(value_mode == MLVM_COPY_VALUE || value_mode == MLVM_MOVE_VALUE ||
          value_mode == MLVM_ALIAS_VALUE);
 
   tensor = malloc(sizeof(tensor_t));
-  assert(rank >= 1);
 
   shape_copy = malloc(rank * sizeof(tensor_shape_t));
   memcpy(shape_copy, shape, rank * sizeof(tensor_shape_t));

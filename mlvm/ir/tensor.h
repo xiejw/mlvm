@@ -22,7 +22,8 @@ typedef struct {
   int value_mode_; /* Can only be MLVM_ALIAS_VALUE, MLVM_OWNING_VALUE. */
 } tensor_t;
 
-/* value can only be MLVM_COPY_VALUE, MLVM_MOVE_VALUE, or MLVM_ALIAS_VALUE. */
+/* value_mode can only be MLVM_COPY_VALUE, MLVM_MOVE_VALUE, or MLVM_ALIAS_VALUE.
+ */
 extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
                                double* value, int value_mode);
 /* Copy the new stride into the tensor struct. */
