@@ -62,10 +62,20 @@ void tensor_set_stride(tensor_t* tensor, tensor_size_t* new_stride) {
 }
 
 void tensor_free(tensor_t* tensor) {
-  free(tensor->shape);
-  free(tensor->stride);
-  if (tensor->value_mode_ != MLVM_ALIAS_VALUE) free(tensor->value);
+  if (tensor->value_mode_ != MLVM_DEAD_VALUE) {
+    free(tensor->shape);
+    free(tensor->stride);
+    if (tensor->value_mode_ != MLVM_ALIAS_VALUE) free(tensor->value);
+  }
   free(tensor);
+}
+
+void tensor_move(tensor_t* dst, tensor_t* src) {
+  assert(src->value_mode_ == MLVM_OWNING_VALUE);
+  memcpy(dst, src, sizeof(tensor_t));
+
+  src->value       = NULL;
+  src->value_mode_ = MLVM_DEAD_VALUE;
 }
 
 int tensor_print(tensor_t* tensor, int fd) {

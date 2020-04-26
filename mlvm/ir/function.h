@@ -28,4 +28,16 @@ typedef struct {
 ir_function_t* ir_function_create(char* name);
 void           ir_function_free(ir_function_t* func);
 
+/*
+ * Args:
+ *     value_mode can only be MLVM_COPY_VALUE, MLVM_ALIAS_VALUE, or
+ *     MLVM_MOVE_VALUE. For MLVM_MOVE_VALUE, the original tensor is invalid for
+ *     usage after the invocation. In this case, `tensor` must own the value.
+ *
+ * Returns:
+ *     NULL for error. The returned operand is owned by the function.
+ */
+ir_operand_t* ir_function_add_constant(ir_function_t* func, tensor_t* tensor,
+                                       int value_mode);
+
 #endif

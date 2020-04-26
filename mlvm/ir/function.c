@@ -1,5 +1,6 @@
 #include "mlvm/ir/function.h"
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -30,4 +31,14 @@ void ir_function_free(ir_function_t* func) {
   }
 
   free(func);
+}
+
+ir_operand_t* ir_function_add_constant(ir_function_t* func, tensor_t* tensor,
+                                       int value_mode) {
+  assert(value_mode == MLVM_COPY_VALUE || value_mode == MLVM_MOVE_VALUE ||
+         value_mode == MLVM_ALIAS_VALUE);
+
+  (void)func;
+  (void)tensor;
+  return NULL;
 }
