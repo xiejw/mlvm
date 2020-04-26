@@ -6,4 +6,6 @@ add_mlvm_library(
     ir.h
     tensor.h
     tensor.c
+    function.h
+    function.c
 )

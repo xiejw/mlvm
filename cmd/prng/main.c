@@ -8,36 +8,21 @@
 #define SIZE 100
 
 int main() {
-  sprng_t*  prng = sprng_create(456L);
-  double    r_1[SIZE];
-  double    r_2[SIZE];
-  double    r_3[SIZE];
-  uint32_t  shape[] = {10, 10};
-  tensor_t *t_1, *t_2, *t_3;
+  sprng_t*       prng = sprng_create(456L);
+  double         r_1[SIZE];
+  uint32_t       shape[] = {10, 10};
+  tensor_t*      t_1;
+  ir_function_t* func;
 
   srng_standard_normal(prng, SIZE, r_1);
-  srng_standard_normal(prng, SIZE, r_2);
 
-  t_1 = tensor_create(/*rank=*/2, /*shape=*/shape, r_1, MLVM_ALIAS_VALUE);
+  t_1 = tensor_create(/*rank=*/2, shape, r_1, MLVM_ALIAS_VALUE);
   tensor_print(t_1, STDOUT_FILENO);
 
-  t_2 = tensor_create(/*rank=*/2, /*shape=*/shape, r_2, MLVM_ALIAS_VALUE);
-  tensor_print(t_2, STDOUT_FILENO);
+  func = ir_function_create("main");
 
-  t_3 = tensor_create(/*rank=*/2, /*shape=*/shape, r_3, MLVM_ALIAS_VALUE);
-
-  kernel_add(t_3, t_1, t_2);
-  tensor_print(t_3, STDOUT_FILENO);
-
-  kernel_mul(t_3, t_1, t_2);
-  tensor_print(t_3, STDOUT_FILENO);
-
-  kernel_matmul(t_3, t_1, t_2);
-  tensor_print(t_3, STDOUT_FILENO);
-
+  ir_function_free(func);
   tensor_free(t_1);
-  tensor_free(t_2);
-  tensor_free(t_3);
 
   sprng_free(prng);
   return 0;
