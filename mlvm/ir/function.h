@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "mlvm/ir/tensor.h"
+#include "mlvm/lib/list.h"
 
 typedef enum { IR_CONST } ir_operand_type;
 
@@ -17,9 +18,11 @@ typedef struct {
   ir_operand_value value;
 } ir_operand_t;
 
-typedef struct {
-  char* name; /* Function name. */
+typedef list_t(tensor_t*) list_tensor_t;
 
+typedef struct {
+  char*         name; /* Function name. */
+  list_tensor_t const_tensors;
 } ir_function_t;
 
 ir_function_t* ir_function_create(char* name);
