@@ -13,6 +13,8 @@ ir_function_t* ir_function_create(char* name) {
   strcpy(func->name, name);
   /* Init const tensors. */
   list_init(&func->const_tensors);
+  /* Init oprands . */
+  list_init(&func->operands);
 
   return func;
 }
@@ -30,15 +32,41 @@ void ir_function_free(ir_function_t* func) {
     list_deinit(const_tensors);
   }
 
+  {
+    list_ir_operand_t* operands = &func->operands;
+    uint64_t           size     = list_size(operands);
+    uint64_t           i;
+    for (i = 0; i < size; i++) {
+      free(operands->data[i]);
+    }
+    list_deinit(operands);
+  }
+
   free(func);
 }
 
 ir_operand_t* ir_function_add_constant(ir_function_t* func, tensor_t* tensor,
                                        int value_mode) {
+  tensor_t* const_tensor;
   assert(value_mode == MLVM_COPY_VALUE || value_mode == MLVM_MOVE_VALUE ||
          value_mode == MLVM_ALIAS_VALUE);
 
-  (void)func;
-  (void)tensor;
+  switch (value_mode) {
+    case MLVM_COPY_VALUE: /* Fall through */
+    case MLVM_ALIAS_VALUE:
+      const_tensor =
+          tensor_create(tensor->rank, tensor->shape, tensor->value, value_mode);
+      tensor_set_stride(const_tensor, tensor->stride);
+      break;
+    case MLVM_MOVE_VALUE:
+      const_tensor = malloc(sizeof(tensor_t));
+      tensor_move(const_tensor, tensor);
+      break;
+  }
+
+  list_append(&func->const_tensors, const_tensor);
+
+  /* create an own a operand. */
+
   return NULL;
 }

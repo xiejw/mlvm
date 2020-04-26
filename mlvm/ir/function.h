@@ -19,10 +19,12 @@ typedef struct {
 } ir_operand_t;
 
 typedef list_t(tensor_t*) list_tensor_t;
+typedef list_t(ir_operand_t*) list_ir_operand_t;
 
 typedef struct {
-  char*         name; /* Function name. */
-  list_tensor_t const_tensors;
+  char*             name; /* Function name. */
+  list_tensor_t     const_tensors;
+  list_ir_operand_t operands;
 } ir_function_t;
 
 ir_function_t* ir_function_create(char* name);

@@ -21,7 +21,8 @@ int main() {
 
   func = ir_function_create("main");
 
-  /*ir_operand_t* o_1 = */ ir_function_add_constant(func, t_1, MLVM_MOVE_VALUE);
+  /*ir_operand_t* o_1 = */ ir_function_add_constant(func, t_1,
+                                                    MLVM_ALIAS_VALUE);
 
   ir_function_free(func);
   tensor_free(t_1);

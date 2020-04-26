@@ -35,6 +35,8 @@ extern void tensor_set_stride(tensor_t* tensor, tensor_size_t* new_stride);
 /*
  * All fields of tensor `src` are not usable after this call.
  * NOTE: tensor_free must be called to free the src itself.
+ *
+ * To copy or alias a tensor, use tensor_create followed by set_stride.
  */
 extern void tensor_move(tensor_t* dst, tensor_t* src);
 
