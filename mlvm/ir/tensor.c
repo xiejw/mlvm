@@ -15,7 +15,12 @@ extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
   tensor_shape_t* shape_copy;
   double*         value_buffer;
 
-  tensor_t* tensor = malloc(sizeof(tensor_t));
+  tensor_t* tensor;
+
+  assert(value_mode == MLVM_COPY_VALUE || value_mode == MLVM_MOVE_VALUE ||
+         value_mode == MLVM_ALIAS_VALUE);
+
+  tensor = malloc(sizeof(tensor_t));
   assert(rank >= 1);
 
   shape_copy = malloc(rank * sizeof(tensor_shape_t));
@@ -41,12 +46,13 @@ extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
     value_buffer = value;
   }
 
-  tensor->size        = size;
-  tensor->rank        = rank;
-  tensor->shape       = shape_copy;
-  tensor->stride      = stride;
-  tensor->value       = value_buffer;
-  tensor->value_mode_ = value_mode;
+  tensor->size   = size;
+  tensor->rank   = rank;
+  tensor->shape  = shape_copy;
+  tensor->stride = stride;
+  tensor->value  = value_buffer;
+  tensor->value_mode_ =
+      value_mode == MLVM_ALIAS_VALUE ? MLVM_ALIAS_VALUE : MLVM_OWNING_VALUE;
   return tensor;
 }
 
