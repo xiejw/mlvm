@@ -27,8 +27,9 @@ typedef struct {
   list_ir_operand_t operands;
 } ir_function_t;
 
-ir_function_t* ir_function_create(char* name);
-void           ir_function_free(ir_function_t* func);
+extern ir_function_t* ir_function_create(char* name);
+extern void           ir_function_free(ir_function_t* func);
+extern void           ir_function_print(ir_function_t* func, int fd);
 
 /*
  * Args:
@@ -39,7 +40,7 @@ void           ir_function_free(ir_function_t* func);
  * Returns:
  *     NULL for error. The returned operand is owned by the function.
  */
-ir_operand_t* ir_function_add_constant(ir_function_t* func, tensor_t* tensor,
-                                       int value_mode);
+extern ir_operand_t* ir_function_add_constant(ir_function_t* func,
+                                              tensor_t* tensor, int value_mode);
 
 #endif
