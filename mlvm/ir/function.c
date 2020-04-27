@@ -57,15 +57,14 @@ ir_operand_t* ir_function_add_constant(ir_function_t* func, tensor_t* tensor,
          value_mode == MLVM_ALIAS_VALUE);
 
   switch (value_mode) {
-    case MLVM_COPY_VALUE: /* Fall through */
-    case MLVM_ALIAS_VALUE:
-      const_tensor =
-          tensor_create(tensor->rank, tensor->shape, tensor->value, value_mode);
-      tensor_set_stride(const_tensor, tensor->stride);
+    case MLVM_COPY_VALUE:
+      const_tensor = tensor_copy(tensor);
       break;
     case MLVM_MOVE_VALUE:
-      const_tensor = malloc(sizeof(tensor_t));
-      tensor_move(const_tensor, tensor);
+      const_tensor = tensor_move(tensor);
+      break;
+    case MLVM_ALIAS_VALUE:
+      const_tensor = tensor_alias(tensor);
       break;
   }
 

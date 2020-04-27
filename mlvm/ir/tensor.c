@@ -70,12 +70,32 @@ void tensor_free(tensor_t* tensor) {
   free(tensor);
 }
 
-void tensor_move(tensor_t* dst, tensor_t* src) {
+tensor_t* tensor_move(tensor_t* src) {
+  tensor_t* dst;
   assert(src->value_mode_ == MLVM_OWNING_VALUE);
+
+  dst = malloc(sizeof(tensor_t));
   memcpy(dst, src, sizeof(tensor_t));
 
   src->value       = NULL;
   src->value_mode_ = MLVM_DEAD_VALUE;
+  return dst;
+}
+
+tensor_t* tensor_copy(tensor_t* src) {
+  tensor_t* new_tensor;
+  new_tensor =
+      tensor_create(src->rank, src->shape, src->value, MLVM_COPY_VALUE);
+  tensor_set_stride(new_tensor, src->stride);
+  return new_tensor;
+}
+
+tensor_t* tensor_alias(tensor_t* src) {
+  tensor_t* new_tensor;
+  new_tensor =
+      tensor_create(src->rank, src->shape, src->value, MLVM_ALIAS_VALUE);
+  tensor_set_stride(new_tensor, src->stride);
+  return new_tensor;
 }
 
 int tensor_print(tensor_t* tensor, int fd) {

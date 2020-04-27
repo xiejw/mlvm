@@ -29,13 +29,13 @@ typedef struct {
 extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
                                double* value, int value_mode);
 extern void      tensor_free(tensor_t* tensor);
-extern int tensor_print(tensor_t* tensor, int fd);
+extern int       tensor_print(tensor_t* tensor, int fd);
 
 /* Copy the new stride into the tensor struct. */
 extern void tensor_set_stride(tensor_t* tensor, tensor_size_t* new_stride);
 
 /*
- * Moves the `src` to `dst`.
+ * Returns a copy with value moved from the `src`.
  *
  * Note:
  *   1. The `src` must own its value, i.e., value_mode_ should be
@@ -43,9 +43,22 @@ extern void tensor_set_stride(tensor_t* tensor, tensor_size_t* new_stride);
  *   2. All fields of tensor `src` are not usable after this call.
  *   3. `tensor_free` must be called to free the src itself.
  */
-extern void tensor_move(tensor_t* dst, tensor_t* src);
-/* Returns the `src`.  */
-extern tensor_t* tensor_clone(tensor_t* src);
-
+extern tensor_t* tensor_move(tensor_t* src);
+/*
+ * Returns a copy of the `src` which value gots copied.
+ *
+ * Note:
+ *   1. If the `src` must own its value, i.e., value_mode_ should be
+ *      MLVM_OWNING_VALUE, then the value gets copied.
+ *   2. Otherwise, the value is also an alias.
+ */
+extern tensor_t* tensor_copy(tensor_t* src);
+/*
+ * Returns a copy of the `src` which value is an alias.
+ *
+ * Notes:
+ *   All other fields are copies.
+ */
+extern tensor_t* tensor_alias(tensor_t* src);
 
 #endif
