@@ -29,17 +29,23 @@ typedef struct {
 extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
                                double* value, int value_mode);
 extern void      tensor_free(tensor_t* tensor);
+extern int tensor_print(tensor_t* tensor, int fd);
 
 /* Copy the new stride into the tensor struct. */
 extern void tensor_set_stride(tensor_t* tensor, tensor_size_t* new_stride);
+
 /*
- * All fields of tensor `src` are not usable after this call.
- * NOTE: tensor_free must be called to free the src itself.
+ * Moves the `src` to `dst`.
  *
- * To copy or alias a tensor, use tensor_create followed by set_stride.
+ * Note:
+ *   1. The `src` must own its value, i.e., value_mode_ should be
+ *      MLVM_OWNING_VALUE.
+ *   2. All fields of tensor `src` are not usable after this call.
+ *   3. `tensor_free` must be called to free the src itself.
  */
 extern void tensor_move(tensor_t* dst, tensor_t* src);
+/* Returns the `src`.  */
+extern tensor_t* tensor_clone(tensor_t* src);
 
-extern int tensor_print(tensor_t* tensor, int fd);
 
 #endif
