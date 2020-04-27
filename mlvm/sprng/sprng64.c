@@ -47,7 +47,6 @@
  *    algorithrm.
  */
 
-
 /* Cast of uint64_t is needed for 32-bit platform. */
 static const uint64_t gamma_prime_ = (((uint64_t)1L) << 56) - 5; /* Percy. */
 static const uint64_t gamma_gamma_ = 0x00281E2DBA6606F3L;
