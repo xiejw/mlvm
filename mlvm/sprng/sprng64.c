@@ -47,9 +47,11 @@
  *    algorithrm.
  */
 
-static const uint64_t gamma_prime_ = (1L << 56) - 5; /* Percy. */
+
+/* Cast of uint64_t is needed for 32-bit platform. */
+static const uint64_t gamma_prime_ = (((uint64_t)1L) << 56) - 5; /* Percy. */
 static const uint64_t gamma_gamma_ = 0x00281E2DBA6606F3L;
-static const double   double_ulp_  = 1.0 / (1L << 53);
+static const double   double_ulp_  = 1.0 / (((uint64_t)1L) << 53);
 
 static uint64_t sprng64_update(uint64_t seed, uint64_t gamma) {
   uint64_t p = seed + gamma;
