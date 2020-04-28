@@ -20,7 +20,7 @@ tensor_t* create_a_random_tensor(sprng_t* prng) {
 }
 
 int main() {
-  sprng_t*       prng = sprng_create(456L);
+  sprng_t* prng = sprng_create(456L);
 
   ir_function_t* func;
   func = ir_function_create("main");

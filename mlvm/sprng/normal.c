@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 /* unit of least precision */
-static const double double_ulp_ = 1.0 / (1L << 53);
+static const double double_ulp_ = 1.0 / ((uint64_t)1L << 53);
 static const double two_pi_     = 2.0 * 3.141592653589793238;
 
 /*
