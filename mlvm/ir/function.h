@@ -29,7 +29,7 @@ typedef struct {
 
 extern ir_function_t* ir_function_create(char* name);
 extern void           ir_function_free(ir_function_t* func);
-extern void           ir_function_print(ir_function_t* func, int fd);
+extern int            ir_function_print(ir_function_t* func, int fd);
 
 /*
  * Args:
