@@ -6,6 +6,10 @@
 #include "mlvm/ir/tensor.h"
 #include "mlvm/lib/list.h"
 
+/* For now, we use static size. */
+#define MLVM_IR_MAX_OPERANDS_PER_INS 4
+#define MLVM_IR_MAX_OUTPUTS_PER_INS  10
+
 typedef enum { IR_CONST } ir_operand_type;
 
 typedef union {
@@ -17,6 +21,15 @@ typedef struct {
   ir_operand_type  type;
   ir_operand_value value;
 } ir_operand_t;
+
+typedef enum { IR_OP_ADD } ir_instruction_type;
+
+typedef struct {
+  char*               name;
+  ir_instruction_type type;
+  ir_operand_t*       operands[MLVM_IR_MAX_OPERANDS_PER_INS];
+  ir_operand_t*       outputs[MLVM_IR_MAX_OUTPUTS_PER_INS];
+} ir_instrution;
 
 typedef list_t(ir_operand_t*) list_ir_operand_t;
 

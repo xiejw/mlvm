@@ -131,11 +131,11 @@ int tensor_print_shape_info(tensor_t* tensor, int fd) {
   n += dprintf(fd, "%3d", tensor->shape[rank - 1]);
   n += dprintf(fd, ">");
 
-  n += dprintf(fd, " {");
+  n += dprintf(fd, " /{");
   for (j = 0; j < rank - 1; j++) {
     n += dprintf(fd, "%3" PRIu64 ",", tensor->stride[j]);
   }
   n += dprintf(fd, "%3" PRIu64, tensor->stride[rank - 1]);
-  n += dprintf(fd, "}");
+  n += dprintf(fd, "}/");
   return n;
 }
