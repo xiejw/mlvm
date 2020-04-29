@@ -29,7 +29,10 @@ int main() {
   {
     tensor_t* tensor;
     tensor = create_a_random_tensor(prng);
-    ir_function_add_constant(func, tensor, MLVM_MOVE_VALUE);
+    if (NULL == ir_function_append_constant(func, tensor, MLVM_MOVE_VALUE)) {
+      fprintf(stderr, "Expected error.\n");
+      return EXIT_FAILURE;
+    }
     tensor_free(tensor);
   }
 

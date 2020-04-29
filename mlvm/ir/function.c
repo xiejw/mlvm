@@ -61,8 +61,8 @@ int ir_function_print(ir_function_t* func, int fd) {
   return n;
 }
 
-ir_operand_t* ir_function_add_constant(ir_function_t* func, tensor_t* tensor,
-                                       int value_mode) {
+ir_operand_t* ir_function_append_constant(ir_function_t* func, tensor_t* tensor,
+                                          int value_mode) {
   tensor_t*     const_tensor;
   ir_operand_t* operand;
 

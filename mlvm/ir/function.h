@@ -27,9 +27,14 @@ typedef enum { IR_OP_ADD } ir_instruction_type;
 typedef struct {
   char*               name;
   ir_instruction_type type;
-  ir_operand_t*       operands[MLVM_IR_MAX_OPERANDS_PER_INS];
-  ir_operand_t*       outputs[MLVM_IR_MAX_OUTPUTS_PER_INS];
-} ir_instrution;
+
+  /* Internal fields. */
+  unsigned int  num_operands;
+  ir_operand_t* operands[MLVM_IR_MAX_OPERANDS_PER_INS];
+  unsigned int  num_outputs;
+  ir_operand_t* outputs[MLVM_IR_MAX_OUTPUTS_PER_INS];
+
+} ir_instrution_t;
 
 typedef list_t(ir_operand_t*) list_ir_operand_t;
 
@@ -51,7 +56,9 @@ extern int            ir_function_print(ir_function_t* func, int fd);
  * Returns:
  *     NULL for error. The returned operand is owned by the function.
  */
-extern ir_operand_t* ir_function_add_constant(ir_function_t* func,
-                                              tensor_t* tensor, int value_mode);
+extern ir_operand_t*    ir_function_append_constant(ir_function_t* func,
+                                                    tensor_t*      tensor,
+                                                    int            value_mode);
+extern ir_instrution_t* ir_function_append_instruction(ir_function_t* func);
 
 #endif
