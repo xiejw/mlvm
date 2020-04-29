@@ -8,23 +8,21 @@
 
 typedef enum { IR_CONST } ir_operand_type;
 
-/* Does not own any of them. */
 typedef union {
-  tensor_t* const_tensor;
+  tensor_t* tensor; /* Owned the tensor. */
 } ir_operand_value;
 
 typedef struct {
+  char*            name;
   ir_operand_type  type;
   ir_operand_value value;
 } ir_operand_t;
 
-typedef list_t(tensor_t*) list_tensor_t;
 typedef list_t(ir_operand_t*) list_ir_operand_t;
 
 typedef struct {
   char*             name; /* Function name. */
-  list_tensor_t     const_tensors;
-  list_ir_operand_t operands;
+  list_ir_operand_t const_tensors;
 } ir_function_t;
 
 extern ir_function_t* ir_function_create(char* name);

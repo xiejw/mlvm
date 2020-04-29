@@ -5,6 +5,20 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_TENSOR_NAME 128
+
+static void ir_function_free_operands(list_ir_operand_t* operands) {
+  uint64_t size = list_size(operands);
+  uint64_t i;
+  for (i = 0; i < size; i++) {
+    ir_operand_t* operand = operands->data[i];
+    if (operand->type == IR_CONST) tensor_free(operand->value.tensor);
+    free(operand->name);
+    free(operand);
+  }
+  list_deinit(operands);
+}
+
 ir_function_t* ir_function_create(char* name) {
   ir_function_t* func      = malloc(sizeof(ir_function_t));
   size_t         name_size = strlen(name);
@@ -14,35 +28,13 @@ ir_function_t* ir_function_create(char* name) {
   strcpy(func->name, name);
   /* Init const tensors. */
   list_init(&func->const_tensors);
-  /* Init oprands . */
-  list_init(&func->operands);
 
   return func;
 }
 
 void ir_function_free(ir_function_t* func) {
   free(func->name);
-
-  {
-    list_tensor_t* const_tensors = &func->const_tensors;
-    uint64_t       size          = list_size(const_tensors);
-    uint64_t       i;
-    for (i = 0; i < size; i++) {
-      tensor_free(const_tensors->data[i]);
-    }
-    list_deinit(const_tensors);
-  }
-
-  {
-    list_ir_operand_t* operands = &func->operands;
-    uint64_t           size     = list_size(operands);
-    uint64_t           i;
-    for (i = 0; i < size; i++) {
-      free(operands->data[i]);
-    }
-    list_deinit(operands);
-  }
-
+  ir_function_free_operands(&func->const_tensors);
   free(func);
 }
 
@@ -50,13 +42,18 @@ int ir_function_print(ir_function_t* func, int fd) {
   int n = 0;
   n += dprintf(fd, "Func: %s\n", func->name);
 
-  if (list_size(&func->const_tensors) > 0) {
-    list_tensor_t* const_tensors = &func->const_tensors;
-    uint64_t       i, size = list_size(const_tensors);
-    n += dprintf(fd, "  Constants:\n");
+  { /* Prints out the contants. */
+    list_ir_operand_t* const_tensors = &func->const_tensors;
+    if (list_size(const_tensors) > 0) {
+      uint64_t i, size = list_size(const_tensors);
+      n += dprintf(fd, "  Constants:\n");
 
-    for (i = 0; i < size; i++) {
-      n += dprintf(fd, "    Rank: %d\n", const_tensors->data[i]->rank);
+      for (i = 0; i < size; i++) {
+        ir_operand_t* operand = const_tensors->data[i];
+        tensor_t*     tensor  = operand->value.tensor;
+        n += dprintf(fd, "    Name %s - Rank: %d\n", operand->name,
+                     tensor->rank);
+      }
     }
   }
 
@@ -65,7 +62,9 @@ int ir_function_print(ir_function_t* func, int fd) {
 
 ir_operand_t* ir_function_add_constant(ir_function_t* func, tensor_t* tensor,
                                        int value_mode) {
-  tensor_t* const_tensor;
+  tensor_t*     const_tensor;
+  ir_operand_t* operand;
+
   assert(value_mode == MLVM_COPY_VALUE || value_mode == MLVM_MOVE_VALUE ||
          value_mode == MLVM_ALIAS_VALUE);
 
@@ -81,9 +80,17 @@ ir_operand_t* ir_function_add_constant(ir_function_t* func, tensor_t* tensor,
       break;
   }
 
-  list_append(&func->const_tensors, const_tensor);
+  operand = malloc(sizeof(ir_operand_t));
+  {
+    int   size = (int)list_size(&func->const_tensors);
+    char* name = malloc(MAX_TENSOR_NAME * sizeof(char));
+    sprintf(name, "const_%d", size);
+    operand->name = name;
+  }
+  operand->type         = IR_CONST;
+  operand->value.tensor = const_tensor;
 
-  /* create an own a operand. */
+  list_append(&func->const_tensors, operand);
 
-  return NULL;
+  return operand;
 }
