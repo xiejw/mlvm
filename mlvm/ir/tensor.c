@@ -99,15 +99,32 @@ tensor_t* tensor_alias(tensor_t* src) {
 }
 
 int tensor_print(tensor_t* tensor, int fd) {
-  int            n = 0;
-  tensor_size_t  i;
-  tensor_size_t  size = tensor->size;
-  tensor_shape_t j;
-  tensor_shape_t rank = tensor->rank;
-  double*        buf  = tensor->value;
+  int           n = 0;
+  tensor_size_t i;
+  tensor_size_t size = tensor->size;
+  double*       buf  = tensor->value;
 
   /* Print headline with shape and stride */
-  n += dprintf(fd, "Tensor: <");
+  n += dprintf(fd, "Tensor: ");
+  n += tensor_print_shape_info(tensor, fd);
+  n += dprintf(fd, "\n");
+
+  /* Printf value buffer. */
+  n += dprintf(fd, "[ ");
+  for (i = 0; i < size; i++) {
+    n += dprintf(fd, "%6.3f  ", buf[i]);
+    if (i % 10 == 9) n += dprintf(fd, i != size - 1 ? "\n  " : "\n");
+  }
+  n += dprintf(fd, "]\n");
+  return n;
+}
+
+int tensor_print_shape_info(tensor_t* tensor, int fd) {
+  int            n    = 0;
+  tensor_shape_t rank = tensor->rank;
+  tensor_shape_t j;
+
+  n += dprintf(fd, "<");
   for (j = 0; j < rank - 1; j++) {
     n += dprintf(fd, "%3d,", tensor->shape[j]);
   }
@@ -119,14 +136,6 @@ int tensor_print(tensor_t* tensor, int fd) {
     n += dprintf(fd, "%3" PRIu64 ",", tensor->stride[j]);
   }
   n += dprintf(fd, "%3" PRIu64, tensor->stride[rank - 1]);
-  n += dprintf(fd, "}\n");
-
-  /* Printf value buffer. */
-  n += dprintf(fd, "[ ");
-  for (i = 0; i < size; i++) {
-    n += dprintf(fd, "%6.3f  ", buf[i]);
-    if (i % 10 == 9) n += dprintf(fd, i != size - 1 ? "\n  " : "\n");
-  }
-  n += dprintf(fd, "]\n");
+  n += dprintf(fd, "}");
   return n;
 }

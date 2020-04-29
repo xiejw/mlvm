@@ -51,8 +51,9 @@ int ir_function_print(ir_function_t* func, int fd) {
       for (i = 0; i < size; i++) {
         ir_operand_t* operand = const_tensors->data[i];
         tensor_t*     tensor  = operand->value.tensor;
-        n += dprintf(fd, "    Name %s - Rank: %d\n", operand->name,
-                     tensor->rank);
+        n += dprintf(fd, "    Name `%s`: ", operand->name);
+        n += tensor_print_shape_info(tensor, fd);
+        n += dprintf(fd, "\n");
       }
     }
   }
@@ -80,15 +81,17 @@ ir_operand_t* ir_function_add_constant(ir_function_t* func, tensor_t* tensor,
       break;
   }
 
-  operand = malloc(sizeof(ir_operand_t));
+  operand               = malloc(sizeof(ir_operand_t));
+  operand->type         = IR_CONST;
+  operand->value.tensor = const_tensor;
+
+  /* Fill the name. */
   {
     int   size = (int)list_size(&func->const_tensors);
     char* name = malloc(MAX_TENSOR_NAME * sizeof(char));
     sprintf(name, "const_%d", size);
     operand->name = name;
   }
-  operand->type         = IR_CONST;
-  operand->value.tensor = const_tensor;
 
   list_append(&func->const_tensors, operand);
 

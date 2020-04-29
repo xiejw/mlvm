@@ -30,6 +30,7 @@ extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
                                double* value, int value_mode);
 extern void      tensor_free(tensor_t* tensor);
 extern int       tensor_print(tensor_t* tensor, int fd);
+extern int       tensor_print_shape_info(tensor_t* tensor, int fd);
 
 /* Copy the new stride into the tensor struct. */
 extern void tensor_set_stride(tensor_t* tensor, tensor_size_t* new_stride);
