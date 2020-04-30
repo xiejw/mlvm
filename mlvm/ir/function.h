@@ -8,6 +8,8 @@
 
 /******************************************************************************
  * Operands.
+ *
+ * operrand.c
  *****************************************************************************/
 
 typedef enum { IR_OPERAND_CONST } ir_operand_type;
@@ -24,8 +26,12 @@ typedef struct {
 
 typedef list_t(ir_operand_t*) list_ir_operand_t;
 
+extern void ir_operand_free(ir_operand_t* operand);
+
 /******************************************************************************
  * Instruction.
+ *
+ * instruction.c
  *****************************************************************************/
 
 struct ir_function_t;

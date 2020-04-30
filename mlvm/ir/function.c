@@ -7,27 +7,6 @@
 
 #define MAX_TENSOR_NAME 128
 
-/*
-static ir_operand_t* ir_operand_create_const() {
-  operand               = malloc(sizeof(ir_operand_t));
-  operand->type         = IR_CONST;
-  operand->value.tensor = const_tensor;
-
-  {
-    int   size = (int)list_size(&func->const_tensors);
-    char* name = malloc(MAX_TENSOR_NAME * sizeof(char));
-    sprintf(name, "const_%d", size);
-    operand->name = name;
-  }
-}
-*/
-
-static void ir_operand_free(ir_operand_t* operand) {
-  if (operand->type == IR_OPERAND_CONST) tensor_free(operand->value.tensor);
-  free(operand->name);
-  free(operand);
-}
-
 ir_function_t* ir_function_create(char* name) {
   ir_function_t* func      = malloc(sizeof(ir_function_t));
   size_t         name_size = strlen(name);
