@@ -8,7 +8,7 @@ static char* test_add() {
   double output_value[2];
   double expected[2] = {12, 14};
 
-  tensor_shape_t shape_1x2[] = {1, 2};
+  mlvm_uint_t shape_1x2[] = {1, 2};
 
   tensor_t* t_1 = tensor_create(2, shape_1x2, value_1, MLVM_ALIAS_VALUE);
   tensor_t* t_2 = tensor_create(2, shape_1x2, value_2, MLVM_ALIAS_VALUE);

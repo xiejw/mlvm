@@ -7,7 +7,7 @@
 #include "mlvm/runtime/kernel/shape_util.h"
 
 void kernel_add(tensor_t* output, tensor_t* arg_1, tensor_t* arg_2) {
-  tensor_size_t size = arg_1->size;
+  mlvm_size_t size = arg_1->size;
 
   assert(arg_1->size == arg_2->size);
   assert(kernel_shape_identical(arg_1, arg_2));  /* no broadcasting. */

@@ -3,9 +3,9 @@
 #include <assert.h>
 
 extern int kernel_stripe_identical(tensor_t* arg_1, tensor_t* arg_2) {
-  tensor_shape_t i;
-  tensor_shape_t rank     = arg_1->rank;
-  tensor_size_t *stride_1 = arg_1->stride, *stride_2 = arg_2->stride;
+  mlvm_uint_t  i;
+  mlvm_uint_t  rank     = arg_1->rank;
+  mlvm_size_t *stride_1 = arg_1->stride, *stride_2 = arg_2->stride;
 
   assert(arg_1->rank == arg_2->rank);
   for (i = 0; i < rank; i++) {
@@ -15,9 +15,9 @@ extern int kernel_stripe_identical(tensor_t* arg_1, tensor_t* arg_2) {
 }
 
 extern int kernel_shape_identical(tensor_t* arg_1, tensor_t* arg_2) {
-  tensor_shape_t  i;
-  tensor_shape_t  rank    = arg_1->rank;
-  tensor_shape_t *shape_1 = arg_1->shape, *shape_2 = arg_2->shape;
+  mlvm_uint_t  i;
+  mlvm_uint_t  rank    = arg_1->rank;
+  mlvm_uint_t *shape_1 = arg_1->shape, *shape_2 = arg_2->shape;
 
   assert(arg_1->rank == arg_2->rank);
   for (i = 0; i < rank; i++) {

@@ -3,8 +3,7 @@
 
 #include <stdint.h>
 
-typedef uint32_t tensor_shape_t;
-typedef uint64_t tensor_size_t;
+#include "mlvm/lib/types.h"
 
 #define MLVM_COPY_VALUE   0 /* Copy value into Tensor. */
 #define MLVM_MOVE_VALUE   1 /* Move value into Tensor. */
@@ -13,11 +12,11 @@ typedef uint64_t tensor_size_t;
 #define MLVM_DEAD_VALUE   4 /* Dangling value. */
 
 typedef struct {
-  tensor_shape_t  rank;   /* Must be positive (non-zero). */
-  tensor_shape_t* shape;  /* Length is `rank` above. */
-  tensor_size_t*  stride; /* Stride for each dim. */
-  tensor_size_t   size;   /* Total number of elements. */
-  double*         value;  /* The value buffer. */
+  mlvm_uint_t  rank;   /* Must be positive (non-zero). */
+  mlvm_uint_t* shape;  /* Length is `rank` above. */
+  mlvm_size_t* stride; /* Stride for each dim. */
+  mlvm_size_t  size;   /* Total number of elements. */
+  double*      value;  /* The value buffer. */
 
   /* Internal fields */
   int value_mode_; /* Can only be MLVM_ALIAS_VALUE, MLVM_OWNING_VALUE,
@@ -26,14 +25,14 @@ typedef struct {
 
 /* value_mode can only be MLVM_COPY_VALUE, MLVM_MOVE_VALUE, or MLVM_ALIAS_VALUE.
  */
-extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
+extern tensor_t* tensor_create(mlvm_uint_t rank, mlvm_uint_t* shape,
                                double* value, int value_mode);
 extern void      tensor_free(tensor_t* tensor);
 extern int       tensor_print(tensor_t* tensor, int fd);
 extern int       tensor_print_shape_info(tensor_t* tensor, int fd);
 
 /* Copy the new stride into the tensor struct. */
-extern void tensor_set_stride(tensor_t* tensor, tensor_size_t* new_stride);
+extern void tensor_set_stride(tensor_t* tensor, mlvm_size_t* new_stride);
 
 /*
  * Returns a copy with value moved from the `src`.

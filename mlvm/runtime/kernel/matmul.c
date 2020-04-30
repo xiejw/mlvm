@@ -7,10 +7,10 @@
 #define POS(x, stride_x, y, stride_y) ((x) * (stride_x) + (y) * (stride_y))
 
 void kernel_matmul(tensor_t* output, tensor_t* arg_1, tensor_t* arg_2) {
-  tensor_shape_t i, j, k, dim_i, dim_j, dim_k;
-  tensor_size_t  stride_1_i, stride_1_j;
-  tensor_size_t  stride_2_j, stride_2_k;
-  tensor_size_t  stride_output_i, stride_output_k;
+  mlvm_uint_t i, j, k, dim_i, dim_j, dim_k;
+  mlvm_size_t stride_1_i, stride_1_j;
+  mlvm_size_t stride_2_j, stride_2_k;
+  mlvm_size_t stride_output_i, stride_output_k;
 
   /* Assert all shapes. */
   assert(arg_1->rank == 2);

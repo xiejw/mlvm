@@ -5,7 +5,7 @@
 
 #define MLVM_KERNEL_ELEMENT_OP_PLAIN_LOOP(output, arg_1, arg_2, op, size) \
   do {                                                                    \
-    tensor_size_t index;                                                  \
+    mlvm_size_t index;                                                    \
     for (index = 0; index < size; index++) {                              \
       output->value[index] = arg_1->value[index] op arg_2->value[index];  \
     };                                                                    \

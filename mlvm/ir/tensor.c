@@ -6,14 +6,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
+extern tensor_t* tensor_create(mlvm_uint_t rank, mlvm_uint_t* shape,
                                double* value, int value_mode) {
   /* Consider to check overflow of the size. */
-  tensor_size_t   size;
-  tensor_size_t*  stride;
-  tensor_shape_t  i;
-  tensor_shape_t* shape_copy;
-  double*         value_buffer;
+  mlvm_size_t  size;
+  mlvm_size_t* stride;
+  mlvm_uint_t  i;
+  mlvm_uint_t* shape_copy;
+  double*      value_buffer;
 
   tensor_t* tensor;
 
@@ -24,9 +24,9 @@ extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
 
   tensor = malloc(sizeof(tensor_t));
 
-  shape_copy = malloc(rank * sizeof(tensor_shape_t));
-  memcpy(shape_copy, shape, rank * sizeof(tensor_shape_t));
-  stride = malloc(rank * sizeof(tensor_size_t));
+  shape_copy = malloc(rank * sizeof(mlvm_uint_t));
+  memcpy(shape_copy, shape, rank * sizeof(mlvm_uint_t));
+  stride = malloc(rank * sizeof(mlvm_size_t));
 
   /* Compuate the size and stride. */
   i    = rank - 1;
@@ -39,8 +39,8 @@ extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
   }
 
   if (value_mode == MLVM_COPY_VALUE) {
-    tensor_size_t size_of_buffer = size * sizeof(double);
-    double*       value_copy     = malloc(size_of_buffer);
+    mlvm_size_t size_of_buffer = size * sizeof(double);
+    double*     value_copy     = malloc(size_of_buffer);
     memcpy(value_copy, value, size_of_buffer);
     value_buffer = value_copy;
   } else {
@@ -57,7 +57,7 @@ extern tensor_t* tensor_create(tensor_shape_t rank, tensor_shape_t* shape,
   return tensor;
 }
 
-void tensor_set_stride(tensor_t* tensor, tensor_size_t* new_stride) {
+void tensor_set_stride(tensor_t* tensor, mlvm_size_t* new_stride) {
   memcpy(tensor->stride, new_stride, tensor->rank * sizeof(*tensor->stride));
 }
 
@@ -99,10 +99,10 @@ tensor_t* tensor_alias(tensor_t* src) {
 }
 
 int tensor_print(tensor_t* tensor, int fd) {
-  int           n = 0;
-  tensor_size_t i;
-  tensor_size_t size = tensor->size;
-  double*       buf  = tensor->value;
+  int         n = 0;
+  mlvm_size_t i;
+  mlvm_size_t size = tensor->size;
+  double*     buf  = tensor->value;
 
   /* Print headline with shape and stride */
   n += dprintf(fd, "Tensor: ");
@@ -120,9 +120,9 @@ int tensor_print(tensor_t* tensor, int fd) {
 }
 
 int tensor_print_shape_info(tensor_t* tensor, int fd) {
-  int            n    = 0;
-  tensor_shape_t rank = tensor->rank;
-  tensor_shape_t j;
+  int         n    = 0;
+  mlvm_uint_t rank = tensor->rank;
+  mlvm_uint_t j;
 
   n += dprintf(fd, "<");
   for (j = 0; j < rank - 1; j++) {
