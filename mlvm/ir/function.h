@@ -6,9 +6,9 @@
 #include "mlvm/ir/tensor.h"
 #include "mlvm/lib/list.h"
 
-/* For now, we use static size. */
-#define MLVM_IR_MAX_OPERANDS_PER_INS 4
-#define MLVM_IR_MAX_OUTPUTS_PER_INS  10
+/******************************************************************************
+ * Operands.
+ *****************************************************************************/
 
 typedef enum { IR_CONST } ir_operand_type;
 
@@ -22,23 +22,34 @@ typedef struct {
   ir_operand_value value;
 } ir_operand_t;
 
+typedef list_t(ir_operand_t*) list_ir_operand_t;
+
+/******************************************************************************
+ * Instruction.
+ *****************************************************************************/
+
+struct ir_function_t;
+
 typedef enum { IR_OP_ADD } ir_instruction_type;
 
 typedef struct {
-  char*               name;
-  ir_instruction_type type;
+  char*                 name;
+  ir_instruction_type   type;
+  struct ir_function_t* parent_func;
 
-  /* Internal fields. */
-  unsigned int  num_operands;
-  ir_operand_t* operands[MLVM_IR_MAX_OPERANDS_PER_INS];
-  unsigned int  num_outputs;
-  ir_operand_t* outputs[MLVM_IR_MAX_OUTPUTS_PER_INS];
-
+  list_ir_operand_t operands;
+  list_ir_operand_t outputs;
 } ir_instrution_t;
 
-typedef list_t(ir_operand_t*) list_ir_operand_t;
+extern ir_instrution_t* ir_instrution_create(struct ir_function_t* parent_func,
+                                             char*                 name,
+                                             ir_instruction_type   type);
 
-typedef struct {
+/******************************************************************************
+ * Function.
+ *****************************************************************************/
+
+typedef struct ir_function_t {
   char*             name; /* Function name. */
   list_ir_operand_t const_tensors;
 } ir_function_t;
@@ -48,10 +59,14 @@ extern void           ir_function_free(ir_function_t* func);
 extern int            ir_function_print(ir_function_t* func, int fd);
 
 /*
+ * Appends a constant to Function.
+ *
  * Args:
- *     value_mode can only be MLVM_COPY_VALUE, MLVM_ALIAS_VALUE, or
- *     MLVM_MOVE_VALUE. For MLVM_MOVE_VALUE, the original tensor is invalid for
- *     usage after the invocation. In this case, `tensor` must own the value.
+ *     `value_mode` can only be
+ *       - MLVM_COPY_VALUE, which copies the value.
+ *       - MLVM_ALIAS_VALUE, which alias the value,
+ *       - MLVM_MOVE_VALUE, which moves the states from the original tensor.
+ *         After this the original value is invalid for usage
  *
  * Returns:
  *     NULL for error. The returned operand is owned by the function.
