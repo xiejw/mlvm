@@ -19,24 +19,25 @@ tensor_t* create_a_random_tensor(sprng_t* prng) {
   return tensor;
 }
 
+int build_func(ir_function_t* func, sprng_t* prng) {
+  tensor_t* tensor;
+  tensor = create_a_random_tensor(prng);
+  if (NULL == ir_function_append_constant(func, tensor, MLVM_MOVE_VALUE)) {
+    return -1;
+  }
+  tensor_free(tensor);
+
+  ir_function_print(func, 1);
+  return 0;
+}
+
 int main() {
   sprng_t* prng = sprng_create(456L);
 
   ir_function_t* func;
   func = ir_function_create("main");
 
-  /* Adds some constants. */
-  {
-    tensor_t* tensor;
-    tensor = create_a_random_tensor(prng);
-    if (NULL == ir_function_append_constant(func, tensor, MLVM_MOVE_VALUE)) {
-      fprintf(stderr, "Expected error.\n");
-      return EXIT_FAILURE;
-    }
-    tensor_free(tensor);
-  }
-
-  ir_function_print(func, 1);
+  if (build_func(func, prng)) fprintf(stderr, "Unexpected error.");
 
   ir_function_free(func);
   sprng_free(prng);
