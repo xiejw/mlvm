@@ -3,6 +3,7 @@ add_mlvm_library(
     lib
 
   SRCS
+    types.h
     list.h
     list.c
 

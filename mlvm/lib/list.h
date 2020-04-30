@@ -1,14 +1,16 @@
-#ifndef MLVM_CONTAINER_LIST_H_
-#define MLVM_CONTAINER_LIST_H_
+#ifndef MLVM_LIB_LIST_H_
+#define MLVM_LIB_LIST_H_
 
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "mlvm/lib/types.h"
+
 typedef struct {
-  uint64_t size;
-  uint64_t cap;
+  mlvm_size_t size;
+  mlvm_size_t cap;
 } list_base_t;
 
 #define list_t(T)     \

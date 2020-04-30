@@ -8,8 +8,8 @@
 #define MAX_TENSOR_NAME 128
 
 static void ir_function_free_operands(list_ir_operand_t* operands) {
-  uint64_t size = list_size(operands);
-  uint64_t i;
+  mlvm_size_t size = list_size(operands);
+  mlvm_size_t i;
   for (i = 0; i < size; i++) {
     ir_operand_t* operand = operands->data[i];
     if (operand->type == IR_CONST) tensor_free(operand->value.tensor);
@@ -45,7 +45,7 @@ int ir_function_print(ir_function_t* func, int fd) {
   { /* Prints out the contants. */
     list_ir_operand_t* const_tensors = &func->const_tensors;
     if (list_size(const_tensors) > 0) {
-      uint64_t i, size = list_size(const_tensors);
+      mlvm_size_t i, size = list_size(const_tensors);
       n += dprintf(fd, "  Constants:\n");
 
       for (i = 0; i < size; i++) {
