@@ -25,6 +25,15 @@ typedef struct {
 
 #define list_deinit(l) (free((l)->data))
 
+#define list_deinit_with_deleter(l, deleter)  \
+  do {                                        \
+    mlvm_size_t index, size = (l)->base.size; \
+    for (index = 0; index < size; index++) {  \
+      deleter((l)->data[index]);              \
+    }                                         \
+    free((l)->data);                          \
+  } while (0)
+
 #define list_size(l) ((l)->base.size)
 
 #define list_set(l, i, v) (*((l)->data + i) = v)
