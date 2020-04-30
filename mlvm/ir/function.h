@@ -39,11 +39,13 @@ typedef struct {
 
   list_ir_operand_t operands;
   list_ir_operand_t outputs;
-} ir_instrution_t;
+} ir_instruction_t;
 
-extern ir_instrution_t* ir_instrution_create(struct ir_function_t* parent_func,
+extern ir_instruction_t* ir_instruction_create(struct ir_function_t* parent_func,
                                              char*                 name,
                                              ir_instruction_type   type);
+/* extern void ir_instru
+ */
 
 /******************************************************************************
  * Function.
@@ -74,6 +76,6 @@ extern int            ir_function_print(ir_function_t* func, int fd);
 extern ir_operand_t*    ir_function_append_constant(ir_function_t* func,
                                                     tensor_t*      tensor,
                                                     int            value_mode);
-extern ir_instrution_t* ir_function_append_instruction(ir_function_t* func);
+extern ir_instruction_t* ir_function_append_instruction(ir_function_t* func);
 
 #endif
