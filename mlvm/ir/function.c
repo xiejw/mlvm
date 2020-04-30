@@ -23,7 +23,7 @@ static ir_operand_t* ir_operand_create_const() {
 */
 
 static void ir_operand_free(ir_operand_t* operand) {
-  if (operand->type == IR_CONST) tensor_free(operand->value.tensor);
+  if (operand->type == IR_OPERAND_CONST) tensor_free(operand->value.tensor);
   free(operand->name);
   free(operand);
 }
@@ -91,7 +91,7 @@ ir_operand_t* ir_function_append_constant(ir_function_t* func, tensor_t* tensor,
   }
 
   operand               = malloc(sizeof(ir_operand_t));
-  operand->type         = IR_CONST;
+  operand->type         = IR_OPERAND_CONST;
   operand->value.tensor = const_tensor;
 
   /* Fill the name. */
@@ -105,4 +105,11 @@ ir_operand_t* ir_function_append_constant(ir_function_t* func, tensor_t* tensor,
   list_append(&func->const_tensors, operand);
 
   return operand;
+}
+
+ir_instruction_t* ir_function_append_instruction(ir_function_t*      func,
+                                                 ir_instruction_type type) {
+  (void)func;
+  (void)type;
+  return NULL;
 }

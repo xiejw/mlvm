@@ -20,14 +20,14 @@ tensor_t* create_a_random_tensor(sprng_t* prng) {
 }
 
 int build_simple_func(ir_function_t* func, sprng_t* prng) {
-  tensor_t* tensor;
+  tensor_t*         tensor;
   ir_instruction_t* ins;
-  ir_operand_t* operand;
+  ir_operand_t*     operand;
 
-  tensor = create_a_random_tensor(prng);
-operand = ir_function_append_constant(func, tensor, MLVM_MOVE_VALUE);
+  tensor  = create_a_random_tensor(prng);
+  operand = ir_function_append_constant(func, tensor, MLVM_MOVE_VALUE);
   tensor_free(tensor);
-  if (operand == NULL)  return -1;
+  if (operand == NULL) return -1;
 
   ins = ir_function_append_instruction(func, IR_OP_ADD);
 

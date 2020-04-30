@@ -10,7 +10,7 @@
  * Operands.
  *****************************************************************************/
 
-typedef enum { IR_CONST } ir_operand_type;
+typedef enum { IR_OPERAND_CONST } ir_operand_type;
 
 typedef union {
   tensor_t* tensor; /* Owned the tensor. */
@@ -41,9 +41,8 @@ typedef struct {
   list_ir_operand_t outputs;
 } ir_instruction_t;
 
-extern ir_instruction_t* ir_instruction_create(struct ir_function_t* parent_func,
-                                             char*                 name,
-                                             ir_instruction_type   type);
+extern ir_instruction_t* ir_instruction_create(
+    struct ir_function_t* parent_func, char* name, ir_instruction_type type);
 /* extern void ir_instru
  */
 
@@ -73,9 +72,10 @@ extern int            ir_function_print(ir_function_t* func, int fd);
  * Returns:
  *     NULL for error. The returned operand is owned by the function.
  */
-extern ir_operand_t*    ir_function_append_constant(ir_function_t* func,
-                                                    tensor_t*      tensor,
-                                                    int            value_mode);
-extern ir_instrution_t* ir_function_append_instruction(ir_function_t* func, ir_instruction_type type);
+extern ir_operand_t*     ir_function_append_constant(ir_function_t* func,
+                                                     tensor_t*      tensor,
+                                                     int            value_mode);
+extern ir_instruction_t* ir_function_append_instruction(
+    ir_function_t* func, ir_instruction_type type);
 
 #endif
