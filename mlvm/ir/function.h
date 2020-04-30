@@ -76,6 +76,6 @@ extern int            ir_function_print(ir_function_t* func, int fd);
 extern ir_operand_t*    ir_function_append_constant(ir_function_t* func,
                                                     tensor_t*      tensor,
                                                     int            value_mode);
-extern ir_instruction_t* ir_function_append_instruction(ir_function_t* func);
+extern ir_instrution_t* ir_function_append_instruction(ir_function_t* func, ir_instruction_type type);
 
 #endif
