@@ -26,7 +26,9 @@ typedef struct {
 
 typedef list_t(ir_operand_t*) list_ir_operand_t;
 
-extern void ir_operand_free(ir_operand_t* operand);
+extern ir_operand_t* ir_operand_create_const(tensor_t*   const_tensor,
+                                             const char* name_fmt, ...);
+extern void          ir_operand_free(ir_operand_t* operand);
 
 /******************************************************************************
  * Instruction.

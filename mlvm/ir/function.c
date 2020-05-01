@@ -5,8 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_TENSOR_NAME 128
-
 ir_function_t* ir_function_create(char* name) {
   ir_function_t* func      = malloc(sizeof(ir_function_t));
   size_t         name_size = strlen(name);
@@ -69,17 +67,8 @@ ir_operand_t* ir_function_append_constant(ir_function_t* func, tensor_t* tensor,
       break;
   }
 
-  operand               = malloc(sizeof(ir_operand_t));
-  operand->type         = IR_OPERAND_CONST;
-  operand->value.tensor = const_tensor;
-
-  /* Fill the name. */
-  {
-    int   size = (int)list_size(&func->const_tensors);
-    char* name = malloc(MAX_TENSOR_NAME * sizeof(char));
-    sprintf(name, "const_%d", size);
-    operand->name = name;
-  }
+  operand = ir_operand_create_const(const_tensor, "const_%d",
+                                    (int)list_size(&func->const_tensors));
 
   list_append(&func->const_tensors, operand);
 
