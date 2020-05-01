@@ -35,30 +35,25 @@ extern int       tensor_print_shape_info(tensor_t* tensor, int fd);
 extern void tensor_set_stride(tensor_t* tensor, mlvm_size_t* new_stride);
 
 /*
- * Returns a copy with value moved from the `src`.
+ * Returns a _copy_ of tensor `src`.
  *
- * Note:
- *   1. The `src` must own its value, i.e., value_mode_ should be
- *      MLVM_OWNING_VALUE.
- *   2. All fields of tensor `src` are not usable after this call.
- *   3. `tensor_free` must be called to free the src itself.
- */
-extern tensor_t* tensor_move(tensor_t* src);
-/*
- * Returns a copy of the `src` which value gots copied.
+ * All fields are copied, (see the exception of MLVM_MOVE_VALUE) while the
+ * value field is controlled by `value_mode`.
  *
- * Note:
- *   1. If the `src` must own its value, i.e., value_mode_ should be
- *      MLVM_OWNING_VALUE, then the value gets copied.
- *   2. Otherwise, the value is also an alias.
- */
-extern tensor_t* tensor_copy(tensor_t* src);
-/*
- * Returns a copy of the `src` which value is an alias.
+ * Args:
+ *    value_mode can only be MLVM_COPY_VALUE, MLVM_MOVE_VALUE, or
+ *    MLVM_ALIAS_VALUE. In particular,
+ *      - MLVM_COPY_VALUE will copy the value (which has runtime cost).
+ *      - MLVM_ALIAS_VALUE will alias the value. It is caller's responsibility
+ *        to ensure the lifttime of the src is longer than the copied return
+ *        value.
+ *      - MLVM_MOVE_VALUE will steal all fields from the `src` given the `src`
+ *        will be left as a dead state. In addition, the
+ *        1. The `src` must own its value, i.e., value_mode_ should be
+ *           MLVM_OWNING_VALUE.
+ *        2. `tensor_free` must be called to free the src itself.
  *
- * Notes:
- *   All other fields are copies.
  */
-extern tensor_t* tensor_alias(tensor_t* src);
+extern tensor_t* tensor_clone(tensor_t* src, int value_mode);
 
 #endif

@@ -49,26 +49,9 @@ int ir_function_print(ir_function_t* func, int fd) {
 
 ir_operand_t* ir_function_append_constant(ir_function_t* func, tensor_t* tensor,
                                           int value_mode) {
-  tensor_t*     const_tensor;
-  ir_operand_t* operand;
-
-  assert(value_mode == MLVM_COPY_VALUE || value_mode == MLVM_MOVE_VALUE ||
-         value_mode == MLVM_ALIAS_VALUE);
-
-  switch (value_mode) {
-    case MLVM_COPY_VALUE:
-      const_tensor = tensor_copy(tensor);
-      break;
-    case MLVM_MOVE_VALUE:
-      const_tensor = tensor_move(tensor);
-      break;
-    case MLVM_ALIAS_VALUE:
-      const_tensor = tensor_alias(tensor);
-      break;
-  }
-
-  operand = ir_operand_create_const(const_tensor, "const_%d",
-                                    (int)list_size(&func->const_tensors));
+  ir_operand_t* operand =
+      ir_operand_create_const(tensor_clone(tensor, value_mode), "const_%d",
+                              (int)list_size(&func->const_tensors));
 
   list_append(&func->const_tensors, operand);
 

@@ -6,8 +6,36 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern tensor_t* tensor_create(mlvm_uint_t rank, mlvm_uint_t* shape,
-                               double* value, int value_mode) {
+static tensor_t* tensor_move(tensor_t* src) {
+  tensor_t* dst;
+  assert(src->value_mode_ == MLVM_OWNING_VALUE);
+
+  dst = malloc(sizeof(tensor_t));
+  memcpy(dst, src, sizeof(tensor_t));
+
+  src->value       = NULL;
+  src->value_mode_ = MLVM_DEAD_VALUE;
+  return dst;
+}
+
+static tensor_t* tensor_copy(tensor_t* src) {
+  tensor_t* new_tensor;
+  new_tensor =
+      tensor_create(src->rank, src->shape, src->value, MLVM_COPY_VALUE);
+  tensor_set_stride(new_tensor, src->stride);
+  return new_tensor;
+}
+
+static tensor_t* tensor_alias(tensor_t* src) {
+  tensor_t* new_tensor;
+  new_tensor =
+      tensor_create(src->rank, src->shape, src->value, MLVM_ALIAS_VALUE);
+  tensor_set_stride(new_tensor, src->stride);
+  return new_tensor;
+}
+
+tensor_t* tensor_create(mlvm_uint_t rank, mlvm_uint_t* shape, double* value,
+                        int value_mode) {
   /* Consider to check overflow of the size. */
   mlvm_size_t  size;
   mlvm_size_t* stride;
@@ -70,32 +98,21 @@ void tensor_free(tensor_t* tensor) {
   free(tensor);
 }
 
-tensor_t* tensor_move(tensor_t* src) {
-  tensor_t* dst;
-  assert(src->value_mode_ == MLVM_OWNING_VALUE);
+tensor_t* tensor_clone(tensor_t* src, int value_mode) {
+  assert(value_mode == MLVM_COPY_VALUE || value_mode == MLVM_MOVE_VALUE ||
+         value_mode == MLVM_ALIAS_VALUE);
 
-  dst = malloc(sizeof(tensor_t));
-  memcpy(dst, src, sizeof(tensor_t));
+  switch (value_mode) {
+    case MLVM_COPY_VALUE:
+      return tensor_copy(src);
+    case MLVM_MOVE_VALUE:
+      return tensor_move(src);
+    case MLVM_ALIAS_VALUE:
+      return tensor_alias(src);
+  }
 
-  src->value       = NULL;
-  src->value_mode_ = MLVM_DEAD_VALUE;
-  return dst;
-}
-
-tensor_t* tensor_copy(tensor_t* src) {
-  tensor_t* new_tensor;
-  new_tensor =
-      tensor_create(src->rank, src->shape, src->value, MLVM_COPY_VALUE);
-  tensor_set_stride(new_tensor, src->stride);
-  return new_tensor;
-}
-
-tensor_t* tensor_alias(tensor_t* src) {
-  tensor_t* new_tensor;
-  new_tensor =
-      tensor_create(src->rank, src->shape, src->value, MLVM_ALIAS_VALUE);
-  tensor_set_stride(new_tensor, src->stride);
-  return new_tensor;
+  /* Should never reach here. */
+  return NULL;
 }
 
 int tensor_print(tensor_t* tensor, int fd) {
