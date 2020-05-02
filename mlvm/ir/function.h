@@ -43,23 +43,27 @@ typedef enum { IR_OP_ADD } ir_instruction_type;
 typedef struct {
   char*                 name;
   ir_instruction_type   type;
-  struct ir_function_t* parent_func;
+  struct ir_function_t* parent_func; /* Unowned. */
 
   list_ir_operand_t operands;
   list_ir_operand_t outputs;
 } ir_instruction_t;
 
+typedef list_t(ir_instruction_t*) list_ir_instruction_t;
+
 extern ir_instruction_t* ir_instruction_create(
     struct ir_function_t* parent_func, ir_instruction_type type,
     const char* name_fmt, ...);
+extern void ir_instruction_free(ir_instruction_t* instruction);
 
 /******************************************************************************
  * Function.
  *****************************************************************************/
 
 typedef struct ir_function_t {
-  char*             name; /* Function name. */
-  list_ir_operand_t const_tensors;
+  char*                 name; /* Function name. */
+  list_ir_operand_t     const_tensors;
+  list_ir_instruction_t instructions;
 } ir_function_t;
 
 extern ir_function_t* ir_function_create(char* name);

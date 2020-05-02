@@ -12,8 +12,10 @@ ir_function_t* ir_function_create(char* name) {
 
   /* Init name. */
   strcpy(func->name, name);
-  /* Init const tensors. */
+
+  /* Initialize all lists. */
   list_init(&func->const_tensors);
+  list_init(&func->instructions);
 
   return func;
 }
@@ -21,6 +23,7 @@ ir_function_t* ir_function_create(char* name) {
 void ir_function_free(ir_function_t* func) {
   free(func->name);
   list_deinit_with_deleter(&func->const_tensors, ir_operand_free);
+  list_deinit_with_deleter(&func->instructions, ir_instruction_free);
   free(func);
 }
 
@@ -44,6 +47,20 @@ int ir_function_print(ir_function_t* func, int fd) {
     }
   }
 
+  { /* Prints out the instructions. */
+    list_ir_instruction_t* instructions = &func->instructions;
+    if (list_size(instructions) > 0) {
+      mlvm_size_t i, size = list_size(instructions);
+      n += dprintf(fd, "  Instructions:\n");
+
+      for (i = 0; i < size; i++) {
+        ir_instruction_t* instruction = instructions->data[i];
+        n += dprintf(fd, "    Name `%s`: ", instruction->name);
+        n += dprintf(fd, "\n");
+      }
+    }
+  }
+
   return n;
 }
 
@@ -54,13 +71,13 @@ ir_operand_t* ir_function_append_constant(ir_function_t* func, tensor_t* tensor,
                               (int)list_size(&func->const_tensors));
 
   list_append(&func->const_tensors, operand);
-
   return operand;
 }
 
 ir_instruction_t* ir_function_append_instruction(ir_function_t*      func,
                                                  ir_instruction_type type) {
-  (void)func;
-  (void)type;
-  return NULL;
+  ir_instruction_t* instruction = ir_instruction_create(
+      func, type, "inst_%d", (int)list_size(&func->instructions));
+  list_append(&func->instructions, instruction);
+  return instruction;
 }

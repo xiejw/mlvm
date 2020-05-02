@@ -17,3 +17,8 @@ ir_instruction_t* ir_instruction_create(struct ir_function_t* parent_func,
   instruction->type        = type;
   return instruction;
 }
+
+void ir_instruction_free(ir_instruction_t* instruction) {
+  free(instruction->name);
+  free(instruction);
+}
