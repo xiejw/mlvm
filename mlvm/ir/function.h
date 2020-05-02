@@ -50,9 +50,8 @@ typedef struct {
 } ir_instruction_t;
 
 extern ir_instruction_t* ir_instruction_create(
-    struct ir_function_t* parent_func, char* name, ir_instruction_type type);
-/* extern void ir_instru
- */
+    struct ir_function_t* parent_func, ir_instruction_type type,
+    const char* name_fmt, ...);
 
 /******************************************************************************
  * Function.
