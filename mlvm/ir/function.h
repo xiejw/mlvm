@@ -40,13 +40,21 @@ struct ir_function_t;
 
 typedef enum { IR_OP_ADD } ir_instruction_type;
 
+/*
+typedef union {
+} ir_instruction_attr;
+*/
+
 typedef struct {
   char*                 name;
   ir_instruction_type   type;
   struct ir_function_t* parent_func; /* Unowned. */
 
-  list_ir_operand_t operands;
+  list_ir_operand_t operands; /* Unowned. */
   list_ir_operand_t outputs;
+
+  /* Internal fields. */
+  int finalized_;
 } ir_instruction_t;
 
 typedef list_t(ir_instruction_t*) list_ir_instruction_t;
@@ -55,6 +63,11 @@ extern ir_instruction_t* ir_instruction_create(
     struct ir_function_t* parent_func, ir_instruction_type type,
     const char* name_fmt, ...);
 extern void ir_instruction_free(ir_instruction_t* instruction);
+
+extern void ir_instruction_append_operand(ir_instruction_t* instruction,
+                                          ir_operand_t*     operand);
+
+extern int ir_instruction_finalize(ir_instruction_t* instruction);
 
 /******************************************************************************
  * Function.

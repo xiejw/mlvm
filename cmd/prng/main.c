@@ -27,6 +27,9 @@ int build_simple_func(ir_function_t* func, sprng_t* prng) {
   if (operand == NULL) return -1;
 
   ins = ir_function_append_instruction(func, IR_OP_ADD);
+  ir_instruction_append_operand(ins, operand);
+  ir_instruction_append_operand(ins, operand);
+  if (ir_instruction_finalize(ins)) return -1;
 
   ir_function_print(func, 1);
   return 0;
