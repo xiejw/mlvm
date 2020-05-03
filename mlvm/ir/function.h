@@ -12,10 +12,16 @@
  * operrand.c
  *****************************************************************************/
 
-typedef enum { IR_OPERAND_CONST } ir_operand_type;
+typedef enum { IR_OPERAND_CONST, IR_OPERAND_OUTPUT } ir_operand_type;
+
+typedef struct {
+  mlvm_uint_t  rank;  /* Must be positive (non-zero). */
+  mlvm_uint_t* shape; /* Length is `rank` above. */
+} ir_output_info_t;
 
 typedef union {
-  tensor_t* tensor; /* Owned the tensor. */
+  tensor_t*         tensor; /* Owned the tensor. */
+  ir_output_info_t* output_info;
 } ir_operand_value;
 
 typedef struct {
@@ -26,8 +32,15 @@ typedef struct {
 
 typedef list_t(ir_operand_t*) list_ir_operand_t;
 
+/*
+ * Creates operands.
+ *
+ * Onwership of const_tensor, output_info are all transfered.
+ */
 extern ir_operand_t* ir_operand_create_const(tensor_t*   const_tensor,
                                              const char* name_fmt, ...);
+extern ir_operand_t* ir_operand_create_output(ir_output_info_t* output_info,
+                                              const char*       name_fmt, ...);
 extern void          ir_operand_free(ir_operand_t* operand);
 
 /******************************************************************************
@@ -66,8 +79,7 @@ extern void ir_instruction_free(ir_instruction_t* instruction);
 
 extern void ir_instruction_append_operand(ir_instruction_t* instruction,
                                           ir_operand_t*     operand);
-
-extern int ir_instruction_finalize(ir_instruction_t* instruction);
+extern int  ir_instruction_finalize(ir_instruction_t* instruction);
 
 /******************************************************************************
  * Function.

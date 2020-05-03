@@ -1,0 +1,6 @@
+#ifndef MLVM_IR_ERROR_H_
+#define MLVM_IR_ERROR_H_
+
+#define MLVM_ERROR_INCOMPATIBLE_SHAPE -2
+
+#endif

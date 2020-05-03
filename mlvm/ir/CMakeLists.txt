@@ -12,5 +12,6 @@ add_mlvm_library(
     instruction.c
     function.c
 
+    error.h
     macros.h
 )

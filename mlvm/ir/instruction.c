@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 
+#include "mlvm/ir/error.h"
 #include "mlvm/ir/macros.h"
 
 ir_instruction_t* ir_instruction_create(struct ir_function_t* parent_func,
@@ -38,6 +39,11 @@ void ir_instruction_append_operand(ir_instruction_t* instruction,
 int ir_instruction_finalize(ir_instruction_t* instruction) {
   assert(!instruction->finalized_);
   instruction->finalized_ = 1;
+
+  switch (instruction->type) {
+    case IR_OP_ADD:
+      return MLVM_ERROR_INCOMPATIBLE_SHAPE;
+  }
   /* TODO: Add output */
   return 0;
 }

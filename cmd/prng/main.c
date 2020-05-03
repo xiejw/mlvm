@@ -17,6 +17,7 @@ tensor_t* create_a_random_tensor(sprng_t* prng) {
 }
 
 int build_simple_func(ir_function_t* func, sprng_t* prng) {
+  int               err;
   tensor_t*         tensor;
   ir_instruction_t* ins;
   ir_operand_t*     operand;
@@ -29,7 +30,9 @@ int build_simple_func(ir_function_t* func, sprng_t* prng) {
   ins = ir_function_append_instruction(func, IR_OP_ADD);
   ir_instruction_append_operand(ins, operand);
   ir_instruction_append_operand(ins, operand);
-  if (ir_instruction_finalize(ins)) return -1;
+
+  err = ir_instruction_finalize(ins);
+  if (err) return err;
 
   ir_function_print(func, 1);
   return 0;
@@ -37,11 +40,13 @@ int build_simple_func(ir_function_t* func, sprng_t* prng) {
 
 int main() {
   sprng_t* prng = sprng_create(456L);
+  int      err;
 
   ir_function_t* func;
   func = ir_function_create("main");
 
-  if (build_simple_func(func, prng)) fprintf(stderr, "Unexpected error.");
+  if ((err = build_simple_func(func, prng)))
+    fprintf(stderr, "Unexpected error: %d.", err);
 
   ir_function_free(func);
   sprng_free(prng);
