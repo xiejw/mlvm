@@ -1,13 +1,13 @@
 \input opmac
 \parskip=1\baselineskip
 
-Tensor a multi-dimension float-value array. For a Tensor with shape $<a, b, c>$,
+\noindent Tensor a multi-dimension float-value array. For a Tensor with shape $<a, b, c>$,
 where $a,b,$ and $c$ are all positive integers, there are in total of $ a b c $
 number of elements, called {\tt size}, in it. The length of the shape is called
 {\tt rank}. It is also the number of dimensions. Scalar is viewed as a Tensor
 with shape $<1>$, i.e., rank $1$.
 
-This leads to the following definition:
+\noindent This leads to the following definition:
 
 \begtt
 typedef struct {
@@ -18,14 +18,14 @@ typedef struct {
 } tensor_t;
 \endtt
 
-Implementation wise there are two new concepts.
+\noindent Implementation wise there are two new concepts.
 
 {\narrower
-\noindent\dag\quad The first one is ownership, called {\tt value-mode\_}, which
+\noindent{\bf value mode}\quad The first one is ownership, called {\tt value-mode\_}, which
 is an internal field. It represents whether the current Tensor owns its value
 buffer.
 
-\noindent\dag\quad The second one is {\tt stride}, with type {\tt mlvm\_size\_t*}.
+\noindent{\bf stride}\quad The second one is {\tt stride}, with type {\tt mlvm\_size\_t*}.
 It is an array with same length as {\tt shape}. For {\tt stride[i]}, it
 represents the offset difference between the dimension increment at dimension
 {\tt shape[i]}.
