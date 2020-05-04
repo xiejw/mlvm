@@ -2,6 +2,8 @@
 \parskip=1\baselineskip
 \font\tensf=cmss10
 \let\subtitlefont=\tensf
+\def\strideleft{\backslash\{}
+\def\strideright{\backslash\}}
 
 \noindent {\subtitlefont From user's view}, Tensor a multi-dimension float-value
 array. For a Tensor with shape $<a, b, c>$, where $a,b,$ and $c$ are all
@@ -38,20 +40,21 @@ new concepts.
   {\leftskip=2\leftskip
 
     \noindent {\bf tranpose}:\quad For a Tensor with shape $<a,b, c>$ and stride
-    $[bc, c, 1]$, {\it tranpose(1, 2, 0)} produces a new Tensor with shape $<b,
-    c, a>$. With {\tt stride} property, we could re-use the same value buffer,
-    saving the copy cost, and represent the new Tensor as: shape $<b, c, a>$ and
-    stride $[c, 1, bc]$.
+    $\strideleft bc, c, 1]$, {\it tranpose(1, 2, 0)} produces a new Tensor with
+    shape $<b, c, a>$. With {\tt stride} property, we could re-use the same
+    value buffer, saving the copy cost, and represent the new Tensor as: shape
+    $<b, c, a>$ and stride $\strideleft c, 1, bc]$.
 
     \noindent {\bf broadcast}:\quad For a Tensor with shape $<a, 1>$ and stride
-    $[1, 1]$, {\it broadcast\/}ing to $<a,b>$ is cost free as we just need a new
-    Tensor with shape $<a,b>$ and stride $[1, 0]$. Similary, {\it
-    broadcast\/}ing a Tensor with shape $<1, b>$ to new shape $<a,b>$ can be
-    represented as shape $<a,b>$ and stride $[0, 1]$.
+    $\strideleft 1, 1\strideright$, {\it broadcast\/}ing to $<a,b>$ is cost free
+    as we just need a new Tensor with shape $<a,b>$ and stride $\strideleft 1,
+    0\strideright$. Similary, {\it broadcast\/}ing a Tensor with shape $<1, b>$
+    to new shape $<a,b>$ can be represented as shape $<a,b>$ and stride
+    $\strideleft 0, 1\strideright$.
 
     \noindent {\bf constant}:\quad If all above make sense, a {\tt zeros} tensor
     with shape $<a,b>$ is simply {\it broadcast\/}ing a scalar $0$ to $<a,b>$,
-    i.e., stride $[0, 0]$. So is a {\tt ones} tensor.
+    i.e., stride $\strideleft 0, 0\strideright$. So is a {\tt ones} tensor.
 
     \noindent {\bf data access}:\quad This would be a big {\it disadvantage}.
     Locality is bad for arbitrary stride. Iterating the data value is also quite
@@ -59,8 +62,8 @@ new concepts.
 
     \noindent {\bf reshape}:\quad This would be another {\it disadvantage}.
     {\it Reshap\/}ing a Tensor with arbitrary stride is not always cost-free.
-    For example, {\it reshap\/}ing a Tensor with shape $<a,b>$ and stride $[1,
-    0]$ to $<ab>$ needs a value buffer copy.
+    For example, {\it reshap\/}ing a Tensor with shape $<a,b>$ and stride
+    $\strideleft 1, 0\strideright$ to $<ab>$ needs a value buffer copy.
 
   \par}
 \par}

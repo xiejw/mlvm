@@ -32,7 +32,9 @@ int build_simple_func(ir_function_t* func, sprng_t* prng) {
   ir_instruction_append_operand(ins, operand);
 
   err = ir_instruction_finalize(ins);
+  /*
   if (err) return err;
+  */
 
   ir_function_print(func, 1);
   return 0;
