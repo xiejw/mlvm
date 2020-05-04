@@ -42,8 +42,12 @@ int ir_instruction_finalize(ir_instruction_t* instruction) {
 
   switch (instruction->type) {
     case IR_OP_ADD:
-      return MLVM_ERROR_INCOMPATIBLE_SHAPE;
+      return ir_context_set_error(instruction->parent_func->ctx,
+                                  MLVM_ERROR_UNSUPPORTED_INSTRUCTION_TYPE,
+                                  "Instruction type %d is not supported yet",
+                                  instruction->type);
   }
+
   /* TODO: Add output */
   return 0;
 }

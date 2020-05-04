@@ -5,10 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-ir_function_t* ir_function_create(char* name) {
+ir_function_t* ir_function_create(ir_context_t* ctx, char* name) {
   ir_function_t* func      = malloc(sizeof(ir_function_t));
   size_t         name_size = strlen(name);
   func->name               = malloc((name_size + 1) * sizeof(char));
+  func->ctx                = ctx;
 
   /* Init name. */
   strcpy(func->name, name);

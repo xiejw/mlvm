@@ -32,25 +32,25 @@ int build_simple_func(ir_function_t* func, sprng_t* prng) {
   ir_instruction_append_operand(ins, operand);
 
   err = ir_instruction_finalize(ins);
-  /*
   if (err) return err;
-  */
 
   ir_function_print(func, 1);
   return 0;
 }
 
 int main() {
-  sprng_t* prng = sprng_create(456L);
-  int      err;
-
+  int            err;
+  ir_context_t*  ctx = ir_context_create();
   ir_function_t* func;
-  func = ir_function_create("main");
 
-  if ((err = build_simple_func(func, prng)))
-    fprintf(stderr, "Unexpected error: %d.", err);
+  ir_context_set_prng(ctx, sprng_create(456L));
+
+  func = ir_function_create(ctx, "main");
+
+  if ((err = build_simple_func(func, ctx->prng)))
+    fprintf(stderr, "Unexpected error: %d: %s\n", err, ctx->error_message);
 
   ir_function_free(func);
-  sprng_free(prng);
+  ir_context_free(ctx);
   return 0;
 }

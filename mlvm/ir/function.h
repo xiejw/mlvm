@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+#include "mlvm/ir/context.h"
 #include "mlvm/ir/tensor.h"
 #include "mlvm/lib/list.h"
 
@@ -86,12 +87,13 @@ extern int  ir_instruction_finalize(ir_instruction_t* instruction);
  *****************************************************************************/
 
 typedef struct ir_function_t {
+  ir_context_t*         ctx;  /* Unowned. */
   char*                 name; /* Function name. */
   list_ir_operand_t     const_tensors;
   list_ir_instruction_t instructions;
 } ir_function_t;
 
-extern ir_function_t* ir_function_create(char* name);
+extern ir_function_t* ir_function_create(ir_context_t* ctx, char* name);
 extern void           ir_function_free(ir_function_t* func);
 extern int            ir_function_print(ir_function_t* func, int fd);
 

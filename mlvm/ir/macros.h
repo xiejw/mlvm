@@ -15,7 +15,7 @@
     va_start(args, fmt);                                     \
     (name) = malloc(IR_MAX_NAME_SIZE * sizeof(char));        \
     n      = vsnprintf((name), IR_MAX_NAME_SIZE, fmt, args); \
-    assert(n < IR_MAX_NAME_SIZE);                            \
+    assert(n < IR_MAX_NAME_SIZE - 1);                        \
     va_end(args);                                            \
   }
 
