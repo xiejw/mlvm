@@ -16,4 +16,8 @@ add_mlvm_library(
 
     error.h
     macros.h
+
+  TESTS
+    test_suite.h
+    context_test.c
 )

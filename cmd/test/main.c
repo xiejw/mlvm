@@ -2,6 +2,7 @@
 
 #include "mlvm/testing/test.h"
 
+#include "mlvm/ir/test_suite.h"
 #include "mlvm/lib/test_suite.h"
 #include "mlvm/runtime/kernel/test_suite.h"
 #include "mlvm/sprng/test_suite.h"
@@ -26,6 +27,7 @@ typedef struct {
  */
 test_suite_t test_suites[] = {
     {"mlvm/lib", run_lib_suite},
+    {"mlvm/ir", run_ir_suite},
     {"mlvm/sprng", run_sprng_suite},
     {"mlvm/runtime/kernel", run_kernel_suite},
 };
