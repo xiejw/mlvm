@@ -7,6 +7,8 @@ add_mlvm_library(
     tensor.h
     tensor.c
 
+    context.h
+    context.c
     function.h
     operand.c
     instruction.c
