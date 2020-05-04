@@ -7,6 +7,7 @@ cmake_minimum_required(VERSION 3.9)
 #
 set(CMAKE_C_STANDARD 90)
 set(CMAKE_C_COMPILER clang)
+set(CMAKE_C_FLAGS "-g -fsanitize=address -fno-omit-frame-pointer")
 
 # {{{3 Common Helpers
 #

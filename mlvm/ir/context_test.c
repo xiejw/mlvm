@@ -23,7 +23,7 @@ static char* test_context_error_messages() {
               strcmp("unexpected error: unexpected error: 123",
                      ctx->error_message) == 0);
 
-  ir_context_free(ctx);
+  /* ir_context_free(ctx); */
   return NULL;
 }
 
