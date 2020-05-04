@@ -1,4 +1,4 @@
 TEX=docker run --rm -v `pwd`:/workdir xiejw/tex pdftex
 
-01-Tensor.pdf: 01-Tensor.tex
-	${TEX} 01-Tensor.tex
+01-tensor.pdf: 01-tensor.tex
+	${TEX} 01-tensor.tex

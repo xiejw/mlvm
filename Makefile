@@ -6,7 +6,7 @@ FMT=docker run --rm -ti \
       -v `pwd`:/workdir xiejw/clang-format \
       /clang-format.sh
 
-.PHONY: default compile compile_only run test fmt clean
+.PHONY: default compile compile_only run test doc fmt clean
 
 default: prng
 
@@ -22,6 +22,9 @@ prng: compile_only
 
 test: compile_only
 	@echo "-> Testing..." && ${DEBUG}/test
+
+doc:
+	make -C doc
 
 fmt:
 	@echo "-> Formatting..." && ${FMT} cmd mlvm

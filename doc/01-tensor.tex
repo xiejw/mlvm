@@ -1,0 +1,57 @@
+\input opmac
+\parskip=1\baselineskip
+\font\tensf=cmss10
+\let\subtitlefont=\tensf
+
+\noindent {\subtitlefont From user's view}, Tensor a multi-dimension float-value
+array. For a Tensor with shape $<a, b, c>$, where $a,b,$ and $c$ are all
+positive integers, there are in total of $ a b c $ number of elements, called
+{\tt size}, in it.  The length of the shape is called {\tt rank}. It is also the
+number of dimensions. Scalar is viewed as a Tensor with shape $<1>$, i.e., rank
+$1$.
+
+\noindent This leads to the following definition:
+
+\begtt
+typedef struct {
+  mlvm_uint_t  rank;   /* Must be positive (non-zero). */
+  mlvm_uint_t* shape;  /* Length is `rank` above. */
+  mlvm_size_t  size;   /* Total number of elements. */
+  double*      value;  /* The value buffer. */
+} tensor_t;
+\endtt
+
+\noindent {\subtitlefont From implementation's view}, there are two new
+concepts.
+
+{\leftskip=\parskip
+\noindent{\bf value mode}\quad The first one is ownership, called {\tt
+value-mode\_}, which is an internal field. It represents whether the current
+Tensor owns its value buffer.
+
+\noindent{\bf stride}\quad The second one is {\tt stride}, with type {\tt
+mlvm\_size\_t*}.  It is an array with same length as {\tt shape}. For {\tt
+stride[i]}, it represents the offset difference between the dimension increment
+at dimension {\tt shape[i]}.
+
+{\leftskip=2\leftskip
+\noindent {\bf tranpose}:\quad For a Tensor with shape $<a,b, c>$ and stride
+$[bc, c, 1]$, {\it tranpose(1, 2, 0)} produces a new Tensor with shape $<b, c,
+a>$. With {\tt stride} property, we could re-use the same value buffer, saving
+the copy cost, and represent the new Tensor as: shape $<b, c, a>$ and stride
+$[c, 1, bc]$.
+
+\noindent {\bf broadcast}:\quad For a Tensor with shape $<a, 1>$ and stride $[1,
+1]$, {\it broadcast\/}ing to $<a,b>$ is cost free as we just need a new Tensor
+with shape $<a,b>$ and stride $[1, 0]$. Similary, {\it broadcast\/}ing a Tensor
+with shape $<1, b>$ to new shape $<a,b>$ can be represented as shape $<a,b>$ and
+stride $[0, 1]$.
+
+\noindent {\bf constant}:\quad If all above make sense, a {\tt zeros} tensor with
+shape $<a,b>$ is simply {\it broadcast\/}ing a scalar $0$ to $<a,b>$, i.e.,
+stride $[0, 0]$. So is a {\tt ones} tensor.
+
+\par}
+\par}
+
+\bye
