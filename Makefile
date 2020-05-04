@@ -30,4 +30,4 @@ fmt:
 	@echo "-> Formatting..." && ${FMT} cmd mlvm
 
 clean:
-	@echo "-> Cleaning..." && rm -rf ${DEBUG} ${RELEASE}
+	@echo "-> Cleaning..." && rm -rf ${DEBUG} ${RELEASE} && make -C doc clean
