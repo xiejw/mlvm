@@ -38,7 +38,6 @@ int ir_context_set_error(ir_context_t* ctx, int error_code, char* fmt, ...) {
     va_list args;
     int     n;
     va_start(args, fmt);
-    output_buffer = malloc(MLVM_IR_DEFAULT_ERROR_MSG_CAP * sizeof(char));
     n = vsnprintf(output_buffer, MLVM_IR_DEFAULT_ERROR_MSG_CAP, fmt, args);
     assert(n < MLVM_IR_DEFAULT_ERROR_MSG_CAP - 1);
     va_end(args);

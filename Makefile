@@ -12,7 +12,7 @@ default: prng
 
 compile:
 	@echo "-> Bootstraping..."
-	mkdir -p ${DEBUG} && cd ${DEBUG} && cmake -GNinja .. && ninja -v
+	mkdir -p ${DEBUG} && cd ${DEBUG} && cmake -DMLVM_ADDRESS_SANITIZER=OFF -GNinja .. && ninja -v
 
 compile_only:
 	@echo "-> Compiling..." && cd ${DEBUG} && ninja -v
@@ -22,6 +22,9 @@ prng: compile_only
 
 test: compile_only
 	@echo "-> Testing..." && ${DEBUG}/test
+
+test_address_sanitizer: clean
+	mkdir -p ${DEBUG} && cd ${DEBUG} && cmake -DMLVM_ADDRESS_SANITIZER=ON -GNinja .. && ninja -v && ./test
 
 doc:
 	make -C doc
