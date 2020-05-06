@@ -1,0 +1,36 @@
+\input opmac
+
+% Increase the gap between paragraphs.
+\parskip=1\baselineskip
+
+% Define a special font fo sub title.
+\font\tensf=cmss10
+\let\subtitlefont=\tensf
+
+% Define macors for stride markder.
+\def\strideleft{\backslash\{}
+\def\strideright{\backslash\}}
+
+% Call the indentation for descriptions \descindent and set it to 6 picas.
+\newdimen\descindent \descindent = 6pc
+\def\itembox#1{\noindent\llap{\hbox to \descindent{\bf #1\hfil}}}
+
+%%%%%
+
+\noindent {\subtitlefont From user's view}, Tensor a multi-dimension float-value
+array. For a Tensor with shape $<a, b, c>$, where $a,b,$ and $c$ are all
+positive integers, there are in total of $ a b c $ number of elements, called
+{\tt size}, in it.  The length of the shape is called {\tt rank}. It is also the
+number of dimensions. Scalar is viewed as a Tensor with shape $<1>$, i.e., rank
+$1$.
+
+
+{\leftskip=\descindent
+
+  \itembox{value mode}{}The first one is ownership, called {\tt value-mode\_},
+  which is an internal field. It represents whether the current Tensor owns its
+  value buffer.
+
+\par}
+
+\bye
