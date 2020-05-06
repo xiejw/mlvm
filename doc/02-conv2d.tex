@@ -7,9 +7,10 @@
 \font\tensf=cmss10
 \let\subtitlefont=\tensf
 
-% Define macors for stride markder.
-\def\strideleft{\backslash\{}
-\def\strideright{\backslash\}}
+\def\subtitle#1{\noindent {\subtitlefont #1}\par}
+
+% Define the conv binary op
+\def\conv{\otimes}
 
 % Call the indentation for descriptions \descindent and set it to 6 picas.
 \newdimen\descindent \descindent = 6pc
@@ -17,20 +18,22 @@
 
 %%%%%
 
-\noindent {\subtitlefont From user's view}, Tensor a multi-dimension float-value
-array. For a Tensor with shape $<a, b, c>$, where $a,b,$ and $c$ are all
-positive integers, there are in total of $ a b c $ number of elements, called
-{\tt size}, in it.  The length of the shape is called {\tt rank}. It is also the
-number of dimensions. Scalar is viewed as a Tensor with shape $<1>$, i.e., rank
-$1$.
+\subtitle{Conv2D and its Gradients from Math Perspective}
 
+\noindent Conv2D is quite simple. Given $X, W$, and $Y$, where $X$ and $Y$ are
+the input and output respectively and $W$ is a typically quite small kernel, we
+denote the formula as
+%
+$$ Y = X \conv W. $$
 
-{\leftskip=\descindent
+\noindent Assuming the padding is {\tt same}, which means the shape of the
+output $Y$ is same as the shape of input $X$, denocated as $<m, n>$ and, $W$ has
+odd number of rows and columns, denoted as $<a,b>$, then we have
+%
+$$ Y_{i,j} =
+    \sum_{x=0}^{a-1} \sum_{y=0}^{b-1}
+        X_{i+x-{a-1 \over 2},j+y-{b-1 \over 2}} W_{x,y}.
+$$
 
-  \itembox{value mode}{}The first one is ownership, called {\tt value-mode\_},
-  which is an internal field. It represents whether the current Tensor owns its
-  value buffer.
-
-\par}
 
 \bye

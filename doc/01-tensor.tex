@@ -6,6 +6,7 @@
 % Define a special font fo sub title.
 \font\tensf=cmss10
 \let\subtitlefont=\tensf
+\def\subtitle#1{\noindent {\subtitlefont #1}\par}
 
 % Define macors for stride markder.
 \def\strideleft{\backslash\{}
@@ -16,13 +17,13 @@
 \def\itembox#1{\noindent\llap{\hbox to \descindent{\bf #1\hfil}}}
 
 %%%%%
+\subtitle{From User's View}
 
-\noindent {\subtitlefont From user's view}, Tensor a multi-dimension float-value
-array. For a Tensor with shape $<a, b, c>$, where $a,b,$ and $c$ are all
-positive integers, there are in total of $ a b c $ number of elements, called
-{\tt size}, in it.  The length of the shape is called {\tt rank}. It is also the
-number of dimensions. Scalar is viewed as a Tensor with shape $<1>$, i.e., rank
-$1$.
+\noindent Tensor a multi-dimension float-value array. For a Tensor with shape
+$<a, b, c>$, where $a,b,$ and $c$ are all positive integers, there are in total
+of $ a b c $ number of elements, called {\tt size}, in it.  The length of the
+shape is called {\tt rank}. It is also the number of dimensions. Scalar is
+viewed as a Tensor with shape $<1>$, i.e., rank $1$.
 
 \noindent This leads to the following definition:
 
@@ -35,8 +36,10 @@ typedef struct {
 } tensor_t;
 \endtt
 
-\noindent {\subtitlefont From intermediate representation's view}, there are two
-new concepts.
+%%%%%
+\subtitle{From Intermediate Representation's View}
+
+\noindent There are two new concepts.
 
 {\leftskip=\descindent
 
