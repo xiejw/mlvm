@@ -16,11 +16,16 @@
 \newdimen\descindent \descindent = 6pc
 \def\itembox#1{\noindent\llap{\hbox to \descindent{\bf #1\hfil}}}
 
+
 %%%%%
 
 \subtitle{Conv2D and its Gradients from Math Perspective}
 
-\noindent Conv2D is quite simple. Given $X, W$, and $Y$, where $X$ and $Y$ are
+{\leftskip=\descindent
+
+\itembox{Forward Pass}%
+%
+Conv2D is quite simple. Given $X, W$, and $Y$, where $X$ and $Y$ are
 the input and output respectively and $W$ is a typically quite small kernel, we
 denote the formula as
 %
@@ -34,6 +39,34 @@ $$ Y_{i,j} =
     \sum_{x=0}^{a-1} \sum_{y=0}^{b-1}
         X_{i+x-{a-1 \over 2},j+y-{b-1 \over 2}} W_{x,y}.
 $$
+where $0\le i \le m-1$ and $0\le j \le n -1$. Here, there is a hidden padding in
+the input $X$, i.e., for any coordinates out of the boundaries, the input value
+is zero.
 
+\itembox{Grad of~$X$}%
+%
+If we examine the Jacobian matrix, each column, i.e., for a fixed input $x$, has
+$ab$ non-zero elements, due to the kernel shape $<a,b>$. And due to the
+symmetricity, it is trivial to prove:
+%
+$$ dX = dY \conv W'. $$
+where the padding is still {\tt same} and $W'$ is a matrix with same shape
+$<a,b>$ as $W$, but all elements reversed, i.e.,
+$$ W' =
+\left[
+  \matrix{
+    W_{a-1,b-1} & W_{a-1, b-2} & \ldots & W_{a-1, 0} \cr
+    W_{a-2,b-1} & W_{a-2, b-2} & \ldots & W_{a-2, 0} \cr
+    \vdots      & \vdots       & \ddots & \vdots \cr
+    W_{0,b-1}   & W_{0, b-2}   & \ldots & W_{0, 0}
+  }
+\right]
+$$
+
+\itembox{Grad of~$W$}%
+%
+Hello
+
+\par}
 
 \bye
