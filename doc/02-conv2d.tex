@@ -65,7 +65,21 @@ $$
 
 \itembox{Grad of~$W$}%
 %
-Hello
+For the central point of $W$, the gradient is
+%
+$$
+dW_{{a-1\over2}, {b-1\over2}} = dY \odot X
+$$
+%
+So, we can summerize the gradients for each point of $W$ as
+%
+$$
+dW_{x+{a-1\over2}, y+{b-1\over2}} = dY_{\triangleright (x,y)} \odot X
+$$
+where $-{a-1\over2} \le x \le {a-1\over2}, -{b-1\over2} \le y \le {b-1\over2}$
+and $\triangleright (x,y)$ means shifting the matrix to right with $(x,y)$
+offsets.
+
 
 \par}
 
