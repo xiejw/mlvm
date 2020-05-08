@@ -19,14 +19,65 @@
 
 %%%%%
 
-\subtitle{Conv2D and its Gradients from Math Perspective}
+\subtitle{Convolution and its gradients}
+
+\noindent Conv2D operation and/or layer in machine learning can be expressed as
+many small convolution kernels, followed by adding biases.
+
+\noindent Let's first define a convolution kernel in its simplied form. Given
+$X, y$, and $W$, where $X$ and $y$ are the input matrix with shape $<m,n>$ and
+scalar output respectively and $W$ is the filter with shape $<a,b>$, we define
+the convolution kernel
+%
+$$
+y = X \odot W = \sum_{x=0}^{a} \sum_{y=0}^{b} X_{x,y} W_{x,y}
+$$
+%
+as a two-dimension dot product over all non-zero elements where the top-left
+corners of $X$ and $W$ are aligned. In addition, if $a > m$ or $b>n$, the $X$ is
+padded with zeros.
+
+\noindent With this, gradients are straightforward:
+%
+$$
+\eqalign{
+  {\hbox{d} y \over \hbox{d}W_{x,y}} & = X_{x,y} \cr
+  {\hbox{d} y \over \hbox{d}X_{x,y}} & = W_{x,y}
+}
+$$
+%
+
+\noindent Secondly, let's define a shifted version for convolution kernel:
+%
+$$
+y_{\triangleright \alpha,\beta}
+    = \bigl( X \odot W \bigr)_{\triangleright \alpha,\beta}
+    = X \odot W_{\triangleright \alpha,\beta}
+    = \sum_{x=0}^{a} \sum_{y=0}^{b} X_{x+\alpha,y+\beta} W_{x,y}
+$$
+%
+where ${\triangleright \alpha,\beta}$ means shifting to right and down with
+$(\alpha, \beta)$ offsets. Any missing values due to out of boundaries are
+padded with zeros. Accordingly, gradients are as follows:
+%
+$$
+\eqalign{
+  {\hbox{d} y_{\triangleright \alpha,\beta} \over \hbox{d}W_{x,y}} &
+      = X_{x+\alpha,y+\beta} \cr
+  {\hbox{d} y_{\triangleright \alpha,\beta} \over \hbox{d}X_{x,y}} &
+      = W_{x-\alpha,y-\beta}
+}
+$$
+%
+
+\subtitle{Conv2D and its Gradients}
 
 {\leftskip=\descindent
 
 \itembox{Forward Pass}%
 %
 Conv2D is quite simple. Given $X, W$, and $Y$, where $X$ and $Y$ are
-the input and output respectively and $W$ is a typically quite small kernel, we
+the input and output respectively and $W$ is a typically quite small filter, we
 denote the formula as
 %
 $$ Y = X \conv W. $$
@@ -46,7 +97,7 @@ is zero.
 \itembox{Grad of~$X$}%
 %
 If we examine the Jacobian matrix, each column, i.e., for a fixed input $x$, has
-$ab$ non-zero elements, due to the kernel shape $<a,b>$. And due to the
+$ab$ non-zero elements, due to the filter shape $<a,b>$. And due to the
 symmetricity, it is trivial to prove:
 %
 $$ dX = dY \conv W'. $$
@@ -71,7 +122,8 @@ $$
 dW_{{a-1\over2}, {b-1\over2}} = dY \odot X
 $$
 %
-So, we can summerize the gradients for each point of $W$ as
+where $\odot$ is a 2-D point-wise dot product. With that, we can summerize the
+gradients for each point of $W$ as
 %
 $$
 dW_{x+{a-1\over2}, y+{b-1\over2}} = dY_{\triangleright (x,y)} \odot X
