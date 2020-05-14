@@ -30,7 +30,7 @@ scalar output respectively and $W$ is the filter with shape $<a,b>$, we define
 the convolution kernel
 %
 $$
-y = X \odot W = \sum_{x=0}^{a} \sum_{y=0}^{b} X_{x,y} W_{x,y}
+y = X \odot W = \sum_{x=0}^{a-1} \sum_{y=0}^{b-1} X_{x,y} W_{x,y}
 $$
 %
 as a two-dimension dot product over all non-zero elements where the top-left
@@ -50,21 +50,21 @@ $$
 \noindent Secondly, let's define a shifted version for convolution kernel:
 %
 $$
-y_{\triangleright \alpha,\beta}
-    = \bigl( X \odot W \bigr)_{\triangleright \alpha,\beta}
-    = X \odot W_{\triangleright \alpha,\beta}
-    = \sum_{x=0}^{a} \sum_{y=0}^{b} X_{x+\alpha,y+\beta} W_{x,y}
+y_{\triangleright\; \alpha,\beta}
+    = \bigl( X \odot W \bigr)_{\triangleright\; \alpha,\beta}
+    = X \odot W_{\triangleright\; \alpha,\beta}
+    = \sum_{x=0}^{a-1} \sum_{y=0}^{b-1} X_{x+\alpha,y+\beta} W_{x,y}
 $$
 %
-where ${\triangleright \alpha,\beta}$ means shifting to right and down with
+where ${\triangleright\; \alpha,\beta}$ means shifting to right and down with
 $(\alpha, \beta)$ offsets. Any missing values due to out of boundaries are
 padded with zeros. Accordingly, gradients are as follows:
 %
 $$
 \eqalign{
-  {\hbox{d} y_{\triangleright \alpha,\beta} \over \hbox{d}W_{x,y}} &
+  {\hbox{d} y_{\triangleright\; \alpha,\beta} \over \hbox{d}W_{x,y}} &
       = X_{x+\alpha,y+\beta} \cr
-  {\hbox{d} y_{\triangleright \alpha,\beta} \over \hbox{d}X_{x,y}} &
+  {\hbox{d} y_{\triangleright\; \alpha,\beta} \over \hbox{d}X_{x,y}} &
       = W_{x-\alpha,y-\beta}
 }
 $$
@@ -87,9 +87,14 @@ padding. Assuming the padding is {\tt same}, which means the shape of the
 output $Y$ is same as the shape of input $X$, denocated as $<m, n>$ and, $W$ has
 odd number of rows and columns, denoted as $<a,b>$, then we have
 %
-$$ Y_{i,j} =
-    \sum_{x=0}^{a-1} \sum_{y=0}^{b-1}
+$$
+\eqalign{
+  Y_{i,j}
+    & = y _{\triangleright\;i, j} \cr
+    & = (X \odot W)_{\triangleright\;i - {a-1\over2},j-{b-1\over2}} \cr
+    & = \sum_{x=0}^{a-1} \sum_{y=0}^{b-1}
         X_{i+x-{a-1 \over 2},j+y-{b-1 \over 2}} W_{x,y}.
+}
 $$
 where $0\le i \le m-1$ and $0\le j \le n -1$. Here, there is a hidden padding in
 the input $X$, i.e., for any coordinates out of the boundaries, the input value
