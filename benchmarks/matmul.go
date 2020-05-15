@@ -23,6 +23,17 @@ func gemm(A, B, C []float32) {
 	}
 }
 
+// Elapsed 2m8.324053419s
+func gemmLoopOrder(A, B, C []float32) {
+	for i := 0; i < M; i++ {
+		for k := 0; k < K; k++ {
+			for j := 0; j < N; j++ {
+				C[i*N+j] += A[i*K+k] * B[k*N+j]
+			}
+		}
+	}
+}
+
 func main() {
 	sizeA := M * K
 	sizeB := K * N
@@ -41,7 +52,8 @@ func main() {
 
 	start := time.Now()
 
-	gemm(A, B, C)
+	// gemm(A, B, C)
+	gemmLoopOrder(A, B, C)
 
 	end := time.Now()
 
