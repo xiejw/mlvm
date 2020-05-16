@@ -96,6 +96,11 @@ func gemmLoopOrderWithParallelism(A, B, C []float32, numThreads int) {
 	wg.Wait()
 }
 
+// Optimization Missed
+// - restricted keyword in C
+// - Loop unroll?
+// - SIMD
+// - clang flags, like avx fast-math
 func main() {
 	sizeA := M * K
 	sizeB := K * N
