@@ -8,6 +8,10 @@ import (
 	"time"
 )
 
+// #cgo LDFLAGS: -L. -lgemm
+// #include <gemm.h>
+import "C"
+
 const (
 	M = 4096
 	K = M
@@ -96,6 +100,42 @@ func gemmLoopOrderWithParallelism(A, B, C []float32, numThreads int) {
 	wg.Wait()
 }
 
+func gemmCallCWithParallelism(A, B, D []float32, numThreads int) {
+	wg := new(sync.WaitGroup)
+
+	var delta int
+	delta = M / numThreads
+	if M%numThreads != 0 {
+		delta += 1
+	}
+
+	for p := 0; p < numThreads; p++ {
+
+		wg.Add(1)
+
+		go func(start int) {
+
+			startIndex := start * delta
+			endIndex := startIndex + delta
+			if endIndex >= M {
+				endIndex = M - 1
+			}
+
+			result, err := C.gemm1((*C.float)(&D[0]), (*C.float)(&A[0]), (*C.float)(&B[0]), C.int(startIndex),
+			C.int(endIndex))
+
+			if err != nil {
+				panic(fmt.Sprintf("hello, %v result: %v", result,  err))
+			}
+
+			wg.Done()
+
+		}(p)
+
+	}
+	wg.Wait()
+}
+
 // Optimization Missed
 // - restricted keyword in C
 // - Loop unroll?
@@ -107,7 +147,7 @@ func main() {
 	sizeC := M * N
 	A := make([]float32, sizeA)
 	B := make([]float32, sizeB)
-	C := make([]float32, sizeC)
+	D := make([]float32, sizeC)
 
 	for i := 0; i < sizeA; i++ {
 		A[i] = rand.Float32()
@@ -123,11 +163,12 @@ func main() {
 
 	start := time.Now()
 
-	// gemm(A, B, C)
-	// gemmLoopOrderNaive(A, B, C)
-	// gemmLoopOrder(A, B, C)
+	// gemm(A, B, D)
+	// gemmLoopOrderNaive(A, B, D)
+	// gemmLoopOrder(A, B, D)
 	// Disable hyper-thread https://software.intel.com/content/www/us/en/develop/articles/setting-thread-affinity-on-smt-or-ht-enabled-systems.html
-	gemmLoopOrderWithParallelism(A, B, C, numCPU/2)
+	// gemmLoopOrderWithParallelism(A, B, D, numCPU/2)
+	gemmCallCWithParallelism(A, B, D, numCPU/2)
 
 	end := time.Now()
 	fmt.Printf("Elapsed %v\n", end.Sub(start))
@@ -136,6 +177,8 @@ func main() {
 		if i == 100 {
 			break
 		}
-		fmt.Printf("%v ", C[i])
+		fmt.Printf("%v ", D[i])
 	}
+
+	fmt.Println("")
 }
