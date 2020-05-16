@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// #cgo LDFLAGS: -L. -lgemm
+// #cgo LDFLAGS: -L/tmp/ -lgemm
 // #include <gemm.h>
 import "C"
 
