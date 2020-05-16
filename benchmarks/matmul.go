@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"runtime"
 	"sync"
 	"time"
-	"runtime"
 )
 
 const (
@@ -58,9 +58,9 @@ func gemmLoopOrderWithParallelism(A, B, C []float32, numThreads int) {
 	wg := new(sync.WaitGroup)
 
 	var delta int
-	delta =  M/numThreads
-	if M % numThreads != 0 {
-		delta+=1
+	delta = M / numThreads
+	if M%numThreads != 0 {
+		delta += 1
 	}
 
 	for p := 0; p < numThreads; p++ {
@@ -121,11 +121,11 @@ func main() {
 	// gemm(A, B, C)
 	// gemmLoopOrderNaive(A, B, C)
 	// gemmLoopOrder(A, B, C)
-	 gemmLoopOrderWithParallelism(A, B, C, numCPU)
+	// Disable hyper-thread https://software.intel.com/content/www/us/en/develop/articles/setting-thread-affinity-on-smt-or-ht-enabled-systems.html
+	gemmLoopOrderWithParallelism(A, B, C, numCPU/2)
 
 	end := time.Now()
 	fmt.Printf("Elapsed %v\n", end.Sub(start))
-
 
 	for i := 0; i < sizeC; i++ {
 		if i == 100 {
