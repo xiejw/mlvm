@@ -28,6 +28,7 @@ import (
 
 %union {
 	num *big.Rat
+	id   byte
 }
 
 %type	<num>	expr expr1 expr2 expr3
@@ -35,6 +36,7 @@ import (
 %token '+' '-' '*' '/' '(' ')'
 
 %token	<num>	NUM
+%token	<id>	ID
 
 %%
 
@@ -83,6 +85,10 @@ expr2:
 
 expr3:
 	NUM
+| ID
+	{
+		$$ = new(big.Rat).SetInt(big.NewInt(int64($1) - int64('a') + 10))
+	}
 |	'(' expr ')'
 	{
 		$$ = $2
@@ -108,6 +114,9 @@ func (x *exprLex) Lex(yylval *exprSymType) int {
 	for {
 		c := x.next()
 		switch c {
+		case 'a', 'b', 'c', 'd', 'e', 'f':
+			yylval.id = byte(c);
+			return ID;
 		case eof:
 			return eof
 		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
