@@ -9,3 +9,9 @@
 # TeX
 *.log
 doc/*.pdf
+
+# Yacc
+
+cmd/yacc/testdata/expr/expr
+cmd/yacc/testdata/expr/expr.go
+cmd/yacc/testdata/expr/y.output
