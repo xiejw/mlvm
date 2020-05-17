@@ -1,5 +1,6 @@
 DEBUG=.debug
 RELEASE=.release
+BUILD=.build
 
 FMT=docker run --rm -ti \
       --user `id -u ${USER}`:`id -g ${USER}` \
@@ -34,3 +35,6 @@ fmt:
 
 clean:
 	@echo "-> Cleaning..." && rm -rf ${DEBUG} ${RELEASE} && make -C doc clean
+
+yacc:
+	go build -o ${BUILD}/goyacc cmd/yacc/main.go

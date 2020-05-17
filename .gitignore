@@ -2,6 +2,9 @@
 .debug
 .release
 
+# Go outputs
+.build
+
 # Vim
 *.swo
 *.swp
