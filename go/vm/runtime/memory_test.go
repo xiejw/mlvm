@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func checkNilValue(t *testing.T, memory *Memory, index int) {
+func checkMemoryNilValue(t *testing.T, memory *Memory, index int) {
 	v, err := memory.Get(index)
 	if err != nil {
 		t.Errorf("Should not fail.")
@@ -14,7 +14,7 @@ func checkNilValue(t *testing.T, memory *Memory, index int) {
 	}
 }
 
-func checkIntValue(t *testing.T, memory *Memory, index int, expected int) {
+func checkMemoryIntValue(t *testing.T, memory *Memory, index int, expected int) {
 	v, err := memory.Get(index)
 	if err != nil {
 		t.Errorf("Should not fail.")
@@ -24,7 +24,7 @@ func checkIntValue(t *testing.T, memory *Memory, index int, expected int) {
 	}
 }
 
-func checkStringValue(t *testing.T, memory *Memory, index int, expected string) {
+func checkMemoryStringValue(t *testing.T, memory *Memory, index int, expected string) {
 	v, err := memory.Get(index)
 	if err != nil {
 		t.Errorf("Should not fail.")
@@ -40,7 +40,7 @@ func TestGetAndSet(t *testing.T) {
 	memory.Set(10, 123)
 	memory.Set(11, "hello")
 
-	checkNilValue(t, memory, 0)
-	checkIntValue(t, memory, 10, 123)
-	checkStringValue(t, memory, 11, "hello")
+	checkMemoryNilValue(t, memory, 0)
+	checkMemoryIntValue(t, memory, 10, 123)
+	checkMemoryStringValue(t, memory, 11, "hello")
 }
