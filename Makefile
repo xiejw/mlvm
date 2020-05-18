@@ -5,3 +5,6 @@ compile:
 
 fmt:
 	go fmt ${PACKAGES}
+
+test:
+	go test ${PACKAGES}
