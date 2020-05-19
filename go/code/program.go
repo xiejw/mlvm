@@ -4,12 +4,12 @@ const defaultProgramInitSize = 128
 
 type Program struct {
 	Instructions Instructions
-	Constants    []interface{} // change to object.
+	Constants    []Object
 }
 
 func NewProgram() *Program {
 	return &Program{
 		Instructions: make([]byte, 0, defaultProgramInitSize),
-		Constants:    make([]interface{}, 0),
+		Constants:    make([]Object, 0),
 	}
 }
