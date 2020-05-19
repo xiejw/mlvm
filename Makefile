@@ -8,3 +8,6 @@ fmt:
 
 test:
 	go test ${PACKAGES}
+
+bench:
+	go test -bench=. ${PACKAGES}
