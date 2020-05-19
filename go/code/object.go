@@ -6,6 +6,7 @@ type ObjectType int
 
 const (
 	IntType ObjectType = iota
+	StringType
 )
 
 type Object interface {
@@ -17,10 +18,22 @@ type Integer struct {
 	Value int64
 }
 
-func (i *Integer) Type() ObjectType {
+func (o *Integer) Type() ObjectType {
 	return IntType
 }
 
-func (i *Integer) String() string {
-	return fmt.Sprintf("Int(%v)", i.Value)
+func (o *Integer) String() string {
+	return fmt.Sprintf("Int(%v)", o.Value)
+}
+
+type String struct {
+	Value string
+}
+
+func (o *String) Type() ObjectType {
+	return StringType
+}
+
+func (o *String) String() string {
+	return fmt.Sprintf("String(`%v`)", o.Value)
 }

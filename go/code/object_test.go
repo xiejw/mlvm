@@ -38,7 +38,7 @@ func BenchmarkInterfaceCastInt(b *testing.B) {
 	}
 }
 
-type Object interface {
+type ObjectBox interface {
 	Type() int
 }
 
@@ -87,7 +87,7 @@ func BenchmarkInterfaceCastIntPtr(b *testing.B) {
 }
 
 func BenchmarkIntBoxCastIntPtr(b *testing.B) {
-	slice := make([]Object, size)
+	slice := make([]ObjectBox, size)
 
 	for k := 0; k < size; k++ {
 		slice[k] = &IntBox{Value: k}
