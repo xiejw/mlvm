@@ -2,6 +2,8 @@ package runtime
 
 import (
 	"errors"
+
+	"github.com/xiejw/mlvm/go/code"
 )
 
 const defaultStackSize = 256
@@ -9,19 +11,19 @@ const defaultStackSize = 256
 var errPopOnEmptyStack = errors.New("Pop an item from empty stack.")
 
 type Stack struct {
-	items []interface{}
-	top   int
+	items []code.Object
+	top   int // Current top.
 }
 
 func NewStack() *Stack {
 	stack := &Stack{
-		items: make([]interface{}, 0, defaultStackSize),
+		items: make([]code.Object, 0, defaultStackSize),
 		top:   -1,
 	}
 	return stack
 }
 
-func (stack *Stack) Push(item interface{}) error {
+func (stack *Stack) Push(item code.Object) error {
 	stack.top++
 	top := stack.top
 
@@ -35,7 +37,7 @@ func (stack *Stack) Push(item interface{}) error {
 	return nil
 }
 
-func (stack *Stack) Pop() (interface{}, error) {
+func (stack *Stack) Pop() (code.Object, error) {
 	top := stack.top
 	if top < 0 {
 		return nil, errPopOnEmptyStack

@@ -2,6 +2,8 @@ package runtime
 
 import (
 	"testing"
+
+	"github.com/xiejw/mlvm/go/code"
 )
 
 func checkNotErr(t *testing.T, err error) {
@@ -10,22 +12,22 @@ func checkNotErr(t *testing.T, err error) {
 	}
 }
 
-func checkStringValue(t *testing.T, err error, got interface{}, expected string) {
+func checkStringValue(t *testing.T, err error, got code.Object, expected string) {
 	if err != nil {
 		t.Fatalf("Unexpected err: %v", err)
 	}
 
-	if got.(string) != expected {
+	if got.(*code.String).Value != expected {
 		t.Fatalf("Mismatch value.")
 	}
 }
 
-func checkIntValue(t *testing.T, err error, got interface{}, expected int) {
+func checkIntValue(t *testing.T, err error, got code.Object, expected int64) {
 	if err != nil {
 		t.Fatalf("Unexpected err: %v", err)
 	}
 
-	if got.(int) != expected {
+	if got.(*code.Integer).Value != expected {
 		t.Fatalf("Mismatch value.")
 	}
 }
@@ -33,10 +35,10 @@ func checkIntValue(t *testing.T, err error, got interface{}, expected int) {
 func TestPopAndPush(t *testing.T) {
 	stack := NewStack()
 
-	err := stack.Push(1)
+	err := stack.Push(&code.Integer{1})
 	checkNotErr(t, err)
 
-	err = stack.Push("hello")
+	err = stack.Push(&code.String{"hello"})
 	checkNotErr(t, err)
 
 	v, err := stack.Pop()
