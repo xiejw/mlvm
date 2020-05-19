@@ -26,3 +26,16 @@ func TestOpcodes(t *testing.T) {
 		}
 	}
 }
+
+func TestInstructionString(t *testing.T) {
+	expected := "000000 OpConstant 123\n"
+
+	ins, err := MakeOp(OpConstant, 123)
+	checkNoErr(t, err)
+
+	got := Instructions(ins).String()
+
+	if expected != got {
+		t.Errorf("Unexpected Instructions String(): expected:\n%v\ngot:\n%v\n", expected, got)
+	}
+}
