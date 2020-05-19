@@ -35,6 +35,7 @@ func Lookup(op Opcode) (*Definition, error) {
 	return def, nil
 }
 
+// This is Opcode encoder. The decoder is in vm.
 func MakeOp(op Opcode, operands ...int) ([]byte, error) {
 	def, err := Lookup(op)
 	if err != nil {
@@ -98,7 +99,7 @@ func readOperands(def *Definition, ins Instructions) ([]int, int) {
 	for i, w := range def.OperandWidths {
 		switch w {
 		case 2:
-			operands[i] = int(binary.BigEndian.Uint16(ins[offset:]))
+			operands[i] = int(ReadUint16(ins[offset:]))
 		default:
 			panic(fmt.Sprintf("unsupported width (%v) for op: %v", w, def.Name))
 		}
@@ -121,4 +122,11 @@ func fmtInstruction(def *Definition, operands []int) string {
 	default:
 		panic(fmt.Sprintf("unsupported op count for formatting (%v) for op: %v", count, def.Name))
 	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Public Helper Methods
+
+func ReadUint16(ins Instructions) uint16 {
+	return binary.BigEndian.Uint16(ins)
 }
