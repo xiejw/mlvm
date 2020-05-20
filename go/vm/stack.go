@@ -48,3 +48,12 @@ func (stack *Stack) Pop() (code.Object, error) {
 	stack.top--
 	return item, nil
 }
+
+func (stack *Stack) Top() code.Object {
+	top := stack.top
+	if top < 0 {
+		return nil
+	}
+
+	return stack.items[top]
+}

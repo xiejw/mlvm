@@ -54,3 +54,7 @@ func (vm *VM) Run() error {
 
 	return nil
 }
+
+func (vm *VM) StackTop() code.Object {
+	return vm.stack.Top()
+}

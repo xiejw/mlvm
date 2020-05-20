@@ -24,9 +24,20 @@ func TestRunWithOpConstant(t *testing.T) {
 
 	program := &code.Program{
 		Instructions: ins,
-		Constants:    []code.Object{&code.Integer{1}},
+		Constants:    []code.Object{&code.Integer{123}},
 	}
+
 	vm := NewVM(program)
+	o := vm.StackTop()
+	if o != nil {
+		t.Fatalf("stack should be empty.")
+	}
+
 	err = vm.Run()
 	assertNil(t, err)
+
+	o = vm.StackTop()
+	if o.(*code.Integer).Value != 123 {
+		t.Errorf("value mismatch.")
+	}
 }
