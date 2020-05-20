@@ -1,7 +1,14 @@
 package object
 
+import (
+	"bytes"
+	"fmt"
+)
+
+type DimensionName string
+
 type NamedDimension struct {
-	Name string
+	Name DimensionName
 	Size uint // Noozero
 }
 
@@ -22,5 +29,18 @@ func (shape *Shape) Type() ObjectType {
 }
 
 func (shape *Shape) String() string {
-	return "A shape"
+	var buf bytes.Buffer
+
+	rank := shape.Rank
+	finalIndex := int(rank - 1)
+	fmt.Fprintf(&buf, "< ")
+	for i, dim := range shape.Dimensions {
+		fmt.Fprintf(&buf, "@%v(%v)", dim.Name, dim.Size)
+		if i != finalIndex {
+			fmt.Fprintf(&buf, ", ")
+		}
+	}
+	fmt.Fprintf(&buf, ">")
+
+	return buf.String()
 }
