@@ -1,13 +1,14 @@
 package object
 
-import "fmt"
-
 type ObjectType int
 
 const (
+	// basic_tyeps.go
 	IntType ObjectType = iota
 	StringType
-	ShapeType
+
+	ShapeType // shape.go
+	ArrayType // array.go
 )
 
 type Object interface {
@@ -15,26 +16,3 @@ type Object interface {
 	String() string
 }
 
-type Integer struct {
-	Value int64
-}
-
-func (o *Integer) Type() ObjectType {
-	return IntType
-}
-
-func (o *Integer) String() string {
-	return fmt.Sprintf("Int(%v)", o.Value)
-}
-
-type String struct {
-	Value string
-}
-
-func (o *String) Type() ObjectType {
-	return StringType
-}
-
-func (o *String) String() string {
-	return fmt.Sprintf("String(`%v`)", o.Value)
-}
