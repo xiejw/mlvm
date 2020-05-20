@@ -7,7 +7,7 @@ type ObjectType int
 const (
 	IntType ObjectType = iota
 	StringType
-	PRNGType
+	ShapeType
 )
 
 type Object interface {
@@ -37,16 +37,4 @@ func (o *String) Type() ObjectType {
 
 func (o *String) String() string {
 	return fmt.Sprintf("String(`%v`)", o.Value)
-}
-
-type PRNG struct {
-	// Consider to use original seed, and state hash.
-}
-
-func (o *PRNG) Type() ObjectType {
-	return PRNGType
-}
-
-func (o *PRNG) String() string {
-	return fmt.Sprintf("PRNG(seed: `??` state: `??`)")
 }
