@@ -25,8 +25,29 @@ func assertShapeFmtEq(t *testing.T, shape *Shape, expected string) {
 
 func TestShape(t *testing.T) {
 	shape := NewShape([]NamedDimension{{"x", 2}, {"y", 3}})
+	if shape.Type() != ShapeType {
+		t.Fatalf("type mismatch.")
+	}
+
 	assertRankEq(t, shape, 2)
 	assertDimensionEq(t, &shape.Dimensions[0], "x", 2)
 	assertDimensionEq(t, &shape.Dimensions[1], "y", 3)
 	assertShapeFmtEq(t, shape, "< @x(2), @y(3)>")
+}
+
+func TestShapeComformObjectInterface(t *testing.T) {
+	shape := NewShape([]NamedDimension{{"x", 2}, {"y", 3}})
+	var object Object
+	object = shape
+	_, ok := object.(*Shape)
+	if !ok {
+		t.Errorf("cast should work.")
+	}
+}
+
+func TestDimensionName(t *testing.T) {
+	var name DimensionName = "batch"
+	if name.String() != "@batch" {
+		t.Errorf("dimension name mismatch.")
+	}
 }

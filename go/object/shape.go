@@ -5,16 +5,22 @@ import (
 	"fmt"
 )
 
+// For a `@batch` dimension name, the DimensionName is batch. It is global in the script.
 type DimensionName string
 
+// Prints the canonical name with leading `@`.
+func (name DimensionName) String() string {
+	return "@" + string(name)
+}
+
 type NamedDimension struct {
-	Name DimensionName
-	Size uint // Noozero
+	Name DimensionName // Dimension string name (without `@`)
+	Size uint          // Static dimension size. Cannot be zero.
 }
 
 type Shape struct {
 	Dimensions []NamedDimension // Cannot have dup names.
-	Rank       uint
+	Rank       uint             // Length of `Dimensions`
 }
 
 func NewShape(dims []NamedDimension) *Shape {
@@ -35,7 +41,7 @@ func (shape *Shape) String() string {
 	finalIndex := int(rank - 1)
 	fmt.Fprintf(&buf, "< ")
 	for i, dim := range shape.Dimensions {
-		fmt.Fprintf(&buf, "@%v(%v)", dim.Name, dim.Size)
+		fmt.Fprintf(&buf, "%v(%v)", dim.Name, dim.Size)
 		if i != finalIndex {
 			fmt.Fprintf(&buf, ", ")
 		}
