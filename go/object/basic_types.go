@@ -2,7 +2,6 @@ package object
 
 import "fmt"
 
-
 type Integer struct {
 	Value int64
 }

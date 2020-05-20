@@ -3,7 +3,7 @@ package object
 type ObjectType int
 
 const (
-	// basic_tyeps.go
+	// basic_types.go
 	IntType ObjectType = iota
 	StringType
 
@@ -15,4 +15,3 @@ type Object interface {
 	Type() ObjectType
 	String() string
 }
-
