@@ -3,7 +3,7 @@ package vm
 import (
 	"testing"
 
-	"github.com/xiejw/mlvm/go/code"
+	"github.com/xiejw/mlvm/go/object"
 )
 
 func checkMemoryNilValue(t *testing.T, memory *Memory, index int) {
@@ -21,7 +21,7 @@ func checkMemoryIntValue(t *testing.T, memory *Memory, index int, expected int64
 	if err != nil {
 		t.Errorf("Should not fail.")
 	}
-	if v.(*code.Integer).Value != expected {
+	if v.(*object.Integer).Value != expected {
 		t.Errorf("Value mismatch.")
 	}
 }
@@ -31,7 +31,7 @@ func checkMemoryStringValue(t *testing.T, memory *Memory, index int, expected st
 	if err != nil {
 		t.Errorf("Should not fail.")
 	}
-	if v.(*code.String).Value != expected {
+	if v.(*object.String).Value != expected {
 		t.Errorf("Value mismatch.")
 	}
 }
@@ -39,8 +39,8 @@ func checkMemoryStringValue(t *testing.T, memory *Memory, index int, expected st
 func TestGetAndSet(t *testing.T) {
 	memory := NewMemory()
 
-	memory.Set(10, &code.Integer{123})
-	memory.Set(11, &code.String{"hello"})
+	memory.Set(10, &object.Integer{123})
+	memory.Set(11, &object.String{"hello"})
 
 	checkMemoryNilValue(t, memory, 0)
 	checkMemoryIntValue(t, memory, 10, 123)

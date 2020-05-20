@@ -3,7 +3,7 @@ package vm
 import (
 	"errors"
 
-	"github.com/xiejw/mlvm/go/code"
+	"github.com/xiejw/mlvm/go/object"
 )
 
 const defaultStackSize = 256
@@ -11,19 +11,19 @@ const defaultStackSize = 256
 var errPopOnEmptyStack = errors.New("Pop an item from empty stack.")
 
 type Stack struct {
-	items []code.Object
+	items []object.Object
 	top   int // Current top.
 }
 
 func NewStack() *Stack {
 	stack := &Stack{
-		items: make([]code.Object, 0, defaultStackSize),
+		items: make([]object.Object, 0, defaultStackSize),
 		top:   -1,
 	}
 	return stack
 }
 
-func (stack *Stack) Push(item code.Object) error {
+func (stack *Stack) Push(item object.Object) error {
 	stack.top++
 	top := stack.top
 
@@ -37,7 +37,7 @@ func (stack *Stack) Push(item code.Object) error {
 	return nil
 }
 
-func (stack *Stack) Pop() (code.Object, error) {
+func (stack *Stack) Pop() (object.Object, error) {
 	top := stack.top
 	if top < 0 {
 		return nil, errPopOnEmptyStack
@@ -49,7 +49,7 @@ func (stack *Stack) Pop() (code.Object, error) {
 	return item, nil
 }
 
-func (stack *Stack) Top() code.Object {
+func (stack *Stack) Top() object.Object {
 	top := stack.top
 	if top < 0 {
 		return nil

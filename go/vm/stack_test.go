@@ -3,7 +3,7 @@ package vm
 import (
 	"testing"
 
-	"github.com/xiejw/mlvm/go/code"
+	"github.com/xiejw/mlvm/go/object"
 )
 
 func checkNotErr(t *testing.T, err error) {
@@ -12,22 +12,22 @@ func checkNotErr(t *testing.T, err error) {
 	}
 }
 
-func checkStringValue(t *testing.T, err error, got code.Object, expected string) {
+func checkStringValue(t *testing.T, err error, got object.Object, expected string) {
 	if err != nil {
 		t.Fatalf("Unexpected err: %v", err)
 	}
 
-	if got.(*code.String).Value != expected {
+	if got.(*object.String).Value != expected {
 		t.Fatalf("Mismatch value.")
 	}
 }
 
-func checkIntValue(t *testing.T, err error, got code.Object, expected int64) {
+func checkIntValue(t *testing.T, err error, got object.Object, expected int64) {
 	if err != nil {
 		t.Fatalf("Unexpected err: %v", err)
 	}
 
-	if got.(*code.Integer).Value != expected {
+	if got.(*object.Integer).Value != expected {
 		t.Fatalf("Mismatch value.")
 	}
 }
@@ -35,10 +35,10 @@ func checkIntValue(t *testing.T, err error, got code.Object, expected int64) {
 func TestPopAndPush(t *testing.T) {
 	stack := NewStack()
 
-	err := stack.Push(&code.Integer{1})
+	err := stack.Push(&object.Integer{1})
 	checkNotErr(t, err)
 
-	err = stack.Push(&code.String{"hello"})
+	err = stack.Push(&object.String{"hello"})
 	checkNotErr(t, err)
 
 	v, err := stack.Pop()

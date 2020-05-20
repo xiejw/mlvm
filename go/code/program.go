@@ -1,15 +1,19 @@
 package code
 
+import (
+	"github.com/xiejw/mlvm/go/object"
+)
+
 const defaultProgramInitSize = 128
 
 type Program struct {
 	Instructions Instructions
-	Constants    []Object
+	Constants    []object.Object
 }
 
 func NewProgram() *Program {
 	return &Program{
 		Instructions: make([]byte, 0, defaultProgramInitSize),
-		Constants:    make([]Object, 0),
+		Constants:    make([]object.Object, 0),
 	}
 }

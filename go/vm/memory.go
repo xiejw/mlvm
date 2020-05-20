@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/xiejw/mlvm/go/code"
+	"github.com/xiejw/mlvm/go/object"
 )
 
 const defaultMemoryInitSize = 256
@@ -18,27 +18,27 @@ var (
 //
 // Internally, we could use a slice or use list of pages.
 type Memory struct {
-	slots []code.Object
+	slots []object.Object
 	size  int
 }
 
 func NewMemory() *Memory {
 	memory := &Memory{
-		slots: make([]code.Object, defaultMemoryInitSize),
+		slots: make([]object.Object, defaultMemoryInitSize),
 		size:  defaultMemoryInitSize,
 	}
 
 	return memory
 }
 
-func (m *Memory) Get(index int) (code.Object, error) {
+func (m *Memory) Get(index int) (object.Object, error) {
 	if index >= m.size {
 		return nil, errors.New(fmt.Sprintf(errRetrieveFromInvalidSlot, index, m.size))
 	}
 	return m.slots[index], nil
 }
 
-func (m *Memory) Set(index int, item code.Object) error {
+func (m *Memory) Set(index int, item object.Object) error {
 	if index >= m.size {
 		panic("Index is too large. Enlarging is planning.")
 	}

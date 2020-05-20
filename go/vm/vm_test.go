@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/xiejw/mlvm/go/code"
+	"github.com/xiejw/mlvm/go/object"
 )
 
 func assertNil(t *testing.T, err error) {
@@ -24,7 +25,7 @@ func TestRunWithOpConstant(t *testing.T) {
 
 	program := &code.Program{
 		Instructions: ins,
-		Constants:    []code.Object{&code.Integer{123}},
+		Constants:    []object.Object{&object.Integer{123}},
 	}
 
 	vm := NewVM(program)
@@ -37,7 +38,7 @@ func TestRunWithOpConstant(t *testing.T) {
 	assertNil(t, err)
 
 	o = vm.StackTop()
-	if o.(*code.Integer).Value != 123 {
+	if o.(*object.Integer).Value != 123 {
 		t.Errorf("value mismatch.")
 	}
 }

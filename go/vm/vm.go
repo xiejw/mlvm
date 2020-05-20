@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	"github.com/xiejw/mlvm/go/code"
+	"github.com/xiejw/mlvm/go/object"
 )
 
 type VM struct {
 	instructions code.Instructions
-	constants    []code.Object
+	constants    []object.Object
 
 	stack *Stack
 }
@@ -55,6 +56,6 @@ func (vm *VM) Run() error {
 	return nil
 }
 
-func (vm *VM) StackTop() code.Object {
+func (vm *VM) StackTop() object.Object {
 	return vm.stack.Top()
 }
