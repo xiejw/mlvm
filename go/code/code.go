@@ -12,6 +12,7 @@ type Opcode byte
 
 const (
 	OpConstant Opcode = iota
+	OpTensor
 )
 
 type Definition struct {
@@ -24,6 +25,7 @@ type Definition struct {
 
 var definitions = map[Opcode]*Definition{
 	OpConstant: {"OpConstant", []int{2}},
+	OpTensor:   {"OpTensor", []int{}},
 }
 
 func Lookup(op Opcode) (*Definition, error) {
@@ -117,6 +119,8 @@ func fmtInstruction(def *Definition, operands []int) string {
 	}
 
 	switch count {
+	case 0:
+		return fmt.Sprintf("%s", def.Name)
 	case 1:
 		return fmt.Sprintf("%s %d", def.Name, operands[0])
 	default:

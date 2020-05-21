@@ -38,16 +38,41 @@ func (vm *VM) Run() error {
 		case code.OpConstant:
 			constIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
 			if constIndex >= len(vm.constants) {
-				return fmt.Errorf("program error: const (id: %v) does not exist", constIndex)
+				return fmt.Errorf("program error: Opcode: %v: const (id: %v) does not exist", op, constIndex)
 			}
 
 			err := vm.stack.Push(vm.constants[constIndex])
 			if err != nil {
-				return fmt.Errorf("vm internal error: %w", err)
+				return fmt.Errorf("program error: Opcode: %v: internal error: %w", op, err)
 			}
 			ip += 2
+		case code.OpTensor:
+			arrayObject, err := vm.stack.Pop()
+			if err != nil {
+				return fmt.Errorf("program error: Opcode: %v: failed to pop array from stack: %v", op, err)
+			}
+			array, ok := arrayObject.(*object.Array)
+			if !ok {
+				return fmt.Errorf("program error: Opcode: %v: failed to pop array from stack: wrong type", op)
+			}
+
+			shapeObject, err := vm.stack.Pop()
+			if err != nil {
+				return fmt.Errorf("program error: Opcode: %v: failed to pop shape from stack: %v", op, err)
+			}
+			shape, ok := shapeObject.(*object.Shape)
+			if !ok {
+				return fmt.Errorf("program error: Opcode: %v: failed to pop shape from stack: wrong type", op)
+			}
+
+			tensor := &object.Tensor{shape, array}
+			err = vm.stack.Push(tensor)
+			if err != nil {
+				return fmt.Errorf("program error: Opcode: %v: internal error: %w", op, err)
+			}
+
 		default:
-			return fmt.Errorf("got unsupported op at @%d: %v", ip, op)
+			return fmt.Errorf("program error: Opcode: %v: got unsupported Opcode at @%5d", op, ip)
 		}
 		ip++
 
