@@ -43,3 +43,25 @@ let t1 = tensor_create(shape=shape, value=value)
 let t2 = tensor_create(shape=shape, value=value)
 let t3 = t1 + t2
 ```
+
+VM Compiled Code
+
+```
+# Constant
+# 0 object.Shape(@x:2, @y:3)
+# 1 object.Integer(456)
+
+# Code
+OpConstant 0
+OpConstant 1
+OpPRNGNew
+OpPRNGNormal
+OpStore 0
+OpConstant 0
+OpLoad 0
+OpTensor
+OpConstant 0
+OpLoad 0
+OpTensor
+OpAdd
+```
