@@ -5,6 +5,7 @@ import (
 
 	"github.com/xiejw/mlvm/go/code"
 	"github.com/xiejw/mlvm/go/object"
+	"github.com/xiejw/mlvm/go/vm/kernel"
 )
 
 type VM struct {
@@ -77,11 +78,15 @@ func (vm *VM) Run() error {
 			fmt.Printf("%v\n", operand1)
 			fmt.Printf("%v\n", operand2)
 
-			panic("missing kernel for opcode add.")
+			tensor, err := kernel.TensorAdd(operand1, operand2)
+			if err != nil {
+				return fmt.Errorf("program error: Opcode: %v: internal error: %w", op, err)
+			}
 
-			// if err != nil {
-			// 	return fmt.Errorf("program error: Opcode: %v: internal error: %w", op, err)
-			// }
+			err = vm.stack.Push(tensor)
+			if err != nil {
+				return fmt.Errorf("program error: Opcode: %v: internal error: %w", op, err)
+			}
 
 		default:
 			return fmt.Errorf("program error: Opcode: `%v`: unsupported Opcode in vm at @%5d", op, ip)

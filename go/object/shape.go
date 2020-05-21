@@ -50,3 +50,11 @@ func (shape *Shape) String() string {
 
 	return buf.String()
 }
+
+func (shape *Shape) Size() uint64 {
+	var size uint64 = 1
+	for _, dim := range shape.Dimensions {
+		size *= uint64(dim.Size)
+	}
+	return size
+}
