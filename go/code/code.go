@@ -27,7 +27,7 @@ type Definition struct {
 var definitions = map[Opcode]*Definition{
 	OpConstant: {"OpConstant", []int{2}},
 	OpTensor:   {"OpTensor", []int{}},
-	OpAdd:   {"OpAdd", []int{}},
+	OpAdd:      {"OpAdd", []int{}},
 }
 
 func Lookup(op Opcode) (*Definition, error) {
@@ -37,6 +37,14 @@ func Lookup(op Opcode) (*Definition, error) {
 	}
 
 	return def, nil
+}
+
+func (opcode Opcode) String() string {
+	def, ok := definitions[opcode]
+	if !ok {
+		panic(fmt.Errorf("Opcode %d undefined", opcode))
+	}
+	return def.Name
 }
 
 // This is Opcode encoder. The decoder is in vm.
