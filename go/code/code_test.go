@@ -44,11 +44,11 @@ func TestInstructionDisassembly(t *testing.T) {
 		op       Opcode
 		args     []int
 	}{
-		{"000000 OpData     123\n", OpData, []int{123}},
-		{"000000 OpLoadG    123\n", OpLoadG, []int{123}},
-		{"000000 OpStoreG   123\n", OpStoreG, []int{123}},
-		{"000000 OpTensor  \n", OpTensor, []int{}},
-		{"000000 OpAdd     \n", OpAdd, []int{}},
+		{"\n000000 OpData     123\n", OpData, []int{123}},
+		{"\n000000 OpLoadG    123\n", OpLoadG, []int{123}},
+		{"\n000000 OpStoreG   123\n", OpStoreG, []int{123}},
+		{"\n000000 OpTensor  \n", OpTensor, []int{}},
+		{"\n000000 OpAdd     \n", OpAdd, []int{}},
 	}
 
 	for _, testOp := range ops {
@@ -61,5 +61,31 @@ func TestInstructionDisassembly(t *testing.T) {
 		if expected != got {
 			t.Errorf("Unexpected Instructions String(): expected:\n`%v`\ngot:\n`%v`\n", expected, got)
 		}
+	}
+}
+
+func TestMultiInstructionsDisassembly(t *testing.T) {
+	var ins []byte
+
+	ins1, err := MakeOp(OpData, 123)
+	checkNoErr(t, err)
+	ins2, err := MakeOp(OpStoreG, 456)
+	checkNoErr(t, err)
+	ins3, err := MakeOp(OpLoadG, 789)
+	checkNoErr(t, err)
+
+	ins = append(ins, ins1...)
+	ins = append(ins, ins2...)
+	ins = append(ins, ins3...)
+	expected :=
+		`
+000000 OpData     123
+000003 OpStoreG   456
+000006 OpLoadG    789
+`
+	got := Instructions(ins).String()
+
+	if expected != got {
+		t.Errorf("Unexpected Instructions String(): expected:\n`%v`\ngot:\n`%v`\n", expected, got)
 	}
 }

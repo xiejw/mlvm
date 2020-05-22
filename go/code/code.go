@@ -95,6 +95,7 @@ func MakeOp(op Opcode, operands ...int) ([]byte, error) {
 // The basic format is (`%6d %10s %s`, address, opcode, operands).
 func (ins Instructions) String() string {
 	var buf bytes.Buffer
+	buf.WriteString("\n")
 
 	i := 0
 	for i < len(ins) {
