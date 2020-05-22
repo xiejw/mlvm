@@ -6,7 +6,7 @@ import (
 )
 
 type VM struct {
-	// Copied from Program.
+	// Copied from Program. Shall not mutate.
 	instructions code.Instructions
 	constants    []object.Object
 
