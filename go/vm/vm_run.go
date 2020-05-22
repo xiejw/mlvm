@@ -22,14 +22,27 @@ func (vm *VM) Run() error {
 		op := code.Opcode(vm.instructions[ip])
 		switch op {
 		case code.OpData:
-			constIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
-			if constIndex >= len(vm.data) {
-				return fmt.Errorf("program error: Opcode: %v: const (id: %v) does not exist", op, constIndex)
+			dataIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
+			if dataIndex >= len(vm.data) {
+				return vm.canonicalError(op, "const (id: %v) does not exist", dataIndex)
 			}
 
-			err := vm.stack.Push(vm.data[constIndex])
+			err := vm.stack.Push(vm.data[dataIndex])
 			if err != nil {
-				return fmt.Errorf("program error: Opcode: %v: internal error: %w", op, err)
+				return vm.canonicalError(op, "internal error: %v", err)
+			}
+			ip += 2
+
+		case code.OpStoreG:
+			memSlotIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
+			o, err := vm.pop(op)
+			if err != nil {
+				return vm.canonicalError(op, "failed to get object for store: %v.", err)
+			}
+			err = vm.globalMem.Set(memSlotIndex, o)
+			if err != nil {
+				return vm.canonicalError(op,
+					"failed to store object to global memory at %v: %v", memSlotIndex, err)
 			}
 			ip += 2
 
@@ -47,7 +60,7 @@ func (vm *VM) Run() error {
 			tensor := &object.Tensor{shape, array}
 			err = vm.stack.Push(tensor)
 			if err != nil {
-				return fmt.Errorf("program error: Opcode: %v: internal error: %w", op, err)
+				return vm.canonicalError(op, "internal error: %v", err)
 			}
 
 		case code.OpAdd:
@@ -65,16 +78,16 @@ func (vm *VM) Run() error {
 
 			tensor, err := kernel.TensorAdd(operand1, operand2)
 			if err != nil {
-				return fmt.Errorf("program error: Opcode: %v: internal error: %w", op, err)
+				return vm.canonicalError(op, "internal error: %v", err)
 			}
 
 			err = vm.stack.Push(tensor)
 			if err != nil {
-				return fmt.Errorf("program error: Opcode: %v: internal error: %w", op, err)
+				return vm.canonicalError(op, "internal error: %v", err)
 			}
 
 		default:
-			return fmt.Errorf("program error: Opcode: `%v`: unsupported Opcode in vm at @%5d", op, ip)
+			return vm.canonicalError(op, ": unsupported Opcode in vm at @%5d", ip)
 		}
 		ip++
 
