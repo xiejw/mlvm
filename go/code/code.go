@@ -11,11 +11,11 @@ type Instructions []byte
 type Opcode byte
 
 const (
-	OpConstant Opcode = iota // Loads constant object, int index, from Program.
-	OpLoad                   // Loads object, int index, from memory.
-	OpStore                  // Stores objec, int index,  to memory.
-	OpTensor                 // Creates a new Tensor. Expectes first two operands are shape, array (top).
-	OpAdd                    // Adds two operands.
+	OpData   Opcode = iota // Loads data object, int index, from Program.
+	OpLoad                 // Loads object, int index, from memory.
+	OpStore                // Stores objec, int index,  to memory.
+	OpTensor               // Creates a new Tensor. Expectes first two operands are shape, array (top).
+	OpAdd                  // Adds two operands.
 )
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,11 +27,11 @@ type Definition struct {
 }
 
 var definitions = map[Opcode]*Definition{
-	OpConstant: {"OpConstant", []int{2}},
-	OpLoad:     {"OpLoad", []int{2}},
-	OpStore:    {"OpStore", []int{2}},
-	OpTensor:   {"OpTensor", []int{}},
-	OpAdd:      {"OpAdd", []int{}},
+	OpData:   {"OpData", []int{2}},
+	OpLoad:   {"OpLoad", []int{2}},
+	OpStore:  {"OpStore", []int{2}},
+	OpTensor: {"OpTensor", []int{}},
+	OpAdd:    {"OpAdd", []int{}},
 }
 
 func Lookup(op Opcode) (*Definition, error) {

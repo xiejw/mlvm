@@ -10,7 +10,7 @@ import (
 
 type VM struct {
 	instructions code.Instructions
-	constants    []object.Object
+	data         []object.Object
 
 	stack *Stack
 }
@@ -18,7 +18,7 @@ type VM struct {
 func NewVM(program *code.Program) *VM {
 	return &VM{
 		instructions: program.Instructions,
-		constants:    program.Constants,
+		data:         program.Data,
 		stack:        NewStack(),
 	}
 }
@@ -36,13 +36,13 @@ func (vm *VM) Run() error {
 
 		op := code.Opcode(vm.instructions[ip])
 		switch op {
-		case code.OpConstant:
+		case code.OpData:
 			constIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
-			if constIndex >= len(vm.constants) {
+			if constIndex >= len(vm.data) {
 				return fmt.Errorf("program error: Opcode: %v: const (id: %v) does not exist", op, constIndex)
 			}
 
-			err := vm.stack.Push(vm.constants[constIndex])
+			err := vm.stack.Push(vm.data[constIndex])
 			if err != nil {
 				return fmt.Errorf("program error: Opcode: %v: internal error: %w", op, err)
 			}
