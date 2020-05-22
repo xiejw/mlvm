@@ -43,6 +43,9 @@ func TestRunWithOpData(t *testing.T) {
 	}
 }
 
+func TestOpStoreAndLoad(t *testing.T) {
+}
+
 func TestRunWithOpTensor(t *testing.T) {
 
 	ins1, err := code.MakeOp(code.OpData, 0)
