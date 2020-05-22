@@ -5,8 +5,9 @@ import (
 )
 
 func checkNoErr(t *testing.T, err error) {
+	t.Helper()
 	if err != nil {
-		t.Fatalf("Did not expect error.")
+		t.Fatalf("Did not expect error: %v.", err)
 	}
 }
 
@@ -16,6 +17,10 @@ func TestOpcodes(t *testing.T) {
 		name string
 	}{
 		{OpConstant, "OpConstant"},
+		{OpLoad, "OpLoad"},
+		{OpStore, "OpStore"},
+		{OpTensor, "OpTensor"},
+		{OpAdd, "OpAdd"},
 	}
 
 	for _, testOp := range ops {
@@ -27,15 +32,28 @@ func TestOpcodes(t *testing.T) {
 	}
 }
 
-func TestInstructionString(t *testing.T) {
-	expected := "000000 OpConstant 123\n"
+func TestInstructionDisassembly(t *testing.T) {
+	ops := []struct {
+		expected string
+		op       Opcode
+		args     []int
+	}{
+		{"000000 OpConstant 123\n", OpConstant, []int{123}},
+		{"000000 OpLoad 123\n", OpLoad, []int{123}},
+		{"000000 OpStore 123\n", OpStore, []int{123}},
+		{"000000 OpTensor\n", OpTensor, []int{}},
+		{"000000 OpAdd\n", OpAdd, []int{}},
+	}
 
-	ins, err := MakeOp(OpConstant, 123)
-	checkNoErr(t, err)
+	for _, testOp := range ops {
+		expected := testOp.expected
+		ins, err := MakeOp(testOp.op, testOp.args...)
+		checkNoErr(t, err)
 
-	got := Instructions(ins).String()
+		got := Instructions(ins).String()
 
-	if expected != got {
-		t.Errorf("Unexpected Instructions String(): expected:\n%v\ngot:\n%v\n", expected, got)
+		if expected != got {
+			t.Errorf("Unexpected Instructions String(): expected:\n%v\ngot:\n%v\n", expected, got)
+		}
 	}
 }

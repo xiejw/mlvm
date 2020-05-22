@@ -11,21 +11,25 @@ type Instructions []byte
 type Opcode byte
 
 const (
-	OpConstant Opcode = iota
-	OpTensor
-	OpAdd
+	OpConstant Opcode = iota // Loads constant object, int index, from Program.
+	OpLoad                   // Loads object, int index, from memory.
+	OpStore                  // Stores objec, int index,  to memory.
+	OpTensor                 // Creates a new Tensor. Expectes first two operands are shape, array (top).
+	OpAdd                    // Adds two operands.
 )
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// OpCode
 
 type Definition struct {
 	Name          string
 	OperandWidths []int
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// OpCode
-
 var definitions = map[Opcode]*Definition{
 	OpConstant: {"OpConstant", []int{2}},
+	OpLoad:     {"OpLoad", []int{2}},
+	OpStore:    {"OpStore", []int{2}},
 	OpTensor:   {"OpTensor", []int{}},
 	OpAdd:      {"OpAdd", []int{}},
 }
@@ -63,8 +67,8 @@ func MakeOp(op Opcode, operands ...int) ([]byte, error) {
 	instruction[0] = byte(op)
 
 	if len(def.OperandWidths) != len(operands) {
-		return nil, fmt.Errorf("Operand counts mismatch: expected %v, got %v",
-			len(def.OperandWidths), len(operands))
+		return nil, fmt.Errorf("Operand `%v` counts mismatch: expected %v, got %v",
+			op, len(def.OperandWidths), len(operands))
 	}
 
 	offset := 1
