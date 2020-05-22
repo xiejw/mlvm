@@ -17,8 +17,8 @@ func TestOpcodes(t *testing.T) {
 		name string
 	}{
 		{OpData, "OpData"},
-		{OpLoad, "OpLoad"},
-		{OpStore, "OpStore"},
+		{OpLoadGlobal, "OpLoadGlobal"},
+		{OpStoreGlobal, "OpStoreGlobal"},
 		{OpTensor, "OpTensor"},
 		{OpAdd, "OpAdd"},
 	}
@@ -39,8 +39,8 @@ func TestInstructionDisassembly(t *testing.T) {
 		args     []int
 	}{
 		{"000000 OpData 123\n", OpData, []int{123}},
-		{"000000 OpLoad 123\n", OpLoad, []int{123}},
-		{"000000 OpStore 123\n", OpStore, []int{123}},
+		{"000000 OpLoadGlobal 123\n", OpLoadGlobal, []int{123}},
+		{"000000 OpStoreGlobal 123\n", OpStoreGlobal, []int{123}},
 		{"000000 OpTensor\n", OpTensor, []int{}},
 		{"000000 OpAdd\n", OpAdd, []int{}},
 	}
