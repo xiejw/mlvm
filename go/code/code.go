@@ -11,11 +11,13 @@ type Instructions []byte
 type Opcode byte
 
 const (
-	OpData        Opcode = iota // Loads data object, int index, from Program.
-	OpLoadGlobal                // Loads object, int index, from global memory.
-	OpStoreGlobal               // Stores objec, int index, to global memory.
-	OpTensor                    // Creates a new Tensor. Two operands are shape, array (top).
-	OpAdd                       // Adds two operands.
+	// Opcode Name should be at most 10 chars.
+	//
+	OpData   Opcode = iota // Loads data object, int index, from Program.
+	OpLoadG                // Loads object, int index, from global memory.
+	OpStoreG               // Stores objec, int index, to global memory.
+	OpTensor               // Creates a new Tensor. Two operands are shape, array (top).
+	OpAdd                  // Adds two operands.
 )
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,11 +29,11 @@ type Definition struct {
 }
 
 var definitions = map[Opcode]*Definition{
-	OpData:        {"OpData", []int{2}},
-	OpLoadGlobal:  {"OpLoadGlobal", []int{2}},
-	OpStoreGlobal: {"OpStoreGlobal", []int{2}},
-	OpTensor:      {"OpTensor", []int{}},
-	OpAdd:         {"OpAdd", []int{}},
+	OpData:   {"OpData", []int{2}},
+	OpLoadG:  {"OpLoadG", []int{2}},
+	OpStoreG: {"OpStoreG", []int{2}},
+	OpTensor: {"OpTensor", []int{}},
+	OpAdd:    {"OpAdd", []int{}},
 }
 
 func Lookup(op Opcode) (*Definition, error) {
@@ -88,6 +90,9 @@ func MakeOp(op Opcode, operands ...int) ([]byte, error) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Instructions
 
+// Prints all instructions in disassembly form.
+//
+// The basic format is (`%6d %10s %s`, address, opcode, operands).
 func (ins Instructions) String() string {
 	var buf bytes.Buffer
 
@@ -134,9 +139,9 @@ func fmtInstruction(def *Definition, operands []int) string {
 
 	switch count {
 	case 0:
-		return fmt.Sprintf("%s", def.Name)
+		return fmt.Sprintf("%-10s", def.Name)
 	case 1:
-		return fmt.Sprintf("%s %d", def.Name, operands[0])
+		return fmt.Sprintf("%-10s %d", def.Name, operands[0])
 	default:
 		panic(fmt.Sprintf("unsupported op count for formatting (%v) for op: %v", count, def.Name))
 	}

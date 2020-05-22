@@ -4,6 +4,8 @@ import (
 	"testing"
 )
 
+const maxOpcodeNameLen = 10
+
 func checkNoErr(t *testing.T, err error) {
 	t.Helper()
 	if err != nil {
@@ -17,8 +19,8 @@ func TestOpcodes(t *testing.T) {
 		name string
 	}{
 		{OpData, "OpData"},
-		{OpLoadGlobal, "OpLoadGlobal"},
-		{OpStoreGlobal, "OpStoreGlobal"},
+		{OpLoadG, "OpLoadG"},
+		{OpStoreG, "OpStoreG"},
 		{OpTensor, "OpTensor"},
 		{OpAdd, "OpAdd"},
 	}
@@ -29,6 +31,10 @@ func TestOpcodes(t *testing.T) {
 		if op.Name != testOp.name {
 			t.Fatalf("Op name mistmatch")
 		}
+
+		if len(op.Name) > maxOpcodeNameLen {
+			t.Errorf("Opcode name is too long: %v", op.Name)
+		}
 	}
 }
 
@@ -38,11 +44,11 @@ func TestInstructionDisassembly(t *testing.T) {
 		op       Opcode
 		args     []int
 	}{
-		{"000000 OpData 123\n", OpData, []int{123}},
-		{"000000 OpLoadGlobal 123\n", OpLoadGlobal, []int{123}},
-		{"000000 OpStoreGlobal 123\n", OpStoreGlobal, []int{123}},
-		{"000000 OpTensor\n", OpTensor, []int{}},
-		{"000000 OpAdd\n", OpAdd, []int{}},
+		{"000000 OpData     123\n", OpData, []int{123}},
+		{"000000 OpLoadG    123\n", OpLoadG, []int{123}},
+		{"000000 OpStoreG   123\n", OpStoreG, []int{123}},
+		{"000000 OpTensor  \n", OpTensor, []int{}},
+		{"000000 OpAdd     \n", OpAdd, []int{}},
 	}
 
 	for _, testOp := range ops {
@@ -53,7 +59,7 @@ func TestInstructionDisassembly(t *testing.T) {
 		got := Instructions(ins).String()
 
 		if expected != got {
-			t.Errorf("Unexpected Instructions String(): expected:\n%v\ngot:\n%v\n", expected, got)
+			t.Errorf("Unexpected Instructions String(): expected:\n`%v`\ngot:\n`%v`\n", expected, got)
 		}
 	}
 }
