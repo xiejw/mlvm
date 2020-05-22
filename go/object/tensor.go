@@ -28,3 +28,7 @@ func (t *Tensor) String() string {
 func (t *Tensor) ArrayValue() []float32 {
 	return t.Value.Value
 }
+
+func (t *Tensor) DebugString(maxElementCountToPrint int) string {
+	return fmt.Sprintf("%v %v", t.Shape, t.Value.DebugString(maxElementCountToPrint))
+}

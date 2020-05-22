@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-const maxNumberToPrintForArray = 9
+const defaultMaxNumberToPrintForArray = 9
 
 type Array struct {
 	Value []float32
@@ -16,6 +16,10 @@ func (array *Array) Type() ObjectType {
 }
 
 func (array *Array) String() string {
+	return array.DebugString(defaultMaxNumberToPrintForArray)
+}
+
+func (array *Array) DebugString(maxElementCountToPrint int) string {
 	var buf bytes.Buffer
 
 	size := len(array.Value)
@@ -28,7 +32,7 @@ func (array *Array) String() string {
 			fmt.Fprintf(&buf, ", ")
 		}
 
-		if i != size-1 && i >= maxNumberToPrintForArray {
+		if i != size-1 && i >= maxElementCountToPrint {
 			fmt.Fprintf(&buf, "... ")
 			break
 		}

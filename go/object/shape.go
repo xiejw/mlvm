@@ -39,7 +39,7 @@ func (shape *Shape) String() string {
 
 	rank := shape.Rank
 	finalIndex := int(rank - 1)
-	fmt.Fprintf(&buf, "< ")
+	fmt.Fprintf(&buf, "<")
 	for i, dim := range shape.Dimensions {
 		fmt.Fprintf(&buf, "%v(%v)", dim.Name, dim.Size)
 		if i != finalIndex {

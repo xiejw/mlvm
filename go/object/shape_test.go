@@ -32,7 +32,7 @@ func TestShape(t *testing.T) {
 	assertRankEq(t, shape, 2)
 	assertDimensionEq(t, &shape.Dimensions[0], "x", 2)
 	assertDimensionEq(t, &shape.Dimensions[1], "y", 3)
-	assertShapeFmtEq(t, shape, "< @x(2), @y(3)>")
+	assertShapeFmtEq(t, shape, "<@x(2), @y(3)>")
 }
 
 func TestShapeComformObjectInterface(t *testing.T) {
