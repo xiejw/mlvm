@@ -1,2 +1,2 @@
-// Package `code` provides the Object representation in the compiled code and vm.
+// Package `code` provides the compiled program to run with vm.
 package code
