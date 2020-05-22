@@ -19,13 +19,13 @@ func TestCreateEngine(t *testing.T) {
 	assertNil(t, err)
 }
 
-func TestRunWithOpData(t *testing.T) {
-	ins, err := code.MakeOp(code.OpData, 0)
+func TestRunWithOpConstant(t *testing.T) {
+	ins, err := code.MakeOp(code.OpConstant, 0)
 	assertNil(t, err)
 
 	program := &code.Program{
 		Instructions: ins,
-		Data:         []object.Object{&object.Integer{123}},
+		Constants:    []object.Object{&object.Integer{123}},
 	}
 
 	vm := NewVM(program)
@@ -48,10 +48,10 @@ func TestOpStoreAndLoad(t *testing.T) {
 
 func TestRunWithOpTensor(t *testing.T) {
 
-	ins1, err := code.MakeOp(code.OpData, 0)
+	ins1, err := code.MakeOp(code.OpConstant, 0)
 	assertNil(t, err)
 
-	ins2, err := code.MakeOp(code.OpData, 1)
+	ins2, err := code.MakeOp(code.OpConstant, 1)
 	assertNil(t, err)
 
 	ins3, err := code.MakeOp(code.OpTensor)
@@ -71,7 +71,7 @@ func TestRunWithOpTensor(t *testing.T) {
 
 	program := &code.Program{
 		Instructions: ins,
-		Data:         constants,
+		Constants:    constants,
 	}
 
 	vm := NewVM(program)
@@ -97,10 +97,10 @@ func TestRunWithOpTensorAdd(t *testing.T) {
 	constants = append(constants, shape)
 	constants = append(constants, array)
 
-	ins1, err := code.MakeOp(code.OpData, 0)
+	ins1, err := code.MakeOp(code.OpConstant, 0)
 	assertNil(t, err)
 
-	ins2, err := code.MakeOp(code.OpData, 1)
+	ins2, err := code.MakeOp(code.OpConstant, 1)
 	assertNil(t, err)
 
 	ins3, err := code.MakeOp(code.OpTensor)
@@ -122,7 +122,7 @@ func TestRunWithOpTensorAdd(t *testing.T) {
 
 	program := &code.Program{
 		Instructions: ins,
-		Data:         constants,
+		Constants:    constants,
 	}
 
 	vm := NewVM(program)

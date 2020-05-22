@@ -13,11 +13,11 @@ type Opcode byte
 const (
 	// Opcode Name should be at most 10 chars.
 	//
-	OpData   Opcode = iota // Loads data object, int index, from Program.
-	OpLoadG                // Loads object, int index, from global memory.
-	OpStoreG               // Stores objec, int index, to global memory.
-	OpTensor               // Creates a new Tensor. Two operands are shape, array (top).
-	OpAdd                  // Adds two operands.
+	OpConstant Opcode = iota // Loads constant object, uint16 index, from Program.
+	OpLoadG                  // Loads object, uint16 index, from Global memory.
+	OpStoreG                 // Stores objec, uint16 index, to Global memory.
+	OpTensor                 // Creates a new Tensor. Two stack operands are shape, array (top).
+	OpAdd                    // Adds two stack operands.
 )
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,11 +29,11 @@ type Definition struct {
 }
 
 var definitions = map[Opcode]*Definition{
-	OpData:   {"OpData", []int{2}},
-	OpLoadG:  {"OpLoadG", []int{2}},
-	OpStoreG: {"OpStoreG", []int{2}},
-	OpTensor: {"OpTensor", []int{}},
-	OpAdd:    {"OpAdd", []int{}},
+	OpConstant: {"OpConstant", []int{2}},
+	OpLoadG:    {"OpLoadG", []int{2}},
+	OpStoreG:   {"OpStoreG", []int{2}},
+	OpTensor:   {"OpTensor", []int{}},
+	OpAdd:      {"OpAdd", []int{}},
 }
 
 func Lookup(op Opcode) (*Definition, error) {

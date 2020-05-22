@@ -6,14 +6,15 @@ import (
 
 const defaultProgramInitSize = 128
 
+// All fields are not intended to be mutated. So the program can be re-used.
 type Program struct {
 	Instructions Instructions
-	Data         []object.Object
+	Constants    []object.Object
 }
 
 func NewProgram() *Program {
 	return &Program{
 		Instructions: make([]byte, 0, defaultProgramInitSize),
-		Data:         make([]object.Object, 0),
+		Constants:    make([]object.Object, 0),
 	}
 }

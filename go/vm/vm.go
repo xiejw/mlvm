@@ -8,7 +8,7 @@ import (
 type VM struct {
 	// Copied from Program.
 	instructions code.Instructions
-	data         []object.Object
+	constants    []object.Object
 
 	// Internal States.
 	stack     *Stack
@@ -18,7 +18,7 @@ type VM struct {
 func NewVM(program *code.Program) *VM {
 	return &VM{
 		instructions: program.Instructions,
-		data:         program.Data,
+		constants:    program.Constants,
 		stack:        NewStack(),
 		globalMem:    NewMemory(),
 	}

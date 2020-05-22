@@ -21,13 +21,13 @@ func (vm *VM) Run() error {
 
 		op := code.Opcode(vm.instructions[ip])
 		switch op {
-		case code.OpData:
-			dataIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
-			if dataIndex >= len(vm.data) {
-				return vm.canonicalError(op, "const (id: %v) does not exist", dataIndex)
+		case code.OpConstant:
+			constantIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
+			if constantIndex >= len(vm.constants) {
+				return vm.canonicalError(op, "const (id: %v) does not exist", constantIndex)
 			}
 
-			err := vm.stack.Push(vm.data[dataIndex])
+			err := vm.stack.Push(vm.constants[constantIndex])
 			if err != nil {
 				return vm.canonicalError(op, "internal error: %v", err)
 			}

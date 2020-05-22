@@ -18,7 +18,7 @@ func TestOpcodes(t *testing.T) {
 		op   Opcode
 		name string
 	}{
-		{OpData, "OpData"},
+		{OpConstant, "OpConstant"},
 		{OpLoadG, "OpLoadG"},
 		{OpStoreG, "OpStoreG"},
 		{OpTensor, "OpTensor"},
@@ -44,9 +44,9 @@ func TestInstructionDisassembly(t *testing.T) {
 		op       Opcode
 		args     []int
 	}{
-		{"\n000000 OpData     123\n", OpData, []int{123}},
-		{"\n000000 OpLoadG    123\n", OpLoadG, []int{123}},
-		{"\n000000 OpStoreG   123\n", OpStoreG, []int{123}},
+		{"\n000000 OpConstant 123\n", OpConstant, []int{123}},
+		{"\n000000 OpLoadG    456\n", OpLoadG, []int{456}},
+		{"\n000000 OpStoreG   789\n", OpStoreG, []int{789}},
 		{"\n000000 OpTensor  \n", OpTensor, []int{}},
 		{"\n000000 OpAdd     \n", OpAdd, []int{}},
 	}
@@ -67,7 +67,7 @@ func TestInstructionDisassembly(t *testing.T) {
 func TestMultiInstructionsDisassembly(t *testing.T) {
 	var ins []byte
 
-	ins1, err := MakeOp(OpData, 123)
+	ins1, err := MakeOp(OpConstant, 123)
 	checkNoErr(t, err)
 	ins2, err := MakeOp(OpStoreG, 456)
 	checkNoErr(t, err)
@@ -79,7 +79,7 @@ func TestMultiInstructionsDisassembly(t *testing.T) {
 	ins = append(ins, ins3...)
 	expected :=
 		`
-000000 OpData     123
+000000 OpConstant 123
 000003 OpStoreG   456
 000006 OpLoadG    789
 `
