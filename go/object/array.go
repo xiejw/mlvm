@@ -8,7 +8,7 @@ import (
 const maxNumberToPrintForArray = 9
 
 type Array struct {
-	Buffer []float32
+	Value []float32
 }
 
 func (array *Array) Type() ObjectType {
@@ -18,10 +18,10 @@ func (array *Array) Type() ObjectType {
 func (array *Array) String() string {
 	var buf bytes.Buffer
 
-	size := len(array.Buffer)
+	size := len(array.Value)
 
 	fmt.Fprintf(&buf, "[ ")
-	for i, v := range array.Buffer {
+	for i, v := range array.Value {
 		fmt.Fprintf(&buf, "%6.3f", v)
 
 		if i < size-1 {

@@ -23,3 +23,8 @@ func (t *Tensor) Type() ObjectType {
 func (t *Tensor) String() string {
 	return fmt.Sprintf("%v %v", t.Shape, t.Value)
 }
+
+// Shortcut for t.Value.Value.
+func (t *Tensor) ArrayValue() []float32 {
+	return t.Value.Value
+}

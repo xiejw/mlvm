@@ -10,8 +10,8 @@ func TensorAdd(operand1, operand2 *object.Tensor) (*object.Tensor, error) {
 
 	buf := make([]float32, size)
 
-	buf1 := operand1.Value.Buffer
-	buf2 := operand2.Value.Buffer
+	buf1 := operand1.ArrayValue()
+	buf2 := operand2.ArrayValue()
 
 	var i uint64
 	for i = 0; i < size; i++ {
