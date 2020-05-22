@@ -9,6 +9,13 @@ type Tensor struct {
 	Value *Array
 }
 
+func NewTensor(dims []NamedDimension, value []float32) *Tensor {
+	return &Tensor{
+		NewShape(dims),
+		&Array{value},
+	}
+}
+
 func (t *Tensor) Type() ObjectType {
 	return TensorType
 }
