@@ -20,6 +20,7 @@ func (t *Tensor) Type() ObjectType {
 	return TensorType
 }
 
+// Prints formatted tensor as `<@x(2), @y(3)> [  1.000,  2.000]`
 func (t *Tensor) String() string {
 	return fmt.Sprintf("%v %v", t.Shape, t.Value)
 }

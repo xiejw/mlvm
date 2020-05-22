@@ -34,6 +34,7 @@ func (shape *Shape) Type() ObjectType {
 	return ShapeType
 }
 
+// Prints formatted shape as `<@x(2), @y(3)>`.
 func (shape *Shape) String() string {
 	var buf bytes.Buffer
 

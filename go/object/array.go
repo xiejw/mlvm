@@ -15,6 +15,7 @@ func (array *Array) Type() ObjectType {
 	return ArrayType
 }
 
+// Prints formatted array as `[  1.000,  2.000]`
 func (array *Array) String() string {
 	return array.DebugString(defaultMaxNumberToPrintForArray)
 }
