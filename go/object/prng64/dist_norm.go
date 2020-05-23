@@ -16,34 +16,29 @@ var eplisonFloat32 = math.Nextafter32(0, 1)
  * For each pair of [0, 1) uniform rn, a pair of independent, standard,
  * normally distributed rn are generated.
  */
+func (prng *Prng64) boxMullerTransform() (float32, float32) {
+	u1 := prng.NextFloat32()
+	u2 := prng.NextFloat32()
+
+	if u1 < eplisonFloat32 {
+		u1 = eplisonFloat32
+	}
+
+	r := math.Sqrt(-2.0 * math.Log(float64(u1)))
+	theta := twoPi * float64(u2)
+
+	return float32(r * math.Cos(theta)), float32(r * math.Sin(theta))
+}
+
 func (prng *Prng64) Norm(value []float32) {
 	size := len(value)
 
-	numSeeds := size
-	if size%2 != 0 {
-		numSeeds++ // Must be even
-	}
-
-	uniforms := make([]float32, numSeeds)
-
-	for i := 0; i < numSeeds; i++ {
-		seed := prng.NextFloat32()
-		// The first rn in each pair is used by log, so cannot be zero.
-		if i%2 == 1 || seed >= eplisonFloat32 {
-			uniforms[i] = seed
-		}
-	}
-
 	for i := 0; i < size; i += 2 {
-		u1 := float64(uniforms[i])
-		u2 := float64(uniforms[i+1])
+		r1, r2 := prng.boxMullerTransform()
 
-		r := math.Sqrt(-2.0 * math.Log(u1))
-		theta := twoPi * u2
-
-		value[i] = float32(r * math.Cos(theta))
+		value[i] = r1
 		if i+1 < size {
-			value[i+1] = float32(r * math.Sin(theta))
+			value[i+1] = r2
 		}
 	}
 }
