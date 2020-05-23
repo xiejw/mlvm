@@ -1,4 +1,4 @@
-package object
+package prng64
 
 /*
  * The DotMix algorithrm.

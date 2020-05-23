@@ -1,4 +1,4 @@
-package object
+package prng64
 
 const (
 	gammaPrime uint64  = (1 << 56) - 5      // Percy.
@@ -17,7 +17,7 @@ func NewPrng64(seed uint64) *Prng64 {
 }
 
 func (prng *Prng64) Split() *Prng64 {
-	seed := prng.AdvanceSeed()
+	seed := prng.advanceSeed()
 	gammaSeed := prng.NextGammaSeed
 	return newPrng64(seed, gammaSeed)
 }
