@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestTrucatedNorm(t *testing.T) {
+func TestTrucNorm(t *testing.T) {
 	size := 5
 	value := make([]float32, size)
 
@@ -18,7 +18,7 @@ func TestTrucatedNorm(t *testing.T) {
 	size = 4
 	value = make([]float32, size)
 	prng = NewPrng64(123456789)
-	prng.TruncatedNorm(value)
+	prng.TruncNorm(value)
 	expected = []float32{1.1747507, -1.0833434, -0.26150864, -0.08424469}
 	assertAllClose(t, expected, value, 1e-6)
 }

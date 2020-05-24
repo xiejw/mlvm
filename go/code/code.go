@@ -17,7 +17,7 @@ const (
 	OpLoadG                  // Loads object, uint16 index, from Global memory.
 	OpStoreG                 // Stores objec, uint16 index, to Global memory.
 	OpPrngNew                // Creates a new Prng source. The top stack operand is the seed.
-	OpPrngDist               // Creates an Array with distribution (uint16 dist type index). Two stack operands are seed (top), shape.
+	OpPrngDist               // Creates an Array with distribution (uint16 dist type index). Two stack operands are prng source (top), shape.
 	OpTensor                 // Creates a new Tensor. Two stack operands are shape, array (top).
 	OpAdd                    // Adds two stack operands.
 )

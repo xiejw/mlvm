@@ -54,11 +54,38 @@ func (vm *VM) Run() error {
 		case code.OpPrngNew:
 			seed, err := vm.popInteger(op)
 			if err != nil {
-				return err
+				return vm.canonicalError(op, "failed to get Prng seed from stack: %v.", err)
 			}
 
 			prng := prng64.NewPrng64(uint64(seed.Value))
 			err = vm.stack.Push(prng)
+			if err != nil {
+				return vm.canonicalError(op, "internal error: %v.", err)
+			}
+
+		case code.OpPrngDist:
+			distType := code.ReadUint16(vm.instructions[ip+1:])
+
+			o, err := vm.pop(op)
+			if err != nil {
+				return vm.canonicalError(op, "failed to get Prng source from stack: %v.", err)
+			}
+			prng, ok := o.(*prng64.Prng64)
+			if !ok {
+				return vm.canonicalError(op, "expect Prng source from stack: %v.", err)
+			}
+
+			shape, err := vm.popShape(op)
+			if err != nil {
+				return vm.canonicalError(op, "failed to get shape for OpPrngDist: %v.", err)
+			}
+
+			size := shape.Size()
+
+			value := make([]float32, size)
+			prng.FillDist(prng64.DistType(distType), value)
+
+			err = vm.stack.Push(&object.Array{value})
 			if err != nil {
 				return vm.canonicalError(op, "internal error: %v.", err)
 			}

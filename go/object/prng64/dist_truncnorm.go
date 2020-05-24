@@ -2,7 +2,7 @@ package prng64
 
 const truncatedBound float32 = 2.0
 
-func (prng *Prng64) TruncatedNorm(value []float32) {
+func (prng *Prng64) TruncNorm(value []float32) {
 	size := len(value)
 
 	i := 0
