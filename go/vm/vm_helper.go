@@ -18,19 +18,31 @@ func (vm *VM) canonicalError(op code.Opcode, format string, args ...interface{})
 func (vm *VM) pop(op code.Opcode) (object.Object, error) {
 	o, err := vm.stack.Pop()
 	if err != nil {
-		return nil, vm.canonicalError(op, "failed to pop object from stack: %v", err)
+		return nil, vm.canonicalError(op, "failed to pop object from stack: %v.", err)
 	}
 	return o, nil
+}
+
+func (vm *VM) popInteger(op code.Opcode) (*object.Integer, error) {
+	o, err := vm.stack.Pop()
+	if err != nil {
+		return nil, vm.canonicalError(op, "failed to pop integer from stack: %v.", err)
+	}
+	v, ok := o.(*object.Integer)
+	if !ok {
+		return nil, vm.canonicalError(op, "failed to pop integer from stack: wrong type.")
+	}
+	return v, nil
 }
 
 func (vm *VM) popArray(op code.Opcode) (*object.Array, error) {
 	arrayObject, err := vm.stack.Pop()
 	if err != nil {
-		return nil, fmt.Errorf("program error: Opcode: %v: failed to pop array from stack: %v", op, err)
+		return nil, vm.canonicalError(op, "failed to pop array from stack: %v.", err)
 	}
 	array, ok := arrayObject.(*object.Array)
 	if !ok {
-		return nil, fmt.Errorf("program error: Opcode: %v: failed to pop array from stack: wrong type", op)
+		return nil, vm.canonicalError(op, "failed to pop array from stack: wrong type.")
 	}
 	return array, nil
 }
@@ -38,11 +50,11 @@ func (vm *VM) popArray(op code.Opcode) (*object.Array, error) {
 func (vm *VM) popShape(op code.Opcode) (*object.Shape, error) {
 	shapeObject, err := vm.stack.Pop()
 	if err != nil {
-		return nil, fmt.Errorf("program error: Opcode: %v: failed to pop shape from stack: %v", op, err)
+		return nil, vm.canonicalError(op, "failed to pop shape from stack: %v.", err)
 	}
 	shape, ok := shapeObject.(*object.Shape)
 	if !ok {
-		return nil, fmt.Errorf("program error: Opcode: %v: failed to pop shape from stack: wrong type", op)
+		return nil, vm.canonicalError(op, "failed to pop shape from stack: wrong type.")
 	}
 	return shape, nil
 }
@@ -50,11 +62,11 @@ func (vm *VM) popShape(op code.Opcode) (*object.Shape, error) {
 func (vm *VM) popTensor(op code.Opcode) (*object.Tensor, error) {
 	tensorObject, err := vm.stack.Pop()
 	if err != nil {
-		return nil, fmt.Errorf("program error: Opcode: %v: failed to pop tensor from stack: %v", op, err)
+		return nil, vm.canonicalError(op, "failed to pop tensor from stack: %v.", err)
 	}
 	tensor, ok := tensorObject.(*object.Tensor)
 	if !ok {
-		return nil, fmt.Errorf("program error: Opcode: %v: failed to pop tensor from stack: wrong type", op)
+		return nil, vm.canonicalError(op, "failed to pop tensor from stack: wrong type.")
 	}
 	return tensor, nil
 }

@@ -7,6 +7,8 @@ const (
 	IntType ObjectType = iota
 	StringType
 
+	PrngType // prng64 package
+
 	ShapeType  // shape.go
 	ArrayType  // array.go
 	TensorType // tensor.go

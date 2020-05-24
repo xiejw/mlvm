@@ -5,6 +5,7 @@ import (
 
 	"github.com/xiejw/mlvm/go/code"
 	"github.com/xiejw/mlvm/go/object"
+	"github.com/xiejw/mlvm/go/object/prng64"
 	"github.com/xiejw/mlvm/go/vm/kernel"
 )
 
@@ -21,15 +22,17 @@ func (vm *VM) Run() error {
 
 		op := code.Opcode(vm.instructions[ip])
 		switch op {
+		////////////////////////////////////////////////////////////////////////////////////////////////
+		// Load/Stores (Constants, Global Memory, etc)
 		case code.OpConstant:
 			constantIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
 			if constantIndex >= len(vm.constants) {
-				return vm.canonicalError(op, "const (id: %v) does not exist", constantIndex)
+				return vm.canonicalError(op, "const (id: %v) does not exist.", constantIndex)
 			}
 
 			err := vm.stack.Push(vm.constants[constantIndex])
 			if err != nil {
-				return vm.canonicalError(op, "internal error: %v", err)
+				return vm.canonicalError(op, "internal error: %v.", err)
 			}
 			ip += 2
 
@@ -42,10 +45,26 @@ func (vm *VM) Run() error {
 			err = vm.globalMem.Set(memSlotIndex, o)
 			if err != nil {
 				return vm.canonicalError(op,
-					"failed to store object to global memory at %v: %v", memSlotIndex, err)
+					"failed to store object to global memory at %v: %v.", memSlotIndex, err)
 			}
 			ip += 2
 
+			////////////////////////////////////////////////////////////////////////////////////////////////
+			// Prng
+		case code.OpPrngNew:
+			seed, err := vm.popInteger(op)
+			if err != nil {
+				return err
+			}
+
+			prng := prng64.NewPrng64(uint64(seed.Value))
+			err = vm.stack.Push(prng)
+			if err != nil {
+				return vm.canonicalError(op, "internal error: %v.", err)
+			}
+
+		////////////////////////////////////////////////////////////////////////////////////////////////
+		// Tensor Related.
 		case code.OpTensor:
 			array, err := vm.popArray(op)
 			if err != nil {
@@ -60,7 +79,7 @@ func (vm *VM) Run() error {
 			tensor := &object.Tensor{shape, array}
 			err = vm.stack.Push(tensor)
 			if err != nil {
-				return vm.canonicalError(op, "internal error: %v", err)
+				return vm.canonicalError(op, "internal error: %v.", err)
 			}
 
 		case code.OpAdd:
@@ -78,16 +97,16 @@ func (vm *VM) Run() error {
 
 			tensor, err := kernel.TensorAdd(operand1, operand2)
 			if err != nil {
-				return vm.canonicalError(op, "internal error: %v", err)
+				return vm.canonicalError(op, "internal error: %v.", err)
 			}
 
 			err = vm.stack.Push(tensor)
 			if err != nil {
-				return vm.canonicalError(op, "internal error: %v", err)
+				return vm.canonicalError(op, "internal error: %v.", err)
 			}
 
 		default:
-			return vm.canonicalError(op, ": unsupported Opcode in vm at @%5d", ip)
+			return vm.canonicalError(op, "unsupported Opcode in vm at @%5d.", ip)
 		}
 		ip++
 

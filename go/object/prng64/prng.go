@@ -1,5 +1,11 @@
 package prng64
 
+import (
+	"fmt"
+
+	"github.com/xiejw/mlvm/go/object"
+)
+
 const (
 	gammaPrime uint64  = (1 << 56) - 5      // Percy.
 	gammaGamma uint64  = 0x00281E2DBA6606F3 // The coefficient to randomize gamma.
@@ -48,4 +54,14 @@ func (prng *Prng64) NextInt64() uint64 {
 
 func (prng *Prng64) NextFloat32() float32 {
 	return float32(prng.NextInt64()>>11) * doubleUlp
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conform object.Object
+func (prng *Prng64) Type() object.ObjectType {
+	return object.PrngType
+}
+
+func (prng *Prng64) String() string {
+	return fmt.Sprintf("Prng(%x, %x, %x)", prng.Seed, prng.Gamma, prng.NextGammaSeed)
 }
