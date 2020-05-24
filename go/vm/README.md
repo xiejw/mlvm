@@ -55,7 +55,7 @@ VM Compiled Code
 OpConstant 0  # shape
 OpConstant 1  # seed int
 OpPrngNew
-OpPrngNorm    # array
+OpPrngDist 0  # array with norm dist
 OpStoreG   0  # store to 0
 OpConstant 0  # shape
 OpLoadG    0  # load 0 (array)
