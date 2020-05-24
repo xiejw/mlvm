@@ -16,16 +16,13 @@ func makeOpHelper(t *testing.T, op code.Opcode, args ...int) []byte {
 }
 
 func TestRunWithOpConstant(t *testing.T) {
-	ins, err := code.MakeOp(code.OpConstant, 0)
-	assertNoErr(t, err)
-
 	program := &code.Program{
-		Instructions: ins,
+		Instructions: makeOpHelper(t, code.OpConstant, 0),
 		Constants:    []object.Object{&object.Integer{123}},
 	}
 
 	vm := NewVM(program)
-	err = vm.Run()
+	err := vm.Run()
 	assertNoErr(t, err)
 
 	o := vm.StackTop()
@@ -38,35 +35,21 @@ func TestOpStoreAndLoad(t *testing.T) {
 }
 
 func TestRunWithOpTensor(t *testing.T) {
-
-	ins1, err := code.MakeOp(code.OpConstant, 0)
-	assertNoErr(t, err)
-
-	ins2, err := code.MakeOp(code.OpConstant, 1)
-	assertNoErr(t, err)
-
-	ins3, err := code.MakeOp(code.OpTensor)
-	assertNoErr(t, err)
-
 	var ins code.Instructions
-	ins = append(ins, ins1...)
-	ins = append(ins, ins2...)
-	ins = append(ins, ins3...)
+	ins = append(ins, makeOpHelper(t, code.OpConstant, 0)...)
+	ins = append(ins, makeOpHelper(t, code.OpConstant, 1)...)
+	ins = append(ins, makeOpHelper(t, code.OpTensor)...)
 
 	shape := object.NewShape([]object.NamedDimension{{"x", 2}})
 	array := &object.Array{[]float32{1.0, 2.0}}
 
-	var constants []object.Object
-	constants = append(constants, shape)
-	constants = append(constants, array)
-
 	program := &code.Program{
 		Instructions: ins,
-		Constants:    constants,
+		Constants:    []object.Object{shape, array},
 	}
 
 	vm := NewVM(program)
-	err = vm.Run()
+	err := vm.Run()
 	assertNoErr(t, err)
 
 	o := vm.StackTop()
@@ -98,14 +81,9 @@ func TestRunWithOpTensorAdd(t *testing.T) {
 	constants = append(constants, shape)
 	constants = append(constants, array)
 
-	ins1, err := code.MakeOp(code.OpConstant, 0)
-	assertNoErr(t, err)
-
-	ins2, err := code.MakeOp(code.OpConstant, 1)
-	assertNoErr(t, err)
-
-	ins3, err := code.MakeOp(code.OpTensor)
-	assertNoErr(t, err)
+	ins1 := makeOpHelper(t, code.OpConstant, 0)
+	ins2 := makeOpHelper(t, code.OpConstant, 1)
+	ins3 := makeOpHelper(t, code.OpTensor)
 
 	var ins code.Instructions
 	// Operand 1
@@ -116,10 +94,8 @@ func TestRunWithOpTensorAdd(t *testing.T) {
 	ins = append(ins, ins1...)
 	ins = append(ins, ins2...)
 	ins = append(ins, ins3...)
-
-	insAdd, err := code.MakeOp(code.OpAdd)
-	assertNoErr(t, err)
-	ins = append(ins, insAdd...)
+	// Final Add
+	ins = append(ins, makeOpHelper(t, code.OpAdd)...)
 
 	program := &code.Program{
 		Instructions: ins,
@@ -127,7 +103,7 @@ func TestRunWithOpTensorAdd(t *testing.T) {
 	}
 
 	vm := NewVM(program)
-	err = vm.Run()
+	err := vm.Run()
 	assertNoErr(t, err)
 
 	o := vm.StackTop()
