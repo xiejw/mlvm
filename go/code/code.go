@@ -98,6 +98,13 @@ func MakeOp(op Opcode, operands ...int) ([]byte, error) {
 //
 // The basic format is (`%6d %10s %s`, address, opcode, operands).
 func (ins Instructions) String() string {
+	return ins.DebugString(0 /*startIndex*/)
+}
+
+// Prints all instructions.
+//
+// With startIndex, it is useful to print a slice of the full program.
+func (ins Instructions) DebugString(startIndex int) string {
 	var buf bytes.Buffer
 	buf.WriteString("\n")
 
@@ -110,7 +117,7 @@ func (ins Instructions) String() string {
 		}
 
 		operands, offset := readOperands(def, ins[i+1:])
-		fmt.Fprintf(&buf, "%06d %s\n", i, fmtInstruction(def, operands))
+		fmt.Fprintf(&buf, "%06d %s\n", i+startIndex, fmtInstruction(def, operands))
 		i += 1 + offset
 	}
 

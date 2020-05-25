@@ -46,6 +46,24 @@ func TestRunWithOpConstant(t *testing.T) {
 }
 
 func TestOpStoreAndLoad(t *testing.T) {
+	var ins code.Instructions
+	ins = append(ins, makeOpHelper(t, code.OpConstant, 0)...)
+	ins = append(ins, makeOpHelper(t, code.OpStoreG, 0)...)
+	ins = append(ins, makeOpHelper(t, code.OpLoadG, 0)...)
+
+	array := &object.Array{[]float32{1.0, 2.0}}
+
+	program := &code.Program{
+		Instructions: ins,
+		Constants:    []object.Object{array},
+	}
+
+	vm := NewVM(program)
+	err := vm.Run()
+	assertNoErr(t, err)
+
+	expected := []float32{1.0, 2.0}
+	assertAllClose(t, expected, vm.StackTop().(*object.Array).Value, 1e-6)
 }
 
 func TestRunWithOpTensor(t *testing.T) {

@@ -49,6 +49,21 @@ func (vm *VM) Run() error {
 					"failed to store object to global memory at %v: %v.", memSlotIndex, err)
 			}
 
+		case code.OpLoadG:
+			memSlotIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
+			ip += 2
+
+			o, err := vm.globalMem.Get(memSlotIndex)
+			if err != nil {
+				return vm.canonicalError(op,
+					"failed to load object from global memory at %v: %v.", memSlotIndex, err)
+			}
+
+			err = vm.stack.Push(o)
+			if err != nil {
+				return vm.canonicalError(op, "internal error: %v.", err)
+			}
+
 			////////////////////////////////////////////////////////////////////////////////////////////////
 			// Prng
 		case code.OpPrngNew:
@@ -131,7 +146,12 @@ func (vm *VM) Run() error {
 			}
 
 		default:
-			return vm.canonicalError(op, "unsupported Opcode in vm at @%5d.", ip)
+			end := ip + 5
+			if end > len(vm.instructions) {
+				end = len(vm.instructions)
+			}
+			return vm.canonicalError(op, "unsupported Opcode in vm at @%5d: %v",
+				ip, code.Instructions(vm.instructions[ip:end]).DebugString(ip /*startIndex*/))
 		}
 		ip++
 
