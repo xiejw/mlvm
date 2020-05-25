@@ -22,3 +22,7 @@ for i = 0; i < 100; i++ {
 }
 
 ```
+
+Language Design
+- Type scheme deduction for dimension.
+- Functional.
