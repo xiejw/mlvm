@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// #cgo LDFLAGS: -L/tmp/ -lgemm
+// #cgo LDFLAGS: -L/tmp/matmul_test -lgemm ${SRCDIR}/../../blis/lib/haswell/libblis.a
 // #include <gemm.h>
 import "C"
 
@@ -76,7 +76,7 @@ func gemmLoopOrderWithParallelism(A, B, C []float32, numThreads int) {
 			startIndex := start * delta
 			endIndex := startIndex + delta
 			if endIndex >= M {
-				endIndex = M - 1
+				endIndex = M
 			}
 
 			for i := startIndex; i < endIndex; i++ {
@@ -118,14 +118,50 @@ func gemmCallCWithParallelism(A, B, D []float32, numThreads int) {
 			startIndex := start * delta
 			endIndex := startIndex + delta
 			if endIndex >= M {
-				endIndex = M - 1
+				endIndex = M
 			}
 
 			result, err := C.gemm1((*C.float)(&D[0]), (*C.float)(&A[0]), (*C.float)(&B[0]), C.int(startIndex),
-			C.int(endIndex))
+				C.int(endIndex))
 
 			if err != nil {
-				panic(fmt.Sprintf("hello, %v result: %v", result,  err))
+				panic(fmt.Sprintf("hello, %v result: %v", result, err))
+			}
+
+			wg.Done()
+
+		}(p)
+
+	}
+	wg.Wait()
+}
+
+func gemmCallCBlisWithParallelism(A, B, D []float32, numThreads int) {
+	wg := new(sync.WaitGroup)
+
+	var delta int
+	delta = M / numThreads
+	if M%numThreads != 0 {
+		delta += 1
+	}
+
+	for p := 0; p < numThreads; p++ {
+
+		wg.Add(1)
+
+		go func(start int) {
+
+			startIndex := start * delta
+			endIndex := startIndex + delta
+			if endIndex >= M {
+				endIndex = M
+			}
+
+			result, err := C.gemm2((*C.float)(&D[0]), (*C.float)(&A[0]), (*C.float)(&B[0]), C.int(startIndex),
+				C.int(endIndex))
+
+			if err != nil {
+				panic(fmt.Sprintf("hello, %v result: %v", result, err))
 			}
 
 			wg.Done()
@@ -167,8 +203,9 @@ func main() {
 	// gemmLoopOrderNaive(A, B, D)
 	// gemmLoopOrder(A, B, D)
 	// Disable hyper-thread https://software.intel.com/content/www/us/en/develop/articles/setting-thread-affinity-on-smt-or-ht-enabled-systems.html
-	// gemmLoopOrderWithParallelism(A, B, D, numCPU/2)
-	gemmCallCWithParallelism(A, B, D, numCPU/2)
+	//	 gemmLoopOrderWithParallelism(A, B, D, numCPU/2)
+	// gemmCallCWithParallelism(A, B, D, numCPU/2)
+	gemmCallCBlisWithParallelism(A, B, D, numCPU/2)
 
 	end := time.Now()
 	fmt.Printf("Elapsed %v\n", end.Sub(start))
@@ -177,6 +214,12 @@ func main() {
 		if i == 100 {
 			break
 		}
+		fmt.Printf("%v ", D[i])
+	}
+
+	fmt.Printf("\n")
+
+	for i := sizeC - 100; i < sizeC; i++ {
 		fmt.Printf("%v ", D[i])
 	}
 

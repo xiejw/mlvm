@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#include "blis.h"
+
 #define K 4096
 #define N 4096
 
@@ -18,5 +20,19 @@ int gemm1(float *restrict C, float *restrict A, float *restrict B, int start,
       }
     }
   }
+  return 0;
+}
+
+int gemm2(float *restrict C, float *restrict A, float *restrict B, int start,
+          int end) {
+  float alpha = 1.0;
+  float beta  = 1.0;
+  int   m     = end - start;
+
+  float *a = &A[start * K];
+  float *c = &C[start * N];
+
+  bli_sgemm(BLIS_NO_TRANSPOSE, BLIS_NO_TRANSPOSE, m, N, K, &alpha, a, K, 1, B,
+            N, 1, &beta, c, N, 1);
   return 0;
 }
