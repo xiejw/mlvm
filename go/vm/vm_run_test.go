@@ -1,6 +1,7 @@
 package vm
 
 import (
+	"math"
 	"testing"
 
 	"github.com/xiejw/mlvm/go/code"
@@ -13,6 +14,19 @@ func makeOpHelper(t *testing.T, op code.Opcode, args ...int) []byte {
 	assertNoErr(t, err)
 
 	return ins
+}
+
+func assertAllClose(t *testing.T, expected, got []float32, tol float64) {
+	t.Helper()
+	if len(expected) != len(got) {
+		t.Fatalf("length mismatch. expected: %v, got: %v.", len(expected), len(got))
+	}
+
+	for i := 0; i < len(expected); i++ {
+		if math.Abs(float64(expected[i]-got[i])) >= tol {
+			t.Errorf("\nelement mismatch at %v: expected %v, got %v\n", i, expected[i], got[i])
+		}
+	}
 }
 
 func TestRunWithOpConstant(t *testing.T) {
@@ -60,17 +74,23 @@ func TestRunWithOpTensor(t *testing.T) {
 
 func TestRunWithOpPrng(t *testing.T) {
 	seed := &object.Integer{456}
-	shape := object.NewShape([]object.NamedDimension{{"x", 2}})
-	// value = &object.Array{[]float32{1.0, 2.0}}
-
-	var constants []object.Object
-	constants = append(constants, seed)
-	constants = append(constants, shape)
+	shape := object.NewShape([]object.NamedDimension{{"x", 4}})
 
 	var ins code.Instructions
+	ins = append(ins, makeOpHelper(t, code.OpConstant, 1)...)
 	ins = append(ins, makeOpHelper(t, code.OpConstant, 0)...)
 	ins = append(ins, makeOpHelper(t, code.OpPrngNew)...)
 	ins = append(ins, makeOpHelper(t, code.OpPrngDist, 0)...)
+
+	vm := NewVM(&code.Program{
+		Instructions: ins,
+		Constants:    []object.Object{seed, shape},
+	})
+	err := vm.Run()
+	assertNoErr(t, err)
+
+	expected := []float32{1.3481823, -1.6701441, 1.4310317, 0.6320735}
+	assertAllClose(t, expected, vm.StackTop().(*object.Array).Value, 1e-6)
 }
 
 func TestRunWithOpTensorAdd(t *testing.T) {
