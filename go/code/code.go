@@ -98,15 +98,18 @@ func MakeOp(op Opcode, operands ...int) ([]byte, error) {
 //
 // The basic format is (`%6d %10s %s`, address, opcode, operands).
 func (ins Instructions) String() string {
-	return ins.DebugString(0 /*startIndex*/)
+	return ins.DebugString(0 /*startIndex*/, -1 /*numInstructions*/)
 }
 
 // Prints all instructions.
 //
-// With startIndex, it is useful to print a slice of the full program.
-func (ins Instructions) DebugString(startIndex int) string {
+// With startIndex and numInstructions, it is useful to print a slice of the full program.
+// If numInstructions == -1, it means printing all.
+func (ins Instructions) DebugString(startIndex int, numInstructions int) string {
 	var buf bytes.Buffer
 	buf.WriteString("\n")
+
+	numPrinted := 0
 
 	i := 0
 	for i < len(ins) {
@@ -118,6 +121,12 @@ func (ins Instructions) DebugString(startIndex int) string {
 
 		operands, offset := readOperands(def, ins[i+1:])
 		fmt.Fprintf(&buf, "%06d %s\n", i+startIndex, fmtInstruction(def, operands))
+
+		numPrinted++
+		if numInstructions != -1 && numPrinted >= numInstructions {
+			break
+		}
+
 		i += 1 + offset
 	}
 

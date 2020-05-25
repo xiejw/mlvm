@@ -146,12 +146,12 @@ func (vm *VM) Run() error {
 			}
 
 		default:
-			end := ip + 5
-			if end > len(vm.instructions) {
-				end = len(vm.instructions)
-			}
+			startIndex := ip
+			numInstructionsToPrint := 5
 			return vm.canonicalError(op, "unsupported Opcode in vm at @%5d: %v",
-				ip, code.Instructions(vm.instructions[ip:end]).DebugString(ip /*startIndex*/))
+				ip,
+				code.Instructions(
+					vm.instructions[ip:]).DebugString(startIndex, numInstructionsToPrint))
 		}
 		ip++
 
