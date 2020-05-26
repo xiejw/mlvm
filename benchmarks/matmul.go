@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// #cgo LDFLAGS: -L/tmp/matmul_test -lgemm ${SRCDIR}/../../blis/lib/haswell/libblis.a
+// #cgo LDFLAGS: -L${SRCDIR}/.build -lgemm /usr/local/lib/libblis.a
 // #include <gemm.h>
 import "C"
 
@@ -18,7 +18,7 @@ const (
 	N = M
 )
 
-// Elapsed 12m35.339189398s
+// Elapsed 9m36.286050187s
 func gemm(A, B, C []float32) {
 	for i := 0; i < M; i++ {
 		for j := 0; j < N; j++ {
@@ -29,7 +29,7 @@ func gemm(A, B, C []float32) {
 	}
 }
 
-// Elapsed 2m8.324053419s
+// Elapsed 2m5.216359114s
 func gemmLoopOrderNaive(A, B, C []float32) {
 	for i := 0; i < M; i++ {
 		for k := 0; k < K; k++ {
@@ -40,7 +40,7 @@ func gemmLoopOrderNaive(A, B, C []float32) {
 	}
 }
 
-// Elapsed 1m31.383356293s
+// Elapsed 1m11.028377685s
 func gemmLoopOrder(A, B, C []float32) {
 	for i := 0; i < M; i++ {
 		for k := 0; k < K; k++ {
@@ -57,7 +57,7 @@ func gemmLoopOrder(A, B, C []float32) {
 	}
 }
 
-// Elapsed 17.097657839s
+// Elapsed 21.80168877s
 func gemmLoopOrderWithParallelism(A, B, C []float32, numThreads int) {
 	wg := new(sync.WaitGroup)
 
@@ -100,6 +100,7 @@ func gemmLoopOrderWithParallelism(A, B, C []float32, numThreads int) {
 	wg.Wait()
 }
 
+// Elapsed 5.554680031s
 func gemmCallCWithParallelism(A, B, D []float32, numThreads int) {
 	wg := new(sync.WaitGroup)
 
@@ -136,6 +137,7 @@ func gemmCallCWithParallelism(A, B, D []float32, numThreads int) {
 	wg.Wait()
 }
 
+// 496.493628ms
 func gemmCallCBlisWithParallelism(A, B, D []float32, numThreads int) {
 	wg := new(sync.WaitGroup)
 
@@ -202,9 +204,11 @@ func main() {
 	// gemm(A, B, D)
 	// gemmLoopOrderNaive(A, B, D)
 	// gemmLoopOrder(A, B, D)
-	// Disable hyper-thread https://software.intel.com/content/www/us/en/develop/articles/setting-thread-affinity-on-smt-or-ht-enabled-systems.html
-	//	 gemmLoopOrderWithParallelism(A, B, D, numCPU/2)
-	// gemmCallCWithParallelism(A, B, D, numCPU/2)
+	//
+	// Disable hyper-thread
+	// https://software.intel.com/content/www/us/en/develop/articles/setting-thread-affinity-on-smt-or-ht-enabled-systems.html
+	// gemmLoopOrderWithParallelism(A, B, D, numCPU/2)
+	// 	gemmCallCWithParallelism(A, B, D, numCPU/2)
 	gemmCallCBlisWithParallelism(A, B, D, numCPU/2)
 
 	end := time.Now()
