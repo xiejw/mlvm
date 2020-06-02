@@ -52,9 +52,9 @@ type Decl struct {
 type ExpressionType uint
 
 const (
-	ExTValue ExpressionType = iota
-	ExTAdd
-	ExTMul
+	ExTpValue ExpressionType = iota
+	ExTpAdd
+	ExTpMul
 )
 
 type Expression struct {
