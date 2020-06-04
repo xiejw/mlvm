@@ -17,13 +17,13 @@ type Statement interface {
 type TypeKind uint
 
 const (
-	TKVoid TypeKind = iota
-	TKInt
-	TKString
-	TKArray
-	TKNameDimension
-	TKTensor
-	TKFunc
+	TpKdVoid TypeKind = iota
+	TpKdInt
+	TpKdString
+	TpKdArray
+	TpKdNamedDim
+	TpKdTensor
+	TpKdFunc
 )
 
 // Represents a parameter in a func signature.

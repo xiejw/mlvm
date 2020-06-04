@@ -13,8 +13,10 @@ import (
 func (decl *Decl) WriteDebugString(w io.Writer, indent string) {
 	newIndent := indent + "  "
 
-	fmt.Fprintf(w, "Decl{\n%sToken: \"%s\"\n%sValue: ",
-		newIndent, decl.Name, newIndent)
+	fmt.Fprintf(w, "Decl{\n%sName: \"%s\"\n%sType: %v\n%sValue: ",
+		newIndent, decl.Name,
+		newIndent, decl.Type,
+		newIndent)
 	decl.Value.WriteDebugString(w, newIndent)
 	fmt.Fprintf(w, "%s}\n", indent)
 }
@@ -29,4 +31,12 @@ func (expr *Expression) WriteDebugString(w io.Writer, indent string) {
 	newIndent := indent + "  "
 	fmt.Fprintf(w, "Expr{\n%sValue: %s\n%s}\n",
 		newIndent, expr.Value, indent)
+}
+
+func (tp *Type) String() string {
+	if tp.Kind != TpKdNamedDim {
+		panic("unsupported type kind.")
+	}
+
+	return "Type(NamedDim)"
 }

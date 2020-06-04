@@ -11,6 +11,7 @@ func TestDeclNamedDim(t *testing.T) {
 	// @batch = 32;
 	decl := &Decl{
 		Name: "@batch",
+		Type: &Type{Kind: TpKdNamedDim},
 		Value: &Expression{
 			Type:  ExTpValue,
 			Value: &object.Integer{32},
@@ -22,7 +23,8 @@ func TestDeclNamedDim(t *testing.T) {
 	outs := buf.String()
 
 	expected := `Decl{
-  Token: "@batch"
+  Name: "@batch"
+  Type: Type(NamedDim)
   Value: Expr{
     Value: Int(32)
   }
