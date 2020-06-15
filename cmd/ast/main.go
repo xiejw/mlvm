@@ -1,7 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/xiejw/mlvm/go/syntax/ast"
+)
 
 func main() {
-	fmt.Println("Hello MLVM.")
+	seed := ast.Decl{
+		Name: "seed",
+	}
+
+	fmt.Printf("Hello MLVM.\n")
+	fmt.Printf("  %v.\n", seed)
 }
