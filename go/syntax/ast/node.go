@@ -24,6 +24,7 @@ const (
 	TpKdNamedDim
 	TpKdTensor
 	TpKdFunc
+	TpKdPrng
 )
 
 // Represents a parameter in a func signature.
