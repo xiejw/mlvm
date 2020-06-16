@@ -19,10 +19,10 @@ func assertStringRepr(t *testing.T, expectedStartedWithNewLine, got string) {
 func TestDeclNamedDim(t *testing.T) {
 	// let @batch = 32;
 	decl := &Decl{
-		Name: "@batch",
+		ID:   "@batch",
 		Type: &Type{Kind: TpKdNamedDim},
 		Value: &Expression{
-			Type:  ExTpValue,
+			Kind:  EpKdIntLiteral,
 			Value: &object.Integer{32},
 		},
 	}
