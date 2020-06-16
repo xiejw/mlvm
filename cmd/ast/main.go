@@ -9,24 +9,41 @@ import (
 	"github.com/xiejw/mlvm/go/syntax/ast"
 )
 
+func makeType(kind ast.TypeKind) *ast.Type {
+	return &ast.Type{Kind: kind}
+}
+
+func makeStringIdExpr(id string) *ast.Expression {
+	return &ast.Expression{
+		Type: makeType(ast.TpKdNA),
+		Kind: ast.EpKdID,
+		Value: &object.String{
+			Value: id,
+		},
+	}
+}
+
 func main() {
 	seed := ast.Decl{
-		ID: "seed",
-		Type: &ast.Type{
-			Kind: ast.TpKdPrng,
-		},
+		ID:   "seed",
+		Type: makeType(ast.TpKdPrng),
 		Value: &ast.Expression{
-			Type: &ast.Type{
-				Kind: ast.TpKdPrng,
-			},
+			Type: makeType(ast.TpKdPrng),
 			Kind: ast.EpKdCall,
-			Left: &ast.Expression{
-				Kind: ast.EpKdID,
-				Value: &object.String{
-					Value: "prng_create",
+			Left: makeStringIdExpr("prng_create"),
+			Right: &ast.Expression{
+				Type: &ast.Type{
+					Kind: ast.TpKdNA,
+				},
+				Kind: ast.EpKdArg,
+				Left: &ast.Expression{
+					Type: makeType(ast.TpKdInt),
+					Kind: ast.EpKdIntLiteral,
+					Value: &object.Integer{
+						Value: 123,
+					},
 				},
 			},
-			Right: &ast.Expression{},
 		},
 	}
 

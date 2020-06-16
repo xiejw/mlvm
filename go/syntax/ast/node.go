@@ -1,7 +1,6 @@
 package ast
 
 import (
-	"encoding/json"
 	"github.com/xiejw/mlvm/go/object"
 )
 
@@ -17,8 +16,11 @@ type Statement interface {
 // Represents the Kind (enum) of Type of Expression.
 type TypeKind uint
 
+// MarshalJSON in node_json.go
 const (
-	TpKdVoid TypeKind = iota
+	TpKdUnspecified TypeKind = iota
+	TpKdNA
+	TpKdVoid
 	TpKdInt
 	TpKdString
 	TpKdArray
@@ -27,27 +29,6 @@ const (
 	TpKdFunc
 	TpKdPrng
 )
-
-func (kind TypeKind) MarshalJSON() ([]byte, error) {
-	switch kind {
-	case TpKdInt:
-		return json.Marshal("int")
-	case TpKdString:
-		return json.Marshal("string")
-	case TpKdArray:
-		return json.Marshal("array")
-	case TpKdNamedDim:
-		return json.Marshal("named_dim")
-	case TpKdTensor:
-		return json.Marshal("tensor")
-	case TpKdFunc:
-		return json.Marshal("func")
-	case TpKdPrng:
-		return json.Marshal("prng")
-	default:
-		return json.Marshal("unknown_type")
-	}
-}
 
 // Represents a parameter in a func signature.
 type Param struct {
@@ -74,25 +55,16 @@ type Decl struct {
 
 type ExpressionKind uint
 
+// MarshalJSON in node_json.go
 const (
 	EpKdUnspecified ExpressionKind = iota
 	EpKdAdd
 	EpKdMul
 	EpKdCall
 	EpKdID
+	EpKdArg
 	EpKdIntLiteral
 )
-
-func (kind ExpressionKind) MarshalJSON() ([]byte, error) {
-	switch kind {
-	case EpKdCall:
-		return json.Marshal("func_call")
-	case EpKdID:
-		return json.Marshal("id")
-	default:
-		return json.Marshal("unknown_expr_kind")
-	}
-}
 
 type Expression struct {
 	Type  *Type
