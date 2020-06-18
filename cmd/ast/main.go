@@ -15,7 +15,7 @@ func makeType(kind ast.TypeKind) *ast.Type {
 
 func makeStringIdExpr(id string) *ast.Expression {
 	return &ast.Expression{
-		Type: makeType(ast.TpKdNA),
+		Type: makeType(ast.TpKdNA), // This is not correct ast. Each ID should have type from table.
 		Kind: ast.EpKdID,
 		Value: &object.String{
 			Value: id,
