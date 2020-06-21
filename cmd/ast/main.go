@@ -13,32 +13,15 @@ func main() {
 
 	statements := make([]ast.Statement, 0)
 	statements = append(statements, &ast.DeclStatement{
-		ID: "seed",
+		Name: &ast.Identifier{"seed"},
+		Value: &ast.FunctionCall{
+			Name: &ast.Identifier{"prng_new"},
+			Args: []ast.Expression{
+				&ast.IntLiteral{123},
+			},
+		},
 	})
 
-	// seed := ast.Decl{
-	// 	ID:   "seed",
-	// 	Type: makeType(ast.TpKdPrng),
-	// 	Value: &ast.Expression{
-	// 		Type: makeType(ast.TpKdPrng),
-	// 		Kind: ast.EpKdCall,
-	// 		Left: makeStringIdExpr("prng_create"),
-	// 		Right: &ast.Expression{
-	// 			Type: &ast.Type{
-	// 				Kind: ast.TpKdNA,
-	// 			},
-	// 			Kind: ast.EpKdArg,
-	// 			Left: &ast.Expression{
-	// 				Type: makeType(ast.TpKdInt),
-	// 				Kind: ast.EpKdIntLiteral,
-	// 				Value: &object.Integer{
-	// 					Value: 123,
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// }
-	//
 	p := &ast.Program{
 		Statements: statements,
 	}
