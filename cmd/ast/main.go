@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"encoding/json"
-	_ "github.com/xiejw/mlvm/go/object"
 	"github.com/xiejw/mlvm/go/syntax/ast"
 )
 

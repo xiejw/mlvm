@@ -33,5 +33,5 @@ clean:
 	go mod tidy
 	@echo "clean '"${BUILD_DIR}"'" && rm -rf ${BUILD_DIR}
 
-run: compile
-	.build/ast
+# Optionally include a local Makefile.
+-include Makefile.local
