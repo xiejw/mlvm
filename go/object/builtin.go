@@ -11,7 +11,7 @@ func (o *Integer) Type() ObjectType {
 }
 
 func (o *Integer) String() string {
-	return fmt.Sprintf("Int(%v)", o.Value)
+	return fmt.Sprintf("Integer(%v)", o.Value)
 }
 
 type String struct {

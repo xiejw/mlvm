@@ -2,35 +2,33 @@ package object
 
 import "testing"
 
+func assertStringAndType(t *testing.T, expectedStr string, expectType ObjectType, got Object) {
+	t.Helper()
+	if got.String() != expectedStr {
+		t.Fatalf("String() method failed.")
+	}
+	if got.Type() != expectType {
+		t.Fatalf("Type() method failed.")
+	}
+}
+
 func TestInteger(t *testing.T) {
 	var o Object
 	o = &Integer{Value: 123}
-	if o.String() != "Int(123)" {
-		t.Fatalf("String() method failed.")
-	}
-	if o.Type() != IntegerType {
-		t.Fatalf("Type() method failed.")
-	}
+
+	assertStringAndType(t, "Integer(123)", IntegerType, o)
 }
 
 func TestString(t *testing.T) {
 	var o Object
 	o = &String{Value: "abc"}
-	if o.String() != `String("abc")` {
-		t.Fatalf("String() method failed.")
-	}
-	if o.Type() != StringType {
-		t.Fatalf("Type() method failed.")
-	}
+
+	assertStringAndType(t, `String("abc")`, StringType, o)
 }
 
 func TestPrng(t *testing.T) {
 	var o Object
 	o = &Prng{}
-	if o.String() != "Prng()" {
-		t.Fatalf("String() method failed.")
-	}
-	if o.Type() != PrngType {
-		t.Fatalf("Type() method failed.")
-	}
+
+	assertStringAndType(t, "Prng()", PrngType, o)
 }
