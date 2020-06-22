@@ -13,6 +13,17 @@ func TestInteger(t *testing.T) {
 	}
 }
 
+func TestString(t *testing.T) {
+	var o Object
+	o = &String{Value: "abc"}
+	if o.String() != `String("abc")` {
+		t.Fatalf("String() method failed.")
+	}
+	if o.Type() != StringType {
+		t.Fatalf("Type() method failed.")
+	}
+}
+
 func TestPrng(t *testing.T) {
 	var o Object
 	o = &Prng{}

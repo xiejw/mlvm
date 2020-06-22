@@ -23,5 +23,5 @@ func (o *String) Type() ObjectType {
 }
 
 func (o *String) String() string {
-	return fmt.Sprintf("String(`%v`)", o.Value)
+	return fmt.Sprintf("String(\"%v\")", o.Value)
 }
