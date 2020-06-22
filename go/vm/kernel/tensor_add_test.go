@@ -7,7 +7,7 @@ import (
 )
 
 func TestTensorAdd(t *testing.T) {
-	tensor := object.NewTensor([]object.NamedDimension{{"x", 2}}, []float32{1.0, 2.0})
+	tensor := object.NewTensor([]object.NamedDim{{"x", 2}}, []float32{1.0, 2.0})
 	result, err := TensorAdd(tensor, tensor)
 
 	if err != nil {

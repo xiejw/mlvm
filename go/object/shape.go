@@ -5,25 +5,25 @@ import (
 	"fmt"
 )
 
-// For a `@batch` dimension name, the DimensionName is batch. It is global in the script.
-type DimensionName string
+// For a `@batch` dimension name, the DimName is batch. It is global in the script.
+type DimName string
 
 // Prints the canonical name with leading `@`.
-func (name DimensionName) String() string {
+func (name DimName) String() string {
 	return "@" + string(name)
 }
 
-type NamedDimension struct {
-	Name DimensionName // Dimension string name (without `@`)
-	Size uint          // Static dimension size. Cannot be zero.
+type NamedDim struct {
+	Name DimName // Dimension string name (without `@`)
+	Size uint    // Static dimension size. Cannot be zero.
 }
 
 type Shape struct {
-	Dimensions []NamedDimension // Cannot have dup names.
-	Rank       uint             // Length of `Dimensions`
+	Dimensions []NamedDim // Cannot have dup names.
+	Rank       uint       // Length of `Dimensions`
 }
 
-func NewShape(dims []NamedDimension) *Shape {
+func NewShape(dims []NamedDim) *Shape {
 	return &Shape{
 		Dimensions: dims,
 		Rank:       uint(len(dims)),

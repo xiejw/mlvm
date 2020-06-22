@@ -10,7 +10,7 @@ func assertTensorFmtEq(t *testing.T, tensor *Tensor, expected string) {
 }
 
 func TestTensor(t *testing.T) {
-	shape := NewShape([]NamedDimension{{"x", 2}})
+	shape := NewShape([]NamedDim{{"x", 2}})
 	array := &Array{[]float32{1.0, 2.0}}
 	tensor := Tensor{shape, array}
 
@@ -20,14 +20,14 @@ func TestTensor(t *testing.T) {
 }
 
 func TestTensorStringFormatForShort(t *testing.T) {
-	shape := NewShape([]NamedDimension{{"x", 2}})
+	shape := NewShape([]NamedDim{{"x", 2}})
 	array := &Array{[]float32{1.0, 2.0}}
 	tensor := Tensor{shape, array}
 	assertTensorFmtEq(t, &tensor, "<@x(2)> [  1.000,  2.000]")
 }
 
 func TestTensorComformObjectInterface(t *testing.T) {
-	shape := NewShape([]NamedDimension{{"x", 2}})
+	shape := NewShape([]NamedDim{{"x", 2}})
 	array := &Array{[]float32{1.0, 2.0}}
 	tensor := &Tensor{shape, array}
 	var object Object

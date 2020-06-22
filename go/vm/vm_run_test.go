@@ -72,7 +72,7 @@ func TestRunWithOpTensor(t *testing.T) {
 	ins = append(ins, makeOpHelper(t, code.OpConstant, 1)...)
 	ins = append(ins, makeOpHelper(t, code.OpTensor)...)
 
-	shape := object.NewShape([]object.NamedDimension{{"x", 2}})
+	shape := object.NewShape([]object.NamedDim{{"x", 2}})
 	array := &object.Array{[]float32{1.0, 2.0}}
 
 	program := &code.Program{
@@ -92,7 +92,7 @@ func TestRunWithOpTensor(t *testing.T) {
 
 func TestRunWithOpPrng(t *testing.T) {
 	seed := &object.Integer{456}
-	shape := object.NewShape([]object.NamedDimension{{"x", 4}})
+	shape := object.NewShape([]object.NamedDim{{"x", 4}})
 
 	var ins code.Instructions
 	ins = append(ins, makeOpHelper(t, code.OpConstant, 1)...)
@@ -112,7 +112,7 @@ func TestRunWithOpPrng(t *testing.T) {
 }
 
 func TestRunWithOpTensorAdd(t *testing.T) {
-	shape := object.NewShape([]object.NamedDimension{{"x", 2}})
+	shape := object.NewShape([]object.NamedDim{{"x", 2}})
 	array := &object.Array{[]float32{1.0, 2.0}}
 
 	var constants []object.Object
