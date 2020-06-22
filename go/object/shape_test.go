@@ -17,18 +17,11 @@ func assertDimensionEq(t *testing.T, dim *NamedDim, expectedName string, expecte
 	}
 }
 
-func assertShapeFmtEq(t *testing.T, shape *Shape, expected string) {
-	if expected != shape.String() {
-		t.Fatalf("String Format mismatch. expected: `%v`, got: `%v`.", expected, shape.String())
-	}
-}
-
 func TestShapeDimensions(t *testing.T) {
 	shape := NewShape([]NamedDim{{"x", 2}, {"y", 3}})
 	assertRankEq(t, shape, 2)
 	assertDimensionEq(t, &shape.Dimensions[0], "x", 2)
 	assertDimensionEq(t, &shape.Dimensions[1], "y", 3)
-	assertShapeFmtEq(t, shape, "<@x(2), @y(3)>")
 }
 
 func TestDimensionName(t *testing.T) {

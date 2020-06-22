@@ -36,5 +36,5 @@ func TestPrng(t *testing.T) {
 func TestShape(t *testing.T) {
 	var o Object
 	o = NewShape([]NamedDim{{"x", 2}, {"y", 3}})
-	assertStringAndType(t, "<@x(2), @y(3)>", ShapeType, o)
+	assertStringAndType(t, "Shape(<@x(2), @y(3)>)", ShapeType, o)
 }

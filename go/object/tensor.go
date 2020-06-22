@@ -1,6 +1,7 @@
 package object
 
 import (
+	"bytes"
 	"fmt"
 )
 
@@ -22,7 +23,10 @@ func (t *Tensor) Type() ObjectType {
 
 // Prints formatted tensor as `<@x(2), @y(3)> [  1.000,  2.000]`
 func (t *Tensor) String() string {
-	return fmt.Sprintf("%v %v", t.Shape, t.Value)
+	var buf bytes.Buffer
+	t.Shape.CompactString(&buf)
+	fmt.Fprintf(&buf, " %v", t.Value)
+	return buf.String()
 }
 
 // Shortcut for t.Value.Value.

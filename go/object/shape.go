@@ -3,9 +3,10 @@ package object
 import (
 	"bytes"
 	"fmt"
+	"io"
 )
 
-// For a `@batch` dimension name, the DimName is batch. It is global in the script.
+// For a `@batch` dimension name, the DimName is "batch".
 type DimName string
 
 // Prints the canonical name with leading `@`.
@@ -34,24 +35,6 @@ func (shape *Shape) Type() ObjectType {
 	return ShapeType
 }
 
-// Prints formatted shape as `<@x(2), @y(3)>`.
-func (shape *Shape) String() string {
-	var buf bytes.Buffer
-
-	rank := shape.Rank
-	finalIndex := int(rank - 1)
-	fmt.Fprintf(&buf, "<")
-	for i, dim := range shape.Dimensions {
-		fmt.Fprintf(&buf, "%v(%v)", dim.Name, dim.Size)
-		if i != finalIndex {
-			fmt.Fprintf(&buf, ", ")
-		}
-	}
-	fmt.Fprintf(&buf, ">")
-
-	return buf.String()
-}
-
 func (shape *Shape) Size() uint64 {
 	var size uint64 = 1
 	for _, dim := range shape.Dimensions {
@@ -59,3 +42,27 @@ func (shape *Shape) Size() uint64 {
 	}
 	return size
 }
+
+// Formats as `Shape(<@x(2), @y(3)>)`.
+func (shape *Shape) String() string {
+	var buf bytes.Buffer
+	fmt.Fprintf(&buf, "Shape(")
+	shape.CompactString(&buf)
+	fmt.Fprintf(&buf, ")")
+	return buf.String()
+}
+
+// Formats as `<@x(2), @y(3)>`.
+func (shape *Shape) CompactString(w io.Writer) {
+	rank := shape.Rank
+	finalIndex := int(rank - 1)
+	fmt.Fprintf(w, "<")
+	for i, dim := range shape.Dimensions {
+		fmt.Fprintf(w, "%v(%v)", dim.Name, dim.Size)
+		if i != finalIndex {
+			fmt.Fprintf(w, ", ")
+		}
+	}
+	fmt.Fprintf(w, ">")
+}
+
