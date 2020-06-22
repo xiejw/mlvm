@@ -72,7 +72,7 @@ func (vm *VM) Run() error {
 				return vm.canonicalError(op, "expect to get Prng seed from stack: %v.", err)
 			}
 
-			prng := prng64.NewPrng64(uint64(seed.Value))
+			prng := &object.Prng{Source: prng64.NewPrng64(uint64(seed.Value))}
 			err = vm.stack.Push(prng)
 			if err != nil {
 				return vm.canonicalError(op, "internal error: %v.", err)
@@ -86,7 +86,7 @@ func (vm *VM) Run() error {
 			if err != nil {
 				return vm.canonicalError(op, "expect to get Prng object from stack: %v.", err)
 			}
-			prng, ok := o.(*prng64.Prng64)
+			prng, ok := o.(*object.Prng)
 			if !ok {
 				return vm.canonicalError(op, "expect Prng source from stack: %v.", err)
 			}
@@ -99,7 +99,7 @@ func (vm *VM) Run() error {
 			size := shape.Size()
 
 			value := make([]float32, size)
-			prng.FillDist(prng64.DistType(distType), value)
+			prng.Source.FillDist(prng64.DistType(distType), value)
 
 			err = vm.stack.Push(&object.Array{value})
 			if err != nil {
