@@ -47,13 +47,13 @@ func (shape *Shape) Size() uint64 {
 func (shape *Shape) String() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "Shape(")
-	shape.CompactString(&buf)
+	shape.toHumanReadableString(&buf)
 	fmt.Fprintf(&buf, ")")
 	return buf.String()
 }
 
 // Formats as `<@x(2), @y(3)>`.
-func (shape *Shape) CompactString(w io.Writer) {
+func (shape *Shape) toHumanReadableString(w io.Writer) {
 	rank := shape.Rank
 	finalIndex := int(rank - 1)
 	fmt.Fprintf(w, "<")
@@ -65,4 +65,3 @@ func (shape *Shape) CompactString(w io.Writer) {
 	}
 	fmt.Fprintf(w, ">")
 }
-

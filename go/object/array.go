@@ -3,6 +3,7 @@ package object
 import (
 	"bytes"
 	"fmt"
+	"io"
 )
 
 const defaultMaxNumberToPrintForArray = 9
@@ -15,30 +16,31 @@ func (array *Array) Type() ObjectType {
 	return ArrayType
 }
 
-// Prints formatted array as `[  1.000,  2.000]`
+// Formats as `Array([  1.000,  2.000])`
 func (array *Array) String() string {
-	return array.DebugString(defaultMaxNumberToPrintForArray)
+	var buf bytes.Buffer
+	buf.WriteString("Array(")
+	array.toHumanReadableString(&buf, defaultMaxNumberToPrintForArray)
+	buf.WriteString(")")
+	return buf.String()
 }
 
-func (array *Array) DebugString(maxElementCountToPrint int) string {
-	var buf bytes.Buffer
-
+// Formats as `[  1.000,  2.000]`
+func (array *Array) toHumanReadableString(w io.Writer, maxElementCountToPrint int) {
 	size := len(array.Value)
 
-	fmt.Fprintf(&buf, "[ ")
+	fmt.Fprintf(w, "[ ")
 	for i, v := range array.Value {
-		fmt.Fprintf(&buf, "%6.3f", v)
+		fmt.Fprintf(w, "%6.3f", v)
 
 		if i < size-1 {
-			fmt.Fprintf(&buf, ", ")
+			fmt.Fprintf(w, ", ")
 		}
 
 		if i != size-1 && i >= maxElementCountToPrint {
-			fmt.Fprintf(&buf, "... ")
+			fmt.Fprintf(w, "... ")
 			break
 		}
 	}
-	fmt.Fprintf(&buf, "]")
-
-	return buf.String()
+	fmt.Fprintf(w, "]")
 }
