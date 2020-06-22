@@ -4,7 +4,7 @@ type ObjectType int
 
 const (
 	// basic_types.go
-	IntType ObjectType = iota
+	IntegerType ObjectType = iota
 	StringType
 
 	PrngType   // prng.go

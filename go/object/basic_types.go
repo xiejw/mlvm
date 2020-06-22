@@ -7,7 +7,7 @@ type Integer struct {
 }
 
 func (o *Integer) Type() ObjectType {
-	return IntType
+	return IntegerType
 }
 
 func (o *Integer) String() string {
