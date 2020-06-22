@@ -44,3 +44,11 @@ func TestArray(t *testing.T) {
 	o = &Array{[]float32{1.0, 2.0}}
 	assertStringAndType(t, "Array([  1.000,  2.000])", ArrayType, o)
 }
+func TestTensor(t *testing.T) {
+	shape := NewShape([]NamedDim{{"x", 2}})
+	array := &Array{[]float32{1.0, 2.0}}
+
+	var o Object
+	o = &Tensor{shape, array}
+	assertStringAndType(t, "Tensor(<@x(2)> [  1.000,  2.000])", TensorType, o)
+}

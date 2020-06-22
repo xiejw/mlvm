@@ -1,8 +1,8 @@
 ## TODO
 
-- refactor the object lib and make all the String() consistent.
 - add an AST for ideal program and lower it.
 
 ## Changelog
+2020-06-22 refactored the string() method for all objects.
 2020-06-21 added prng in object package and used the prng64 package as impl.
 2020-06-20 started adding statement and expression.

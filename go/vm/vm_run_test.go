@@ -85,7 +85,7 @@ func TestRunWithOpTensor(t *testing.T) {
 	assertNoErr(t, err)
 
 	o := vm.StackTop()
-	if o.(*object.Tensor).String() != "<@x(2)> [  1.000,  2.000]" {
+	if o.(*object.Tensor).String() != "Tensor(<@x(2)> [  1.000,  2.000])" {
 		t.Errorf("value mismatch: got `%v`", o.(*object.Tensor).String())
 	}
 }
@@ -145,7 +145,7 @@ func TestRunWithOpTensorAdd(t *testing.T) {
 	assertNoErr(t, err)
 
 	o := vm.StackTop()
-	if o.(*object.Tensor).String() != "<@x(2)> [  2.000,  4.000]" {
+	if o.(*object.Tensor).String() != "Tensor(<@x(2)> [  2.000,  4.000])" {
 		t.Errorf("value mismatch: got `%v`", o.(*object.Tensor).String())
 	}
 }

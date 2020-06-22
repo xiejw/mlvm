@@ -14,7 +14,7 @@ func TestTensorAdd(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	if result.String() != "<@x(2)> [  2.000,  4.000]" {
+	if result.String() != "Tensor(<@x(2)> [  2.000,  4.000])" {
 		t.Errorf("value mismatch: got `%v`", result)
 	}
 }
