@@ -99,7 +99,7 @@ func (vm *VM) Run() error {
 			size := shape.Size()
 
 			value := make([]float32, size)
-			prng.Source.FillDist(prng64.DistType(distType), value)
+			prng.FillDist(object.DistType(distType), value)
 
 			err = vm.stack.Push(&object.Array{value})
 			if err != nil {
