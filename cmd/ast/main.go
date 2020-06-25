@@ -16,7 +16,7 @@ func main() {
 		Value: &ast.FunctionCall{
 			Name: &ast.Identifier{"prng_new"},
 			Args: []ast.Expression{
-				&ast.IntLiteral{123},
+				&ast.IntegerLiteral{123},
 			},
 		},
 	})

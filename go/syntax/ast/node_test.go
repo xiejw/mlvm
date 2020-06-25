@@ -6,7 +6,7 @@ func TestSingleExprStatement(t *testing.T) {
 	p := Program{
 		Statements: []Statement{
 			&ExprStatement{
-				Value: &IntLiteral{123},
+				Value: &IntegerLiteral{123},
 			},
 		},
 	}
