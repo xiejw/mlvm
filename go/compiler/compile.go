@@ -12,12 +12,9 @@ import (
 func Compile(src *ast.Program) (*code.Program, error) {
 
 	b := NewBuilder(src)
-
-	for _, src_statement := range src.Statements {
-		err := b.compileStatement(src_statement)
-		if err != nil {
-			return nil, err
-		}
+	err := b.Compile()
+	if err != nil {
+		return nil, err
 	}
 
 	return b.CompiledCode(), nil
@@ -40,6 +37,12 @@ func NewBuilder(src *ast.Program) *Builder {
 }
 
 func (b *Builder) Compile() error {
+	for _, src_statement := range b.input.Statements {
+		err := b.compileStatement(src_statement)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -48,17 +51,29 @@ func (b *Builder) CompiledCode() *code.Program {
 }
 
 func (b *Builder) emitIntConstant(literal *ast.IntegerLiteral) int {
-	return 0
+	var o object.Object
+	o = &object.Integer{literal.Value}
+	index := len(b.output.Constants)
+	b.output.Constants = append(b.output.Constants, o)
+	return index
 }
 
 func (b *Builder) emitLoadConstant(constIndex int) {
+	ins, err := code.MakeOp(code.OpConstant, constIndex)
+	if err != nil {
+		panic(err)
+	}
+	b.output.Instructions = append(b.output.Instructions, ins...)
 }
 
 func (b *Builder) compileStatement(statement ast.Statement) error {
 	switch v := statement.(type) {
 	case *ast.ExprStatement:
 		err := b.compileExpression(v.Value)
-		return fmt.Errorf("error during compiling expr statement: %w", err)
+		if err != nil {
+			return fmt.Errorf("error during compiling expr statement: %w", err)
+		}
+		return nil
 	default:
 		return fmt.Errorf("unsupported statement.")
 	}
