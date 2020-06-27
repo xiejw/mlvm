@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	// "encoding/json"
+
 	"github.com/xiejw/mlvm/go/compiler"
 	"github.com/xiejw/mlvm/go/syntax/ast"
+	"github.com/xiejw/mlvm/go/vm"
 )
 
 func main() {
@@ -33,5 +33,12 @@ func main() {
 		log.Fatalf("Failed to compile %v", err)
 	}
 
-	fmt.Printf("%v\n", o.Instructions)
+	log.Printf("Compiled Code:\n%v\n", o.Instructions)
+
+	m := vm.NewVM(o)
+
+	log.Printf("Running VM\n")
+	m.Run()
+
+	log.Printf("Results:\n%v\n", m.StackTop())
 }
