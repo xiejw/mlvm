@@ -85,6 +85,16 @@ func (b *Builder) compileExpression(expr ast.Expression) error {
 		index := b.emitIntConstant(v)
 		b.emitLoadConstant(index)
 		return nil
+	case *ast.FunctionCall:
+		fnName := v.Name.Value
+		// Currently only supports limited bultin-ins.
+		switch fnName {
+		case "load_store":
+			fmt.Printf("TODO support Load store")
+		default:
+			return fmt.Errorf("unsupported function name: %v", fnName)
+		}
+
 	default:
 		return fmt.Errorf("unsupported statement.")
 	}
