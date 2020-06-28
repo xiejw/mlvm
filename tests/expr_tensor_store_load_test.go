@@ -16,7 +16,7 @@ func createSimpleTensor() *object.Tensor {
 	return &object.Tensor{shape, array}
 }
 
-func TestTensorStoreLoad(t *testing.T) {
+func TestExprTensorStoreLoad(t *testing.T) {
 	statements := []ast.Statement{
 		&ast.ExprStatement{
 			Value: &ast.FunctionCall{

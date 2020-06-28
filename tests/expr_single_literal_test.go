@@ -17,7 +17,7 @@ func assertNoErr(t *testing.T, err error) {
 	}
 }
 
-func TestSingleExpression(t *testing.T) {
+func TestExprSingleLiteral(t *testing.T) {
 	statements := []ast.Statement{
 		&ast.ExprStatement{
 			Value: &ast.IntegerLiteral{123},
