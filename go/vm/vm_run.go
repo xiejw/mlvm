@@ -148,7 +148,7 @@ func (vm *VM) Run() error {
 		default:
 			startIndex := ip
 			numInstructionsToPrint := 5
-			return vm.canonicalError(op, "unsupported Opcode in vm at @%5d: %v",
+			return vm.canonicalError(op, "unsupported Opcode in vm at @%d:\n\n%v\n",
 				ip,
 				code.Instructions(
 					vm.instructions[ip:]).DebugString(startIndex, numInstructionsToPrint))
