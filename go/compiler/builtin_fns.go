@@ -8,19 +8,28 @@ import (
 	"github.com/xiejw/mlvm/go/syntax/ast"
 )
 
+func checkSingleArg(fname string, args []ast.Expression) (ast.Expression, error) {
+	if len(args) != 1 {
+		return nil, fmt.Errorf("function (\"%v\") should have exactly 1 arg.", fname)
+	}
+	return args[0], nil
+}
+
 func (b *Builder) compileBuiltinFn(fn *ast.FunctionCall) error {
 	fnName := fn.Name.Value
 
 	switch fnName {
 	case "store_load":
-		if len(fn.Args) != 1 {
-			return fmt.Errorf("function (\"%v\") should have exactly 1 arg.", fnName)
-		}
-		err := b.compileExpression(fn.Args[0])
+		arg, err := checkSingleArg(fnName, fn.Args)
 		if err != nil {
 			return err
 		}
-		fmt.Printf("TODO support Load store.\n")
+
+		err = b.compileExpression(arg)
+		if err != nil {
+			return err
+		}
+		b.emitLoadTensor()
 		return nil
 	default:
 		return fmt.Errorf("unsupported function name: %v", fnName)

@@ -13,6 +13,8 @@ const (
 	OpConstant Opcode = iota // Loads constant object, uint16 index, from Program.
 	OpLoadG                  // Loads object, uint16 index, from Global memory.
 	OpStoreG                 // Stores objec, uint16 index, to Global memory.
+	OpLoadT                  // Loads Tensor from Tensor store.
+	OpStoreT                 // Loads Tensor from Tensor store.
 	OpPrngNew                // Creates a new Prng source. The top stack operand is the seed.
 	OpPrngDist               // Creates an Array with distribution (uint16 dist type index). Two stack operands are prng source (top), shape.
 	OpTensor                 // Creates a new Tensor. Two stack operands are shape, array (top).
@@ -28,6 +30,8 @@ var definitions = map[Opcode]*Definition{
 	OpConstant: {"OpConstant", []int{2}},
 	OpLoadG:    {"OpLoadG", []int{2}},
 	OpStoreG:   {"OpStoreG", []int{2}},
+	OpLoadT:    {"OpLoadT", []int{}},
+	OpStoreT:   {"OpStoreT", []int{}},
 	OpPrngNew:  {"OpPrngNew", []int{}},
 	OpPrngDist: {"OpPrngDist", []int{2}},
 	OpTensor:   {"OpTensor", []int{}},

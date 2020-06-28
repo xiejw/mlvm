@@ -50,7 +50,7 @@ func (b *Builder) CompiledCode() *code.Program {
 	return b.output
 }
 
-func (b *Builder) emitIntConstant(literal *ast.IntegerLiteral) int {
+func (b *Builder) emitIntegerConstant(literal *ast.IntegerLiteral) int {
 	var o object.Object
 	o = &object.Integer{literal.Value}
 	index := len(b.output.Constants)
@@ -58,8 +58,24 @@ func (b *Builder) emitIntConstant(literal *ast.IntegerLiteral) int {
 	return index
 }
 
+func (b *Builder) emitStringConstant(literal *ast.StringLiteral) int {
+	var o object.Object
+	o = &object.String{literal.Value}
+	index := len(b.output.Constants)
+	b.output.Constants = append(b.output.Constants, o)
+	return index
+}
+
 func (b *Builder) emitLoadConstant(constIndex int) {
 	ins, err := code.MakeOp(code.OpConstant, constIndex)
+	if err != nil {
+		panic(err)
+	}
+	b.output.Instructions = append(b.output.Instructions, ins...)
+}
+
+func (b *Builder) emitLoadTensor() {
+	ins, err := code.MakeOp(code.OpLoadT)
 	if err != nil {
 		panic(err)
 	}
@@ -82,7 +98,11 @@ func (b *Builder) compileStatement(statement ast.Statement) error {
 func (b *Builder) compileExpression(expr ast.Expression) error {
 	switch v := expr.(type) {
 	case *ast.IntegerLiteral:
-		index := b.emitIntConstant(v)
+		index := b.emitIntegerConstant(v)
+		b.emitLoadConstant(index)
+		return nil
+	case *ast.StringLiteral:
+		index := b.emitStringConstant(v)
 		b.emitLoadConstant(index)
 		return nil
 	case *ast.FunctionCall:
@@ -90,7 +110,7 @@ func (b *Builder) compileExpression(expr ast.Expression) error {
 		return b.compileBuiltinFn(v)
 
 	default:
-		return fmt.Errorf("unsupported statement.")
+		return fmt.Errorf("unsupported expression: %+v", expr)
 	}
 	return nil
 }

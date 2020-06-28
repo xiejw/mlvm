@@ -54,6 +54,11 @@ type IntegerLiteral struct {
 	Value int64
 }
 
+type StringLiteral struct {
+	Value string
+}
+
 func (id *Identifier) expressionNode()          {}
 func (fc *FunctionCall) expressionNode()        {}
 func (literal *IntegerLiteral) expressionNode() {}
+func (literal *StringLiteral) expressionNode()  {}

@@ -15,7 +15,7 @@ func main() {
 		Value: &ast.FunctionCall{
 			Name: &ast.Identifier{"store_load"},
 			Args: []ast.Expression{
-				&ast.IntegerLiteral{123},
+				&ast.StringLiteral{"a"},
 			},
 		},
 	})
@@ -34,7 +34,10 @@ func main() {
 	m := vm.NewVM(o)
 
 	log.Printf("Running VM\n")
-	m.Run()
+	err = m.Run()
+	if err != nil {
+		log.Fatalf("failed to run vm: %v", err)
+	}
 
 	log.Printf("Results:\n%v\n", m.StackTop())
 }
