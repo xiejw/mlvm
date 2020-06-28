@@ -59,6 +59,23 @@ func (vm *VM) Run() error {
 				return vm.canonicalError(op, "internal error: %v.", err)
 			}
 
+		case code.OpLoadT:
+			key, err := vm.popString()
+			if err != nil {
+				return vm.canonicalError(op, "expect to get key name from stack: %v.", err)
+			}
+
+			tensor, err := vm.tensorStore.Load(key.Value)
+			if err != nil {
+				return vm.canonicalError(op,
+					"failed to load tensor (key: \"%s\") from tensor store: %v.", key.Value, err)
+			}
+
+			err = vm.stack.Push(tensor)
+			if err != nil {
+				return vm.canonicalError(op, "internal error: %v.", err)
+			}
+
 			////////////////////////////////////////////////////////////////////////////////////////////////
 			// Prng
 		case code.OpPrngNew:

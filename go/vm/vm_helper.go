@@ -35,6 +35,18 @@ func (vm *VM) popInteger() (*object.Integer, error) {
 	return v, nil
 }
 
+func (vm *VM) popString() (*object.String, error) {
+	o, err := vm.stack.Pop()
+	if err != nil {
+		return nil, fmt.Errorf("failed to pop string from stack: %v.", err)
+	}
+	v, ok := o.(*object.String)
+	if !ok {
+		return nil, fmt.Errorf("failed to pop string from stack: wrong type.")
+	}
+	return v, nil
+}
+
 func (vm *VM) popArray() (*object.Array, error) {
 	arrayObject, err := vm.stack.Pop()
 	if err != nil {

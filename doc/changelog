@@ -1,12 +1,12 @@
 ## TODO
 
-- support vm with tensor store.
 - lower the 1 + 1
 - add an AST for ideal program and lower it.
 
 ## changelog
 
-2020-06-28 added loadT and storeT.
+2020-06-28 supported vm with tensor store.
+2020-06-27 added loadT and storeT.
 2020-06-27 lowed the expr_statement
 2020-06-22 refactored the string() method for all objects.
 2020-06-21 added prng in object package and used the prng64 package as impl.
