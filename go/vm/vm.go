@@ -11,8 +11,9 @@ type VM struct {
 	constants    []object.Object
 
 	// Internal States.
-	stack     *Stack
-	globalMem *Memory
+	stack       *Stack
+	globalMem   *Memory
+	tensorStore TensorStore
 }
 
 func NewVM(program *code.Program) *VM {
@@ -21,7 +22,14 @@ func NewVM(program *code.Program) *VM {
 		constants:    program.Constants,
 		stack:        NewStack(),
 		globalMem:    NewMemory(),
+		tensorStore:  NewTensorStore(),
 	}
+}
+
+func (vm *VM) ResetTensorStore(tensorStore TensorStore) TensorStore {
+	oldTensorStore := vm.tensorStore
+	vm.tensorStore = tensorStore
+	return oldTensorStore
 }
 
 func (vm *VM) StackTop() object.Object {
