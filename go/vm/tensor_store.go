@@ -1,13 +1,7 @@
 package vm
 
 import (
-	"errors"
-
 	"github.com/xiejw/mlvm/go/object"
-)
-
-var (
-	ErrTensorNotFound = errors.New("tensor not found")
 )
 
 // TensorStore is a key-Tensor store.
@@ -29,7 +23,7 @@ func NewTensorStore() TensorStore {
 func (st *storeImpl) Load(key string) (*object.Tensor, error) {
 	tensor, ok := st.db[key]
 	if !ok {
-		return nil, ErrTensorNotFound
+		return nil, ErrTSTensorNotFound
 	}
 	return tensor, nil
 }

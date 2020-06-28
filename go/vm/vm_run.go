@@ -14,7 +14,6 @@ import (
 //   - Upon Run, the memory is reset.
 //   - Across Runs, TensorStore is the only bridge to persist data.
 func (vm *VM) Run() error {
-
 	end := len(vm.instructions)
 
 	for ip := 0; ip < end; ip++ {
