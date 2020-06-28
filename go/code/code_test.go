@@ -13,6 +13,16 @@ func checkNoErr(t *testing.T, err error) {
 	}
 }
 
+// expected is allowed to have one newline.
+func assertDisassemblyCode(t *testing.T, expected, gotWithoutNewLine string) {
+	t.Helper()
+	got := "\n" + gotWithoutNewLine
+
+	if expected != got {
+		t.Errorf("unexpected Instructions String(): expected:\n`%v`\ngot:\n`%v`\n", expected, got)
+	}
+}
+
 func TestOpcodes(t *testing.T) {
 	ops := []struct {
 		op   Opcode
@@ -61,10 +71,7 @@ func TestInstructionDisassembly(t *testing.T) {
 		checkNoErr(t, err)
 
 		got := Instructions(ins).String()
-
-		if expected != got {
-			t.Errorf("Unexpected Instructions String(): expected:\n`%v`\ngot:\n`%v`\n", expected, got)
-		}
+		assertDisassemblyCode(t, expected, got)
 	}
 }
 
@@ -89,7 +96,5 @@ func TestMultiInstructionsDisassembly(t *testing.T) {
 `
 	got := Instructions(ins).String()
 
-	if expected != got {
-		t.Errorf("Unexpected Instructions String(): expected:\n`%v`\ngot:\n`%v`\n", expected, got)
-	}
+	assertDisassemblyCode(t, expected, got)
 }

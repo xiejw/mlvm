@@ -1,8 +1,8 @@
 package code
 
 import (
-	"fmt"
 	"bytes"
+	"fmt"
 
 	"github.com/xiejw/mlvm/go/object"
 )

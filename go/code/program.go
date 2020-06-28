@@ -22,5 +22,5 @@ func NewProgram() *Program {
 }
 
 func (p *Program) String() string {
-	return fmt.Sprintf("-> Constants:\n\n%v\n\n-> Instruction:\n%v\n", p.Constants, p.Instructions)
+	return fmt.Sprintf("-> Constants:\n\n%v\n\n-> Instruction:\n\n%v\n", p.Constants, p.Instructions)
 }

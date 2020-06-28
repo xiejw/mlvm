@@ -107,7 +107,6 @@ func (ins Instructions) String() string {
 // If numInstructions == -1, it means printing all.
 func (ins Instructions) DebugString(startIndex int, numInstructions int) string {
 	var buf bytes.Buffer
-	buf.WriteString("\n")
 
 	numPrinted := 0
 

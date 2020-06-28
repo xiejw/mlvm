@@ -29,7 +29,7 @@ func main() {
 		log.Fatalf("failed to compile: %v", err)
 	}
 
-	log.Printf("Compiled Code:\n\n%v\n", o)
+	log.Printf("Compiled Code:\n\n%v", o)
 
 	m := vm.NewVM(o)
 
