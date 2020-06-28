@@ -10,6 +10,13 @@ import (
 	"github.com/xiejw/mlvm/go/vm"
 )
 
+func assertNoErr(t *testing.T, err error) {
+	t.Helper()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
 func TestSingleExpression(t *testing.T) {
 	statements := []ast.Statement{
 		&ast.ExprStatement{
@@ -21,9 +28,7 @@ func TestSingleExpression(t *testing.T) {
 	}
 
 	o, err := compiler.Compile(p)
-	if err != nil {
-		t.Fatalf("unexpected compile error: %v", err)
-	}
+	assertNoErr(t, err)
 
 	m := vm.NewVM(o)
 	m.Run()
