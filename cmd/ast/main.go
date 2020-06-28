@@ -13,7 +13,7 @@ func main() {
 	statements := make([]ast.Statement, 0)
 	statements = append(statements, &ast.ExprStatement{
 		Value: &ast.FunctionCall{
-			Name: &ast.Identifier{"prng_new"},
+			Name: &ast.Identifier{"store_load"},
 			Args: []ast.Expression{
 				&ast.IntegerLiteral{123},
 			},
@@ -29,7 +29,7 @@ func main() {
 		log.Fatalf("failed to compile: %v", err)
 	}
 
-	log.Printf("Compiled Code:\n%v\n", o.Instructions)
+	log.Printf("Compiled Code:\n\n%v\n", o)
 
 	m := vm.NewVM(o)
 
