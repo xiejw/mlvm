@@ -10,7 +10,7 @@ import (
 
 func (vm *VM) canonicalError(op code.Opcode, format string, args ...interface{}) error {
 	var buf bytes.Buffer
-	fmt.Fprintf(&buf, "program error: Opcode: %v: ", op)
+	fmt.Fprintf(&buf, "program error: current opcode: %v: ", op)
 	fmt.Fprintf(&buf, format, args...)
 	return fmt.Errorf(buf.String())
 }

@@ -3,6 +3,7 @@ package code
 import (
 	"bytes"
 	"fmt"
+	"io"
 
 	"github.com/xiejw/mlvm/go/object"
 )
@@ -10,15 +11,20 @@ import (
 type Constants []object.Object
 
 func (cs Constants) String() string {
+	var buf bytes.Buffer
+	cs.ToHumanReadableString(&buf)
+	return buf.String()
+}
+
+func (cs Constants) ToHumanReadableString(w io.Writer) {
 	if len(cs) == 0 {
-		return "(empty)"
+		fmt.Fprintf(w, "(empty)")
+		return
 	}
 
-	var buf bytes.Buffer
-	buf.WriteString("[\n")
+	fmt.Fprint(w, "[\n")
 	for i, c := range cs {
-		fmt.Fprintf(&buf, "  %3d: %v\n", i, c)
+		fmt.Fprintf(w, "  %3d: %v\n", i, c)
 	}
-	buf.WriteString("]")
-	return buf.String()
+	fmt.Fprint(w, "]")
 }

@@ -16,8 +16,8 @@ func (ins Instructions) String() string {
 
 // Prints all instructions.
 //
-// With startIndex and numInstructions, it is useful to print a slice of the full program.
-// If numInstructions == -1, it means printing all.
+// With startIndex and numInstructions, it is useful to print a slice of the full program.  If
+// numInstructions == -1, it means printing all.
 func (ins Instructions) DebugString(startIndex int, numInstructions int) string {
 	var buf bytes.Buffer
 

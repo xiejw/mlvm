@@ -1,7 +1,9 @@
 package code
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 
 	"github.com/xiejw/mlvm/go/object"
 )
@@ -22,7 +24,14 @@ func NewProgram() *Program {
 }
 
 func (p *Program) String() string {
-	return fmt.Sprintf("-> Constants:\n\n%v\n\n-> Instruction:\n\n%v\n",
-		p.Constants,
+	var buf bytes.Buffer
+	p.ToHumanReadableString(&buf)
+	return buf.String()
+}
+
+func (p *Program) ToHumanReadableString(w io.Writer) {
+	fmt.Fprint(w, "-> Constants:\n\n")
+	p.Constants.ToHumanReadableString(w)
+	fmt.Fprintf(w, "\n\n-> Instruction:\n\n%v\n",
 		p.Instructions)
 }
