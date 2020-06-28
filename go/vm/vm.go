@@ -7,6 +7,8 @@ import (
 
 // VM is a machine which runs the user provided program. The program is not mutable; while the
 // TensorStore might be mutated according to the program.
+//
+// Check Run() to see the lifetime of VM.
 type VM struct {
 	// Copied from Program. Immutate.
 	instructions code.Instructions

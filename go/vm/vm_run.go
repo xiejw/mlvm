@@ -7,6 +7,12 @@ import (
 	"github.com/xiejw/mlvm/go/vm/kernel"
 )
 
+// Run is expected to be call multiple times.
+//
+// Lifetime invarience.
+//   - Upon and afer Run, the stack is empty.
+//   - Upon Run, the memory is reset.
+//   - Across Runs, TensorStore is the only bridge to persist data.
 func (vm *VM) Run() error {
 
 	end := len(vm.instructions)
