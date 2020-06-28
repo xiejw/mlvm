@@ -9,14 +9,9 @@ import (
 
 func (vm *VM) Run() error {
 
-	ip := 0
 	end := len(vm.instructions)
 
-	for {
-
-		if ip >= end {
-			break
-		}
+	for ip := 0; ip < end; ip++ {
 
 		op := code.Opcode(vm.instructions[ip])
 		switch op {
@@ -153,8 +148,6 @@ func (vm *VM) Run() error {
 				code.Instructions(
 					vm.instructions[ip:]).DebugString(startIndex, numInstructionsToPrint))
 		}
-		ip++
-
 	}
 	return nil
 }
