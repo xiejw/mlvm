@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/xiejw/mlvm/go/compiler"
-	"github.com/xiejw/mlvm/go/object"
 	"github.com/xiejw/mlvm/go/syntax/ast"
 	"github.com/xiejw/mlvm/go/vm"
 )
@@ -14,9 +13,15 @@ func main() {
 	statements := make([]ast.Statement, 0)
 	statements = append(statements, &ast.ExprStatement{
 		Value: &ast.FunctionCall{
-			Name: &ast.Identifier{"store_load"},
+			Name: &ast.Identifier{"prng_dist"},
 			Args: []ast.Expression{
-				&ast.StringLiteral{"a"},
+				&ast.FunctionCall{
+					Name: &ast.Identifier{"prng_new"},
+					Args: []ast.Expression{
+						&ast.IntegerLiteral{123}, // seed
+					},
+				},
+				&ast.IntegerLiteral{1}, // dist type
 			},
 		},
 	})
@@ -32,16 +37,7 @@ func main() {
 
 	log.Printf("Compiled Code:\n\n%v", o)
 
-	ts := vm.NewTensorStore()
-	shape := object.NewShape([]object.NamedDim{{"x", 2}})
-	array := &object.Array{[]float32{1.0, 2.0}}
-	tensor := &object.Tensor{shape, array}
-	err = ts.Store("a", tensor)
-	if err != nil {
-		log.Fatalf("failed to store tensor into tensor store: %v", err)
-	}
-
-	m := vm.NewVMWithTensorStore(o, ts)
+	m := vm.NewVM(o)
 
 	log.Printf("Running VM\n")
 	err = m.Run()

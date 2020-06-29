@@ -1,5 +1,7 @@
 ## TODO
 
+- handle outputs well. stack should be empty.
+- plot?
 - lower the 1 + 1
 - add an AST for ideal program and lower it.
 
