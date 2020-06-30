@@ -40,10 +40,10 @@ func main() {
 	m := vm.NewVM(o)
 
 	log.Printf("Running VM\n")
-	err = m.Run()
+	outputs, err := m.Run()
 	if err != nil {
 		log.Fatalf("failed to run vm: %v", err)
 	}
 
-	log.Printf("Results:\n%v\n", m.StackTop())
+	log.Printf("Results:\n%v\n", outputs)
 }

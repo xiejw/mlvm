@@ -37,7 +37,3 @@ func NewVMWithTensorStore(program *code.Program, tensorStore TensorStore) *VM {
 func (vm *VM) TensorStore() TensorStore {
 	return vm.tensorStore
 }
-
-func (vm *VM) StackTop() object.Object {
-	return vm.stack.Top()
-}

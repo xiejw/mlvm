@@ -17,6 +17,15 @@ func assertNoErr(t *testing.T, err error) {
 	}
 }
 
+func assertSingleOutput(t *testing.T, outputs vm.Outputs, err error) object.Object {
+	t.Helper()
+	assertNoErr(t, err)
+	if len(outputs) != 1 {
+		t.Fatalf("unexpected single output, got: %v", outputs)
+	}
+	return outputs[0]
+}
+
 func TestExprSingleLiteral(t *testing.T) {
 	statements := []ast.Statement{
 		&ast.ExprStatement{
@@ -31,10 +40,10 @@ func TestExprSingleLiteral(t *testing.T) {
 	assertNoErr(t, err)
 
 	m := vm.NewVM(o)
-	m.Run()
+	outputs, err := m.Run()
+	got := assertSingleOutput(t, outputs, err)
 
 	expected := &object.Integer{123}
-	got := m.StackTop()
 
 	if !reflect.DeepEqual(expected, got) {
 		t.Errorf("unexpected output.")

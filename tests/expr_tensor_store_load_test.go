@@ -41,11 +41,10 @@ func TestExprTensorStoreLoad(t *testing.T) {
 
 	m := vm.NewVMWithTensorStore(o, ts)
 
-	err = m.Run()
-	assertNoErr(t, err)
+	outputs, err := m.Run()
+	got := assertSingleOutput(t, outputs, err)
 
 	expected := createSimpleTensor()
-	got := m.StackTop()
 
 	if !reflect.DeepEqual(expected, got) {
 		t.Errorf("unexpected output.")

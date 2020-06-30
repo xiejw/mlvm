@@ -16,11 +16,10 @@ func assertNoErr(t *testing.T, err error) {
 
 func TestCreateVM(t *testing.T) {
 	vm := NewVM(&code.Program{})
-	err := vm.Run()
+	outputs, err := vm.Run()
 	assertNoErr(t, err)
 
-	o := vm.StackTop()
-	if o != nil {
+	if len(outputs) != 0 {
 		t.Fatalf("stack should be empty.")
 	}
 }
