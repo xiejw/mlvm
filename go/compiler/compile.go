@@ -37,10 +37,17 @@ func NewBuilder(src *ast.Program) *Builder {
 }
 
 func (b *Builder) Compile() error {
-	for _, src_statement := range b.input.Statements {
+
+	statements := b.input.Statements
+	finalStatementIndex := len(statements) - 1
+
+	for i, src_statement := range statements {
 		err := b.compileStatement(src_statement)
 		if err != nil {
 			return err
+		}
+		if _, ok := src_statement.(*ast.ExprStatement); ok && i != finalStatementIndex {
+			b.emitPop()
 		}
 	}
 	return nil
@@ -76,6 +83,14 @@ func (b *Builder) emitLoadConstant(constIndex int) {
 
 func (b *Builder) emitLoadTensor() {
 	ins, err := code.MakeOp(code.OpLoadT)
+	if err != nil {
+		panic(err)
+	}
+	b.output.Instructions = append(b.output.Instructions, ins...)
+}
+
+func (b *Builder) emitPop() {
+	ins, err := code.MakeOp(code.OpPop)
 	if err != nil {
 		panic(err)
 	}

@@ -11,10 +11,13 @@ type Outputs []object.Object
 
 // Run is expected to be call multiple times.
 //
-// Lifetime invarience.
-//   - Upon and afer run, the stack is empty.
+// Lifetime invariance.
+//   - Upon and after run, the stack is empty.
 //   - Upon run, the memory is reset.
 //   - Across multiple runs, TensorStore is the only approach to persist data.
+//
+// During any run, if any error raised, the system's state becomes unknown. Creating a new VM is
+// recommended.
 func (vm *VM) Run() (Outputs, error) {
 	end := len(vm.instructions)
 
@@ -176,6 +179,7 @@ func (vm *VM) Run() (Outputs, error) {
 	return vm.popOutputs()
 }
 
+// Clears the stack and moves items (in reverse order) as outputs.
 func (vm *VM) popOutputs() (Outputs, error) {
 	var outputs Outputs
 	stack := vm.stack

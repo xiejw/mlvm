@@ -11,6 +11,7 @@ const (
 	// Opcode Name should be at most 10 chars.
 	//
 	OpConstant Opcode = iota // Loads constant object, uint16 index, from Program.
+	OpPop                    // Pops out top item on stack.
 	OpLoadG                  // Loads object, uint16 index, from Global memory.
 	OpStoreG                 // Stores objec, uint16 index, to Global memory.
 	OpLoadT                  // Loads Tensor from Tensor store.
@@ -28,6 +29,7 @@ type Definition struct {
 
 var definitions = map[Opcode]*Definition{
 	OpConstant: {"OpConstant", []int{2}},
+	OpPop:      {"OpPop", []int{}},
 	OpLoadG:    {"OpLoadG", []int{2}},
 	OpStoreG:   {"OpStoreG", []int{2}},
 	OpLoadT:    {"OpLoadT", []int{}},

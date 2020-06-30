@@ -29,6 +29,7 @@ func TestOpcodes(t *testing.T) {
 		name string
 	}{
 		{OpConstant, "OpConstant"},
+		{OpPop, "OpPop"},
 		{OpLoadG, "OpLoadG"},
 		{OpStoreG, "OpStoreG"},
 		{OpLoadT, "OpLoadT"},
@@ -59,6 +60,7 @@ func TestInstructionDisassembly(t *testing.T) {
 		args     []int
 	}{
 		{"\n000000 OpConstant 123\n", OpConstant, []int{123}},
+		{"\n000000 OpPop     \n", OpPop, []int{}},
 		{"\n000000 OpLoadG    456\n", OpLoadG, []int{456}},
 		{"\n000000 OpStoreG   789\n", OpStoreG, []int{789}},
 		{"\n000000 OpLoadT   \n", OpLoadT, []int{}},
