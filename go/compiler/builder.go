@@ -1,8 +1,6 @@
 package compiler
 
 import (
-	"fmt"
-
 	"github.com/xiejw/mlvm/go/code"
 	"github.com/xiejw/mlvm/go/object"
 	"github.com/xiejw/mlvm/go/syntax/ast"
@@ -43,37 +41,4 @@ func (b *Builder) Compile() error {
 
 func (b *Builder) CompiledCode() *code.Program {
 	return b.output
-}
-
-func (b *Builder) compileStatement(statement ast.Statement) error {
-	switch v := statement.(type) {
-	case *ast.ExprStatement:
-		err := b.compileExpression(v.Value)
-		if err != nil {
-			return fmt.Errorf("error during compiling expr statement: %w", err)
-		}
-		return nil
-	default:
-		return fmt.Errorf("unsupported statement.")
-	}
-}
-
-func (b *Builder) compileExpression(expr ast.Expression) error {
-	switch v := expr.(type) {
-	case *ast.IntegerLiteral:
-		index := b.emitIntegerConstant(v)
-		b.emitLoadConstant(index)
-		return nil
-	case *ast.StringLiteral:
-		index := b.emitStringConstant(v)
-		b.emitLoadConstant(index)
-		return nil
-	case *ast.FunctionCall:
-		// Currently only supports limited bultin-ins.
-		return b.compileBuiltinFn(v)
-
-	default:
-		return fmt.Errorf("unsupported expression: %+v", expr)
-	}
-	return nil
 }
