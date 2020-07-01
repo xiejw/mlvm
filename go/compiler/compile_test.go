@@ -37,22 +37,41 @@ func makeOpHelper(t *testing.T, op code.Opcode, args ...int) []byte {
 }
 
 func TestExprSingleLiteral(t *testing.T) {
-	statements := []ast.Statement{
-		&ast.ExprStatement{
-			Value: &ast.IntegerLiteral{123},
-		}}
-
-	p := &ast.Program{
-		Statements: statements,
-	}
-
-	o, err := Compile(p)
+	c, err := Compile(&ast.Program{
+		Statements: []ast.Statement{
+			&ast.ExprStatement{
+				Value: &ast.IntegerLiteral{123},
+			}},
+	})
 	assertNoErr(t, err)
-
-	got := o.Instructions.String()
+	got := c.Instructions.String()
 
 	var ins code.Instructions
 	ins = append(ins, makeOpHelper(t, code.OpConstant, 0)...)
+	expected := ins.String()
+
+	assertInstructions(t, expected, got)
+}
+
+func TestExprTensorStoreLoad(t *testing.T) {
+	c, err := Compile(&ast.Program{
+		Statements: []ast.Statement{
+			&ast.ExprStatement{
+				Value: &ast.FunctionCall{
+					Name: &ast.Identifier{"store_load"},
+					Args: []ast.Expression{
+						&ast.StringLiteral{"a"},
+					},
+				},
+			},
+		},
+	})
+	assertNoErr(t, err)
+	got := c.Instructions.String()
+
+	var ins code.Instructions
+	ins = append(ins, makeOpHelper(t, code.OpConstant, 0)...)
+	ins = append(ins, makeOpHelper(t, code.OpLoadT)...)
 	expected := ins.String()
 
 	assertInstructions(t, expected, got)
