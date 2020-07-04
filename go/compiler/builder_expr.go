@@ -6,6 +6,7 @@ import (
 	"github.com/xiejw/mlvm/go/syntax/ast"
 )
 
+// Compiles the expression.
 func (b *Builder) compileExpression(expr ast.Expression) error {
 	switch v := expr.(type) {
 	case *ast.IntegerLiteral:
@@ -23,5 +24,4 @@ func (b *Builder) compileExpression(expr ast.Expression) error {
 	default:
 		return fmt.Errorf("unsupported expression: %+v", expr)
 	}
-	return nil
 }

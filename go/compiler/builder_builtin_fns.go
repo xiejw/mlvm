@@ -3,8 +3,6 @@ package compiler
 import (
 	"fmt"
 
-	_ "github.com/xiejw/mlvm/go/code"
-	_ "github.com/xiejw/mlvm/go/object"
 	"github.com/xiejw/mlvm/go/syntax/ast"
 )
 
