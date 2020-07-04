@@ -1,11 +1,37 @@
 package parser
 
+import (
+	"fmt"
+
+	"github.com/xiejw/mlvm/go/compiler/lexer"
+	"github.com/xiejw/mlvm/go/compiler/token"
+)
+
 type Parser struct {
-	input []byte
+	option Option
+	l      *lexer.Lexer
 }
 
-func New(input []byte) *Parser {
+type Option struct {
+	Trace bool
+}
+
+func New(input []byte, option Option) *Parser {
 	return &Parser{
-		input: input,
+		option: option,
+		l:      lexer.New(input),
+	}
+}
+
+func (p *Parser) Loop() {
+
+	for {
+		tok := p.l.NextToken()
+		if p.option.Trace {
+			fmt.Printf("token: %+v\n", tok)
+		}
+		if tok.Type == token.EOF {
+			break
+		}
 	}
 }

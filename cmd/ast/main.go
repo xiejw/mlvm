@@ -4,12 +4,16 @@ import (
 	"log"
 
 	_ "github.com/xiejw/mlvm/go/compiler"
+	"github.com/xiejw/mlvm/go/compiler/parser"
 	_ "github.com/xiejw/mlvm/go/syntax/ast"
 	_ "github.com/xiejw/mlvm/go/vm"
 )
 
 func main() {
-	log.Printf("Hello")
+	log.Printf("Hello MLVM")
+
+	p := parser.New([]byte("()\n()\n"), parser.Option{Trace: true})
+	p.Loop()
 
 	// 	statements := make([]ast.Statement, 0)
 	// 	statements = append(statements, &ast.ExprStatement{
