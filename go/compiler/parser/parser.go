@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/xiejw/mlvm/go/compiler/lexer"
 	"github.com/xiejw/mlvm/go/compiler/token"
@@ -28,9 +28,13 @@ func (p *Parser) Loop() {
 	for {
 		tok := p.l.NextToken()
 		if p.option.Trace {
-			fmt.Printf("token: %+v\n", tok)
+			log.Printf("token: %+v\n", tok)
 		}
 		if tok.Type == token.EOF {
+			break
+		}
+		if tok.Type == token.ILLEGAL {
+			log.Fatalf("illegal: %+v", tok)
 			break
 		}
 	}

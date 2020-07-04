@@ -1,8 +1,6 @@
 package lexer
 
 import (
-	"fmt"
-
 	"github.com/xiejw/mlvm/go/compiler/token"
 )
 
@@ -43,7 +41,11 @@ func (l *Lexer) NextToken() *token.Token {
 	case 0:
 		tok.Type = token.EOF
 	default:
-		panic(fmt.Sprintf("unkknown character: %v. location: %+v", l.ch, l.loc))
+		if isLetter(l.ch) {
+		} else {
+			tok.Type = token.ILLEGAL
+			tok.Literal = string(l.ch)
+		}
 	}
 
 	l.readChar()
@@ -82,4 +84,8 @@ func (l *Lexer) readChar() {
 
 	l.position = l.readPosition
 	l.readPosition += 1
+}
+
+func isLetter(ch byte) bool {
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z'
 }
