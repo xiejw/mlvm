@@ -48,6 +48,7 @@ func (l *Lexer) NextToken() *token.Token {
 			tok.Type = token.ILLEGAL
 			tok.Literal = string(l.ch)
 		}
+		return &tok // skip the next readChar.
 	}
 
 	l.readChar()

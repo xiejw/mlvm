@@ -28,7 +28,7 @@ func (p *Parser) Loop() {
 	for {
 		tok := p.l.NextToken()
 		if p.option.Trace {
-			log.Printf("token: %+v\n", tok)
+			log.Printf("parser got token from lexer: %+v\n", tok)
 		}
 		if tok.Type == token.EOF {
 			break
