@@ -12,7 +12,7 @@ import (
 func main() {
 	log.Printf("Hello MLVM")
 
-	p := parser.New([]byte("(def a)\n()\n"), parser.Option{Trace: true})
+	p := parser.New([]byte("(def a 123)\n()\n"), parser.Option{Trace: true})
 	p.Loop()
 
 	// 	statements := make([]ast.Statement, 0)
