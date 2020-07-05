@@ -35,9 +35,6 @@ func (l *Lexer) NextToken() *token.Token {
 	case ')':
 		tok.Type = token.RPAREN
 		tok.Literal = ")"
-	case '+':
-		tok.Type = token.PLUS
-		tok.Literal = "+"
 	case 0:
 		tok.Type = token.EOF
 	default:
@@ -109,7 +106,7 @@ func (l *Lexer) readInteger() string {
 }
 
 func isLetter(ch byte) bool {
-	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z'
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || '+' == ch
 }
 
 func isDigit(ch byte) bool {

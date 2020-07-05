@@ -12,7 +12,8 @@ import (
 func main() {
 	log.Printf("Hello MLVM")
 
-	p := parser.NewWithOption([]byte("(def a 123)\n(+ a a)\n"), &parser.Option{Trace: true})
+	p := parser.NewWithOption([]byte("(def a 123)\n(+ a a)\n"),
+	&parser.Option{TraceLexer: true, TraceParser: true})
 	ast, err := p.ParseAst()
 	if err != nil {
 		log.Fatalf("error: %v", err)

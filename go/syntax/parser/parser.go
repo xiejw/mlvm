@@ -5,6 +5,8 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/fatih/color"
+
 	"github.com/xiejw/mlvm/go/syntax/ast"
 	"github.com/xiejw/mlvm/go/syntax/lexer"
 	"github.com/xiejw/mlvm/go/syntax/token"
@@ -16,10 +18,12 @@ type Parser struct {
 	l         *lexer.Lexer
 	curToken  *token.Token
 	peekToken *token.Token
+	level int
 }
 
 type Option struct {
-	Trace bool
+	TraceLexer bool
+	TraceParser bool
 }
 
 func New(input []byte) *Parser {
@@ -41,6 +45,7 @@ func NewWithOption(input []byte, option *Option) *Parser {
 func (p *Parser) ParseAst() (*ast.Program, error) {
 	program := &ast.Program{}
 	expressions := make([]ast.Expression, 0)
+	defer func() {p.level-=1}()
 
 	for p.curToken.Type != token.EOF {
 		expr, err := p.parseExpression()
@@ -56,8 +61,14 @@ func (p *Parser) ParseAst() (*ast.Program, error) {
 }
 
 func (p *Parser) parseExpression() (ast.Expression, error) {
+	if p.option.TraceParser {
+		p.logTracerLog("Tracer: Parser: Expression")
+	}
+
 	switch p.curToken.Type {
 	case token.LPAREN:
+	p.level += 1
+	defer func() {p.level-=1}()
 		return p.parseFunctionCallExpression()
 	case token.IDENTIFIER:
 		return p.parseIdentifider()
@@ -69,6 +80,10 @@ func (p *Parser) parseExpression() (ast.Expression, error) {
 }
 
 func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
+	if p.option.TraceParser {
+		log.Printf("Tracer: Parser: FunctionCallExpression")
+	}
+
 	err := p.parseSingleTokenWithType(token.LPAREN)
 	if err != nil {
 		return nil, err
@@ -84,9 +99,6 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 			return nil, err
 		}
 		fc.Func = id
-	case token.PLUS:
-		fc.Func = &ast.Identifier{Value: "+"}
-		p.advanceToken()
 	default:
 		return nil, fmt.Errorf("unsupport function: %v", p.curToken)
 	}
@@ -110,6 +122,10 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 }
 
 func (p *Parser) parseIdentifider() (*ast.Identifier, error) {
+	if p.option.TraceParser {
+		p.logTracerLog("Tracer: Parser: Identifier")
+	}
+
 	if !p.isCurrentTokenType(token.IDENTIFIER) {
 		return nil, fmt.Errorf("expected to see token type: %v, got: %v",
 			token.IDENTIFIER, p.curToken)
@@ -121,6 +137,10 @@ func (p *Parser) parseIdentifider() (*ast.Identifier, error) {
 }
 
 func (p *Parser) parseInteger() (*ast.IntegerLiteral, error) {
+	if p.option.TraceParser {
+		p.logTracerLog("Tracer: Parser: Integer")
+	}
+
 	if !p.isCurrentTokenType(token.INTEGER) {
 		return nil, fmt.Errorf("expected to see token type: %v, got: %v",
 			token.INTEGER, p.curToken)
@@ -137,6 +157,10 @@ func (p *Parser) parseInteger() (*ast.IntegerLiteral, error) {
 }
 
 func (p *Parser) parseSingleTokenWithType(t token.TokenType) error {
+	if p.option.TraceParser {
+		p.logTracerLog("Tracer: Parser: Token with type: %v", t)
+	}
+
 	if !p.isCurrentTokenType(t) {
 		return fmt.Errorf("expected to see token type: %v, got: %v",
 			t, p.curToken)
@@ -158,7 +182,27 @@ func (p *Parser) advanceToken() {
 	p.curToken = p.peekToken
 	p.peekToken = p.l.NextToken()
 
-	if p.option.Trace && p.curToken != nil {
-		log.Printf("trace parser: current token: %+v\n", p.curToken)
+	if p.option.TraceLexer && p.curToken != nil {
+		log.Printf("%vTracer: Lexer: current token: %+v\n", levelToIndent(p.level), p.curToken)
 	}
+}
+
+func levelToIndent(level int) string {
+	switch level {
+	case 0:
+		return ""
+	case 1:
+		return "  "
+	case 2:
+		return "    "
+	case 3:
+		return "      "
+	default:
+		return fmt.Sprintf("      (level %v)" , level)
+	}
+}
+
+func (p *Parser) logTracerLog(sfmt string, args... interface{}) {
+	line := fmt.Sprintf(sfmt, args...)
+	log.Printf("%vTracer: %v: %v", levelToIndent(p.level), color.GreenString("Parser"), line)
 }
