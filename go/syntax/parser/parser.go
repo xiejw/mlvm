@@ -100,12 +100,13 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 		}
 		args = append(args, arg)
 	}
+	fc.Args = args
 
 	err = p.parseSingleTokenWithType(token.RPAREN)
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+	return fc, nil
 }
 
 func (p *Parser) parseIdentifider() (*ast.Identifier, error) {
