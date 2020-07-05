@@ -42,7 +42,7 @@ func (p *Parser) ParseAst() (*ast.Program, error) {
 	expressions := make([]ast.Expression, 0)
 
 	for p.curToken.Type != token.EOF {
-		expr, err := p.parseFunctionCallExpression()
+		expr, err := p.parseExpression()
 		if err != nil {
 			return nil, err
 		}
@@ -55,8 +55,19 @@ func (p *Parser) ParseAst() (*ast.Program, error) {
 	return program, nil
 }
 
+func (p *Parser) parseExpression() (ast.Expression, error) {
+	switch p.curToken.Type {
+	case token.LPAREN:
+		return p.parseFunctionCallExpression()
+	case token.IDENTIFIER:
+		return p.parseIdentifider()
+	default:
+		return nil, fmt.Errorf("unknown expression token: %v", p.curToken)
+	}
+}
+
 func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
-	err := p.consumeTokenType(token.LPAREN)
+	err := p.parseSingleTokenWithType(token.LPAREN)
 	if err != nil {
 		return nil, err
 	}
@@ -65,9 +76,9 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 
 	// Supports `fn`
 	id, err := p.parseIdentifider()
-	fc.Name = id
+	fc.Func = id
 
-	err = p.consumeTokenType(token.RPAREN)
+	err = p.parseSingleTokenWithType(token.RPAREN)
 	if err != nil {
 		return nil, err
 	}
@@ -75,9 +86,9 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 }
 
 func (p *Parser) parseIdentifider() (*ast.Identifier, error) {
-	err := p.expectTokenType(token.IDENTIFIER)
-	if err != nil {
-		return nil, err
+	if !p.isCurrentTokenType(token.IDENTIFIER) {
+		return nil, fmt.Errorf("expected to see token type: %v, got: %v",
+			token.IDENTIFIER, p.curToken)
 	}
 
 	id := &ast.Identifier{Value: p.curToken.Literal}
@@ -85,20 +96,13 @@ func (p *Parser) parseIdentifider() (*ast.Identifier, error) {
 	return id, nil
 }
 
-func (p *Parser) consumeTokenType(t token.TokenType) error {
-	err := p.expectTokenType(t)
-	if err != nil {
-		return err
-	}
-	p.advanceToken()
-	return nil
-}
-
-func (p *Parser) expectTokenType(t token.TokenType) error {
+func (p *Parser) parseSingleTokenWithType(t token.TokenType) error {
 	if !p.isCurrentTokenType(t) {
 		return fmt.Errorf("expected to see token type: %v, got: %v",
 			t, p.curToken)
 	}
+
+	p.advanceToken()
 	return nil
 }
 

@@ -14,7 +14,7 @@ func checkSingleArg(fname string, args []ast.Expression) (ast.Expression, error)
 }
 
 func (b *Builder) compileBuiltinFn(fn *ast.FunctionCall) error {
-	fnName := fn.Name.Value
+	fnName := fn.Func.Value
 
 	switch fnName {
 	case "store_load":

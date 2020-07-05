@@ -24,7 +24,7 @@ type Identifier struct {
 }
 
 type FunctionCall struct {
-	Name *Identifier
+	Func *Identifier
 	Args []Expression
 }
 
