@@ -1,5 +1,8 @@
 ## TODO
 
+- compile
+- type inference
+- better error message with diag notes.
 - remove compile_test, node_test, tests/...
 
 - handle outputs well. stack should be empty.

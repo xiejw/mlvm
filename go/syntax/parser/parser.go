@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"log"
 	"fmt"
+	"log"
 
 	"github.com/xiejw/mlvm/go/syntax/ast"
 	"github.com/xiejw/mlvm/go/syntax/lexer"
@@ -30,19 +30,11 @@ func NewWithOption(input []byte, option *Option) *Parser {
 		option: option,
 		l:      lexer.New(input),
 	}
+
 	// Fills curToken and peekToken
-	p.nextToken()
-	p.nextToken()
+	p.advanceToken()
+	p.advanceToken()
 	return p
-}
-
-func (p *Parser) nextToken() {
-	p.curToken = p.peekToken
-	p.peekToken = p.l.NextToken()
-
-	if p.option.Trace && p.curToken != nil {
-		log.Printf("trace parser: current token: %+v\n", p.curToken)
-	}
 }
 
 func (p *Parser) ParseAst() (*ast.Program, error) {
@@ -56,7 +48,7 @@ func (p *Parser) ParseAst() (*ast.Program, error) {
 		}
 
 		expressions = append(expressions, expr)
-		p.nextToken()
+		p.advanceToken()
 	}
 
 	program.Expressions = expressions
@@ -69,8 +61,7 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 		return nil, err
 	}
 
-	fc := &ast.FunctionCall{
-	}
+	fc := &ast.FunctionCall{}
 
 	// Supports `fn`
 	id, err := p.parseIdentifider()
@@ -90,7 +81,7 @@ func (p *Parser) parseIdentifider() (*ast.Identifier, error) {
 	}
 
 	id := &ast.Identifier{Value: p.curToken.Literal}
-	p.nextToken()
+	p.advanceToken()
 	return id, nil
 }
 
@@ -99,18 +90,31 @@ func (p *Parser) consumeTokenType(t token.TokenType) error {
 	if err != nil {
 		return err
 	}
-	p.nextToken()
+	p.advanceToken()
 	return nil
 }
 
 func (p *Parser) expectTokenType(t token.TokenType) error {
-	if p.isCurrentTokenType(t) {
-		return fmt.Errorf("expected to see token type: %v, got",
-		t, p.curToken)
+	if !p.isCurrentTokenType(t) {
+		return fmt.Errorf("expected to see token type: %v, got: %v",
+			t, p.curToken)
 	}
 	return nil
 }
 
 func (p *Parser) isCurrentTokenType(t token.TokenType) bool {
 	return p.curToken.Type == t
+}
+
+func (p *Parser) isPeekTokenType(t token.TokenType) bool {
+	return p.peekToken.Type == t
+}
+
+func (p *Parser) advanceToken() {
+	p.curToken = p.peekToken
+	p.peekToken = p.l.NextToken()
+
+	if p.option.Trace && p.curToken != nil {
+		log.Printf("trace parser: current token: %+v\n", p.curToken)
+	}
 }
