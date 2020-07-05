@@ -3,6 +3,7 @@ package parser
 import (
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/xiejw/mlvm/go/syntax/ast"
 	"github.com/xiejw/mlvm/go/syntax/lexer"
@@ -48,7 +49,6 @@ func (p *Parser) ParseAst() (*ast.Program, error) {
 		}
 
 		expressions = append(expressions, expr)
-		p.advanceToken()
 	}
 
 	program.Expressions = expressions
@@ -61,6 +61,8 @@ func (p *Parser) parseExpression() (ast.Expression, error) {
 		return p.parseFunctionCallExpression()
 	case token.IDENTIFIER:
 		return p.parseIdentifider()
+	case token.INTEGER:
+		return p.parseInteger()
 	default:
 		return nil, fmt.Errorf("unknown expression token: %v", p.curToken)
 	}
@@ -74,9 +76,22 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 
 	fc := &ast.FunctionCall{}
 
-	// Supports `fn`
+	// TODO: Supports `fn`
 	id, err := p.parseIdentifider()
+	if err != nil {
+		return nil, err
+	}
 	fc.Func = id
+
+	var args []ast.Expression
+	// Args
+	for p.curToken.Type != token.RPAREN {
+		arg, err := p.parseExpression()
+		if err != nil {
+			return nil, err
+		}
+		args = append(args, arg)
+	}
 
 	err = p.parseSingleTokenWithType(token.RPAREN)
 	if err != nil {
@@ -94,6 +109,22 @@ func (p *Parser) parseIdentifider() (*ast.Identifier, error) {
 	id := &ast.Identifier{Value: p.curToken.Literal}
 	p.advanceToken()
 	return id, nil
+}
+
+func (p *Parser) parseInteger() (*ast.IntegerLiteral, error) {
+	if !p.isCurrentTokenType(token.INTEGER) {
+		return nil, fmt.Errorf("expected to see token type: %v, got: %v",
+			token.INTEGER, p.curToken)
+	}
+
+	v, err := strconv.ParseInt(p.curToken.Literal, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+
+	i := &ast.IntegerLiteral{Value: v}
+	p.advanceToken()
+	return i, nil
 }
 
 func (p *Parser) parseSingleTokenWithType(t token.TokenType) error {
