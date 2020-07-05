@@ -18,11 +18,11 @@ type Parser struct {
 	l         *lexer.Lexer
 	curToken  *token.Token
 	peekToken *token.Token
-	level int
+	level     int
 }
 
 type Option struct {
-	TraceLexer bool
+	TraceLexer  bool
 	TraceParser bool
 }
 
@@ -45,7 +45,7 @@ func NewWithOption(input []byte, option *Option) *Parser {
 func (p *Parser) ParseAst() (*ast.Program, error) {
 	program := &ast.Program{}
 	expressions := make([]ast.Expression, 0)
-	defer func() {p.level-=1}()
+	defer func() { p.level -= 1 }()
 
 	for p.curToken.Type != token.EOF {
 		expr, err := p.parseExpression()
@@ -62,13 +62,13 @@ func (p *Parser) ParseAst() (*ast.Program, error) {
 
 func (p *Parser) parseExpression() (ast.Expression, error) {
 	if p.option.TraceParser {
-		p.logTracerLog("Tracer: Parser: Expression")
+		p.logParserTracing("Tracer: Parser: Expression")
 	}
 
 	switch p.curToken.Type {
 	case token.LPAREN:
-	p.level += 1
-	defer func() {p.level-=1}()
+		p.level += 1
+		defer func() { p.level -= 1 }()
 		return p.parseFunctionCallExpression()
 	case token.IDENTIFIER:
 		return p.parseIdentifider()
@@ -123,7 +123,7 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 
 func (p *Parser) parseIdentifider() (*ast.Identifier, error) {
 	if p.option.TraceParser {
-		p.logTracerLog("Tracer: Parser: Identifier")
+		p.logParserTracing("Tracer: Parser: Identifier")
 	}
 
 	if !p.isCurrentTokenType(token.IDENTIFIER) {
@@ -138,7 +138,7 @@ func (p *Parser) parseIdentifider() (*ast.Identifier, error) {
 
 func (p *Parser) parseInteger() (*ast.IntegerLiteral, error) {
 	if p.option.TraceParser {
-		p.logTracerLog("Tracer: Parser: Integer")
+		p.logParserTracing("Tracer: Parser: Integer")
 	}
 
 	if !p.isCurrentTokenType(token.INTEGER) {
@@ -158,7 +158,7 @@ func (p *Parser) parseInteger() (*ast.IntegerLiteral, error) {
 
 func (p *Parser) parseSingleTokenWithType(t token.TokenType) error {
 	if p.option.TraceParser {
-		p.logTracerLog("Tracer: Parser: Token with type: %v", t)
+		p.logParserTracing("Tracer: Parser: Token with type: %v", t)
 	}
 
 	if !p.isCurrentTokenType(t) {
@@ -183,7 +183,7 @@ func (p *Parser) advanceToken() {
 	p.peekToken = p.l.NextToken()
 
 	if p.option.TraceLexer && p.curToken != nil {
-		log.Printf("%vTracer: Lexer: current token: %+v\n", levelToIndent(p.level), p.curToken)
+		log.Printf("%vTracer: Lexer: next token: %+v\n", levelToIndent(p.level), p.curToken)
 	}
 }
 
@@ -198,11 +198,11 @@ func levelToIndent(level int) string {
 	case 3:
 		return "      "
 	default:
-		return fmt.Sprintf("      (level %v)" , level)
+		return fmt.Sprintf("      (level %v)", level)
 	}
 }
 
-func (p *Parser) logTracerLog(sfmt string, args... interface{}) {
+func (p *Parser) logParserTracing(sfmt string, args ...interface{}) {
 	line := fmt.Sprintf(sfmt, args...)
 	log.Printf("%vTracer: %v: %v", levelToIndent(p.level), color.GreenString("Parser"), line)
 }
