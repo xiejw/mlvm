@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"github.com/xiejw/mlvm/go/compiler/token"
+	"github.com/xiejw/mlvm/go/syntax/token"
 )
 
 type Lexer struct {
