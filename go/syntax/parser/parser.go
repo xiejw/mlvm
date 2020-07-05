@@ -77,11 +77,19 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 	fc := &ast.FunctionCall{}
 
 	// TODO: Supports `fn`
-	id, err := p.parseIdentifider()
-	if err != nil {
-		return nil, err
+	switch p.curToken.Type {
+	case token.IDENTIFIER:
+		id, err := p.parseIdentifider()
+		if err != nil {
+			return nil, err
+		}
+		fc.Func = id
+	case token.PLUS:
+		fc.Func = &ast.Identifier{Value: "+"}
+		p.advanceToken()
+	default:
+		return nil, fmt.Errorf("unsupport function: %v", p.curToken)
 	}
-	fc.Func = id
 
 	var args []ast.Expression
 	// Args
