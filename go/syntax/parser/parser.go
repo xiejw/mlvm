@@ -62,7 +62,7 @@ func (p *Parser) ParseAst() (*ast.Program, error) {
 
 func (p *Parser) parseExpression() (ast.Expression, error) {
 	if p.option.TraceParser {
-		p.logParserTracing("Tracer: Parser: Expression")
+		p.logParserTracing("Expression")
 	}
 
 	switch p.curToken.Type {
@@ -80,16 +80,20 @@ func (p *Parser) parseExpression() (ast.Expression, error) {
 }
 
 func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
+	fc := &ast.FunctionCall{}
+
 	if p.option.TraceParser {
-		log.Printf("Tracer: Parser: FunctionCallExpression")
+		p.logParserTracing("FunctionCallExpression")
+		defer func() {
+			p.logParserTracing("FunctionCallExpression %v: %v",
+				color.YellowString("result"), ast.Expressions([]ast.Expression{fc}))
+		}()
 	}
 
 	err := p.parseSingleTokenWithType(token.LPAREN)
 	if err != nil {
 		return nil, err
 	}
-
-	fc := &ast.FunctionCall{}
 
 	// TODO: Supports `fn`
 	switch p.curToken.Type {
@@ -123,7 +127,7 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 
 func (p *Parser) parseIdentifider() (*ast.Identifier, error) {
 	if p.option.TraceParser {
-		p.logParserTracing("Tracer: Parser: Identifier")
+		p.logParserTracing("Identifier")
 	}
 
 	if !p.isCurrentTokenType(token.IDENTIFIER) {
@@ -138,7 +142,7 @@ func (p *Parser) parseIdentifider() (*ast.Identifier, error) {
 
 func (p *Parser) parseInteger() (*ast.IntegerLiteral, error) {
 	if p.option.TraceParser {
-		p.logParserTracing("Tracer: Parser: Integer")
+		p.logParserTracing("Integer")
 	}
 
 	if !p.isCurrentTokenType(token.INTEGER) {
@@ -158,7 +162,7 @@ func (p *Parser) parseInteger() (*ast.IntegerLiteral, error) {
 
 func (p *Parser) parseSingleTokenWithType(t token.TokenType) error {
 	if p.option.TraceParser {
-		p.logParserTracing("Tracer: Parser: Token with type: %v", t)
+		p.logParserTracing("Token with type: %v", t)
 	}
 
 	if !p.isCurrentTokenType(t) {
