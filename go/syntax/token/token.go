@@ -14,8 +14,9 @@ const (
 )
 
 type Location struct {
-	Row    uint
-	Column uint
+	Row      uint
+	Column   uint
+	Position uint
 }
 
 type Token struct {

@@ -22,6 +22,10 @@ func New(input []byte) *Lexer {
 	return l
 }
 
+func (l *Lexer) Bytes(startPos, endPos uint) []byte {
+	return l.input[startPos:endPos]
+}
+
 func (l *Lexer) NextToken() *token.Token {
 	var tok token.Token
 	l.skipWhiteSpaces()
@@ -87,6 +91,7 @@ func (l *Lexer) readChar() {
 
 	l.position = l.readPosition
 	l.readPosition += 1
+	l.loc.Position = l.position
 }
 
 func (l *Lexer) readIdentifider() string {

@@ -82,9 +82,14 @@ func (p *Parser) parseExpression() (ast.Expression, error) {
 func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 	fc := &ast.FunctionCall{}
 
+	startPos := p.curToken.Location.Position
+	var endPos uint
+
 	if p.option.TraceParser {
 		p.logParserTracing("FunctionCallExpression")
 		defer func() {
+			p.logParserTracing("FunctionCallExpression %v: %v",
+				color.YellowString("source"), string(p.l.Bytes(startPos, endPos)))
 			p.logParserTracing("FunctionCallExpression %v: %v",
 				color.YellowString("result"), ast.Expressions([]ast.Expression{fc}))
 		}()
@@ -118,6 +123,7 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 	}
 	fc.Args = args
 
+	endPos = p.curToken.Location.Position + 1
 	err = p.parseSingleTokenWithType(token.RPAREN)
 	if err != nil {
 		return nil, err
