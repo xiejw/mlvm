@@ -67,7 +67,7 @@ func (literal *IntegerLiteral) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "Int(%v)", literal.Value)
 }
 func (literal *StringLiteral) ToHumanReadableString(w io.Writer) {
-	fmt.Fprintf(w, "Str(%v)", literal.Value)
+	fmt.Fprintf(w, "Str(\"%v\")", literal.Value)
 }
 
 func (exprs Expressions) String() string {
