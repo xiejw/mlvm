@@ -77,11 +77,13 @@ func (p *Parser) parseExpression() (ast.Expression, *errors.DiagnosisError) {
 		return p.parseIdentifider()
 	case token.INTEGER:
 		return p.parseInteger()
+	case token.STRING:
+		return p.parseString()
 	default:
 		err := errors.NewDiagnosisError(
 			"unsupported starting token to be parsed for expression: %v", p.curToken)
 		return nil, err.EmitDiagnosisNote(
-			"supported starting token for expressions are: function call, identifier, integer")
+			"supported starting token for expressions are: " + "function call, identifier, integer, string.")
 	}
 }
 
@@ -172,6 +174,21 @@ func (p *Parser) parseInteger() (*ast.IntegerLiteral, *errors.DiagnosisError) {
 	i := &ast.IntegerLiteral{Value: v}
 	p.advanceToken()
 	return i, nil
+}
+
+func (p *Parser) parseString() (*ast.StringLiteral, *errors.DiagnosisError) {
+	if p.option.TraceParser {
+		p.logParserTracing("String")
+	}
+
+	if !p.isCurrentTokenType(token.STRING) {
+		return nil, errors.NewDiagnosisError("expected to match a token exactly with STRING type, but got: %v",
+			p.curToken)
+	}
+
+	s := &ast.StringLiteral{Value: p.curToken.Literal}
+	p.advanceToken()
+	return s, nil
 }
 
 func (p *Parser) parseSingleTokenWithType(t token.TokenType) *errors.DiagnosisError {

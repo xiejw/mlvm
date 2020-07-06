@@ -114,6 +114,7 @@ func (l *Lexer) readInteger() string {
 }
 
 func (l *Lexer) readString() string {
+	l.readChar()
 	// TODO: handle EOF and newline case.
 	pos := l.position
 	for l.ch != '"' {
