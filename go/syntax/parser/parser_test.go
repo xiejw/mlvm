@@ -29,3 +29,17 @@ func TestIntegerLiteral(t *testing.T) {
 	assertNoErr(t, err)
 	assertAstOutput(t, ast, "Int(123)")
 }
+
+func TestFunctionCall(t *testing.T) {
+	p := New([]byte("(+ a 123)"))
+	ast, err := p.ParseAst()
+	assertNoErr(t, err)
+	assertAstOutput(t, ast, "Func(ID(+), ID(a), Int(123))")
+}
+
+func TestNestedFunctionCall(t *testing.T) {
+	p := New([]byte("(+ a (call b a))"))
+	ast, err := p.ParseAst()
+	assertNoErr(t, err)
+	assertAstOutput(t, ast, `Func(ID(+), ID(a), Func(ID(call), ID(b), ID(a)))`)
+}
