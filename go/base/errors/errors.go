@@ -36,12 +36,12 @@ func (de *DiagnosisError) Error() string {
 
 	fmt.Fprint(&buf, "Diagnosis Error\n")
 
-	level := 0
+	indentLevel := "  "
 	for index := len(de.notes) - 1; index >= 0; index-- {
-		fmt.Fprintf(&buf, "  + %v\n", de.notes[index])
-		level++
+		fmt.Fprintf(&buf, "%v+-+ %v\n", indentLevel, de.notes[index])
+		indentLevel+= "  "
 	}
 
-	fmt.Fprintf(&buf, "  -> %v\n", de.rootCause)
+	fmt.Fprintf(&buf, "%v+-> %v\n", indentLevel, de.rootCause)
 	return buf.String()
 }
