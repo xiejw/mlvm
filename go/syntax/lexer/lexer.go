@@ -111,7 +111,7 @@ func (l *Lexer) readInteger() string {
 }
 
 func isIdentifierChar(ch byte) bool {
-	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || '+' == ch
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || '+' == ch || '_' == ch
 }
 
 func isDigit(ch byte) bool {

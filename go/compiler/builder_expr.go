@@ -22,6 +22,6 @@ func (b *Builder) compileExpression(expr ast.Expression) error {
 		return b.compileBuiltinFn(v)
 
 	default:
-		return fmt.Errorf("unsupported expression: %+v", expr)
+		return fmt.Errorf("compiler error: unsupported expression: %+v", ast.Expressions([]ast.Expression{expr}))
 	}
 }
