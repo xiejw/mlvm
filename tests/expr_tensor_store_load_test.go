@@ -6,8 +6,8 @@ import (
 
 	"github.com/xiejw/mlvm/go/compiler"
 	"github.com/xiejw/mlvm/go/object"
-	"github.com/xiejw/mlvm/go/vm"
 	"github.com/xiejw/mlvm/go/syntax/parser"
+	"github.com/xiejw/mlvm/go/vm"
 )
 
 func createSimpleTensor() *object.Tensor {
