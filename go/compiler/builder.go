@@ -24,18 +24,18 @@ func NewBuilder(src *ast.Program) *Builder {
 
 func (b *Builder) Compile() error {
 
-	// statements := b.input.Statements
-	// finalStatementIndex := len(statements) - 1
+	expressions := b.input.Expressions
+	finalStatementIndex := len(expressions) - 1
 
-	// for i, src_statement := range statements {
-	// 	err := b.compileStatement(src_statement)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// 	if _, ok := src_statement.(*ast.ExprStatement); ok && i != finalStatementIndex {
-	// 		b.emitPop()
-	// 	}
-	// }
+	for i, expr := range expressions {
+		err := b.compileExpression(expr)
+		if err != nil {
+			return err
+		}
+		if i != finalStatementIndex {
+			b.emitPop()
+		}
+	}
 	return nil
 }
 

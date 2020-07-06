@@ -3,7 +3,7 @@
 - compile
 - type inference
 - better error message with diag notes.
-- remove compile_test, node_test, tests/...
+- remove tests/...
 
 - handle outputs well. stack should be empty.
 - plot?
@@ -12,6 +12,7 @@
 
 ## changelog
 
+2020-07-05 changed to lisp style.
 2020-06-28 supported vm with tensor store.
 2020-06-27 added loadT and storeT.
 2020-06-27 lowed the expr_statement
