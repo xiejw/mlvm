@@ -9,6 +9,7 @@ const (
 	RPAREN
 	IDENTIFIER
 	INTEGER
+	STRING
 	ILLEGAL
 	EOF
 )
@@ -40,6 +41,8 @@ func (t TokenType) String() string {
 		return "IDENTIFIER"
 	case INTEGER:
 		return "INTEGER   "
+	case STRING:
+		return "STRING    "
 	case ILLEGAL:
 		return "ILLEGAL   "
 	case EOF:

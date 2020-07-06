@@ -41,6 +41,9 @@ func (l *Lexer) NextToken() *token.Token {
 		tok.Literal = ")"
 	case 0:
 		tok.Type = token.EOF
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	default:
 		if isIdentifierChar(l.ch) {
 			tok.Type = token.IDENTIFIER
@@ -105,6 +108,15 @@ func (l *Lexer) readIdentifider() string {
 func (l *Lexer) readInteger() string {
 	pos := l.position
 	for isDigit(l.ch) {
+		l.readChar()
+	}
+	return string(l.input[pos:l.position])
+}
+
+func (l *Lexer) readString() string {
+	// TODO: handle EOF and newline case.
+	pos := l.position
+	for l.ch != '"' {
 		l.readChar()
 	}
 	return string(l.input[pos:l.position])

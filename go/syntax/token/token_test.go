@@ -12,6 +12,7 @@ func TestTokenString(t *testing.T) {
 		{"LPAREN    ", LPAREN},
 		{"RPAREN    ", RPAREN},
 		{"INTEGER   ", INTEGER},
+		{"STRING    ", STRING},
 		{"IDENTIFIER", IDENTIFIER},
 		{"ILLEGAL   ", ILLEGAL},
 		{"EOF       ", EOF},
