@@ -186,7 +186,10 @@ func (p *Parser) parseString() (*ast.StringLiteral, *errors.DiagnosisError) {
 			p.curToken)
 	}
 
-	s := &ast.StringLiteral{Value: p.curToken.Literal}
+	rawLiteral := p.curToken.Literal
+
+	// Unwraps the `"abc"` and puts `abc` into StringLiteral.
+	s := &ast.StringLiteral{Value: rawLiteral[1 : len(rawLiteral)-1]}
 	p.advanceToken()
 	return s, nil
 }

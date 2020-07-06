@@ -61,7 +61,7 @@ func TestStringLiteral(t *testing.T) {
 	}{
 		{0, 0, 0, token.LPAREN, "("},
 		{0, 1, 1, token.IDENTIFIER, "def"},
-		{0, 5, 5, token.STRING, "123"},
+		{0, 5, 5, token.STRING, `"123"`},
 		{0, 10, 10, token.RPAREN, ")"},
 		{0, 11, 11, token.EOF, ""},
 	}

@@ -114,13 +114,13 @@ func (l *Lexer) readInteger() string {
 }
 
 func (l *Lexer) readString() string {
+	pos := l.position
 	l.readChar()
 	// TODO: handle EOF and newline case.
-	pos := l.position
 	for l.ch != '"' {
 		l.readChar()
 	}
-	return string(l.input[pos:l.position])
+	return string(l.input[pos : l.position+1])
 }
 
 func isIdentifierChar(ch byte) bool {
