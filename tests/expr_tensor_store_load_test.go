@@ -17,8 +17,8 @@ func createSimpleTensor() *object.Tensor {
 }
 
 func TestExprTensorStoreLoad(t *testing.T) {
-	p, err := parser.New([]byte(`(store_load "a")`)).ParseAst()
-	assertNoErr(t, err)
+	p, diagnosisError := parser.New([]byte(`(store_load "a")`)).ParseAst()
+	assertNoDiagnosisError(t, diagnosisError)
 
 	o, err := compiler.Compile(p)
 	assertNoErr(t, err)

@@ -4,10 +4,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/syntax/ast"
 )
 
-func assertNoErr(t *testing.T, err error) {
+func assertNoErr(t *testing.T, err *errors.DiagnosisError) {
 	t.Helper()
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

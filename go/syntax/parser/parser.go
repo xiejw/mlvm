@@ -7,6 +7,7 @@ import (
 
 	"github.com/fatih/color"
 
+	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/syntax/ast"
 	"github.com/xiejw/mlvm/go/syntax/lexer"
 	"github.com/xiejw/mlvm/go/syntax/token"
@@ -42,15 +43,17 @@ func NewWithOption(input []byte, option *Option) *Parser {
 	return p
 }
 
-func (p *Parser) ParseAst() (*ast.Program, error) {
+func (p *Parser) ParseAst() (*ast.Program, *errors.DiagnosisError) {
 	program := &ast.Program{}
 	expressions := make([]ast.Expression, 0)
 	defer func() { p.level -= 1 }()
 
 	for p.curToken.Type != token.EOF {
 		expr, err := p.parseExpression()
+
 		if err != nil {
-			return nil, err
+			index := len(expressions)
+			return nil, err.EmitDiagnosisNote("during parsing ast, at %v-th expression", index+1)
 		}
 
 		expressions = append(expressions, expr)
@@ -60,7 +63,7 @@ func (p *Parser) ParseAst() (*ast.Program, error) {
 	return program, nil
 }
 
-func (p *Parser) parseExpression() (ast.Expression, error) {
+func (p *Parser) parseExpression() (ast.Expression, *errors.DiagnosisError) {
 	if p.option.TraceParser {
 		p.logParserTracing("Expression")
 	}
@@ -75,11 +78,14 @@ func (p *Parser) parseExpression() (ast.Expression, error) {
 	case token.INTEGER:
 		return p.parseInteger()
 	default:
-		return nil, fmt.Errorf("unknown expression token: %v", p.curToken)
+		err := errors.NewDiagnosisError(
+			"unsupported starting token to be parsed for expression: %v", p.curToken)
+		return nil, err.EmitDiagnosisNote(
+			"supported starting token for expressions are: function call, identifier, integer")
 	}
 }
 
-func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
+func (p *Parser) parseFunctionCallExpression() (ast.Expression, *errors.DiagnosisError) {
 	fc := &ast.FunctionCall{}
 
 	startPos := p.curToken.Location.Position
@@ -97,7 +103,7 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 
 	err := p.parseSingleTokenWithType(token.LPAREN)
 	if err != nil {
-		return nil, err
+		return nil, err.EmitDiagnosisNote("matching starting LPAREN for FunctionCall expression")
 	}
 
 	// TODO: Supports `fn`
@@ -105,11 +111,12 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 	case token.IDENTIFIER:
 		id, err := p.parseIdentifider()
 		if err != nil {
-			return nil, err
+			return nil, err.EmitDiagnosisNote("parsing function with identifier")
 		}
 		fc.Func = id
 	default:
-		return nil, fmt.Errorf("unsupport function: %v", p.curToken)
+		return nil, errors.NewDiagnosisError(
+			"unsupported function. currently only identifier is supported. got: %v", p.curToken)
 	}
 
 	var args []ast.Expression
@@ -117,7 +124,7 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 	for p.curToken.Type != token.RPAREN {
 		arg, err := p.parseExpression()
 		if err != nil {
-			return nil, err
+			return nil, err.EmitDiagnosisNote("parsing the %v-th function argument", len(args)+1)
 		}
 		args = append(args, arg)
 	}
@@ -126,19 +133,19 @@ func (p *Parser) parseFunctionCallExpression() (ast.Expression, error) {
 	endPos = p.curToken.Location.Position + 1
 	err = p.parseSingleTokenWithType(token.RPAREN)
 	if err != nil {
-		return nil, err
+		return nil, err.EmitDiagnosisNote("matching ending RPAREN for FunctionCall expression")
 	}
 	return fc, nil
 }
 
-func (p *Parser) parseIdentifider() (*ast.Identifier, error) {
+func (p *Parser) parseIdentifider() (*ast.Identifier, *errors.DiagnosisError) {
 	if p.option.TraceParser {
 		p.logParserTracing("Identifier")
 	}
 
 	if !p.isCurrentTokenType(token.IDENTIFIER) {
-		return nil, fmt.Errorf("expected to see token type: %v, got: %v",
-			token.IDENTIFIER, p.curToken)
+		return nil, errors.NewDiagnosisError("expected to match a token exactly with IDENTIFIER type, but got: %v",
+			p.curToken)
 	}
 
 	id := &ast.Identifier{Value: p.curToken.Literal}
@@ -146,19 +153,20 @@ func (p *Parser) parseIdentifider() (*ast.Identifier, error) {
 	return id, nil
 }
 
-func (p *Parser) parseInteger() (*ast.IntegerLiteral, error) {
+func (p *Parser) parseInteger() (*ast.IntegerLiteral, *errors.DiagnosisError) {
 	if p.option.TraceParser {
 		p.logParserTracing("Integer")
 	}
 
 	if !p.isCurrentTokenType(token.INTEGER) {
-		return nil, fmt.Errorf("expected to see token type: %v, got: %v",
-			token.INTEGER, p.curToken)
+		return nil, errors.NewDiagnosisError("expected to match a token exactly with INTEGER type, but got: %v",
+			p.curToken)
 	}
 
 	v, err := strconv.ParseInt(p.curToken.Literal, 10, 64)
 	if err != nil {
-		return nil, err
+		return nil, errors.EmitDiagnosisNote(err, "parsing integer expression for literal: %v",
+			p.curToken.Literal)
 	}
 
 	i := &ast.IntegerLiteral{Value: v}
@@ -166,13 +174,13 @@ func (p *Parser) parseInteger() (*ast.IntegerLiteral, error) {
 	return i, nil
 }
 
-func (p *Parser) parseSingleTokenWithType(t token.TokenType) error {
+func (p *Parser) parseSingleTokenWithType(t token.TokenType) *errors.DiagnosisError {
 	if p.option.TraceParser {
 		p.logParserTracing("Token with type: %v", t)
 	}
 
 	if !p.isCurrentTokenType(t) {
-		return fmt.Errorf("expected to see token type: %v, got: %v",
+		return errors.NewDiagnosisError("expected to match a token exactly with specific type: %v, but got: %v",
 			t, p.curToken)
 	}
 

@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/compiler"
 	"github.com/xiejw/mlvm/go/object"
 	"github.com/xiejw/mlvm/go/syntax/parser"
@@ -11,6 +12,13 @@ import (
 )
 
 func assertNoErr(t *testing.T, err error) {
+	t.Helper()
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func assertNoDiagnosisError(t *testing.T, err *errors.DiagnosisError) {
 	t.Helper()
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -27,8 +35,8 @@ func assertSingleOutput(t *testing.T, outputs vm.Outputs, err error) object.Obje
 }
 
 func TestExprSingleLiteral(t *testing.T) {
-	p, err := parser.New([]byte("123")).ParseAst()
-	assertNoErr(t, err)
+	p, diagnosisError := parser.New([]byte("123")).ParseAst()
+	assertNoDiagnosisError(t, diagnosisError)
 
 	o, err := compiler.Compile(p)
 	assertNoErr(t, err)

@@ -5,10 +5,9 @@ import (
 )
 
 func TestDiagnosisErrorOutput(t *testing.T) {
-	var err error
-	err = NewDiagnosisError("root 1")
-	err = EmitDiagnosisNote(err, "during stack 2")
-	err = EmitDiagnosisNote(err, "during stack 1")
+	err := NewDiagnosisError("root 1")
+	err.EmitDiagnosisNote("during stack 2")
+	err.EmitDiagnosisNote("during stack 1")
 
 	expected := `Diagnosis Error
   +-+ during stack 1
@@ -16,9 +15,13 @@ func TestDiagnosisErrorOutput(t *testing.T) {
       +-> root 1
 `
 
-	got := err.Error()
+	got := err.String()
 
 	if got != expected {
 		t.Errorf("Error() mismatch. expected: %v, got: %v", expected, got)
+	}
+
+	if err == nil {
+		t.Errorf("error should be nil.")
 	}
 }
