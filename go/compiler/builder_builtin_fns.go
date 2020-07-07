@@ -16,6 +16,17 @@ func checkSingleArg(fname string, args []ast.Expression) (
 	return args[0], nil
 }
 
+func checkDoubleArgs(fname string, args []ast.Expression) (
+	ast.Expression, ast.Expression, *errors.DiagnosisError,
+) {
+	if len(args) != 2 {
+		return nil, nil, errors.NewDiagnosisError(
+			"function (\"%v\") should have exactly 2 args, got: %v.",
+			fname, len(args))
+	}
+	return args[0], args[1], nil
+}
+
 func (b *Builder) compileBuiltinFn(fn *ast.FunctionCall) *errors.DiagnosisError {
 	fnName := fn.Func.Value
 
@@ -29,9 +40,29 @@ func (b *Builder) compileBuiltinFn(fn *ast.FunctionCall) *errors.DiagnosisError 
 		err = b.compileExpression(arg)
 		if err != nil {
 			return err.EmitDiagnosisNote(
-				"compiling arguments for built-in function \"%v\"", fnName)
+				"compiling the argument for built-in function \"%v\"", fnName)
 		}
 		b.emitLoadTensor()
+		return nil
+
+	case "+":
+		arg1, arg2, err := checkDoubleArgs(fnName, fn.Args)
+		if err != nil {
+			return err.EmitDiagnosisNote("compiling built-in function \"%v\"", fnName)
+		}
+
+		err = b.compileExpression(arg2)
+		if err != nil {
+			return err.EmitDiagnosisNote(
+				"compiling the second argument for built-in function \"%v\"", fnName)
+		}
+
+		err = b.compileExpression(arg1)
+		if err != nil {
+			return err.EmitDiagnosisNote(
+				"compiling the first argument for built-in function \"%v\"", fnName)
+		}
+		b.emitAdd()
 		return nil
 	default:
 		return errors.NewDiagnosisError("unsupported built-in function name: %v", fnName)

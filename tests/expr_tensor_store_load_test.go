@@ -60,7 +60,9 @@ func TestAddTwoStoredTensors(t *testing.T) {
 	outputs, err := m.Run()
 	got := assertSingleOutput(t, outputs, err)
 
-	expected := createSimpleTensor()
+	shape := object.NewShape([]object.NamedDim{{"x", 2}})
+	array := &object.Array{[]float32{2.0, 4.0}}
+	expected := &object.Tensor{shape, array}
 
 	if !reflect.DeepEqual(expected, got) {
 		t.Errorf("unexpected output.")

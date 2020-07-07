@@ -45,3 +45,11 @@ func (b *Builder) emitPop() {
 	}
 	b.output.Instructions = append(b.output.Instructions, ins...)
 }
+
+func (b *Builder) emitAdd() {
+	ins, err := code.MakeOp(code.OpAdd)
+	if err != nil {
+		panic(err)
+	}
+	b.output.Instructions = append(b.output.Instructions, ins...)
+}
