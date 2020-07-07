@@ -20,11 +20,39 @@ func TestExprTensorStoreLoad(t *testing.T) {
 	p, diagnosisError := parser.New([]byte(`(store_load "a")`)).ParseAst()
 	assertNoDiagnosisError(t, diagnosisError)
 
-	o, err := compiler.Compile(p)
-	assertNoErr(t, err)
+	o, diagnosisError := compiler.Compile(p)
+	assertNoDiagnosisError(t, diagnosisError)
 
 	ts := vm.NewTensorStore()
-	err = ts.Store("a", createSimpleTensor())
+	err := ts.Store("a", createSimpleTensor())
+	assertNoErr(t, err)
+
+	m := vm.NewVMWithTensorStore(o, ts)
+
+	outputs, err := m.Run()
+	got := assertSingleOutput(t, outputs, err)
+
+	expected := createSimpleTensor()
+
+	if !reflect.DeepEqual(expected, got) {
+		t.Errorf("unexpected output.")
+	}
+}
+
+func TestAddTwoStoredTensors(t *testing.T) {
+	p, diagnosisError := parser.New([]byte(`
+(+
+  (store_load "a")
+  (store_load "a")
+)
+`)).ParseAst()
+	assertNoDiagnosisError(t, diagnosisError)
+
+	o, diagnosisError := compiler.Compile(p)
+	assertNoDiagnosisError(t, diagnosisError)
+
+	ts := vm.NewTensorStore()
+	err := ts.Store("a", createSimpleTensor())
 	assertNoErr(t, err)
 
 	m := vm.NewVMWithTensorStore(o, ts)

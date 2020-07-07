@@ -1,6 +1,9 @@
 package compiler
 
 import (
+	"strings"
+
+	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/code"
 	"github.com/xiejw/mlvm/go/object"
 	"github.com/xiejw/mlvm/go/syntax/ast"
@@ -22,7 +25,7 @@ func NewBuilder(src *ast.Program) *Builder {
 	}
 }
 
-func (b *Builder) Compile() error {
+func (b *Builder) Compile() *errors.DiagnosisError {
 
 	expressions := b.input.Expressions
 	finalStatementIndex := len(expressions) - 1
@@ -30,7 +33,11 @@ func (b *Builder) Compile() error {
 	for i, expr := range expressions {
 		err := b.compileExpression(expr)
 		if err != nil {
-			return err
+			return err.EmitDiagnosisNote(
+				"compiling the %v-th expression: %v",
+				i+1,
+				strings.Trim(ast.Expressions([]ast.Expression{expr}).String(), "\n"),
+			)
 		}
 		if i != finalStatementIndex {
 			b.emitPop()

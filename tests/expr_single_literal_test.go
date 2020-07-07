@@ -38,8 +38,8 @@ func TestExprSingleLiteral(t *testing.T) {
 	p, diagnosisError := parser.New([]byte("123")).ParseAst()
 	assertNoDiagnosisError(t, diagnosisError)
 
-	o, err := compiler.Compile(p)
-	assertNoErr(t, err)
+	o, diagnosisError := compiler.Compile(p)
+	assertNoDiagnosisError(t, diagnosisError)
 
 	m := vm.NewVM(o)
 	outputs, err := m.Run()

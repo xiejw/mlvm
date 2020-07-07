@@ -1,13 +1,12 @@
 package compiler
 
 import (
-	"fmt"
-
+	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/syntax/ast"
 )
 
 // Compiles the expression.
-func (b *Builder) compileExpression(expr ast.Expression) error {
+func (b *Builder) compileExpression(expr ast.Expression) *errors.DiagnosisError {
 	switch v := expr.(type) {
 	case *ast.IntegerLiteral:
 		index := b.emitIntegerConstant(v)
@@ -19,9 +18,19 @@ func (b *Builder) compileExpression(expr ast.Expression) error {
 		return nil
 	case *ast.FunctionCall:
 		// Currently only supports limited bultin-ins.
-		return b.compileBuiltinFn(v)
+		err := b.compileBuiltinFn(v)
+		if err != nil {
+			return err.EmitDiagnosisNote(
+				"compiling function call. currently only support " +
+					"built-in functions")
+		}
+		return nil
 
 	default:
-		return fmt.Errorf("compiler error: unsupported expression: %+v", ast.Expressions([]ast.Expression{expr}))
+		return errors.NewDiagnosisError(
+			"unsupported expression to be compiled. currently "+
+				"only support integer literal, string literal, "+
+				"function call. got: %+v",
+			ast.Expressions([]ast.Expression{expr}))
 	}
 }
