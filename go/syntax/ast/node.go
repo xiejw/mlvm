@@ -42,6 +42,18 @@ type IntegerLiteral struct {
 	Value int64
 }
 
+type FloatLiteral struct {
+	Value float32
+}
+
+type ShapeLiteral struct {
+	Dimensions []*Identifier
+}
+
+type ArrayLiteral struct {
+	Values []*FloatLiteral
+}
+
 type StringLiteral struct {
 	Value string
 }
@@ -50,6 +62,9 @@ func (id *Identifier) expressionNode()          {}
 func (fc *FunctionCall) expressionNode()        {}
 func (literal *IntegerLiteral) expressionNode() {}
 func (literal *StringLiteral) expressionNode()  {}
+func (literal *FloatLiteral) expressionNode()   {}
+func (literal *ShapeLiteral) expressionNode()   {}
+func (literal *ArrayLiteral) expressionNode()   {}
 
 func (id *Identifier) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "ID(%v)", id.Value)
