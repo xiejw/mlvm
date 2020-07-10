@@ -39,6 +39,15 @@ func (l *Lexer) NextToken() *token.Token {
 	case ')':
 		tok.Type = token.RPAREN
 		tok.Literal = ")"
+	case '[':
+		tok.Type = token.LSBRACKET
+		tok.Literal = "["
+	case ']':
+		tok.Type = token.RSBRACKET
+		tok.Literal = "]"
+	case '\\':
+		tok.Type = token.BACKSLASH
+		tok.Literal = "\\"
 	case 0:
 		tok.Type = token.EOF
 	case '"':
