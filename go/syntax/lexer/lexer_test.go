@@ -74,5 +74,19 @@ func TestStringLiteral(t *testing.T) {
 }
 
 func TestPunctuation(t *testing.T) {
-	//l := New([]byte("(def \"123\")"))
+	l := New([]byte("[]\\[]"))
+
+	expects := []expectedToken{
+		{0, 0, 0, token.LSBRACKET, "["},
+		{0, 1, 1, token.RSBRACKET, "]"},
+		{0, 2, 2, token.BACKSLASH, `\`},
+		{0, 3, 3, token.LSBRACKET, "["},
+		{0, 4, 4, token.RSBRACKET, "]"},
+		{0, 5, 5, token.EOF, ""},
+	}
+
+	for i, expected := range expects {
+		got := l.NextToken()
+		assertToken(t, expected, got, i)
+	}
 }
