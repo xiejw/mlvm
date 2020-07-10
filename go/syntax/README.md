@@ -7,10 +7,10 @@ User Code
 (defn rng (prng_create 456))
 
 (defn a (
-    prng_norm rng {@batch  @hidden_size}))
+    prng_norm rng \[@batch  @hidden_size]))
 (defn b (
     tensor
-        {@batch @hidden_size}
+        \[@batch @hidden_size]
         [1.0 2.0 3.0 4.0 5.0 6.0]))
 
 (+ a b)
