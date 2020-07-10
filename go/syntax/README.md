@@ -1,26 +1,19 @@
 User Code
 
 ```
-@batch = 32;
-@hidden_size = 10;
-@output = 1;
+(defn @batch  3)
+(defn @hidden_size 2)
 
+(defn rng (prng_create 456))
 
-let prng = prng_create(seed: 456);
+(defn a (
+    prng_norm rng {@batch  @hidden_size}))
+(defn b (
+    tensor
+        {@batch @hidden_size}
+        [1.0 2.0 3.0 4.0 5.0 6.0]))
 
-func create_parameter(prng: prng_t, shape: shape_t) tensor_t {
-  return tensor_create(
-      shape: shape,
-      value: prng_norm(prng_split(prng), shape: shape))
-}
-
-let w = parameter_create(prng, shape: [@hidden_size, @output])
-let b = parameter_create(prng, shape: [@output])
-
-var i int;
-for i = 0; i < 100; i++ {
-}
-
+(+ a b)
 ```
 
 Language Design
