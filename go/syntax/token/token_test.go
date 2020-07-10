@@ -11,7 +11,11 @@ func TestTokenString(t *testing.T) {
 	}{
 		{"LPAREN    ", LPAREN},
 		{"RPAREN    ", RPAREN},
+		{"LSBRACKET ", LSBRACKET},
+		{"RSBRACKET ", RSBRACKET},
+		{"BACKSLASH ", BACKSLASH},
 		{"INTEGER   ", INTEGER},
+		{"FLOAT     ", FLOAT},
 		{"STRING    ", STRING},
 		{"IDENTIFIER", IDENTIFIER},
 		{"ILLEGAL   ", ILLEGAL},

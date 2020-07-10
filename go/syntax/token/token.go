@@ -7,8 +7,12 @@ type TokenType uint
 const (
 	LPAREN TokenType = iota
 	RPAREN
+	LSBRACKET
+	RSBRACKET
+	BACKSLASH
 	IDENTIFIER
 	INTEGER
+	FLOAT
 	STRING
 	ILLEGAL
 	EOF
@@ -37,10 +41,18 @@ func (t TokenType) String() string {
 		return "LPAREN    "
 	case RPAREN:
 		return "RPAREN    "
+	case LSBRACKET:
+		return "LSBRACKET "
+	case RSBRACKET:
+		return "RSBRACKET "
+	case BACKSLASH:
+		return "BACKSLASH "
 	case IDENTIFIER:
 		return "IDENTIFIER"
 	case INTEGER:
 		return "INTEGER   "
+	case FLOAT:
+		return "FLOAT     "
 	case STRING:
 		return "STRING    "
 	case ILLEGAL:
