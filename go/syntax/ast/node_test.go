@@ -14,47 +14,24 @@ func assertAstOutput(t *testing.T, ast *Program, expected string) {
 	}
 }
 
+func makeSingleExprProgram(expr Expression) *Program {
+	return &Program{Expressions: []Expression{expr}}
+}
+
 func TestIntegerLiteral(t *testing.T) {
-	p := &Program{
-		Expressions: []Expression{
-			&IntegerLiteral{123},
-		},
-	}
-
-	if len(p.Expressions) != 1 {
-		t.Errorf("expect single expr")
-	}
-
+	p := makeSingleExprProgram(&IntegerLiteral{123})
 	assertAstOutput(t, p, `Int(123)`)
 }
 
 func TestStringLiteral(t *testing.T) {
-	p := &Program{
-		Expressions: []Expression{
-			&StringLiteral{"abc"},
-		},
-	}
-
-	if len(p.Expressions) != 1 {
-		t.Errorf("expect single expr")
-	}
-
+	p := makeSingleExprProgram(&StringLiteral{"abc"})
 	assertAstOutput(t, p, `Str("abc")`)
 }
 
 func TestFuncCall(t *testing.T) {
-	p := &Program{
-		Expressions: []Expression{
-			&FunctionCall{
-				Func: &Identifier{"fn_name"},
-				Args: []Expression{&Identifier{"arg_0"}},
-			},
-		},
-	}
-
-	if len(p.Expressions) != 1 {
-		t.Errorf("expect single expr")
-	}
-
+	p := makeSingleExprProgram(&FunctionCall{
+		Func: &Identifier{"fn_name"},
+		Args: []Expression{&Identifier{"arg_0"}},
+	})
 	assertAstOutput(t, p, `Func(ID(fn_name), ID(arg_0))`)
 }
