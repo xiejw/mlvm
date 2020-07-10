@@ -14,7 +14,7 @@ func assertAstOutput(t *testing.T, ast *Program, expected string) {
 	}
 }
 
-func TestIntLiteral(t *testing.T) {
+func TestIntegerLiteral(t *testing.T) {
 	p := &Program{
 		Expressions: []Expression{
 			&IntegerLiteral{123},
@@ -28,7 +28,7 @@ func TestIntLiteral(t *testing.T) {
 	assertAstOutput(t, p, `Int(123)`)
 }
 
-func TestStrLiteral(t *testing.T) {
+func TestStringLiteral(t *testing.T) {
 	p := &Program{
 		Expressions: []Expression{
 			&StringLiteral{"abc"},

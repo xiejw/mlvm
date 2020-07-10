@@ -20,7 +20,8 @@ func assertToken(t *testing.T, expected expectedToken, token *token.Token, i int
 		t.Errorf("type mismatch for index: %v", i)
 	}
 	if token.Literal != expected.literal {
-		t.Errorf("literal mismatch for index: %v", i)
+		t.Errorf("literal mismatch for index: %v. expected: %v, got: %v",
+			i, expected.literal, token.Literal)
 	}
 	if token.Location.Row != expected.row {
 		t.Errorf("row mismatch for index: %v", i)
@@ -83,6 +84,23 @@ func TestPunctuation(t *testing.T) {
 		{0, 3, 3, token.LSBRACKET, "["},
 		{0, 4, 4, token.RSBRACKET, "]"},
 		{0, 5, 5, token.EOF, ""},
+	}
+
+	for i, expected := range expects {
+		got := l.NextToken()
+		assertToken(t, expected, got, i)
+	}
+}
+
+func TestFloatPoint(t *testing.T) {
+	l := New([]byte("[1.23 2.34]"))
+
+	expects := []expectedToken{
+		{0, 0, 0, token.LSBRACKET, "["},
+		{0, 1, 1, token.FLOAT, "1.23"},
+		{0, 6, 6, token.FLOAT, "2.34"},
+		{0, 10, 10, token.RSBRACKET, "]"},
+		{0, 11, 11, token.EOF, ""},
 	}
 
 	for i, expected := range expects {
