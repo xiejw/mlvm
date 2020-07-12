@@ -81,6 +81,9 @@ func (fc *FunctionCall) ToHumanReadableString(w io.Writer) {
 func (literal *IntegerLiteral) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "Int(%v)", literal.Value)
 }
+func (literal *FloatLiteral) ToHumanReadableString(w io.Writer) {
+	fmt.Fprintf(w, "Float(%v)", literal.Value)
+}
 func (literal *StringLiteral) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "Str(\"%v\")", literal.Value)
 }

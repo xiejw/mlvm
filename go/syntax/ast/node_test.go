@@ -23,6 +23,11 @@ func TestIntegerLiteral(t *testing.T) {
 	assertAstOutput(t, p, `Int(123)`)
 }
 
+func TestFloatLiteral(t *testing.T) {
+	p := makeSingleExprProgram(&FloatLiteral{98.76})
+	assertAstOutput(t, p, `Float(98.76)`)
+}
+
 func TestStringLiteral(t *testing.T) {
 	p := makeSingleExprProgram(&StringLiteral{"abc"})
 	assertAstOutput(t, p, `Str("abc")`)
