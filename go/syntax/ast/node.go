@@ -84,6 +84,16 @@ func (literal *IntegerLiteral) ToHumanReadableString(w io.Writer) {
 func (literal *FloatLiteral) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "Float(%v)", literal.Value)
 }
+func (literal *ShapeLiteral) ToHumanReadableString(w io.Writer) {
+	fmt.Fprintf(w, "Shape(")
+	for i, dim := range literal.Dimensions {
+		dim.ToHumanReadableString(w)
+		if i != len(literal.Dimensions)-1 {
+			fmt.Fprintf(w, ", ")
+		}
+	}
+	fmt.Fprintf(w, ")")
+}
 func (literal *StringLiteral) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "Str(\"%v\")", literal.Value)
 }

@@ -18,6 +18,11 @@ func makeSingleExprProgram(expr Expression) *Program {
 	return &Program{Expressions: []Expression{expr}}
 }
 
+func TestIdentifier(t *testing.T) {
+	p := makeSingleExprProgram(&Identifier{"abc"})
+	assertAstOutput(t, p, `ID(abc)`)
+}
+
 func TestIntegerLiteral(t *testing.T) {
 	p := makeSingleExprProgram(&IntegerLiteral{123})
 	assertAstOutput(t, p, `Int(123)`)
@@ -26,6 +31,16 @@ func TestIntegerLiteral(t *testing.T) {
 func TestFloatLiteral(t *testing.T) {
 	p := makeSingleExprProgram(&FloatLiteral{98.76})
 	assertAstOutput(t, p, `Float(98.76)`)
+}
+
+func TestShapeLiteral(t *testing.T) {
+	p := makeSingleExprProgram(&ShapeLiteral{
+		[]*Identifier{
+			&Identifier{"@a"},
+			&Identifier{"@b"},
+		},
+	})
+	assertAstOutput(t, p, `Shape(ID(@a), ID(@b))`)
 }
 
 func TestStringLiteral(t *testing.T) {
