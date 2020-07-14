@@ -43,6 +43,16 @@ func TestShapeLiteral(t *testing.T) {
 	assertAstOutput(t, p, `Shape(ID(@a), ID(@b))`)
 }
 
+func TestArrayLiteral(t *testing.T) {
+	p := makeSingleExprProgram(&ArrayLiteral{
+		[]*FloatLiteral{
+			&FloatLiteral{1.76},
+			&FloatLiteral{2.98},
+		},
+	})
+	assertAstOutput(t, p, `Array(Float(1.76), Float(2.98))`)
+}
+
 func TestStringLiteral(t *testing.T) {
 	p := makeSingleExprProgram(&StringLiteral{"abc"})
 	assertAstOutput(t, p, `Str("abc")`)

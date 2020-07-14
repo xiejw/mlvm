@@ -94,6 +94,16 @@ func (literal *ShapeLiteral) ToHumanReadableString(w io.Writer) {
 	}
 	fmt.Fprintf(w, ")")
 }
+func (literal *ArrayLiteral) ToHumanReadableString(w io.Writer) {
+	fmt.Fprintf(w, "Array(")
+	for i, f := range literal.Values {
+		f.ToHumanReadableString(w)
+		if i != len(literal.Values)-1 {
+			fmt.Fprintf(w, ", ")
+		}
+	}
+	fmt.Fprintf(w, ")")
+}
 func (literal *StringLiteral) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "Str(\"%v\")", literal.Value)
 }
