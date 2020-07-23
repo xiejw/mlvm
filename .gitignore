@@ -5,6 +5,9 @@
 # Go outputs
 .build
 
+# rust outputs
+target
+
 # Vim
 *.swo
 *.swp
