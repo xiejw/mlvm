@@ -7,5 +7,8 @@ compile:
 fmt:
 	cargo fmt
 
+test:
+	cargo test
+
 clean:
 	cargo clean

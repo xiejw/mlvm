@@ -1,3 +1,3 @@
 fn main() {
-    println!("Hello, world! {:?}", mlvm::syntax::token::Type::Lparen);
+    println!("Hello, world! {:?}", mlvm::syntax::token::Kind::Lparen);
 }
