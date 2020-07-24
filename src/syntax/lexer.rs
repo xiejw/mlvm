@@ -64,15 +64,19 @@ impl Lexer<'_> {
                 kind = Kind::Backslash;
                 literal = "\\".to_string();
             }
+            b'"' => {
+                kind = Kind::String;
+                literal = self.read_string();
+            }
             _ if Self::is_identifider_char(self.ch) => {
                 kind = Kind::Identifier;
                 literal = self.read_identifider();
                 advance_one_char = false; // Skips the next read_char
             }
             _ if Self::is_digit(self.ch) => {
-                let r = self.read_number();
-                kind = r.0;
-                literal = r.1;
+                let mut num_kind = Kind::Integer;
+                literal = self.read_number(&mut num_kind);
+                kind = num_kind;
                 advance_one_char = false; // Skips the next read_char
             }
             _ => {
@@ -159,9 +163,8 @@ impl Lexer<'_> {
         self.substring(start..self.pos)
     }
 
-    fn read_number(self: &mut Self) -> (Kind, String) {
+    fn read_number(self: &mut Self, kind: &mut Kind) -> String {
         let mut hit_dec_pt = false;
-        let mut kind = Kind::Integer;
 
         let start = self.pos;
         loop {
@@ -174,7 +177,7 @@ impl Lexer<'_> {
             // decimal pt should be hit at most once.
             if c == b'.' && !hit_dec_pt {
                 hit_dec_pt = true;
-                kind = Kind::Float;
+                *kind = Kind::Float;
                 self.read_char();
                 continue;
             }
@@ -182,7 +185,20 @@ impl Lexer<'_> {
             break;
         }
 
-        return (kind, self.substring(start..self.pos));
+        return self.substring(start..self.pos);
+    }
+
+    fn read_string(self: &mut Self) -> String {
+        debug_assert!(self.ch == b'"');
+        let start = self.pos;
+        self.read_char();
+
+        // TODO: handle EOF and newline.
+        while self.ch != b'"' {
+            self.read_char();
+        }
+
+        return self.substring(start..self.pos + 1);
     }
 }
 
@@ -214,7 +230,7 @@ mod tests {
 
     #[test]
     fn test_lexer_next_tokens() {
-        let mut l = Lexer::new(b"( ) abc_+z 1 \\[2.3 4.]");
+        let mut l = Lexer::new(b"( ) \"efd\"abc_+z 1 \\[2.3 4.]");
         {
             let tok = l.next_token();
             assert_eq!("(", tok.literal);
@@ -224,6 +240,11 @@ mod tests {
             let tok = l.next_token();
             assert_eq!(")", tok.literal);
             assert_eq!(Kind::Rparen, tok.kind);
+        }
+        {
+            let tok = l.next_token();
+            assert_eq!(r#""efd""#, tok.literal);
+            assert_eq!(Kind::String, tok.kind);
         }
         {
             let tok = l.next_token();
