@@ -1,5 +1,7 @@
 use super::token;
 
+use token::Kind;
+
 pub struct Lexer<'a> {
     input: &'a [u8],
     size: usize,
@@ -30,13 +32,32 @@ impl Lexer<'_> {
     }
 
     pub fn next_token(self: &mut Self) -> Box<token::Token> {
-        Box::new(token::Token {
-            kind: token::Kind::Lparen,
+        let kind: Kind;
+        let literal: String;
+
+        match self.ch {
+            b'(' => {
+                kind = Kind::Lparen;
+                literal = "(".to_string();
+                // std::str::from_utf8(self.bytes(0, 0).unwrap())
+                //     .unwrap()
+                //     .to_string();
+            }
+            _ => {
+                kind = Kind::Illegal;
+                literal = "".to_string();
+            }
+        }
+
+        let tok = Box::new(token::Token {
+            kind: kind,
             loc: self.loc.clone(),
-            literal: std::str::from_utf8(self.bytes(0, 0).unwrap())
-                .unwrap()
-                .to_string(),
-        })
+            literal: literal,
+        });
+
+        self.read_char();
+
+        tok
     }
 }
 
@@ -86,5 +107,13 @@ mod tests {
         assert_eq!(b"ab", l.bytes(0, 2).unwrap());
         assert_eq!(true, l.bytes(0, 3).is_none());
         assert_eq!(true, l.bytes(0, 0).is_none());
+    }
+
+    #[test]
+    fn test_lexer_next_tokens() {
+        let mut l = Lexer::new(b"(");
+        let tok1 = l.next_token();
+        assert_eq!("(", tok1.literal);
+        assert_eq!(Kind::Lparen, tok1.kind);
     }
 }
