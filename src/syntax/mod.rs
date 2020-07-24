@@ -1,3 +1,5 @@
+pub mod lexer;
+
 pub mod token {
     #[derive(Debug)]
     pub enum Kind {
