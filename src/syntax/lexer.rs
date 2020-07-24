@@ -1,5 +1,6 @@
 use super::token;
 
+use std::ops::Range;
 use token::Kind;
 
 pub struct Lexer<'a> {
@@ -45,13 +46,15 @@ impl Lexer<'_> {
             b')' => {
                 kind = Kind::Rparen;
                 literal = ")".to_string();
-                // std::str::from_utf8(self.bytes(0, 0).unwrap())
-                //     .unwrap()
-                //     .to_string();
             }
             _ => {
-                kind = Kind::Illegal;
-                literal = "".to_string();
+                if Lexer::is_identifider_char(self.ch) {
+                    kind = Kind::Identifier;
+                    literal = self.read_identifider();
+                } else {
+                    kind = Kind::Illegal;
+                    literal = "".to_string();
+                }
             }
         }
 
@@ -68,14 +71,19 @@ impl Lexer<'_> {
 }
 
 impl Lexer<'_> {
-    pub fn bytes<'a>(self: &'a Self, start: usize, end: usize) -> Option<&'a [u8]> {
-        if end > self.size || start >= end {
+    pub fn bytes<'a>(self: &'a Self, range: Range<usize>) -> Option<&'a [u8]> {
+        if range.end > self.size || range.start >= range.end {
             return None;
         }
-        Some(&self.input[start..end])
+        Some(&self.input[range])
     }
 
-    // pub fn substring(self: &Self, start:
+    pub fn substring(self: &Self, range: Range<usize>) -> String {
+        match self.bytes(range) {
+            Some(s) => std::str::from_utf8(s).unwrap().to_string(),
+            None => "".to_string(),
+        }
+    }
 }
 
 impl Lexer<'_> {
@@ -114,7 +122,11 @@ impl Lexer<'_> {
     }
 
     fn read_identifider(self: &mut Self) -> String {
-        return "".to_string();
+        let start = self.pos;
+        while Lexer::is_identifider_char(self.ch) {
+            self.read_char()
+        }
+        self.substring(start..self.pos)
     }
 }
 
@@ -138,10 +150,10 @@ mod tests {
     #[test]
     fn test_lexer_bytes() {
         let l = Lexer::new(b"ab");
-        assert_eq!(b"a", l.bytes(0, 1).unwrap());
-        assert_eq!(b"ab", l.bytes(0, 2).unwrap());
-        assert_eq!(true, l.bytes(0, 3).is_none());
-        assert_eq!(true, l.bytes(0, 0).is_none());
+        assert_eq!(b"a", l.bytes(0..1).unwrap());
+        assert_eq!(b"ab", l.bytes(0..2).unwrap());
+        assert_eq!(true, l.bytes(0..3).is_none());
+        assert_eq!(true, l.bytes(0..0).is_none());
     }
 
     #[test]
