@@ -35,10 +35,16 @@ impl Lexer<'_> {
         let kind: Kind;
         let literal: String;
 
+        self.skip_while_spaces();
+
         match self.ch {
             b'(' => {
                 kind = Kind::Lparen;
                 literal = "(".to_string();
+            }
+            b')' => {
+                kind = Kind::Rparen;
+                literal = ")".to_string();
                 // std::str::from_utf8(self.bytes(0, 0).unwrap())
                 //     .unwrap()
                 //     .to_string();
@@ -81,6 +87,20 @@ impl Lexer<'_> {
         self.pos = self.read_pos;
         self.read_pos += 1;
     }
+
+    fn skip_while_spaces(self: &mut Self) {
+        loop {
+            match self.ch {
+                b' ' | b'\n' | b'\t' => {
+                    self.read_char();
+                    continue;
+                }
+                _ => {
+                    return;
+                }
+            }
+        }
+    }
 }
 
 #[cfg(test)]
@@ -111,9 +131,13 @@ mod tests {
 
     #[test]
     fn test_lexer_next_tokens() {
-        let mut l = Lexer::new(b"(");
+        let mut l = Lexer::new(b"( )");
         let tok1 = l.next_token();
         assert_eq!("(", tok1.literal);
         assert_eq!(Kind::Lparen, tok1.kind);
+
+        let tok2 = l.next_token();
+        assert_eq!(")", tok2.literal);
+        assert_eq!(Kind::Rparen, tok2.kind);
     }
 }
