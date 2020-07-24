@@ -30,11 +30,8 @@ impl Lexer<'_> {
     }
 
     pub fn bytes<'a>(self: &'a Self, start: usize, end: usize) -> Option<&'a [u8]> {
-        if end >= self.size {
-            return None
-        }
-        if start > end {
-            return Nne
+        if end > self.size || start >= end {
+            return None;
         }
         Some(&self.input[start..end])
     }
@@ -73,8 +70,9 @@ mod tests {
     #[test]
     fn test_lexer_bytes() {
         let l = Lexer::new(b"ab");
-        assert_eq!(b"a", l.bytes(0, 1));
-        assert_eq!(b"ab", l.bytes(0, 2));
-        assert_eq!(b"ab", l.bytes(0, 3));
+        assert_eq!(b"a", l.bytes(0, 1).unwrap());
+        assert_eq!(b"ab", l.bytes(0, 2).unwrap());
+        assert_eq!(true, l.bytes(0, 3).is_none());
+        assert_eq!(true, l.bytes(0, 0).is_none());
     }
 }
