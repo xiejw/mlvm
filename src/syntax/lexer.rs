@@ -1,4 +1,4 @@
-// use super::token;
+use super::token;
 
 pub struct Lexer<'a> {
     input: &'a [u8],
@@ -6,7 +6,7 @@ pub struct Lexer<'a> {
     pos: usize,
     read_pos: usize,
     ch: u8,
-    // loc: token::Loc,
+    loc: token::Loc,
 }
 
 impl Lexer<'_> {
@@ -18,17 +18,29 @@ impl Lexer<'_> {
             pos: 0,
             read_pos: 0,
             ch: 0,
-            // loc: token::Loc {
-            //     row: 0,
-            //     col: 0,
-            //     pos: 0,
-            // },
+            loc: token::Loc {
+                row: 0,
+                col: 0,
+                pos: 0,
+            },
         };
 
         l.read_char();
         l
     }
 
+    pub fn next_token(self: &mut Self) -> Box<token::Token> {
+        Box::new(token::Token {
+            kind: token::Kind::Lparen,
+            loc: self.loc.clone(),
+            literal: std::str::from_utf8(self.bytes(0, 0).unwrap())
+                .unwrap()
+                .to_string(),
+        })
+    }
+}
+
+impl Lexer<'_> {
     pub fn bytes<'a>(self: &'a Self, start: usize, end: usize) -> Option<&'a [u8]> {
         if end > self.size || start >= end {
             return None;

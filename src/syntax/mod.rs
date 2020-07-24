@@ -1,7 +1,7 @@
 pub mod lexer;
 
 pub mod token {
-    #[derive(Debug)]
+    #[derive(Debug, Clone)]
     pub enum Kind {
         Lparen,
         Rparen,
@@ -16,12 +16,14 @@ pub mod token {
         Eof,
     }
 
+    #[derive(Clone)]
     pub struct Loc {
         pub row: usize,
         pub col: usize,
         pub pos: usize,
     }
 
+    #[derive(Clone)]
     pub struct Token {
         pub kind: Kind,
         pub loc: Loc,
