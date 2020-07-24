@@ -1,4 +1,4 @@
-use super::token;
+// use super::token;
 
 pub struct Lexer<'a> {
     input: &'a [u8],
@@ -6,7 +6,7 @@ pub struct Lexer<'a> {
     pos: usize,
     read_pos: usize,
     ch: u8,
-    loc: token::Loc,
+    // loc: token::Loc,
 }
 
 impl Lexer<'_> {
@@ -18,11 +18,11 @@ impl Lexer<'_> {
             pos: 0,
             read_pos: 0,
             ch: 0,
-            loc: token::Loc {
-                row: 0,
-                col: 0,
-                pos: 0,
-            },
+            // loc: token::Loc {
+            //     row: 0,
+            //     col: 0,
+            //     pos: 0,
+            // },
         };
 
         l.read_char();
