@@ -39,6 +39,10 @@ impl Lexer<'_> {
         self.skip_while_spaces();
 
         match self.ch {
+            0 => {
+                kind = Kind::Eof;
+                literal = "".to_string();
+            }
             b'(' => {
                 kind = Kind::Lparen;
                 literal = "(".to_string();
@@ -47,14 +51,13 @@ impl Lexer<'_> {
                 kind = Kind::Rparen;
                 literal = ")".to_string();
             }
+            _ if Self::is_identifider_char(self.ch) => {
+                kind = Kind::Identifier;
+                literal = self.read_identifider();
+            }
             _ => {
-                if Lexer::is_identifider_char(self.ch) {
-                    kind = Kind::Identifier;
-                    literal = self.read_identifider();
-                } else {
-                    kind = Kind::Illegal;
-                    literal = "".to_string();
-                }
+                kind = Kind::Illegal;
+                literal = "".to_string();
             }
         }
 
@@ -123,7 +126,7 @@ impl Lexer<'_> {
 
     fn read_identifider(self: &mut Self) -> String {
         let start = self.pos;
-        while Lexer::is_identifider_char(self.ch) {
+        while Self::is_identifider_char(self.ch) {
             self.read_char()
         }
         self.substring(start..self.pos)
@@ -158,7 +161,7 @@ mod tests {
 
     #[test]
     fn test_lexer_next_tokens() {
-        let mut l = Lexer::new(b"( )");
+        let mut l = Lexer::new(b"( ) abc_+");
         let tok1 = l.next_token();
         assert_eq!("(", tok1.literal);
         assert_eq!(Kind::Lparen, tok1.kind);
@@ -166,5 +169,13 @@ mod tests {
         let tok2 = l.next_token();
         assert_eq!(")", tok2.literal);
         assert_eq!(Kind::Rparen, tok2.kind);
+
+        let tok3 = l.next_token();
+        assert_eq!("abc_+", tok3.literal);
+        assert_eq!(Kind::Identifier, tok3.kind);
+
+        let tok4 = l.next_token();
+        assert_eq!("", tok4.literal);
+        assert_eq!(Kind::Eof, tok4.kind);
     }
 }
