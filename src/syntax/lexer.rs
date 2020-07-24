@@ -61,9 +61,9 @@ impl Lexer<'_> {
             literal: literal,
         });
 
+        // Advances to next char and then returns.
         self.read_char();
-
-        tok
+        return tok;
     }
 }
 
@@ -74,6 +74,8 @@ impl Lexer<'_> {
         }
         Some(&self.input[start..end])
     }
+
+    // pub fn substring(self: &Self, start:
 }
 
 impl Lexer<'_> {
@@ -100,6 +102,19 @@ impl Lexer<'_> {
                 }
             }
         }
+    }
+
+    fn is_identifider_char(c: u8) -> bool {
+        match c {
+            b'a'..=b'z' => true,
+            b'A'..=b'Z' => true,
+            b'_' | b'+' => true,
+            _ => false,
+        }
+    }
+
+    fn read_identifider(self: &mut Self) -> String {
+        return "".to_string();
     }
 }
 
