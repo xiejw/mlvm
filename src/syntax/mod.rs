@@ -27,23 +27,23 @@ pub mod token {
         pub loc: Loc,
         pub literal: String,
     }
-}
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+    #[cfg(test)]
+    mod tests {
+        use super::*;
 
-    #[test]
-    fn test_token() {
-        let tok = token::Token {
-            kind: token::Kind::Lparen,
-            loc: token::Loc {
-                row: 1,
-                col: 1,
-                pos: 2,
-            },
-            literal: String::from("("),
-        };
-        assert_eq!(&tok.literal, "(");
+        #[test]
+        fn test_token() {
+            let tok = Token {
+                kind: Kind::Lparen,
+                loc: Loc {
+                    row: 1,
+                    col: 1,
+                    pos: 2,
+                },
+                literal: String::from("("),
+            };
+            assert_eq!(&tok.literal, "(");
+        }
     }
 }
