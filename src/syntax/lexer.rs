@@ -32,7 +32,7 @@ impl Lexer<'_> {
         l
     }
 
-    pub fn next_token(self: &mut Self) -> Box<token::Token> {
+    pub fn next_token(&mut self) -> Box<token::Token> {
         let kind: Kind;
         let literal: String;
         let mut advance_one_char = true;
