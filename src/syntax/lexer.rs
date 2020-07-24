@@ -60,6 +60,10 @@ impl Lexer<'_> {
                 kind = Kind::Rsbracket;
                 literal = "]".to_string();
             }
+            b'\\' => {
+                kind = Kind::Backslash;
+                literal = "\\".to_string();
+            }
             _ if Self::is_identifider_char(self.ch) => {
                 kind = Kind::Identifier;
                 literal = self.read_identifider();
@@ -210,51 +214,56 @@ mod tests {
 
     #[test]
     fn test_lexer_next_tokens() {
-        let mut l = Lexer::new(b"( ) abc_+z 1 [2.3 4.]");
+        let mut l = Lexer::new(b"( ) abc_+z 1 \\[2.3 4.]");
         {
-            let tok1 = l.next_token();
-            assert_eq!("(", tok1.literal);
-            assert_eq!(Kind::Lparen, tok1.kind);
+            let tok = l.next_token();
+            assert_eq!("(", tok.literal);
+            assert_eq!(Kind::Lparen, tok.kind);
         }
         {
-            let tok2 = l.next_token();
-            assert_eq!(")", tok2.literal);
-            assert_eq!(Kind::Rparen, tok2.kind);
+            let tok = l.next_token();
+            assert_eq!(")", tok.literal);
+            assert_eq!(Kind::Rparen, tok.kind);
         }
         {
-            let tok3 = l.next_token();
-            assert_eq!("abc_+z", tok3.literal);
-            assert_eq!(Kind::Identifier, tok3.kind);
+            let tok = l.next_token();
+            assert_eq!("abc_+z", tok.literal);
+            assert_eq!(Kind::Identifier, tok.kind);
         }
         {
-            let tok4 = l.next_token();
-            assert_eq!("1", tok4.literal);
-            assert_eq!(Kind::Integer, tok4.kind);
+            let tok = l.next_token();
+            assert_eq!("1", tok.literal);
+            assert_eq!(Kind::Integer, tok.kind);
         }
         {
-            let tok5 = l.next_token();
-            assert_eq!("[", tok5.literal);
-            assert_eq!(Kind::Lsbracket, tok5.kind);
+            let tok = l.next_token();
+            assert_eq!("\\", tok.literal);
+            assert_eq!(Kind::Backslash, tok.kind);
         }
         {
-            let tok6 = l.next_token();
-            assert_eq!("2.3", tok6.literal);
-            assert_eq!(Kind::Float, tok6.kind);
+            let tok = l.next_token();
+            assert_eq!("[", tok.literal);
+            assert_eq!(Kind::Lsbracket, tok.kind);
         }
         {
-            let tok7 = l.next_token();
-            assert_eq!("4.", tok7.literal);
-            assert_eq!(Kind::Float, tok7.kind);
+            let tok = l.next_token();
+            assert_eq!("2.3", tok.literal);
+            assert_eq!(Kind::Float, tok.kind);
         }
         {
-            let tok8 = l.next_token();
-            assert_eq!("]", tok8.literal);
-            assert_eq!(Kind::Rsbracket, tok8.kind);
+            let tok = l.next_token();
+            assert_eq!("4.", tok.literal);
+            assert_eq!(Kind::Float, tok.kind);
         }
         {
-            let tokn = l.next_token();
-            assert_eq!("", tokn.literal);
-            assert_eq!(Kind::Eof, tokn.kind);
+            let tok = l.next_token();
+            assert_eq!("]", tok.literal);
+            assert_eq!(Kind::Rsbracket, tok.kind);
+        }
+        {
+            let tok = l.next_token();
+            assert_eq!("", tok.literal);
+            assert_eq!(Kind::Eof, tok.kind);
         }
     }
 }
