@@ -35,6 +35,7 @@ impl Lexer<'_> {
     pub fn next_token(self: &mut Self) -> Box<token::Token> {
         let kind: Kind;
         let literal: String;
+        let mut advance_one_char = true;
 
         self.skip_while_spaces();
 
@@ -51,13 +52,29 @@ impl Lexer<'_> {
                 kind = Kind::Rparen;
                 literal = ")".to_string();
             }
+            b'[' => {
+                kind = Kind::Lsbracket;
+                literal = "[".to_string();
+            }
+            b']' => {
+                kind = Kind::Rsbracket;
+                literal = "]".to_string();
+            }
             _ if Self::is_identifider_char(self.ch) => {
                 kind = Kind::Identifier;
                 literal = self.read_identifider();
+                advance_one_char = false; // Skips the next read_char
+            }
+            _ if Self::is_digit(self.ch) => {
+                let r = self.read_number();
+                kind = r.0;
+                literal = r.1;
+                advance_one_char = false; // Skips the next read_char
             }
             _ => {
                 kind = Kind::Illegal;
                 literal = "".to_string();
+                advance_one_char = false; // Skips the next read_char
             }
         }
 
@@ -67,8 +84,10 @@ impl Lexer<'_> {
             literal: literal,
         });
 
-        // Advances to next char and then returns.
-        self.read_char();
+        // Advances to next char, if asked, and then returns.
+        if advance_one_char {
+            self.read_char();
+        }
         return tok;
     }
 }
@@ -124,12 +143,42 @@ impl Lexer<'_> {
         }
     }
 
+    fn is_digit(c: u8) -> bool {
+        (b'0'..=b'9').contains(&c)
+    }
+
     fn read_identifider(self: &mut Self) -> String {
         let start = self.pos;
         while Self::is_identifider_char(self.ch) {
             self.read_char()
         }
         self.substring(start..self.pos)
+    }
+
+    fn read_number(self: &mut Self) -> (Kind, String) {
+        let mut hit_dec_pt = false;
+        let mut kind = Kind::Integer;
+
+        let start = self.pos;
+        loop {
+            let c = self.ch;
+            if Self::is_digit(c) {
+                self.read_char();
+                continue;
+            }
+
+            // decimal pt should be hit at most once.
+            if c == b'.' && !hit_dec_pt {
+                hit_dec_pt = true;
+                kind = Kind::Float;
+                self.read_char();
+                continue;
+            }
+
+            break;
+        }
+
+        return (kind, self.substring(start..self.pos));
     }
 }
 
@@ -161,21 +210,51 @@ mod tests {
 
     #[test]
     fn test_lexer_next_tokens() {
-        let mut l = Lexer::new(b"( ) abc_+");
-        let tok1 = l.next_token();
-        assert_eq!("(", tok1.literal);
-        assert_eq!(Kind::Lparen, tok1.kind);
-
-        let tok2 = l.next_token();
-        assert_eq!(")", tok2.literal);
-        assert_eq!(Kind::Rparen, tok2.kind);
-
-        let tok3 = l.next_token();
-        assert_eq!("abc_+", tok3.literal);
-        assert_eq!(Kind::Identifier, tok3.kind);
-
-        let tok4 = l.next_token();
-        assert_eq!("", tok4.literal);
-        assert_eq!(Kind::Eof, tok4.kind);
+        let mut l = Lexer::new(b"( ) abc_+z 1 [2.3 4.]");
+        {
+            let tok1 = l.next_token();
+            assert_eq!("(", tok1.literal);
+            assert_eq!(Kind::Lparen, tok1.kind);
+        }
+        {
+            let tok2 = l.next_token();
+            assert_eq!(")", tok2.literal);
+            assert_eq!(Kind::Rparen, tok2.kind);
+        }
+        {
+            let tok3 = l.next_token();
+            assert_eq!("abc_+z", tok3.literal);
+            assert_eq!(Kind::Identifier, tok3.kind);
+        }
+        {
+            let tok4 = l.next_token();
+            assert_eq!("1", tok4.literal);
+            assert_eq!(Kind::Integer, tok4.kind);
+        }
+        {
+            let tok5 = l.next_token();
+            assert_eq!("[", tok5.literal);
+            assert_eq!(Kind::Lsbracket, tok5.kind);
+        }
+        {
+            let tok6 = l.next_token();
+            assert_eq!("2.3", tok6.literal);
+            assert_eq!(Kind::Float, tok6.kind);
+        }
+        {
+            let tok7 = l.next_token();
+            assert_eq!("4.", tok7.literal);
+            assert_eq!(Kind::Float, tok7.kind);
+        }
+        {
+            let tok8 = l.next_token();
+            assert_eq!("]", tok8.literal);
+            assert_eq!(Kind::Rsbracket, tok8.kind);
+        }
+        {
+            let tokn = l.next_token();
+            assert_eq!("", tokn.literal);
+            assert_eq!(Kind::Eof, tokn.kind);
+        }
     }
 }
