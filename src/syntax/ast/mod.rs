@@ -23,9 +23,13 @@ impl Program {
             return Ok(());
         }
 
-        for (i, expr) in self.exprs.iter_mut().enumerate() {
+        for (i, ref mut expr) in self.exprs.iter_mut().enumerate() {
             match expr {
-                Expr::IntLt(_, _) => {}
+                Expr::IntLt(ref mut tp, _) => match tp {
+                    Type::Int => {}
+                    Type::Unknown => *tp = Type::Int,
+                    _ => panic!("123"),
+                },
                 _ => {
                     return Err(Error::new()
                         .emit_diagnosis_note_str("un supported expr type yet")
