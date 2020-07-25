@@ -1,5 +1,6 @@
 use std::fmt;
 
+#[derive(PartialEq, Debug)]
 pub enum Type {
     Unknown,
     Int,
@@ -25,6 +26,7 @@ impl fmt::Display for Type {
     }
 }
 
+#[derive(PartialEq, Debug)]
 pub enum Expr {
     ID(Type, String),
     IntLt(Type, i64),
