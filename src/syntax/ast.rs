@@ -22,7 +22,7 @@ impl Expr {
     }
 
     pub fn new_array(values: &[f32]) -> Expr {
-        Expr::ShapeLt(dims.iter().map(|x| Box::new(Expr::new_id(x))).collect())
+        Expr::ArrayLt(values.iter().map(|x| Box::new(Expr::FloatLt(*x))).collect())
     }
 }
 
@@ -103,12 +103,12 @@ mod tests {
     #[test]
     fn test_arraylt() {
         {
-            let expr = Expr::new_(&vec!["@a"]);
-            assert_eq!(r#"Shape(ID(@a))"#, expr.to_string());
+            let expr = Expr::new_array(&vec![1.0]);
+            assert_eq!(r#"Array(Float(1.00))"#, expr.to_string());
         }
         {
-            let expr = Expr::new_shape(&vec!["@a", "@b"]);
-            assert_eq!(r#"Shape(ID(@a), ID(@b))"#, expr.to_string());
+            let expr = Expr::new_array(&vec![1.0, 2.0]);
+            assert_eq!(r#"Array(Float(1.00), Float(2.00))"#, expr.to_string());
         }
     }
 }
