@@ -1,3 +1,7 @@
+use mlvm::syntax::ast::Expr;
+use mlvm::syntax::ast::Program;
+
 fn main() {
-    println!("Hello, world! {:?}", mlvm::syntax::token::Kind::Lparen);
+    let mut p = Program::new(vec![Expr::new_id("a")]);
+    p.infer_types().unwrap();
 }
