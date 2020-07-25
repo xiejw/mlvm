@@ -17,10 +17,10 @@ pub enum Expr {
     ID(String),
     IntLt(i64),
     FloatLt(f32),
-    ShapeLt(Vec<Box<Expr>>),
-    ArrayLt(Vec<Box<Expr>>),
+    ShapeLt(Vec<Expr>),
+    ArrayLt(Vec<Expr>),
     StringLt(String),
-    FnCall(Box<Expr>, Vec<Box<Expr>>),
+    FnCall(Box<Expr>, Vec<Expr>),
 }
 
 impl Expr {
@@ -29,11 +29,11 @@ impl Expr {
     }
 
     pub fn new_shape(dims: &[&str]) -> Expr {
-        Expr::ShapeLt(dims.iter().map(|x| Box::new(Expr::new_id(x))).collect())
+        Expr::ShapeLt(dims.iter().map(|x| Expr::new_id(x)).collect())
     }
 
     pub fn new_array(values: &[f32]) -> Expr {
-        Expr::ArrayLt(values.iter().map(|x| Box::new(Expr::FloatLt(*x))).collect())
+        Expr::ArrayLt(values.iter().map(|x| Expr::FloatLt(*x)).collect())
     }
 }
 
@@ -64,7 +64,7 @@ impl fmt::Display for Expr {
 }
 
 impl Expr {
-    fn write_list(f: &mut fmt::Formatter<'_>, list: &Vec<Box<Expr>>) {
+    fn write_list(f: &mut fmt::Formatter<'_>, list: &Vec<Expr>) {
         let len = list.len();
         for (i, e) in list.iter().enumerate() {
             let _ = write!(f, "{}", e);
@@ -131,7 +131,7 @@ mod tests {
     fn test_fn_call() {
         let expr = Expr::FnCall(
             Box::new(Expr::new_id("f")),
-            vec![Box::new(Expr::new_id("a")), Box::new(Expr::new_id("b"))],
+            vec![Expr::new_id("a"), Expr::new_id("b")],
         );
         assert_eq!("Fn(ID(f), ID(a), ID(b))", expr.to_string());
     }
