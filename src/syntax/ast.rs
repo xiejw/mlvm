@@ -1,10 +1,17 @@
+use std::fmt;
+
 pub struct Program {}
 
 pub enum Expr{
     ID(String),
     IntLt(i64),
-    FnCall(Box<Expr>),
+    FloatLt(f32),
+    ShaptLt(Vec<Box<Expr>>),
+    ArrayLt(Vec<Box<Expr>>),
+    StringLt(String),
+    FnCall(Box<Expr>, Vec<Box<Expr>>),
 }
+
 
 #[cfg(test)]
 mod tests {
