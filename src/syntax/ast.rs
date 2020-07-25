@@ -10,51 +10,69 @@ pub enum Type {
     Shape,
     Array,
     String,
-    Fn(Vec<Type>, Vec<Type>), // inputs, outputs
+    Fn{inputs: Vec<Type>, outputs: Vec<Type>},
 }
 
 pub enum Expr {
-    ID(String),
-    IntLt(i64),
-    FloatLt(f32),
-    ShapeLt(Vec<Expr>),
-    ArrayLt(Vec<Expr>),
-    StringLt(String),
-    FnCall(Box<Expr>, Vec<Expr>),
+    ID(Type, String),
+    IntLt(Type, i64),
+    FloatLt(Type, f32),
+    ShapeLt(Type, Vec<Expr>),
+    ArrayLt(Type, Vec<Expr>),
+    StringLt(Type, String),
+    FnCall(Type, Box<Expr>, Vec<Expr>),
 }
 
 impl Expr {
+    pub fn new_intlt(v: i64) -> Expr {
+        Expr::IntLt(Type::Int, v)
+    }
+
+    pub fn new_floatlt(v: f32) -> Expr {
+        Expr::FloatLt(Type::Float, v)
+    }
+
+    pub fn new_stringlt(v: String) -> Expr {
+        Expr::StringLt(Type::String, v)
+    }
+
     pub fn new_id(v: &str) -> Expr {
-        Expr::ID(v.to_string())
+        Expr::ID(Type::Unknown, v.to_string())
     }
 
-    pub fn new_shape(dims: &[&str]) -> Expr {
-        Expr::ShapeLt(dims.iter().map(|x| Expr::new_id(x)).collect())
+    pub fn new_shapelt(dims: &[&str]) -> Expr {
+        Expr::ShapeLt(Type::Shape, dims.iter().map(|x| Expr::new_id(x)).collect())
     }
 
-    pub fn new_array(values: &[f32]) -> Expr {
-        Expr::ArrayLt(values.iter().map(|x| Expr::FloatLt(*x)).collect())
+    pub fn new_arraylt(values: &[f32]) -> Expr {
+        Expr::ArrayLt(
+            Type::Array,
+            values
+                .iter()
+                .map(|x| Expr::FloatLt(Type::Float, *x))
+                .collect(),
+        )
     }
 }
 
 impl fmt::Display for Expr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match &self {
-            Expr::ID(v) => write!(f, "ID({})", v),
-            Expr::IntLt(v) => write!(f, "Int({})", v),
-            Expr::FloatLt(v) => write!(f, "Float({:.2})", v),
-            Expr::StringLt(v) => write!(f, "Str(\"{}\")", v),
-            Expr::ShapeLt(l) => {
+            Expr::ID(_, v) => write!(f, "ID({})", v),
+            Expr::IntLt(_, v) => write!(f, "Int({})", v),
+            Expr::FloatLt(_, v) => write!(f, "Float({:.2})", v),
+            Expr::StringLt(_, v) => write!(f, "Str(\"{}\")", v),
+            Expr::ShapeLt(_, l) => {
                 let _ = write!(f, "Shape(");
                 Expr::write_list(f, &l);
                 write!(f, ")")
             }
-            Expr::ArrayLt(l) => {
+            Expr::ArrayLt(_, l) => {
                 let _ = write!(f, "Array(");
                 Expr::write_list(f, &l);
                 write!(f, ")")
             }
-            Expr::FnCall(func, args) => {
+            Expr::FnCall(_, func, args) => {
                 let _ = write!(f, "Fn({}, ", func);
                 Expr::write_list(f, &args);
                 write!(f, ")")
@@ -87,30 +105,30 @@ mod tests {
 
     #[test]
     fn test_intlt() {
-        let expr = Expr::IntLt(123);
+        let expr = Expr::new_intlt(123);
         assert_eq!("Int(123)", expr.to_string());
     }
 
     #[test]
     fn test_floatlt() {
-        let expr = Expr::FloatLt(123.0);
+        let expr = Expr::new_floatlt(123.0);
         assert_eq!("Float(123.00)", expr.to_string());
     }
 
     #[test]
     fn test_stringlt() {
-        let expr = Expr::StringLt("abc".to_string());
+        let expr = Expr::new_stringlt("abc".to_string());
         assert_eq!(r#"Str("abc")"#, expr.to_string());
     }
 
     #[test]
     fn test_shapelt() {
         {
-            let expr = Expr::new_shape(&vec!["@a"]);
+            let expr = Expr::new_shapelt(&vec!["@a"]);
             assert_eq!(r#"Shape(ID(@a))"#, expr.to_string());
         }
         {
-            let expr = Expr::new_shape(&vec!["@a", "@b"]);
+            let expr = Expr::new_shapelt(&vec!["@a", "@b"]);
             assert_eq!(r#"Shape(ID(@a), ID(@b))"#, expr.to_string());
         }
     }
@@ -118,11 +136,11 @@ mod tests {
     #[test]
     fn test_arraylt() {
         {
-            let expr = Expr::new_array(&vec![1.0]);
+            let expr = Expr::new_arraylt(&vec![1.0]);
             assert_eq!(r#"Array(Float(1.00))"#, expr.to_string());
         }
         {
-            let expr = Expr::new_array(&vec![1.0, 2.0]);
+            let expr = Expr::new_arraylt(&vec![1.0, 2.0]);
             assert_eq!(r#"Array(Float(1.00), Float(2.00))"#, expr.to_string());
         }
     }
@@ -130,6 +148,7 @@ mod tests {
     #[test]
     fn test_fn_call() {
         let expr = Expr::FnCall(
+            Type::Unknown,
             Box::new(Expr::new_id("f")),
             vec![Expr::new_id("a"), Expr::new_id("b")],
         );
