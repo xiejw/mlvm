@@ -1,7 +1,8 @@
 mod expr;
-use crate::base::Error;
-
 pub use expr::*;
+
+use crate::base::Error;
+use std::fmt;
 
 pub struct SymTable {}
 
@@ -24,7 +25,6 @@ impl Program {
         }
 
         for (i, expr) in self.exprs.iter_mut().enumerate() {
-            println!("input {}: {}", i, expr);
             match expr {
                 Expr::IntLt(ref mut tp, _) => match tp {
                     Type::Int => {}
@@ -37,7 +37,16 @@ impl Program {
                         .take());
                 }
             }
-            println!("result {}: {}", i, expr);
+        }
+
+        Ok(())
+    }
+}
+
+impl fmt::Display for Program {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for (i, expr) in self.exprs.iter().enumerate() {
+            write!(f, "%{}: {}\n", i, expr);
         }
 
         Ok(())

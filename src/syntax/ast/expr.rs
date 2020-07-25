@@ -14,6 +14,17 @@ pub enum Type {
     },
 }
 
+impl fmt::Display for Type {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Type::Unknown => write!(f, "??"),
+            Type::Int => write!(f, "Int"),
+            Type::Float => write!(f, "Float"),
+            _ => panic!("unsuported type"),
+        }
+    }
+}
+
 pub enum Expr {
     ID(Type, String),
     IntLt(Type, i64),
@@ -60,7 +71,7 @@ impl fmt::Display for Expr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match &self {
             Expr::ID(_, v) => write!(f, "ID({})", v),
-            Expr::IntLt(ref tp, v) => write!(f, "Int{}({})", tp, v),
+            Expr::IntLt(ref tp, v) => write!(f, "Int::{} ({})", tp, v),
             Expr::FloatLt(_, v) => write!(f, "Float({:.2})", v),
             Expr::StringLt(_, v) => write!(f, "Str(\"{}\")", v),
             Expr::ShapeLt(_, l) => {
