@@ -6,7 +6,8 @@ fn main() {
     let mut p = Program::new(vec![Expr::IntLt(Type::Float, 123)]);
     print!("before:\n{}", p);
     if let Err(err) = p.infer_types() {
-        panic!("unexpected error:\n{}\n", err);
+        print!("\nunexpected error:\n{}\n", err);
+        return;
     };
     print!("after:\n{}", p);
 }

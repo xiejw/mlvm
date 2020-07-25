@@ -60,9 +60,11 @@ impl Program {
 
 impl fmt::Display for Program {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let _ = write!(f, "\n{{\n");
         for (i, expr) in self.exprs.iter().enumerate() {
-            let _ = write!(f, "%{}: {}\n", i, expr);
+            let _ = write!(f, "  %{:<3}: {}\n", i, expr);
         }
+        let _ = write!(f, "}}\n");
 
         Ok(())
     }
