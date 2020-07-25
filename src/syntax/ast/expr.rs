@@ -118,7 +118,7 @@ mod tests {
     #[test]
     fn test_intlt() {
         let expr = Expr::new_intlt(123);
-        assert_eq!("Int(123)", expr.to_string());
+        assert_eq!("Int::Int (123)", expr.to_string());
     }
 
     #[test]

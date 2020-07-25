@@ -32,6 +32,7 @@ impl Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let _ = write!(f, "\n###################################################\n");
         if let Some(ref notes) = self.notes {
             let mut indent = String::from("");
             for i in (0..notes.len()).rev() {
@@ -43,9 +44,10 @@ impl fmt::Display for Error {
                 indent += "  ";
             }
         } else {
-            return write!(f, "(no error message)");
+            let _ = write!(f, "(no error message)");
         }
 
+        let _ = write!(f, "\n###################################################\n");
         Ok(())
     }
 }
@@ -56,7 +58,14 @@ mod tests {
 
     #[test]
     fn test_display_for_new_error() {
-        assert_eq!("(no error message)", format!("{}", Error::new()));
+        assert_eq!(
+            r#"
+###################################################
+(no error message)
+###################################################
+"#,
+            format!("{}", Error::new())
+        );
     }
 
     #[test]
@@ -66,8 +75,12 @@ mod tests {
             .emit_diagnosis_note_str("during stack 2")
             .take();
         assert_eq!(
-            r#"+-+ during stack 2
-  +-> during stack 1"#,
+            r#"
+###################################################
++-+ during stack 2
+  +-> during stack 1
+###################################################
+"#,
             format!("{}", err)
         );
     }
@@ -79,9 +92,13 @@ mod tests {
             .emit_diagnosis_note_str("during stack 2")
             .emit_diagnosis_note_str("during stack 3");
         assert_eq!(
-            r#"+-+ during stack 3
+            r#"
+###################################################
++-+ during stack 3
   +-+ during stack 2
-    +-> during stack 1"#,
+    +-> during stack 1
+###################################################
+"#,
             format!("{}", err)
         );
     }

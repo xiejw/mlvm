@@ -25,17 +25,32 @@ impl Program {
         }
 
         for (i, expr) in self.exprs.iter_mut().enumerate() {
-            match expr {
+            let result = match expr {
                 Expr::IntLt(ref mut tp, _) => match tp {
-                    Type::Int => {}
-                    Type::Unknown => *tp = Type::Int,
-                    _ => panic!("123"),
+                    Type::Int => Ok(()),
+                    Type::Unknown => {
+                        *tp = Type::Int;
+                        Ok(())
+                    }
+                    _ => Err(Error::new()
+                        .emit_diagnosis_note(format!(
+                            "Int Literal should have type Int. Got: {}",
+                            tp
+                        ))
+                        .take()),
                 },
-                _ => {
-                    return Err(Error::new()
-                        .emit_diagnosis_note_str("un supported expr type yet")
-                        .take());
-                }
+                _ => Err(Error::new()
+                    .emit_diagnosis_note_str("un supported expr type yet")
+                    .take()),
+            };
+
+            if let Err(mut err) = result {
+                return Err(err
+                    .emit_diagnosis_note(format!(
+                        "failed to infer type for {}-th expr: {}",
+                        i, expr
+                    ))
+                    .take());
             }
         }
 
@@ -46,7 +61,7 @@ impl Program {
 impl fmt::Display for Program {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         for (i, expr) in self.exprs.iter().enumerate() {
-            write!(f, "%{}: {}\n", i, expr);
+            let _ = write!(f, "%{}: {}\n", i, expr);
         }
 
         Ok(())
