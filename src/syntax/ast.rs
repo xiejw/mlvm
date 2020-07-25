@@ -12,6 +12,14 @@ pub enum Expr{
     FnCall(Box<Expr>, Vec<Box<Expr>>),
 }
 
+impl fmt::Display for Expr {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match &self {
+            Expr::ID(v) => write!(f, "ID({})", v),
+            _ => Ok(()),
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -20,9 +28,6 @@ mod tests {
     #[test]
     fn test_id() {
         let expr = Expr::ID("abc".to_string());
-        match &expr {
-            Expr::ID(v) =>  assert_eq!("abc", v),
-            _ => panic!("abc"),
-        }
+        assert_eq!("ID(abc)", expr.to_string());
     }
 }
