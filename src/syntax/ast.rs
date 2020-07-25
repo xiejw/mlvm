@@ -2,14 +2,24 @@ use std::fmt;
 
 pub struct Program {}
 
-pub enum Expr{
+pub enum Expr {
     ID(String),
     IntLt(i64),
     FloatLt(f32),
-    ShaptLt(Vec<Box<Expr>>),
+    ShapeLt(Vec<Box<Expr>>),
     ArrayLt(Vec<Box<Expr>>),
     StringLt(String),
     FnCall(Box<Expr>, Vec<Box<Expr>>),
+}
+
+impl Expr {
+    pub fn new_id(v: &str) -> Expr {
+        Expr::ID(v.to_string())
+    }
+
+    pub fn new_shape(dims: &[&str]) -> Expr {
+        Expr::ShapeLt(dims.iter().map(|x| Box::new(Expr::new_id(x))).collect())
+    }
 }
 
 impl fmt::Display for Expr {
@@ -19,7 +29,24 @@ impl fmt::Display for Expr {
             Expr::IntLt(v) => write!(f, "Int({})", v),
             Expr::FloatLt(v) => write!(f, "Float({:.2})", v),
             Expr::StringLt(v) => write!(f, "Str(\"{}\")", v),
+            Expr::ShapeLt(l) => {
+                let _ = write!(f, "Shape(");
+                Expr::write_list(f, &l);
+                write!(f, ")")
+            }
             _ => panic!("unsupported yet"),
+        }
+    }
+}
+
+impl Expr {
+    fn write_list(f: &mut fmt::Formatter<'_>, list: &Vec<Box<Expr>>) {
+        let len = list.len();
+        for (i, e) in list.iter().enumerate() {
+            let _ = write!(f, "{}", e);
+            if i != len - 1 {
+                let _ = write!(f, ", ");
+            }
         }
     }
 }
@@ -30,7 +57,7 @@ mod tests {
 
     #[test]
     fn test_id() {
-        let expr = Expr::ID("abc".to_string());
+        let expr = Expr::new_id("abc");
         assert_eq!("ID(abc)", expr.to_string());
     }
 
@@ -50,5 +77,11 @@ mod tests {
     fn test_stringlt() {
         let expr = Expr::StringLt("abc".to_string());
         assert_eq!(r#"Str("abc")"#, expr.to_string());
+    }
+
+    #[test]
+    fn test_shapelt() {
+        let expr = Expr::new_shape(&vec!["@a"]);
+        assert_eq!(r#"Shape(ID(@a))"#, expr.to_string());
     }
 }
