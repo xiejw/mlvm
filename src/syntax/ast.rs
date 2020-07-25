@@ -20,6 +20,10 @@ impl Expr {
     pub fn new_shape(dims: &[&str]) -> Expr {
         Expr::ShapeLt(dims.iter().map(|x| Box::new(Expr::new_id(x))).collect())
     }
+
+    pub fn new_array(values: &[f32]) -> Expr {
+        Expr::ShapeLt(dims.iter().map(|x| Box::new(Expr::new_id(x))).collect())
+    }
 }
 
 impl fmt::Display for Expr {
@@ -31,6 +35,11 @@ impl fmt::Display for Expr {
             Expr::StringLt(v) => write!(f, "Str(\"{}\")", v),
             Expr::ShapeLt(l) => {
                 let _ = write!(f, "Shape(");
+                Expr::write_list(f, &l);
+                write!(f, ")")
+            }
+            Expr::ArrayLt(l) => {
+                let _ = write!(f, "Array(");
                 Expr::write_list(f, &l);
                 write!(f, ")")
             }
@@ -81,7 +90,25 @@ mod tests {
 
     #[test]
     fn test_shapelt() {
-        let expr = Expr::new_shape(&vec!["@a"]);
-        assert_eq!(r#"Shape(ID(@a))"#, expr.to_string());
+        {
+            let expr = Expr::new_shape(&vec!["@a"]);
+            assert_eq!(r#"Shape(ID(@a))"#, expr.to_string());
+        }
+        {
+            let expr = Expr::new_shape(&vec!["@a", "@b"]);
+            assert_eq!(r#"Shape(ID(@a), ID(@b))"#, expr.to_string());
+        }
+    }
+
+    #[test]
+    fn test_arraylt() {
+        {
+            let expr = Expr::new_(&vec!["@a"]);
+            assert_eq!(r#"Shape(ID(@a))"#, expr.to_string());
+        }
+        {
+            let expr = Expr::new_shape(&vec!["@a", "@b"]);
+            assert_eq!(r#"Shape(ID(@a), ID(@b))"#, expr.to_string());
+        }
     }
 }
