@@ -23,7 +23,8 @@ impl Program {
             return Ok(());
         }
 
-        for (i, ref mut expr) in self.exprs.iter_mut().enumerate() {
+        for (i, expr) in self.exprs.iter_mut().enumerate() {
+            println!("input {}: {}", i, expr);
             match expr {
                 Expr::IntLt(ref mut tp, _) => match tp {
                     Type::Int => {}
@@ -36,7 +37,7 @@ impl Program {
                         .take());
                 }
             }
-            println!("handle {}: {}", i, expr);
+            println!("result {}: {}", i, expr);
         }
 
         Ok(())

@@ -60,7 +60,7 @@ impl fmt::Display for Expr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match &self {
             Expr::ID(_, v) => write!(f, "ID({})", v),
-            Expr::IntLt(_, v) => write!(f, "Int({})", v),
+            Expr::IntLt(ref tp, v) => write!(f, "Int{}({})", tp, v),
             Expr::FloatLt(_, v) => write!(f, "Float({:.2})", v),
             Expr::StringLt(_, v) => write!(f, "Str(\"{}\")", v),
             Expr::ShapeLt(_, l) => {
