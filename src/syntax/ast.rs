@@ -2,6 +2,17 @@ use std::fmt;
 
 pub struct Program {}
 
+pub enum Type {
+    Unknown,
+    Int,
+    Float,
+    Dim,
+    Shape,
+    Array,
+    String,
+    Fn(Vec<Type>, Vec<Type>), // inputs, outputs
+}
+
 pub enum Expr {
     ID(String),
     IntLt(i64),
