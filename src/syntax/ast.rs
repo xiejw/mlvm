@@ -43,7 +43,11 @@ impl fmt::Display for Expr {
                 Expr::write_list(f, &l);
                 write!(f, ")")
             }
-            _ => panic!("unsupported yet"),
+            Expr::FnCall(func, args) => {
+                let _ = write!(f, "Fn({}, ", func);
+                Expr::write_list(f, &args);
+                write!(f, ")")
+            }
         }
     }
 }
@@ -110,5 +114,14 @@ mod tests {
             let expr = Expr::new_array(&vec![1.0, 2.0]);
             assert_eq!(r#"Array(Float(1.00), Float(2.00))"#, expr.to_string());
         }
+    }
+
+    #[test]
+    fn test_fn_call() {
+        let expr = Expr::FnCall(
+            Box::new(Expr::new_id("f")),
+            vec![Box::new(Expr::new_id("a")), Box::new(Expr::new_id("b"))],
+        );
+        assert_eq!("Fn(ID(f), ID(a), ID(b))", expr.to_string());
     }
 }
