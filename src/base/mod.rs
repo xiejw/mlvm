@@ -1,5 +1,6 @@
 use std::fmt;
 
+#[derive(Debug)]
 pub struct Error {
     notes: Vec<String>, // Reverse order
 }

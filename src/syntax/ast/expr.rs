@@ -1,7 +1,5 @@
 use std::fmt;
 
-pub struct Program {}
-
 pub enum Type {
     Unknown,
     Int,
@@ -10,7 +8,10 @@ pub enum Type {
     Shape,
     Array,
     String,
-    Fn{inputs: Vec<Type>, outputs: Vec<Type>},
+    Fn {
+        inputs: Vec<Type>,
+        outputs: Vec<Type>,
+    },
 }
 
 pub enum Expr {
