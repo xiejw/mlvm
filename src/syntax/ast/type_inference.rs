@@ -3,10 +3,10 @@ use self::super::sym_table;
 use crate::base::Error;
 use sym_table::SymTable;
 
-pub fn infer_type(
-    expr: &mut Expr,
+pub fn infer_type<'a>(
+    expr: &'a mut Expr,
     sym_table: &mut SymTable,
-) -> Result<(), Error> {
+) -> Result<&'a Type, Error> {
     match expr {
         Expr::IntLt(ref mut tp, _) => infer_trivial_type(
             tp,
@@ -19,22 +19,31 @@ pub fn infer_type(
             "Float Literal should have type Float",
         ),
         Expr::ArrayLt(ref mut tp, ref mut values) => {
-            let result = infer_trivial_type(
-                tp,
-                Type::Array,
-                "Array Literal should have type Array",
-            );
+            {
+                // Check tp.
+                let result = infer_trivial_type(
+                    tp,
+                    Type::Array,
+                    "Array Literal should have type Array",
+                );
 
-            if result.is_err() {
-                return result;
+                if result.is_err() {
+                    return Err(result.unwrap_err());
+                }
+            }
+            {
+                let result = infer_elements_with_same_type(
+                    values,
+                    &Type::Float,
+                    sym_table,
+                    "Array element should only have Float type element",
+                );
+                if result.is_err() {
+                    return Err(result.unwrap_err());
+                }
             }
 
-            return infer_elements_with_same_type(
-                values,
-                Type::Float,
-                sym_table,
-                "Array element should only have Float type element",
-            );
+            Ok(tp)
         }
         _ => Err(Error::new()
             .emit_diagnosis_note(format!("unsupported expr type yet: {}", expr))
@@ -42,16 +51,16 @@ pub fn infer_type(
     }
 }
 
-fn infer_trivial_type(
-    tp: &mut Type,
+fn infer_trivial_type<'a>(
+    tp: &'a mut Type,
     expected: Type,
     msg: &str,
-) -> Result<(), Error> {
+) -> Result<&'a Type, Error> {
     if *tp == expected {
-        Ok(())
+        Ok(tp)
     } else if tp == &Type::Unknown {
         *tp = expected;
-        Ok(())
+        Ok(tp)
     } else {
         Err(Error::new()
             .emit_diagnosis_note(format!("{}. Got: {}", msg, tp))
@@ -61,13 +70,13 @@ fn infer_trivial_type(
 
 fn infer_elements_with_same_type(
     values: &mut Vec<Expr>,
-    expected_type: Type,
+    expected_type: &Type,
     sym_table: &mut SymTable,
     msg: &str,
 ) -> Result<(), Error> {
     for (i, expr) in values.iter_mut().enumerate() {
         let mut result =
-            infer_type_with_expectation(expr, Type::Float, sym_table);
+            infer_type_with_expectation(expr, expected_type, sym_table);
         if let Err(ref mut err) = result {
             return Err(err
                 .emit_diagnosis_note(format!(
@@ -82,8 +91,21 @@ fn infer_elements_with_same_type(
 
 fn infer_type_with_expectation(
     expr: &mut Expr,
-    expected_type: Type,
+    expected_type: &Type,
     sym_table: &mut SymTable,
 ) -> Result<(), Error> {
-    Ok(())
+    match infer_type(expr, sym_table) {
+        Ok(tp) => {
+            if tp != expected_type {
+                return Err(Error::new()
+                    .emit_diagnosis_note(format!(
+                        "expected type: {}, got: {}",
+                        expected_type, tp
+                    ))
+                    .take());
+            }
+            Ok(())
+        }
+        Err(err) => Err(err),
+    }
 }
