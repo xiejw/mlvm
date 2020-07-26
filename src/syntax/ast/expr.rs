@@ -30,73 +30,96 @@ impl fmt::Display for Type {
 }
 
 #[derive(PartialEq, Debug)]
-pub enum Expr {
-    ID(Type, String),
-    IntLt(Type, i64),
-    FloatLt(Type, f32),
-    ShapeLt(Type, Vec<Expr>),
-    DimLt(Type, Rc<String>),
-    ArrayLt(Type, Vec<Expr>),
-    StringLt(Type, String),
-    FnCall(Type, Box<Expr>, Vec<Expr>),
+pub enum Kind {
+    ID(String),
+    IntLt(i64),
+    FloatLt(f32),
+    ShapeLt(Vec<Expr>),
+    DimLt(Rc<String>),
+    ArrayLt(Vec<Expr>),
+    StringLt(String),
+    FnCall(Box<Expr>, Vec<Expr>),
+}
+
+#[derive(PartialEq, Debug)]
+pub struct Expr {
+    pub etype: Type,
+    pub kind: Kind,
 }
 
 impl Expr {
     pub fn new_intlt(v: i64) -> Expr {
-        Expr::IntLt(Type::Int, v)
+        Expr {
+            etype: Type::Int,
+            kind: Kind::IntLt(v),
+        }
     }
 
     pub fn new_floatlt(v: f32) -> Expr {
-        Expr::FloatLt(Type::Float, v)
+        Expr {
+            etype: Type::Float,
+            kind: Kind::FloatLt(v),
+        }
     }
 
     pub fn new_stringlt(v: String) -> Expr {
-        Expr::StringLt(Type::String, v)
+        Expr {
+            etype: Type::String,
+            kind: Kind::StringLt(v),
+        }
     }
 
     pub fn new_id(v: &str) -> Expr {
-        Expr::ID(Type::Unknown, v.to_string())
+        Expr {
+            etype: Type::Unknown,
+            kind: Kind::ID(v.to_string()),
+        }
     }
 
     pub fn new_shapelt(dims: &[&str]) -> Expr {
-        Expr::ShapeLt(
-            Type::Unknown,
-            dims.iter()
-                .map(|x| Expr::DimLt(Type::Unknown, Rc::new(x.to_string())))
-                .collect(),
-        )
+        Expr {
+            etype: Type::Unknown,
+            kind: Kind::ShapeLt(
+                dims.iter()
+                    .map(|x| Expr {
+                        etype: Type::Unknown,
+                        kind: Kind::DimLt(Rc::new(x.to_string())),
+                    })
+                    .collect(),
+            ),
+        }
     }
 
     pub fn new_arraylt(values: &[f32]) -> Expr {
-        Expr::ArrayLt(
-            Type::Array,
-            values
-                .iter()
-                .map(|x| Expr::FloatLt(Type::Float, *x))
-                .collect(),
-        )
+        Expr {
+            etype: Type::Array,
+            kind: Kind::ArrayLt(
+                values.iter().map(|x| Expr::new_floatlt(*x)).collect(),
+            ),
+        }
     }
 }
 
 impl fmt::Display for Expr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match &self {
-            Expr::ID(_, v) => write!(f, "ID({})", v),
-            Expr::IntLt(tp, v) => write!(f, "Int::{} ({})", tp, v),
-            Expr::FloatLt(tp, v) => write!(f, "Float::{} ({:.2})", tp, v),
-            Expr::StringLt(_, v) => write!(f, "Str(\"{}\")", v),
-            Expr::DimLt(tp, s) => write!(f, "Dim::{} ({})", tp, s),
-            Expr::ShapeLt(_, l) => {
+        let tp = &self.etype;
+        match &self.kind {
+            Kind::ID(v) => write!(f, "ID({})", v),
+            Kind::IntLt(v) => write!(f, "Int::{} ({})", tp, v),
+            Kind::FloatLt(v) => write!(f, "Float::{} ({:.2})", tp, v),
+            Kind::StringLt(v) => write!(f, "Str(\"{}\")", v),
+            Kind::DimLt(s) => write!(f, "Dim::{} ({})", tp, s),
+            Kind::ShapeLt(l) => {
                 let _ = write!(f, "Shape(");
                 Expr::write_list(f, &l);
                 write!(f, ")")
             }
-            Expr::ArrayLt(ref tp, l) => {
+            Kind::ArrayLt(l) => {
                 let _ = write!(f, "Array::{} (", tp);
                 Expr::write_list(f, &l);
                 write!(f, ")")
             }
-            Expr::FnCall(_, func, args) => {
+            Kind::FnCall(func, args) => {
                 let _ = write!(f, "Fn({}, ", func);
                 Expr::write_list(f, &args);
                 write!(f, ")")

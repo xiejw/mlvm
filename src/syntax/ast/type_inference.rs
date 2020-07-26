@@ -7,20 +7,20 @@ pub fn infer_type<'a>(
     expr: &'a mut Expr,
     sym_table: &mut SymTable,
 ) -> Result<&'a Type, Error> {
-    match expr {
-        Expr::IntLt(tp, _) => infer_trivial_type(
-            tp,
+    match &mut expr.kind {
+        Kind::IntLt(_) => infer_trivial_type(
+            &mut expr.etype,
             Type::Int,
             "Int Literal should have type Int",
         ),
-        Expr::FloatLt(tp, _) => infer_trivial_type(
-            tp,
+        Kind::FloatLt(_) => infer_trivial_type(
+            &mut expr.etype,
             Type::Float,
             "Float Literal should have type Float",
         ),
-        Expr::DimLt(tp, dim) => {
-            match tp {
-                Type::Unknown => {
+        Kind::DimLt(dim) => {
+            match &mut expr.etype {
+                tp if *tp == Type::Unknown => {
                     *tp = Type::Dim(dim.clone());
                 }
                 // Type::Dim(dim_in_type) => {
@@ -32,13 +32,13 @@ pub fn infer_type<'a>(
                 // }
                 _ => panic!("unsupported"),
             }
-            Ok(tp)
+            Ok(&expr.etype)
         }
-        Expr::ArrayLt(tp, values) => {
+        Kind::ArrayLt(values) => {
             {
                 // Check tp.
                 let result = infer_trivial_type(
-                    tp,
+                    &mut expr.etype,
                     Type::Array,
                     "Array Literal should have type Array",
                 );
@@ -59,10 +59,10 @@ pub fn infer_type<'a>(
                 }
             }
 
-            Ok(tp)
+            Ok(&expr.etype)
         }
-        _ => Err(Error::new()
-            .emit_diagnosis_note(format!("unsupported expr type yet: {}", expr))
+        k => Err(Error::new()
+            .emit_diagnosis_note(format!("unsupported expr kind yet: {:?}", k))
             .take()),
     }
 }
