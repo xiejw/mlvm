@@ -23,6 +23,7 @@ impl fmt::Display for Type {
             Type::Int => write!(f, "Int"),
             Type::Float => write!(f, "Float"),
             Type::Array => write!(f, "Array"),
+            Type::Dim(dim) => write!(f, "Dim({})", dim),
             _ => panic!("unsuported type"),
         }
     }
@@ -84,7 +85,7 @@ impl fmt::Display for Expr {
             Expr::IntLt(tp, v) => write!(f, "Int::{} ({})", tp, v),
             Expr::FloatLt(tp, v) => write!(f, "Float::{} ({:.2})", tp, v),
             Expr::StringLt(_, v) => write!(f, "Str(\"{}\")", v),
-            Expr::DimLt(_, s) => write!(f, "Dim({})", s),
+            Expr::DimLt(tp, s) => write!(f, "Dim::{} ({})", tp, s),
             Expr::ShapeLt(_, l) => {
                 let _ = write!(f, "Shape(");
                 Expr::write_list(f, &l);

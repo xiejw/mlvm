@@ -8,17 +8,23 @@ pub fn infer_type<'a>(
     sym_table: &mut SymTable,
 ) -> Result<&'a Type, Error> {
     match expr {
-        Expr::IntLt(ref mut tp, _) => infer_trivial_type(
+        Expr::IntLt(tp, _) => infer_trivial_type(
             tp,
             Type::Int,
             "Int Literal should have type Int",
         ),
-        Expr::FloatLt(ref mut tp, _) => infer_trivial_type(
+        Expr::FloatLt(tp, _) => infer_trivial_type(
             tp,
             Type::Float,
             "Float Literal should have type Float",
         ),
-        Expr::ArrayLt(ref mut tp, ref mut values) => {
+        Expr::DimLt(tp, dim) => {
+            if *tp == Type::Unknown {
+                *tp = Type::Dim(dim.clone());
+            }
+            Ok(tp)
+        }
+        Expr::ArrayLt(tp, values) => {
             {
                 // Check tp.
                 let result = infer_trivial_type(
