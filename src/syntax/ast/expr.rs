@@ -23,7 +23,7 @@ impl fmt::Display for Type {
             Type::Int => write!(f, "Int"),
             Type::Float => write!(f, "Float"),
             Type::Array => write!(f, "Array"),
-            Type::Dim(dim) => write!(f, "Dim({})", dim),
+            Type::Dim(dim) => write!(f, "{}", dim),
             _ => panic!("unsuported type"),
         }
     }

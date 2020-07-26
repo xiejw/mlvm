@@ -19,8 +19,18 @@ pub fn infer_type<'a>(
             "Float Literal should have type Float",
         ),
         Expr::DimLt(tp, dim) => {
-            if *tp == Type::Unknown {
+            match tp {
+                Type::Unknown => {
                 *tp = Type::Dim(dim.clone());
+                }
+                Type::Dim(dim_in_type) => {
+                    if dim !=  dim_in_type {
+                        Err(
+                    } else {
+                        Ok(tp)
+                    }
+                }
+                _ => panic!("unsupported"),
             }
             Ok(tp)
         }
