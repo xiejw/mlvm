@@ -8,14 +8,14 @@ pub struct SymTable {}
 
 pub struct Program {
     exprs: Vec<Expr>,
-    // sym_table: SymTable,
+    sym_table: SymTable,
 }
 
 impl Program {
     pub fn new(exprs: Vec<Expr>) -> Program {
         Program {
             exprs: exprs,
-            //      sym_table: SymTable {},
+            sym_table: SymTable {},
         }
     }
 
@@ -26,32 +26,42 @@ impl Program {
 
         for (i, expr) in self.exprs.iter_mut().enumerate() {
             let result = match expr {
-                Expr::IntLt(ref mut tp, _) => match tp {
-                    Type::Int => Ok(()),
-                    Type::Unknown => {
-                        *tp = Type::Int;
-                        Ok(())
+                Expr::IntLt(ref mut tp, _) => {
+                    Program::infer_trivial_type(tp, Type::Int, "Int Literal should have type Int")
+                }
+                Expr::FloatLt(ref mut tp, _) => Program::infer_trivial_type(
+                    tp,
+                    Type::Float,
+                    "Float Literal should have type Float",
+                ),
+                Expr::ArrayLt(ref mut tp, ref mut values) => {
+                    let mut result = match tp {
+                        Type::Array => Ok(()),
+                        Type::Unknown => {
+                            *tp = Type::Array;
+                            Ok(())
+                        }
+                        _ => Err(Error::new()
+                            .emit_diagnosis_note(format!(
+                                "Array Literal should have type Array. Got: {}",
+                                tp
+                            ))
+                            .take()),
+                    };
+
+                    if !result.is_err() {
+                        let sym_table = &mut self.sym_table;
+                        for expr in values.iter_mut() {
+                            result =
+                                Program::infer_type_with_expectation(expr, &Type::Float, sym_table);
+                            if result.is_err() {
+                                break;
+                            }
+                        }
                     }
-                    _ => Err(Error::new()
-                        .emit_diagnosis_note(format!(
-                            "Int Literal should have type Int. Got: {}",
-                            tp
-                        ))
-                        .take()),
-                },
-                Expr::FloatLt(ref mut tp, _) => match tp {
-                    Type::Float => Ok(()),
-                    Type::Unknown => {
-                        *tp = Type::Float;
-                        Ok(())
-                    }
-                    _ => Err(Error::new()
-                        .emit_diagnosis_note(format!(
-                            "Float Literal should have type Float. Got: {}",
-                            tp
-                        ))
-                        .take()),
-                },
+
+                    result
+                }
                 _ => Err(Error::new()
                     .emit_diagnosis_note_str("un supported expr type yet")
                     .take()),
@@ -67,6 +77,27 @@ impl Program {
             }
         }
 
+        Ok(())
+    }
+
+    fn infer_trivial_type(tp: &mut Type, expected: Type, msg: &str) -> Result<(), Error> {
+        if *tp == expected {
+            Ok(())
+        } else if tp == &Type::Unknown {
+            *tp = expected;
+            Ok(())
+        } else {
+            Err(Error::new()
+                .emit_diagnosis_note(format!("{}. Got: {}", msg, tp))
+                .take())
+        }
+    }
+
+    fn infer_type_with_expectation(
+        expr: &mut Expr,
+        expected_type: &Type,
+        sym_table: &mut SymTable,
+    ) -> Result<(), Error> {
         Ok(())
     }
 }
