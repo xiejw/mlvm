@@ -21,15 +21,15 @@ pub fn infer_type<'a>(
         Expr::DimLt(tp, dim) => {
             match tp {
                 Type::Unknown => {
-                *tp = Type::Dim(dim.clone());
+                    *tp = Type::Dim(dim.clone());
                 }
-                Type::Dim(dim_in_type) => {
-                    if dim !=  dim_in_type {
-                        Err(
-                    } else {
-                        Ok(tp)
-                    }
-                }
+                // Type::Dim(dim_in_type) => {
+                //     if dim !=  dim_in_type {
+                //         Err(
+                //     } else {
+                //         Ok(tp)
+                //     }
+                // }
                 _ => panic!("unsupported"),
             }
             Ok(tp)

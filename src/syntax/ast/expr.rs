@@ -149,11 +149,14 @@ mod tests {
     fn test_shapelt() {
         {
             let expr = Expr::new_shapelt(&vec!["@a"]);
-            assert_eq!(r#"Shape(Dim(@a))"#, expr.to_string());
+            assert_eq!(r#"Shape(Dim::?? (@a))"#, expr.to_string());
         }
         {
             let expr = Expr::new_shapelt(&vec!["@a", "@b"]);
-            assert_eq!(r#"Shape(Dim(@a), Dim(@b))"#, expr.to_string());
+            assert_eq!(
+                r#"Shape(Dim::?? (@a), Dim::?? (@b))"#,
+                expr.to_string()
+            );
         }
     }
 
