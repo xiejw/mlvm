@@ -7,7 +7,7 @@ pub fn infer_type(
     expr: &mut Expr,
     sym_table: &mut SymTable,
 ) -> Result<(), Error> {
-    let result = match expr {
+    match expr {
         Expr::IntLt(ref mut tp, _) => infer_trivial_type(
             tp,
             Type::Int,
@@ -19,35 +19,27 @@ pub fn infer_type(
             "Float Literal should have type Float",
         ),
         Expr::ArrayLt(ref mut tp, ref mut values) => {
-            let mut result = infer_trivial_type(
+            let result = infer_trivial_type(
                 tp,
                 Type::Array,
                 "Array Literal should have type Array",
             );
 
-            if !result.is_err() {
-                for (i, expr) in values.iter_mut().enumerate() {
-                    result = infer_type_with_expectation(
-                        expr,
-                        &Type::Float,
-                        sym_table,
-                    );
-                    if let Err(ref mut err) = result {
-                        err.emit_diagnosis_note(format!(
-                                    "Array element should only have Float type element. At {}-th, type assertion failed", i));
-                        break;
-                    }
-                }
+            if result.is_err() {
+                return result;
             }
 
-            result
+            return infer_elements_with_same_type(
+                values,
+                Type::Float,
+                sym_table,
+                "Array element should only have Float type element",
+            );
         }
         _ => Err(Error::new()
-            .emit_diagnosis_note_str("un supported expr type yet")
+            .emit_diagnosis_note(format!("unsupported expr type yet: {}", expr))
             .take()),
-    };
-
-    result
+    }
 }
 
 fn infer_trivial_type(
@@ -67,9 +59,30 @@ fn infer_trivial_type(
     }
 }
 
+fn infer_elements_with_same_type(
+    values: &mut Vec<Expr>,
+    expected_type: Type,
+    sym_table: &mut SymTable,
+    msg: &str,
+) -> Result<(), Error> {
+    for (i, expr) in values.iter_mut().enumerate() {
+        let mut result =
+            infer_type_with_expectation(expr, Type::Float, sym_table);
+        if let Err(ref mut err) = result {
+            return Err(err
+                .emit_diagnosis_note(format!(
+                    "{}. At {}-th, type assertion failed",
+                    msg, i
+                ))
+                .take());
+        }
+    }
+    Ok(())
+}
+
 fn infer_type_with_expectation(
     expr: &mut Expr,
-    expected_type: &Type,
+    expected_type: Type,
     sym_table: &mut SymTable,
 ) -> Result<(), Error> {
     Ok(())
