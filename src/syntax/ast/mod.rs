@@ -24,48 +24,9 @@ impl Program {
             return Ok(());
         }
 
+        let sym_table = &mut self.sym_table;
         for (i, expr) in self.exprs.iter_mut().enumerate() {
-            let result = match expr {
-                Expr::IntLt(ref mut tp, _) => {
-                    Program::infer_trivial_type(tp, Type::Int, "Int Literal should have type Int")
-                }
-                Expr::FloatLt(ref mut tp, _) => Program::infer_trivial_type(
-                    tp,
-                    Type::Float,
-                    "Float Literal should have type Float",
-                ),
-                Expr::ArrayLt(ref mut tp, ref mut values) => {
-                    let mut result = match tp {
-                        Type::Array => Ok(()),
-                        Type::Unknown => {
-                            *tp = Type::Array;
-                            Ok(())
-                        }
-                        _ => Err(Error::new()
-                            .emit_diagnosis_note(format!(
-                                "Array Literal should have type Array. Got: {}",
-                                tp
-                            ))
-                            .take()),
-                    };
-
-                    if !result.is_err() {
-                        let sym_table = &mut self.sym_table;
-                        for expr in values.iter_mut() {
-                            result =
-                                Program::infer_type_with_expectation(expr, &Type::Float, sym_table);
-                            if result.is_err() {
-                                break;
-                            }
-                        }
-                    }
-
-                    result
-                }
-                _ => Err(Error::new()
-                    .emit_diagnosis_note_str("un supported expr type yet")
-                    .take()),
-            };
+            let result = Program::infer_type(expr, sym_table);
 
             if let Err(mut err) = result {
                 return Err(err
@@ -78,6 +39,43 @@ impl Program {
         }
 
         Ok(())
+    }
+
+    fn infer_type(expr: &mut Expr, sym_table: &mut SymTable) -> Result<(), Error> {
+        let result = match expr {
+            Expr::IntLt(ref mut tp, _) => {
+                Program::infer_trivial_type(tp, Type::Int, "Int Literal should have type Int")
+            }
+            Expr::FloatLt(ref mut tp, _) => {
+                Program::infer_trivial_type(tp, Type::Float, "Float Literal should have type Float")
+            }
+            Expr::ArrayLt(ref mut tp, ref mut values) => {
+                let mut result = Program::infer_trivial_type(
+                    tp,
+                    Type::Array,
+                    "Array Literal should have type Array",
+                );
+
+                if !result.is_err() {
+                    for (i, expr) in values.iter_mut().enumerate() {
+                        result =
+                            Program::infer_type_with_expectation(expr, &Type::Float, sym_table);
+                        if let Err(ref mut err) = result {
+                            err.emit_diagnosis_note(format!(
+                                    "Array element should only have Float type element. At {}-th, type assertion failed", i));
+                            break;
+                        }
+                    }
+                }
+
+                result
+            }
+            _ => Err(Error::new()
+                .emit_diagnosis_note_str("un supported expr type yet")
+                .take()),
+        };
+
+        result
     }
 
     fn infer_trivial_type(tp: &mut Type, expected: Type, msg: &str) -> Result<(), Error> {
