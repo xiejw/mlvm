@@ -1,12 +1,13 @@
 use std::fmt;
+use std::rc::Rc;
 
 #[derive(PartialEq, Debug)]
 pub enum Type {
     Unknown,
     Int,
     Float,
-    Dim,
-    Shape,
+    Dim(Rc<String>),
+    Shape(Vec<Rc<String>>),
     Array,
     String,
     Fn {
@@ -33,6 +34,7 @@ pub enum Expr {
     IntLt(Type, i64),
     FloatLt(Type, f32),
     ShapeLt(Type, Vec<Expr>),
+    DimLt(Type, Rc<String>),
     ArrayLt(Type, Vec<Expr>),
     StringLt(Type, String),
     FnCall(Type, Box<Expr>, Vec<Expr>),
@@ -57,8 +59,10 @@ impl Expr {
 
     pub fn new_shapelt(dims: &[&str]) -> Expr {
         Expr::ShapeLt(
-            Type::Shape,
-            dims.iter().map(|x| Expr::new_id(x)).collect(),
+            Type::Unknown,
+            dims.iter()
+                .map(|x| Expr::DimLt(Type::Unknown, Rc::new(x.to_string())))
+                .collect(),
         )
     }
 
@@ -80,6 +84,7 @@ impl fmt::Display for Expr {
             Expr::IntLt(tp, v) => write!(f, "Int::{} ({})", tp, v),
             Expr::FloatLt(tp, v) => write!(f, "Float::{} ({:.2})", tp, v),
             Expr::StringLt(_, v) => write!(f, "Str(\"{}\")", v),
+            Expr::DimLt(_, s) => write!(f, "Dim({})", s),
             Expr::ShapeLt(_, l) => {
                 let _ = write!(f, "Shape(");
                 Expr::write_list(f, &l);
@@ -143,11 +148,11 @@ mod tests {
     fn test_shapelt() {
         {
             let expr = Expr::new_shapelt(&vec!["@a"]);
-            assert_eq!(r#"Shape(ID(@a))"#, expr.to_string());
+            assert_eq!(r#"Shape(Dim(@a))"#, expr.to_string());
         }
         {
             let expr = Expr::new_shapelt(&vec!["@a", "@b"]);
-            assert_eq!(r#"Shape(ID(@a), ID(@b))"#, expr.to_string());
+            assert_eq!(r#"Shape(Dim(@a), Dim(@b))"#, expr.to_string());
         }
     }
 
