@@ -148,7 +148,10 @@ mod tests {
 
     #[test]
     fn test_intlt_unknown() {
-        let expr = &mut Expr::IntLt(Type::Unknown, 123);
+        let expr = &mut Expr {
+            etype: Type::Unknown,
+            kind: Kind::IntLt(123),
+        };
         assert_eq!("Int::?? (123)", expr.to_string());
         let st = &mut SymTable {};
         infer_type(expr, st).unwrap();
@@ -158,7 +161,10 @@ mod tests {
     #[test]
     #[should_panic = "should have type Int. Got"]
     fn test_intlt_wrong() {
-        let expr = &mut Expr::IntLt(Type::Float, 123);
+        let expr = &mut Expr {
+            etype: Type::Float,
+            kind: Kind::IntLt(123),
+        };
         let st = &mut SymTable {};
         infer_type(expr, st).unwrap();
     }
@@ -174,7 +180,10 @@ mod tests {
 
     #[test]
     fn test_floatlt_unknown() {
-        let expr = &mut Expr::FloatLt(Type::Unknown, 123.0);
+        let expr = &mut Expr {
+            etype: Type::Unknown,
+            kind: Kind::FloatLt(123.0),
+        };
         assert_eq!("Float::?? (123.00)", expr.to_string());
         let st = &mut SymTable {};
         infer_type(expr, st).unwrap();
@@ -184,7 +193,10 @@ mod tests {
     #[test]
     #[should_panic = "should have type Float. Got"]
     fn test_floatlt_wrong() {
-        let expr = &mut Expr::FloatLt(Type::Int, 123.0);
+        let expr = &mut Expr {
+            etype: Type::Int,
+            kind: Kind::FloatLt(123.0),
+        };
         let st = &mut SymTable {};
         infer_type(expr, st).unwrap();
     }
@@ -223,58 +235,5 @@ mod tests {
     }
 
     #[test]
-    fn test_arraylt_unknown() {
-        let expr = &mut Expr::ArrayLt(
-            Type::Unknown,
-            vec![
-                Expr::FloatLt(Type::Unknown, 1.),
-                Expr::FloatLt(Type::Unknown, 2.),
-            ],
-        );
-        assert_eq!(
-            r#"Array::?? (Float::?? (1.00), Float::?? (2.00))"#,
-            expr.to_string()
-        );
-        let st = &mut SymTable {};
-        infer_type(expr, st).unwrap();
-        assert_eq!(
-            r#"Array::Array (Float::Float (1.00), Float::Float (2.00))"#,
-            expr.to_string()
-        );
-    }
-
-    #[test]
-    #[should_panic = "should have type Array. Got"]
-    fn test_arraylt_wrong_array_type() {
-        let expr = &mut Expr::ArrayLt(
-            Type::Int,
-            vec![
-                Expr::FloatLt(Type::Unknown, 1.),
-                Expr::FloatLt(Type::Unknown, 2.),
-            ],
-        );
-        let st = &mut SymTable {};
-        infer_type(expr, st).unwrap();
-    }
-
-    #[test]
-    #[should_panic = "Array element should only have Float type element"]
-    fn test_arraylt_wrong_element_type() {
-        let expr = &mut Expr::ArrayLt(
-            Type::Unknown,
-            vec![Expr::new_intlt(23), Expr::FloatLt(Type::Unknown, 2.)],
-        );
-        let st = &mut SymTable {};
-        infer_type(expr, st).unwrap();
-    }
-
-    // #[test]
-    // fn test_fn_call() {
-    //     let expr = Expr::FnCall(
-    //         Type::Unknown,
-    //         Box::new(Expr::new_id("f")),
-    //         vec![Expr::new_id("a"), Expr::new_id("b")],
-    //     );
-    //     assert_eq!("Fn(ID(f), ID(a), ID(b))", expr.to_string());
-    // }
+    fn test_arraylt_unknown() {}
 }

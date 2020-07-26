@@ -23,7 +23,7 @@ impl fmt::Display for Type {
             Type::Int => write!(f, "Int"),
             Type::Float => write!(f, "Float"),
             Type::Array => write!(f, "Array"),
-            Type::Dim(dim) => write!(f, "{}", dim),
+            Type::Dim(dim) => write!(f, "{}", dim), // No starting Dim.
             _ => panic!("unsuported type"),
         }
     }
@@ -203,11 +203,13 @@ mod tests {
 
     #[test]
     fn test_fn_call() {
-        let expr = Expr::FnCall(
-            Type::Unknown,
-            Box::new(Expr::new_id("f")),
-            vec![Expr::new_id("a"), Expr::new_id("b")],
-        );
+        let expr = Expr {
+            etype: Type::Unknown,
+            kind: Kind::FnCall(
+                Box::new(Expr::new_id("f")),
+                vec![Expr::new_id("a"), Expr::new_id("b")],
+            ),
+        };
         assert_eq!("Fn(ID(f), ID(a), ID(b))", expr.to_string());
     }
 }
