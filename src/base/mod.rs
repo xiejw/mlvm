@@ -32,7 +32,10 @@ impl Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let _ = write!(f, "\n###################################################\n");
+        let _ = write!(
+            f,
+            "\n###################################################\n"
+        );
         if let Some(ref notes) = self.notes {
             let mut indent = String::from("");
             for i in (0..notes.len()).rev() {
@@ -47,7 +50,10 @@ impl fmt::Display for Error {
             let _ = write!(f, "(no error message)");
         }
 
-        let _ = write!(f, "\n###################################################\n");
+        let _ = write!(
+            f,
+            "\n###################################################\n"
+        );
         Ok(())
     }
 }

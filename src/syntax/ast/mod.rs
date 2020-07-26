@@ -41,14 +41,21 @@ impl Program {
         Ok(())
     }
 
-    fn infer_type(expr: &mut Expr, sym_table: &mut SymTable) -> Result<(), Error> {
+    fn infer_type(
+        expr: &mut Expr,
+        sym_table: &mut SymTable,
+    ) -> Result<(), Error> {
         let result = match expr {
-            Expr::IntLt(ref mut tp, _) => {
-                Program::infer_trivial_type(tp, Type::Int, "Int Literal should have type Int")
-            }
-            Expr::FloatLt(ref mut tp, _) => {
-                Program::infer_trivial_type(tp, Type::Float, "Float Literal should have type Float")
-            }
+            Expr::IntLt(ref mut tp, _) => Program::infer_trivial_type(
+                tp,
+                Type::Int,
+                "Int Literal should have type Int",
+            ),
+            Expr::FloatLt(ref mut tp, _) => Program::infer_trivial_type(
+                tp,
+                Type::Float,
+                "Float Literal should have type Float",
+            ),
             Expr::ArrayLt(ref mut tp, ref mut values) => {
                 let mut result = Program::infer_trivial_type(
                     tp,
@@ -58,8 +65,11 @@ impl Program {
 
                 if !result.is_err() {
                     for (i, expr) in values.iter_mut().enumerate() {
-                        result =
-                            Program::infer_type_with_expectation(expr, &Type::Float, sym_table);
+                        result = Program::infer_type_with_expectation(
+                            expr,
+                            &Type::Float,
+                            sym_table,
+                        );
                         if let Err(ref mut err) = result {
                             err.emit_diagnosis_note(format!(
                                     "Array element should only have Float type element. At {}-th, type assertion failed", i));
@@ -78,7 +88,11 @@ impl Program {
         result
     }
 
-    fn infer_trivial_type(tp: &mut Type, expected: Type, msg: &str) -> Result<(), Error> {
+    fn infer_trivial_type(
+        tp: &mut Type,
+        expected: Type,
+        msg: &str,
+    ) -> Result<(), Error> {
         if *tp == expected {
             Ok(())
         } else if tp == &Type::Unknown {

@@ -55,7 +55,10 @@ impl Expr {
     }
 
     pub fn new_shapelt(dims: &[&str]) -> Expr {
-        Expr::ShapeLt(Type::Shape, dims.iter().map(|x| Expr::new_id(x)).collect())
+        Expr::ShapeLt(
+            Type::Shape,
+            dims.iter().map(|x| Expr::new_id(x)).collect(),
+        )
     }
 
     pub fn new_arraylt(values: &[f32]) -> Expr {
