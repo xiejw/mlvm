@@ -3,7 +3,7 @@ pub use expr::*;
 
 mod sym_table;
 use sym_table::SymTable;
-mod shape_inference;
+mod type_inference;
 
 use crate::base::Error;
 use std::fmt;
@@ -28,7 +28,7 @@ impl Program {
 
         let sym_table = &mut self.sym_table;
         for (i, expr) in self.exprs.iter_mut().enumerate() {
-            let result = shape_inference::infer_type(expr, sym_table);
+            let result = type_inference::infer_type(expr, sym_table);
 
             if let Err(mut err) = result {
                 return Err(err
