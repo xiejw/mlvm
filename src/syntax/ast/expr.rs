@@ -21,6 +21,7 @@ impl fmt::Display for Type {
             Type::Unknown => write!(f, "??"),
             Type::Int => write!(f, "Int"),
             Type::Float => write!(f, "Float"),
+            Type::Array => write!(f, "Array"),
             _ => panic!("unsuported type"),
         }
     }
@@ -76,16 +77,16 @@ impl fmt::Display for Expr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match &self {
             Expr::ID(_, v) => write!(f, "ID({})", v),
-            Expr::IntLt(ref tp, v) => write!(f, "Int::{} ({})", tp, v),
-            Expr::FloatLt(_, v) => write!(f, "Float({:.2})", v),
+            Expr::IntLt(tp, v) => write!(f, "Int::{} ({})", tp, v),
+            Expr::FloatLt(tp, v) => write!(f, "Float::{} ({:.2})", tp, v),
             Expr::StringLt(_, v) => write!(f, "Str(\"{}\")", v),
             Expr::ShapeLt(_, l) => {
                 let _ = write!(f, "Shape(");
                 Expr::write_list(f, &l);
                 write!(f, ")")
             }
-            Expr::ArrayLt(_, l) => {
-                let _ = write!(f, "Array(");
+            Expr::ArrayLt(ref tp, l) => {
+                let _ = write!(f, "Array::{} (", tp);
                 Expr::write_list(f, &l);
                 write!(f, ")")
             }
@@ -129,7 +130,7 @@ mod tests {
     #[test]
     fn test_floatlt() {
         let expr = Expr::new_floatlt(123.0);
-        assert_eq!("Float(123.00)", expr.to_string());
+        assert_eq!("Float::Float (123.00)", expr.to_string());
     }
 
     #[test]
@@ -154,11 +155,17 @@ mod tests {
     fn test_arraylt() {
         {
             let expr = Expr::new_arraylt(&vec![1.0]);
-            assert_eq!(r#"Array(Float(1.00))"#, expr.to_string());
+            assert_eq!(
+                r#"Array::Array (Float::Float (1.00))"#,
+                expr.to_string()
+            );
         }
         {
             let expr = Expr::new_arraylt(&vec![1.0, 2.0]);
-            assert_eq!(r#"Array(Float(1.00), Float(2.00))"#, expr.to_string());
+            assert_eq!(
+                r#"Array::Array (Float::Float (1.00), Float::Float (2.00))"#,
+                expr.to_string()
+            );
         }
     }
 
