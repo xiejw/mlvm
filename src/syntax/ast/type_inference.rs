@@ -140,10 +140,10 @@ mod tests {
     #[test]
     fn test_intlt() {
         let expr = &mut Expr::new_intlt(123);
-        assert_eq!("Int::Int (123)", expr.to_string());
+        assert_eq!("IntLt::Int (123)", expr.to_string());
         let st = &mut SymTable {};
         infer_type(expr, st).unwrap();
-        assert_eq!("Int::Int (123)", expr.to_string());
+        assert_eq!("IntLt::Int (123)", expr.to_string());
     }
 
     #[test]
@@ -152,10 +152,10 @@ mod tests {
             etype: Type::Unknown,
             kind: Kind::IntLt(123),
         };
-        assert_eq!("Int::?? (123)", expr.to_string());
+        assert_eq!("IntLt::?? (123)", expr.to_string());
         let st = &mut SymTable {};
         infer_type(expr, st).unwrap();
-        assert_eq!("Int::Int (123)", expr.to_string());
+        assert_eq!("IntLt::Int (123)", expr.to_string());
     }
 
     #[test]
@@ -172,10 +172,10 @@ mod tests {
     #[test]
     fn test_floatlt() {
         let expr = &mut Expr::new_floatlt(123.0);
-        assert_eq!("Float::Float (123.00)", expr.to_string());
+        assert_eq!("FloatLt::Float (123.00)", expr.to_string());
         let st = &mut SymTable {};
         infer_type(expr, st).unwrap();
-        assert_eq!("Float::Float (123.00)", expr.to_string());
+        assert_eq!("FloatLt::Float (123.00)", expr.to_string());
     }
 
     #[test]
@@ -184,10 +184,10 @@ mod tests {
             etype: Type::Unknown,
             kind: Kind::FloatLt(123.0),
         };
-        assert_eq!("Float::?? (123.00)", expr.to_string());
+        assert_eq!("FloatLt::?? (123.00)", expr.to_string());
         let st = &mut SymTable {};
         infer_type(expr, st).unwrap();
-        assert_eq!("Float::Float (123.00)", expr.to_string());
+        assert_eq!("FloatLt::Float (123.00)", expr.to_string());
     }
 
     #[test]
@@ -223,13 +223,13 @@ mod tests {
     fn test_arraylt() {
         let expr = &mut Expr::new_arraylt(&vec![1.0, 2.0]);
         assert_eq!(
-            r#"Array::Array (Float::Float (1.00), Float::Float (2.00))"#,
+            r#"ArrayLt::Array (FloatLt::Float (1.00), FloatLt::Float (2.00))"#,
             expr.to_string()
         );
         let st = &mut SymTable {};
         infer_type(expr, st).unwrap();
         assert_eq!(
-            r#"Array::Array (Float::Float (1.00), Float::Float (2.00))"#,
+            r#"ArrayLt::Array (FloatLt::Float (1.00), FloatLt::Float (2.00))"#,
             expr.to_string()
         );
     }

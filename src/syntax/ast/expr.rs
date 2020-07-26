@@ -105,17 +105,17 @@ impl fmt::Display for Expr {
         let tp = &self.etype;
         match &self.kind {
             Kind::ID(v) => write!(f, "ID({})", v),
-            Kind::IntLt(v) => write!(f, "Int::{} ({})", tp, v),
-            Kind::FloatLt(v) => write!(f, "Float::{} ({:.2})", tp, v),
-            Kind::StringLt(v) => write!(f, "Str(\"{}\")", v),
-            Kind::DimLt(s) => write!(f, "Dim::{} ({})", tp, s),
+            Kind::IntLt(v) => write!(f, "IntLt::{} ({})", tp, v),
+            Kind::FloatLt(v) => write!(f, "FloatLt::{} ({:.2})", tp, v),
+            Kind::StringLt(v) => write!(f, "StringLt(\"{}\")", v),
+            Kind::DimLt(s) => write!(f, "DimLt::{} ({})", tp, s),
             Kind::ShapeLt(l) => {
-                let _ = write!(f, "Shape(");
+                let _ = write!(f, "ShapeLt(");
                 Expr::write_list(f, &l);
                 write!(f, ")")
             }
             Kind::ArrayLt(l) => {
-                let _ = write!(f, "Array::{} (", tp);
+                let _ = write!(f, "ArrayLt::{} (", tp);
                 Expr::write_list(f, &l);
                 write!(f, ")")
             }
@@ -153,31 +153,31 @@ mod tests {
     #[test]
     fn test_intlt() {
         let expr = Expr::new_intlt(123);
-        assert_eq!("Int::Int (123)", expr.to_string());
+        assert_eq!("IntLt::Int (123)", expr.to_string());
     }
 
     #[test]
     fn test_floatlt() {
         let expr = Expr::new_floatlt(123.0);
-        assert_eq!("Float::Float (123.00)", expr.to_string());
+        assert_eq!("FloatLt::Float (123.00)", expr.to_string());
     }
 
     #[test]
     fn test_stringlt() {
         let expr = Expr::new_stringlt("abc".to_string());
-        assert_eq!(r#"Str("abc")"#, expr.to_string());
+        assert_eq!(r#"StringLt("abc")"#, expr.to_string());
     }
 
     #[test]
     fn test_shapelt() {
         {
             let expr = Expr::new_shapelt(&vec!["@a"]);
-            assert_eq!(r#"Shape(Dim::?? (@a))"#, expr.to_string());
+            assert_eq!(r#"ShapeLt(DimLt::?? (@a))"#, expr.to_string());
         }
         {
             let expr = Expr::new_shapelt(&vec!["@a", "@b"]);
             assert_eq!(
-                r#"Shape(Dim::?? (@a), Dim::?? (@b))"#,
+                r#"ShapeLt(DimLt::?? (@a), DimLt::?? (@b))"#,
                 expr.to_string()
             );
         }
@@ -188,14 +188,14 @@ mod tests {
         {
             let expr = Expr::new_arraylt(&vec![1.0]);
             assert_eq!(
-                r#"Array::Array (Float::Float (1.00))"#,
+                r#"ArrayLt::Array (FloatLt::Float (1.00))"#,
                 expr.to_string()
             );
         }
         {
             let expr = Expr::new_arraylt(&vec![1.0, 2.0]);
             assert_eq!(
-                r#"Array::Array (Float::Float (1.00), Float::Float (2.00))"#,
+                r#"ArrayLt::Array (FloatLt::Float (1.00), FloatLt::Float (2.00))"#,
                 expr.to_string()
             );
         }
