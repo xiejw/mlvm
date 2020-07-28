@@ -252,6 +252,31 @@ mod tests {
     }
 
     #[test]
+    #[should_panic = "Array Literal should have type Array. Got"]
+    fn test_arraylt_wrong_array_type() {
+        let expr = &mut Expr {
+            etype: Type::Int,
+            kind: Kind::ArrayLt(vec![Expr::new_floatlt(1.0)]),
+        };
+        let st = &mut SymTable {};
+        infer_type(expr, st).unwrap();
+    }
+
+    #[test]
+    #[should_panic = "Array element should only have Float type elemen"]
+    fn test_arraylt_wrong_ele_type() {
+        let expr = &mut Expr {
+            etype: Unknown,
+            kind: Kind::ArrayLt(vec![Expr {
+                etype: Unknown,
+                kind: Kind::IntLt(1),
+            }]),
+        };
+        let st = &mut SymTable {};
+        infer_type(expr, st).unwrap();
+    }
+
+    #[test]
     fn test_dimlt() {
         let expr = &mut Expr {
             etype: Type::Dim(Rc::new("@a".to_string())),
