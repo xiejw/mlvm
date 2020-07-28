@@ -4,6 +4,7 @@ use crate::base::Error;
 use std::rc::Rc;
 use sym_table::SymTable;
 
+// Infers the type of `expr` from bottom-up.
 pub fn infer_type<'a>(expr: &'a mut Expr, sym_table: &mut SymTable) -> Result<&'a Type, Error> {
     match &mut expr.kind {
         Kind::IntLt(_) => infer_trivial_type(&mut expr.etype, Type::Int, "Int Literal"),
@@ -115,6 +116,7 @@ fn infer_type_with_expectation(
 
 #[cfg(test)]
 mod tests {
+    use super::Type::Unknown;
     use super::*;
     use std::rc::Rc;
 
@@ -224,7 +226,29 @@ mod tests {
 
     #[test]
     fn test_arraylt_unknown() {
-        // TODO
+        let expr = &mut Expr {
+            etype: Unknown,
+            kind: Kind::ArrayLt(vec![
+                Expr {
+                    etype: Unknown,
+                    kind: Kind::FloatLt(1.0),
+                },
+                Expr {
+                    etype: Unknown,
+                    kind: Kind::FloatLt(2.0),
+                },
+            ]),
+        };
+        assert_eq!(
+            r#"ArrayLt::?? (FloatLt::?? (1.00), FloatLt::?? (2.00))"#,
+            expr.to_string()
+        );
+        let st = &mut SymTable {};
+        infer_type(expr, st).unwrap();
+        assert_eq!(
+            r#"ArrayLt::Array (FloatLt::Float (1.00), FloatLt::Float (2.00))"#,
+            expr.to_string()
+        );
     }
 
     #[test]
