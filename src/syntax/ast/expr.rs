@@ -93,9 +93,7 @@ impl Expr {
     pub fn new_arraylt(values: &[f32]) -> Expr {
         Expr {
             etype: Type::Array,
-            kind: Kind::ArrayLt(
-                values.iter().map(|x| Expr::new_floatlt(*x)).collect(),
-            ),
+            kind: Kind::ArrayLt(values.iter().map(|x| Expr::new_floatlt(*x)).collect()),
         }
     }
 }

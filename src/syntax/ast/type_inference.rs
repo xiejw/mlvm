@@ -4,30 +4,15 @@ use crate::base::Error;
 use std::rc::Rc;
 use sym_table::SymTable;
 
-pub fn infer_type<'a>(
-    expr: &'a mut Expr,
-    sym_table: &mut SymTable,
-) -> Result<&'a Type, Error> {
+pub fn infer_type<'a>(expr: &'a mut Expr, sym_table: &mut SymTable) -> Result<&'a Type, Error> {
     match &mut expr.kind {
-        Kind::IntLt(_) => infer_trivial_type(
-            &mut expr.etype,
-            Type::Int,
-            "Int Literal should have type Int",
-        ),
-        Kind::FloatLt(_) => infer_trivial_type(
-            &mut expr.etype,
-            Type::Float,
-            "Float Literal should have type Float",
-        ),
+        Kind::IntLt(_) => infer_trivial_type(&mut expr.etype, Type::Int, "Int Literal"),
+        Kind::FloatLt(_) => infer_trivial_type(&mut expr.etype, Type::Float, "Float Literal"),
         Kind::DimLt(dim) => infer_dimlt_type(&mut expr.etype, dim),
         Kind::ArrayLt(values) => {
             {
                 // Check tp.
-                let result = infer_trivial_type(
-                    &mut expr.etype,
-                    Type::Array,
-                    "Array Literal should have type Array",
-                );
+                let result = infer_trivial_type(&mut expr.etype, Type::Array, "Array Literal");
 
                 if result.is_err() {
                     return Err(result.unwrap_err());
@@ -56,7 +41,7 @@ pub fn infer_type<'a>(
 fn infer_trivial_type<'a>(
     tp: &'a mut Type,
     expected: Type,
-    msg: &str,
+    title: &str,
 ) -> Result<&'a Type, Error> {
     if *tp == expected {
         Ok(tp)
@@ -65,15 +50,15 @@ fn infer_trivial_type<'a>(
         Ok(tp)
     } else {
         Err(Error::new()
-            .emit_diagnosis_note(format!("{}. Got: {}", msg, tp))
+            .emit_diagnosis_note(format!(
+                "{} should have type {}. Got: {}",
+                title, expected, tp
+            ))
             .take())
     }
 }
 
-fn infer_dimlt_type<'a>(
-    etype: &'a mut Type,
-    dim: &Rc<String>,
-) -> Result<&'a Type, Error> {
+fn infer_dimlt_type<'a>(etype: &'a mut Type, dim: &Rc<String>) -> Result<&'a Type, Error> {
     match &mut *etype {
         tp if *tp == Type::Unknown => {
             *tp = Type::Dim(dim.clone());
@@ -107,14 +92,10 @@ fn infer_elements_with_same_type(
     msg: &str,
 ) -> Result<(), Error> {
     for (i, expr) in values.iter_mut().enumerate() {
-        let mut result =
-            infer_type_with_expectation(expr, expected_type, sym_table);
+        let mut result = infer_type_with_expectation(expr, expected_type, sym_table);
         if let Err(ref mut err) = result {
             return Err(err
-                .emit_diagnosis_note(format!(
-                    "{}. At {}-th, type assertion failed",
-                    msg, i
-                ))
+                .emit_diagnosis_note(format!("{}. At {}-th, type assertion failed", msg, i))
                 .take());
         }
     }
@@ -130,10 +111,7 @@ fn infer_type_with_expectation(
         Ok(tp) => {
             if tp != expected_type {
                 return Err(Error::new()
-                    .emit_diagnosis_note(format!(
-                        "expected type: {}, got: {}",
-                        expected_type, tp
-                    ))
+                    .emit_diagnosis_note(format!("expected type: {}, got: {}", expected_type, tp))
                     .take());
             }
             Ok(())
