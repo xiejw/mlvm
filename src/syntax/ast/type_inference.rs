@@ -23,14 +23,23 @@ pub fn infer_type<'a>(
                 tp if *tp == Type::Unknown => {
                     *tp = Type::Dim(dim.clone());
                 }
-                // Type::Dim(dim_in_type) => {
-                //     if dim !=  dim_in_type {
-                //         Err(
-                //     } else {
-                //         Ok(tp)
-                //     }
-                // }
-                _ => panic!("unsupported"),
+                Type::Dim(ref dim_in_type) => {
+                    if dim != dim_in_type {
+                        return Err(Error::new()
+                            .emit_diagnosis_note(
+                                format!("Dim type has size ({}), but the literal has size ({})",
+                                        dim, dim_in_type))
+                            .take());
+                    }
+                }
+                etype => {
+                    return Err(Error::new()
+                        .emit_diagnosis_note(format!(
+                            "Dim literal can only have Dim type. Got: {}",
+                            etype
+                        ))
+                        .take());
+                }
             }
             Ok(&expr.etype)
         }
@@ -129,6 +138,7 @@ fn infer_type_with_expectation(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::rc::Rc;
 
     // #[test]
     // fn test_id() {
@@ -235,5 +245,42 @@ mod tests {
     }
 
     #[test]
-    fn test_arraylt_unknown() {}
+    fn test_arraylt_unknown() {
+        // TODO
+    }
+
+    #[test]
+    fn test_dimlt() {
+        let expr = &mut Expr {
+            etype: Type::Dim(Rc::new("@a".to_string())),
+            kind: Kind::DimLt(Rc::new("@a".to_string())),
+        };
+        assert_eq!(r#"DimLt::@a (@a)"#, expr.to_string());
+        let st = &mut SymTable {};
+        infer_type(expr, st).unwrap();
+        assert_eq!(r#"DimLt::@a (@a)"#, expr.to_string());
+    }
+
+    #[test]
+    fn test_dimlt_unknown() {
+        let expr = &mut Expr {
+            etype: Type::Unknown,
+            kind: Kind::DimLt(Rc::new("@a".to_string())),
+        };
+        assert_eq!(r#"DimLt::?? (@a)"#, expr.to_string());
+        let st = &mut SymTable {};
+        infer_type(expr, st).unwrap();
+        assert_eq!(r#"DimLt::@a (@a)"#, expr.to_string());
+    }
+
+    #[test]
+    #[should_panic = "Dim literal can only have Dim type. Got: Int"]
+    fn test_dimlt_wrong() {
+        let expr = &mut Expr {
+            etype: Type::Int,
+            kind: Kind::DimLt(Rc::new("@a".to_string())),
+        };
+        let st = &mut SymTable {};
+        infer_type(expr, st).unwrap();
+    }
 }
