@@ -9,29 +9,7 @@ pub fn infer_type<'a>(expr: &'a mut Expr, sym_table: &mut SymTable) -> Result<&'
         Kind::IntLt(_) => infer_trivial_type(&mut expr.etype, Type::Int, "Int Literal"),
         Kind::FloatLt(_) => infer_trivial_type(&mut expr.etype, Type::Float, "Float Literal"),
         Kind::DimLt(dim) => infer_dimlt_type(&mut expr.etype, dim),
-        Kind::ArrayLt(values) => {
-            {
-                // Check tp.
-                let result = infer_trivial_type(&mut expr.etype, Type::Array, "Array Literal");
-
-                if result.is_err() {
-                    return Err(result.unwrap_err());
-                }
-            }
-            {
-                let result = infer_elements_with_same_type(
-                    values,
-                    &Type::Float,
-                    sym_table,
-                    "Array element should only have Float type element",
-                );
-                if result.is_err() {
-                    return Err(result.unwrap_err());
-                }
-            }
-
-            Ok(&expr.etype)
-        }
+        Kind::ArrayLt(values) => infer_array_type(&mut expr.etype, values, sym_table),
         k => Err(Error::new()
             .emit_diagnosis_note(format!("unsupported expr kind yet: {:?}", k))
             .take()),
@@ -82,6 +60,21 @@ fn infer_dimlt_type<'a>(etype: &'a mut Type, dim: &Rc<String>) -> Result<&'a Typ
                 .take());
         }
     };
+    Ok(etype)
+}
+
+fn infer_array_type<'a>(
+    etype: &'a mut Type,
+    values: &mut Vec<Expr>,
+    sym_table: &mut SymTable,
+) -> Result<&'a Type, Error> {
+    infer_trivial_type(&mut *etype, Type::Array, "Array Literal")?;
+    infer_elements_with_same_type(
+        values,
+        &Type::Float,
+        sym_table,
+        "Array element should only have Float type element",
+    )?;
     Ok(etype)
 }
 
