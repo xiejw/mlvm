@@ -1,6 +1,7 @@
 use self::super::expr::*;
 use self::super::sym_table;
 use crate::base::Error;
+use std::rc::Rc;
 use sym_table::SymTable;
 
 pub fn infer_type<'a>(
@@ -18,31 +19,7 @@ pub fn infer_type<'a>(
             Type::Float,
             "Float Literal should have type Float",
         ),
-        Kind::DimLt(dim) => {
-            match &mut expr.etype {
-                tp if *tp == Type::Unknown => {
-                    *tp = Type::Dim(dim.clone());
-                }
-                Type::Dim(ref dim_in_type) => {
-                    if dim != dim_in_type {
-                        return Err(Error::new()
-                            .emit_diagnosis_note(
-                                format!("Dim type has size ({}), but the literal has size ({})",
-                                        dim, dim_in_type))
-                            .take());
-                    }
-                }
-                etype => {
-                    return Err(Error::new()
-                        .emit_diagnosis_note(format!(
-                            "Dim literal can only have Dim type. Got: {}",
-                            etype
-                        ))
-                        .take());
-                }
-            }
-            Ok(&expr.etype)
-        }
+        Kind::DimLt(dim) => infer_dimlt_type(&mut expr.etype, dim),
         Kind::ArrayLt(values) => {
             {
                 // Check tp.
@@ -91,6 +68,36 @@ fn infer_trivial_type<'a>(
             .emit_diagnosis_note(format!("{}. Got: {}", msg, tp))
             .take())
     }
+}
+
+fn infer_dimlt_type<'a>(
+    etype: &'a mut Type,
+    dim: &Rc<String>,
+) -> Result<&'a Type, Error> {
+    match &mut *etype {
+        tp if *tp == Type::Unknown => {
+            *tp = Type::Dim(dim.clone());
+        }
+        Type::Dim(ref dim_in_type) => {
+            if dim != dim_in_type {
+                return Err(Error::new()
+                    .emit_diagnosis_note(format!(
+                        "Dim type has size ({}), but the literal has size ({})",
+                        dim, dim_in_type
+                    ))
+                    .take());
+            }
+        }
+        etype => {
+            return Err(Error::new()
+                .emit_diagnosis_note(format!(
+                    "Dim literal can only have Dim type. Got: {}",
+                    etype
+                ))
+                .take());
+        }
+    };
+    Ok(etype)
 }
 
 fn infer_elements_with_same_type(
