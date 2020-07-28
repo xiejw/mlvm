@@ -252,8 +252,19 @@ mod tests {
     }
 
     #[test]
+    #[should_panic = "Dim type has size (@a)"]
+    fn test_dimlt_wrong_dim() {
+        let expr = &mut Expr {
+            etype: Type::Dim(Rc::new("@b".to_string())),
+            kind: Kind::DimLt(Rc::new("@a".to_string())),
+        };
+        let st = &mut SymTable {};
+        infer_type(expr, st).unwrap();
+    }
+
+    #[test]
     #[should_panic = "Dim literal can only have Dim type. Got: Int"]
-    fn test_dimlt_wrong() {
+    fn test_dimlt_wrong_type() {
         let expr = &mut Expr {
             etype: Type::Int,
             kind: Kind::DimLt(Rc::new("@a".to_string())),
