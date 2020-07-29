@@ -1,5 +1,8 @@
-use super::token::Kind;
 use std::ops::Range;
+
+use super::token::Kind;
+use super::token::Loc;
+use super::token::Token;
 
 pub struct Lexer<'a> {
     input: &'a [u8],
@@ -7,7 +10,7 @@ pub struct Lexer<'a> {
     pos: usize,
     read_pos: usize,
     ch: u8,
-    loc: token::Loc,
+    loc: Loc,
 }
 
 impl Lexer<'_> {
@@ -19,7 +22,7 @@ impl Lexer<'_> {
             pos: 0,
             read_pos: 0,
             ch: 0,
-            loc: token::Loc {
+            loc: Loc {
                 row: 0,
                 col: 0,
                 pos: 0,
@@ -30,7 +33,7 @@ impl Lexer<'_> {
         l
     }
 
-    pub fn next_token(&mut self) -> Box<token::Token> {
+    pub fn next_token(&mut self) -> Box<Token> {
         let kind: Kind;
         let literal: String;
         let mut advance_one_char = true;
@@ -84,7 +87,7 @@ impl Lexer<'_> {
             }
         }
 
-        let tok = Box::new(token::Token {
+        let tok = Box::new(Token {
             kind: kind,
             loc: self.loc.clone(),
             literal: literal,
