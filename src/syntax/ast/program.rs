@@ -18,7 +18,9 @@ impl Program {
             sym_table: SymTable {},
         }
     }
+}
 
+impl Program {
     pub fn infer_types(&mut self) -> Result<(), Error> {
         if self.exprs.is_empty() {
             return Ok(());

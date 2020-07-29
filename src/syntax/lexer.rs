@@ -1,7 +1,5 @@
-use super::token;
-
+use super::token::Kind;
 use std::ops::Range;
-use token::Kind;
 
 pub struct Lexer<'a> {
     input: &'a [u8],

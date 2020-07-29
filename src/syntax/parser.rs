@@ -1,5 +1,7 @@
 use self::super::lexer::Lexer;
 use self::super::token::Token;
+// use self::super::expr::*;
+use crate::base::Error;
 
 pub struct Parser<'a> {
     lexer: Lexer<'a>,
@@ -18,4 +20,8 @@ impl Parser<'_> {
             peekToken: peekToken,
         }
     }
+}
+
+impl Parser<'_> {
+//     pub fn parse_ast(&mut self) -> Result<Vec<  {
 }
