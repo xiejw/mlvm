@@ -1,7 +1,8 @@
+use crate::base::Error;
+
+use self::super::ast::Expr;
 use self::super::lexer::Lexer;
 use self::super::token::Token;
-// use self::super::expr::*;
-use crate::base::Error;
 
 pub struct Parser<'a> {
     lexer: Lexer<'a>,
@@ -23,5 +24,7 @@ impl Parser<'_> {
 }
 
 impl Parser<'_> {
-    //     pub fn parse_ast(&mut self) -> Result<Vec<  {
+    pub fn parse_ast(&mut self) -> Result<Vec<Expr>, Error> {
+        unimplemented!()
+    }
 }
