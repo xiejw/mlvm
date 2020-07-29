@@ -1,10 +1,10 @@
-use super::expr::*;
-
-use super::sym_table::SymTable;
-use super::type_inference;
+use std::fmt;
 
 use crate::base::Error;
-use std::fmt;
+
+use super::expr::Expr;
+use super::sym_table::SymTable;
+use super::type_inference;
 
 pub struct Program {
     exprs: Vec<Expr>,
@@ -56,7 +56,6 @@ impl fmt::Display for Program {
 
 #[cfg(test)]
 mod tests {
-
     use self::super::*;
 
     #[test]
