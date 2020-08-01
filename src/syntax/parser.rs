@@ -24,6 +24,7 @@ impl Parser<'_> {
 }
 
 impl Parser<'_> {
+    // Consumes all valid tokens in the lexer and parses the source program into Exprs.
     pub fn parse_ast(&mut self) -> Result<Vec<Expr>, Error> {
         unimplemented!()
     }
