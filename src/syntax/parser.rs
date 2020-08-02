@@ -52,17 +52,27 @@ impl Parser<'_> {
 
 impl Parser<'_> {
     fn parse_expr(&mut self) -> Result<Expr, Error> {
-        match self.curToken.kind {
-            TokenKind::Integer => {
-                return self.parse_int();
-            }
+        let r = match self.curToken.kind {
+            TokenKind::Integer => self.parse_intlt(),
             _ => panic!("unsupported expr for parser"),
-        }
+        };
 
-        unimplemented!();
+        r.map_err(|mut err| {
+            err.emit_diagnosis_note_str("failed to parse expression")
+                .take()
+        })
     }
 
-    fn parse_int(&mut self) -> Result<Expr, Error> {
+    fn parse_id(&mut self) -> Result<Expr, Error> {
+        unimplemented!();
+    }
+    fn parse_intlt(&mut self) -> Result<Expr, Error> {
+        unimplemented!();
+    }
+    fn parse_strlt(&mut self) -> Result<Expr, Error> {
+        unimplemented!();
+    }
+    fn parse_arraylt(&mut self) -> Result<Expr, Error> {
         unimplemented!();
     }
 }
