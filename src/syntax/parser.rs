@@ -2,7 +2,7 @@ use crate::base::Error;
 
 use self::super::ast::Expr;
 use self::super::lexer::Lexer;
-use self::super::token;
+use self::super::token::Kind as TokenKind;
 use self::super::token::Token;
 
 pub struct Parser<'a> {
@@ -30,7 +30,7 @@ impl Parser<'_> {
         let mut exprs = Vec::new();
 
         loop {
-            if self.curToken.kind == token::Kind::Eof {
+            if self.curToken.kind == TokenKind::Eof {
                 break;
             }
 
@@ -52,6 +52,17 @@ impl Parser<'_> {
 
 impl Parser<'_> {
     fn parse_expr(&mut self) -> Result<Expr, Error> {
+        match self.curToken.kind {
+            TokenKind::Integer => {
+                return self.parse_int();
+            }
+            _ => panic!("unsupported expr for parser"),
+        }
+
+        unimplemented!();
+    }
+
+    fn parse_int(&mut self) -> Result<Expr, Error> {
         unimplemented!();
     }
 }
