@@ -2,6 +2,7 @@ use crate::base::Error;
 
 use self::super::ast::Expr;
 use self::super::lexer::Lexer;
+use self::super::token;
 use self::super::token::Token;
 
 pub struct Parser<'a> {
@@ -26,6 +27,31 @@ impl Parser<'_> {
 impl Parser<'_> {
     // Consumes all valid tokens in the lexer and parses the source program into Exprs.
     pub fn parse_ast(&mut self) -> Result<Vec<Expr>, Error> {
-        unimplemented!()
+        let mut exprs = Vec::new();
+
+        loop {
+            if self.curToken.kind == token::Kind::Eof {
+                break;
+            }
+
+            match self.parse_expr() {
+                Ok(expr) => {
+                    exprs.push(expr);
+                }
+                Err(mut err) => {
+                    let i = exprs.len() + 1;
+                    return Err(err
+                        .emit_diagnosis_note(format!("failed to parse {}-th top level expr", i))
+                        .take());
+                }
+            }
+        }
+        Ok(exprs)
+    }
+}
+
+impl Parser<'_> {
+    fn parse_expr(&mut self) -> Result<Expr, Error> {
+        unimplemented!();
     }
 }
