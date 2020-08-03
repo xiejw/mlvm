@@ -86,3 +86,15 @@ impl Parser<'_> {
         self.cur_token = std::mem::replace(&mut self.peek_token, self.lexer.next_token());
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[should_panic = "not implemented"]
+    fn test_intlt() {
+        let mut p = Parser::new(b"123");
+        let _ = p.parse_ast();
+    }
+}
