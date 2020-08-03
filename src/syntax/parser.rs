@@ -70,8 +70,19 @@ impl Parser<'_> {
         unimplemented!();
     }
     fn parse_intlt(&mut self) -> Result<Expr, Error> {
-        self.advance_token();
-        unimplemented!();
+        let literal = &self.cur_token.literal;
+        match literal.parse::<i64>() {
+            Ok(v) => {
+                self.advance_token();
+                Ok(Expr::new_intlt(v))
+            }
+            Err(num_err) => {
+                return Err(Error::new()
+                    .emit_diagnosis_note(num_err.to_string())
+                    .emit_diagnosis_note(format!("Int literal token cannot be parsed: {}", literal))
+                    .take());
+            }
+        }
     }
     fn parse_strlt(&mut self) -> Result<Expr, Error> {
         unimplemented!();
@@ -92,9 +103,10 @@ mod tests {
     use super::*;
 
     #[test]
-    #[should_panic = "not implemented"]
     fn test_intlt() {
-        let mut p = Parser::new(b"123");
-        let _ = p.parse_ast();
+        let mut p = Parser::new(b"1234");
+        let exprs = p.parse_ast().unwrap();
+        assert_eq!(1, exprs.len());
+        assert_eq!("IntLt::Int (1234)", exprs[0].to_string());
     }
 }
