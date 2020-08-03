@@ -7,19 +7,19 @@ use self::super::token::Token;
 
 pub struct Parser<'a> {
     lexer: Lexer<'a>,
-    curToken: Box<Token>,
-    peekToken: Box<Token>,
+    cur_token: Box<Token>,
+    peek_token: Box<Token>,
 }
 
 impl Parser<'_> {
     pub fn new<'a>(input: &'a [u8]) -> Parser<'a> {
         let mut lexer = Lexer::new(input);
-        let curToken = lexer.next_token();
-        let peekToken = lexer.next_token();
+        let cur_token = lexer.next_token();
+        let peek_token = lexer.next_token();
         Parser {
             lexer: lexer,
-            curToken: curToken,
-            peekToken: peekToken,
+            cur_token: cur_token,
+            peek_token: peek_token,
         }
     }
 }
@@ -30,7 +30,7 @@ impl Parser<'_> {
         let mut exprs = Vec::new();
 
         loop {
-            if self.curToken.kind == TokenKind::Eof {
+            if self.cur_token.kind == TokenKind::Eof {
                 break;
             }
 
@@ -52,8 +52,11 @@ impl Parser<'_> {
 
 impl Parser<'_> {
     fn parse_expr(&mut self) -> Result<Expr, Error> {
-        let r = match self.curToken.kind {
+        let r = match self.cur_token.kind {
+            TokenKind::Identifier => self.parse_id(),
             TokenKind::Integer => self.parse_intlt(),
+            TokenKind::String => self.parse_strlt(),
+            TokenKind::Lsbracket => self.parse_arraylt(),
             _ => panic!("unsupported expr for parser"),
         };
 
@@ -67,6 +70,7 @@ impl Parser<'_> {
         unimplemented!();
     }
     fn parse_intlt(&mut self) -> Result<Expr, Error> {
+        self.advance_token();
         unimplemented!();
     }
     fn parse_strlt(&mut self) -> Result<Expr, Error> {
@@ -74,5 +78,11 @@ impl Parser<'_> {
     }
     fn parse_arraylt(&mut self) -> Result<Expr, Error> {
         unimplemented!();
+    }
+}
+
+impl Parser<'_> {
+    fn advance_token(&mut self) {
+        self.cur_token = std::mem::replace(&mut self.peek_token, self.lexer.next_token());
     }
 }
