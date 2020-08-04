@@ -9,6 +9,9 @@ impl Error {
     pub fn new() -> Self {
         Error { notes: None }
     }
+    pub fn from(err: impl std::error::Error) -> Self {
+        Error::new().emit_diagnosis_note(err.to_string()).take()
+    }
 
     pub fn emit_diagnosis_note(&mut self, note: String) -> &mut Self {
         if let Some(ref mut notes) = self.notes {

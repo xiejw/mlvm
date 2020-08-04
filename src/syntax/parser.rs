@@ -77,8 +77,7 @@ impl Parser<'_> {
                 Ok(Expr::new_intlt(v))
             }
             Err(num_err) => {
-                return Err(Error::new()
-                    .emit_diagnosis_note(num_err.to_string())
+                return Err(Error::from(num_err)
                     .emit_diagnosis_note(format!("Int literal token cannot be parsed: {}", literal))
                     .take());
             }
