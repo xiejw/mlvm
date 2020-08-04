@@ -25,7 +25,6 @@ impl Parser<'_> {
 }
 
 impl Parser<'_> {
-    // Consumes all valid tokens in the lexer and parses the source program into Exprs.
     pub fn parse_ast(&mut self) -> Result<Vec<Expr>, Error> {
         let mut exprs = Vec::new();
 
@@ -70,6 +69,8 @@ impl Parser<'_> {
         unimplemented!();
     }
     fn parse_intlt(&mut self) -> Result<Expr, Error> {
+        self.check_current_token_kind(TokenKind::Integer)?;
+
         let literal = &self.cur_token.literal;
         match literal.parse::<i64>() {
             Ok(v) => {
@@ -94,6 +95,18 @@ impl Parser<'_> {
 impl Parser<'_> {
     fn advance_token(&mut self) {
         self.cur_token = std::mem::replace(&mut self.peek_token, self.lexer.next_token());
+    }
+
+    fn check_current_token_kind(&self, kind: TokenKind) -> Result<(), Error> {
+        match &self.cur_token.kind {
+            v if *v == kind => Ok(()),
+            v => Err(Error::new()
+                .emit_diagnosis_note(format!(
+                    "expect current token kind as {:?}, got {:?}",
+                    kind, v
+                ))
+                .take()),
+        }
     }
 }
 
