@@ -255,7 +255,7 @@ mod tests {
         {
             let tok = l.next_token();
             assert_eq!("1", tok.literal);
-            assert_eq!(Kind::Integer, tok.kind);
+            assert_eq!(Kind::Int, tok.kind);
         }
         {
             let tok = l.next_token();
