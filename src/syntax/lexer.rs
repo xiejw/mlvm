@@ -75,7 +75,7 @@ impl Lexer<'_> {
                 advance_one_char = false; // Skips the next read_char
             }
             _ if Self::is_digit(self.ch) => {
-                let mut num_kind = Kind::Integer;
+                let mut num_kind = Kind::Int;
                 literal = self.read_number(&mut num_kind);
                 kind = num_kind;
                 advance_one_char = false; // Skips the next read_char

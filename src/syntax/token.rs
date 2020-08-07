@@ -6,7 +6,7 @@ pub enum Kind {
     Rsbracket,
     Backslash,
     Identifier,
-    Integer,
+    Int,
     Float,
     String,
     Illegal,

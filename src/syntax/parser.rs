@@ -53,7 +53,7 @@ impl Parser<'_> {
     fn parse_expr(&mut self) -> Result<Expr, Error> {
         let r = match self.cur_token.kind {
             TokenKind::Identifier => self.parse_id(),
-            TokenKind::Integer => self.parse_intlt(),
+            TokenKind::Int => self.parse_intlt(),
             TokenKind::String => self.parse_stringlt(),
             TokenKind::Lsbracket => self.parse_arraylt(),
             _ => panic!("unsupported expr for parser"),
@@ -69,7 +69,7 @@ impl Parser<'_> {
         unimplemented!();
     }
     fn parse_intlt(&mut self) -> Result<Expr, Error> {
-        debug_assert!(self.cur_token.kind == TokenKind::Integer);
+        debug_assert!(self.cur_token.kind == TokenKind::Int);
 
         let literal = &self.cur_token.literal;
         match literal.parse::<i64>() {
