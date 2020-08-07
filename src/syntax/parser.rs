@@ -69,7 +69,7 @@ impl Parser<'_> {
         unimplemented!();
     }
     fn parse_intlt(&mut self) -> Result<Expr, Error> {
-        self.check_current_token_kind(TokenKind::Integer)?;
+        debug_assert!(self.cur_token.kind == TokenKind::Integer);
 
         let literal = &self.cur_token.literal;
         match literal.parse::<i64>() {
@@ -85,7 +85,16 @@ impl Parser<'_> {
         }
     }
     fn parse_strlt(&mut self) -> Result<Expr, Error> {
-        unimplemented!();
+        debug_assert!(self.cur_token.kind == TokenKind::String);
+        let tok = self.advance_token();
+
+        // Drops the begining and tailing `"`.
+        let mut bytes = tok.literal.into_bytes();
+        debug_assert!(bytes.len() >= 2);
+        bytes.remove(bytes.len() - 1);
+        bytes.remove(0);
+
+        Ok(Expr::new_stringlt(String::from_utf8(bytes).unwrap()))
     }
     fn parse_arraylt(&mut self) -> Result<Expr, Error> {
         unimplemented!();
@@ -93,21 +102,25 @@ impl Parser<'_> {
 }
 
 impl Parser<'_> {
-    fn advance_token(&mut self) {
-        self.cur_token = std::mem::replace(&mut self.peek_token, self.lexer.next_token());
+    fn advance_token(&mut self) -> Box<Token> {
+        let old_token = std::mem::replace(
+            &mut self.cur_token,
+            std::mem::replace(&mut self.peek_token, self.lexer.next_token()),
+        );
+        old_token
     }
 
-    fn check_current_token_kind(&self, kind: TokenKind) -> Result<(), Error> {
-        match &self.cur_token.kind {
-            v if *v == kind => Ok(()),
-            v => Err(Error::new()
-                .emit_diagnosis_note(format!(
-                    "expect current token kind as {:?}, got {:?}",
-                    kind, v
-                ))
-                .take()),
-        }
-    }
+    // fn check_current_token_kind(&self, kind: TokenKind) -> Result<(), Error> {
+    //     match &self.cur_token.kind {
+    //         v if *v == kind => Ok(()),
+    //         v => Err(Error::new()
+    //             .emit_diagnosis_note(format!(
+    //                 "expect current token kind as {:?}, got {:?}",
+    //                 kind, v
+    //             ))
+    //             .take()),
+    //     }
+    // }
 }
 
 #[cfg(test)]
@@ -120,5 +133,13 @@ mod tests {
         let exprs = p.parse_ast().unwrap();
         assert_eq!(1, exprs.len());
         assert_eq!("IntLt::Int (1234)", exprs[0].to_string());
+    }
+
+    #[test]
+    fn test_strlt() {
+        let mut p = Parser::new(b"\"1234\"");
+        let exprs = p.parse_ast().unwrap();
+        assert_eq!(1, exprs.len());
+        assert_eq!("StringLt(\"1234\")", exprs[0].to_string());
     }
 }
