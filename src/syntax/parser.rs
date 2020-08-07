@@ -54,7 +54,7 @@ impl Parser<'_> {
         let r = match self.cur_token.kind {
             TokenKind::Identifier => self.parse_id(),
             TokenKind::Integer => self.parse_intlt(),
-            TokenKind::String => self.parse_strlt(),
+            TokenKind::String => self.parse_stringlt(),
             TokenKind::Lsbracket => self.parse_arraylt(),
             _ => panic!("unsupported expr for parser"),
         };
@@ -84,7 +84,7 @@ impl Parser<'_> {
             }
         }
     }
-    fn parse_strlt(&mut self) -> Result<Expr, Error> {
+    fn parse_stringlt(&mut self) -> Result<Expr, Error> {
         debug_assert!(self.cur_token.kind == TokenKind::String);
         let tok = self.advance_token();
 
