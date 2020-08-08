@@ -54,15 +54,15 @@ impl Lexer<'_> {
                 literal = ")".to_string();
             }
             b'[' => {
-                kind = Kind::Lsbracket;
+                kind = Kind::Lbrack;
                 literal = "[".to_string();
             }
             b']' => {
-                kind = Kind::Rsbracket;
+                kind = Kind::Rbrack;
                 literal = "]".to_string();
             }
             b'\\' => {
-                kind = Kind::Backslash;
+                kind = Kind::Bslash;
                 literal = "\\".to_string();
             }
             b'"' => {
@@ -70,7 +70,7 @@ impl Lexer<'_> {
                 literal = self.read_string();
             }
             _ if Self::is_identifider_char(self.ch) => {
-                kind = Kind::Identifier;
+                kind = Kind::Id;
                 literal = self.read_identifider();
                 advance_one_char = false; // Skips the next read_char
             }
@@ -250,7 +250,7 @@ mod tests {
         {
             let tok = l.next_token();
             assert_eq!("abc_+z", tok.literal);
-            assert_eq!(Kind::Identifier, tok.kind);
+            assert_eq!(Kind::Id, tok.kind);
         }
         {
             let tok = l.next_token();
@@ -260,12 +260,12 @@ mod tests {
         {
             let tok = l.next_token();
             assert_eq!("\\", tok.literal);
-            assert_eq!(Kind::Backslash, tok.kind);
+            assert_eq!(Kind::Bslash, tok.kind);
         }
         {
             let tok = l.next_token();
             assert_eq!("[", tok.literal);
-            assert_eq!(Kind::Lsbracket, tok.kind);
+            assert_eq!(Kind::Lbrack, tok.kind);
         }
         {
             let tok = l.next_token();
@@ -280,7 +280,7 @@ mod tests {
         {
             let tok = l.next_token();
             assert_eq!("]", tok.literal);
-            assert_eq!(Kind::Rsbracket, tok.kind);
+            assert_eq!(Kind::Rbrack, tok.kind);
         }
         {
             let tok = l.next_token();

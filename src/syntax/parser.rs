@@ -52,10 +52,10 @@ impl Parser<'_> {
 impl Parser<'_> {
     fn parse_expr(&mut self) -> Result<Expr, Error> {
         let r = match self.cur_token.kind {
-            TokenKind::Identifier => self.parse_id(),
+            TokenKind::Id => self.parse_id(),
             TokenKind::Int => self.parse_intlt(),
             TokenKind::String => self.parse_stringlt(),
-            TokenKind::Lsbracket => self.parse_arraylt(),
+            TokenKind::Lbrack => self.parse_arraylt(),
             _ => panic!("unsupported expr for parser"),
         };
 

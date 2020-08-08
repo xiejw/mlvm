@@ -1,11 +1,14 @@
+// Follows names here
+// https://github.com/golang/go/blob/master/src/cmd/compile/internal/syntax/tokens.go
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum Kind {
-    Lparen,
-    Rparen,
-    Lsbracket,
-    Rsbracket,
-    Backslash,
-    Identifier,
+    Lparen, // (
+    Rparen, // )
+    Lbrack, // [
+    Rbrack, // ]
+    Bslash, // \
+    Id,
     Int,
     Float,
     String,
