@@ -89,12 +89,11 @@ impl Parser<'_> {
         let tok = self.advance_token();
 
         // Drops the begining and tailing `"`.
-        let mut bytes = tok.literal.into_bytes();
-        debug_assert!(bytes.len() >= 2);
-        bytes.remove(bytes.len() - 1);
-        bytes.remove(0);
-
-        Ok(Expr::new_stringlt(String::from_utf8(bytes).unwrap()))
+        let literal = tok.literal;
+        debug_assert!(literal.len() >= 2);
+        Ok(Expr::new_stringlt(String::from(
+            &literal[1..literal.len() - 1],
+        )))
     }
     fn parse_arraylt(&mut self) -> Result<Expr, Error> {
         unimplemented!();
