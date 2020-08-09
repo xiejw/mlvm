@@ -38,7 +38,7 @@ pub enum Kind {
     DimLt(Rc<String>),
     ArrayLt(Vec<Expr>),
     StringLt(String),
-    FnCall(Box<Expr>, Vec<Expr>),
+    App(Box<Expr>, Vec<Expr>),
 }
 
 #[derive(PartialEq, Debug)]
@@ -124,7 +124,7 @@ impl fmt::Display for Expr {
                 Expr::write_list(f, &l);
                 write!(f, ")")
             }
-            Kind::FnCall(func, args) => {
+            Kind::App(func, args) => {
                 let _ = write!(f, "Fn({}, ", func);
                 Expr::write_list(f, &args);
                 write!(f, ")")
@@ -207,10 +207,10 @@ mod tests {
     }
 
     #[test]
-    fn test_fn_call() {
+    fn test_app() {
         let expr = Expr {
             etype: Type::Unknown,
-            kind: Kind::FnCall(
+            kind: Kind::App(
                 Box::new(Expr::new_id_str("f")),
                 vec![Expr::new_id_str("a"), Expr::new_id_str("b")],
             ),
