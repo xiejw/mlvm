@@ -56,6 +56,7 @@ impl Parser<'_> {
             TokenKind::Int => self.parse_intlt(),
             TokenKind::String => self.parse_stringlt(),
             TokenKind::Lbrack => self.parse_arraylt(),
+            TokenKind::Lparan => self.parse_fn(),
             _ => panic!("unsupported expr for parser"),
         };
 
