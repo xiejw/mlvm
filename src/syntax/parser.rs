@@ -66,7 +66,10 @@ impl Parser<'_> {
     }
 
     fn parse_id(&mut self) -> Result<Expr, Error> {
-        unimplemented!();
+        debug_assert!(self.cur_token.kind == TokenKind::Id);
+        let tok = self.advance_token();
+
+        Ok(Expr::new_id(&tok.literal))
     }
     fn parse_intlt(&mut self) -> Result<Expr, Error> {
         debug_assert!(self.cur_token.kind == TokenKind::Int);
@@ -135,10 +138,18 @@ mod tests {
     }
 
     #[test]
-    fn test_strlt() {
+    fn test_stringlt() {
         let mut p = Parser::new(b"\"1234\"");
         let exprs = p.parse_ast().unwrap();
         assert_eq!(1, exprs.len());
         assert_eq!("StringLt(\"1234\")", exprs[0].to_string());
+    }
+
+    #[test]
+    fn test_id() {
+        let mut p = Parser::new(b"abc");
+        let exprs = p.parse_ast().unwrap();
+        assert_eq!(1, exprs.len());
+        assert_eq!("Id(abc)", exprs[0].to_string());
     }
 }

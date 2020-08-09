@@ -31,7 +31,7 @@ impl fmt::Display for Type {
 
 #[derive(PartialEq, Debug)]
 pub enum Kind {
-    ID(String),
+    Id(String),
     IntLt(i64),
     FloatLt(f32),
     ShapeLt(Vec<Expr>),
@@ -72,7 +72,7 @@ impl Expr {
     pub fn new_id(v: &str) -> Expr {
         Expr {
             etype: Type::Unknown,
-            kind: Kind::ID(v.to_string()),
+            kind: Kind::Id(v.to_string()),
         }
     }
 
@@ -102,7 +102,7 @@ impl fmt::Display for Expr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let tp = &self.etype;
         match &self.kind {
-            Kind::ID(v) => write!(f, "ID({})", v),
+            Kind::Id(v) => write!(f, "Id({})", v),
             Kind::IntLt(v) => write!(f, "IntLt::{} ({})", tp, v),
             Kind::FloatLt(v) => write!(f, "FloatLt::{} ({:.2})", tp, v),
             Kind::StringLt(v) => write!(f, "StringLt(\"{}\")", v),
@@ -145,7 +145,7 @@ mod tests {
     #[test]
     fn test_id() {
         let expr = Expr::new_id("abc");
-        assert_eq!("ID(abc)", expr.to_string());
+        assert_eq!("Id(abc)", expr.to_string());
     }
 
     #[test]
@@ -208,6 +208,6 @@ mod tests {
                 vec![Expr::new_id("a"), Expr::new_id("b")],
             ),
         };
-        assert_eq!("Fn(ID(f), ID(a), ID(b))", expr.to_string());
+        assert_eq!("Fn(Id(f), Id(a), Id(b))", expr.to_string());
     }
 }
