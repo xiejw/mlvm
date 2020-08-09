@@ -56,7 +56,7 @@ impl Parser<'_> {
             TokenKind::Int => self.parse_intlt(),
             TokenKind::String => self.parse_stringlt(),
             TokenKind::Lbrack => self.parse_arraylt(),
-            TokenKind::Lparen => self.parse_fn(),
+            TokenKind::Lparen => self.parse_app(),
             _ => panic!("unsupported expr for parser"),
         };
 
@@ -65,7 +65,18 @@ impl Parser<'_> {
                 .take()
         })
     }
-    fn parse_fn(&mut self) -> Result<Expr, Error> {
+    fn parse_app(&mut self) -> Result<Expr, Error> {
+        debug_assert!(self.cur_token.kind == TokenKind::Lparen);
+        let _ = self.advance_token();
+
+        let mut fn_expr = self.parse_expr();
+
+        if let Err(ref mut err) = fn_expr {
+            return Err(err
+                .emit_diagnosis_note_str("failed parse the `fn` of application")
+                .take());
+        }
+
         unimplemented!();
     }
 
