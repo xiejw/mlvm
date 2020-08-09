@@ -68,8 +68,7 @@ impl Parser<'_> {
     fn parse_id(&mut self) -> Result<Expr, Error> {
         debug_assert!(self.cur_token.kind == TokenKind::Id);
         let tok = self.advance_token();
-
-        Ok(Expr::new_id(&tok.literal))
+        Ok(Expr::new_id(tok.literal))
     }
     fn parse_intlt(&mut self) -> Result<Expr, Error> {
         debug_assert!(self.cur_token.kind == TokenKind::Int);

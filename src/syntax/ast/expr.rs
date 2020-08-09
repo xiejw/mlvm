@@ -69,10 +69,17 @@ impl Expr {
         }
     }
 
-    pub fn new_id(v: &str) -> Expr {
+    pub fn new_id_str(v: &str) -> Expr {
         Expr {
             etype: Type::Unknown,
             kind: Kind::Id(v.to_string()),
+        }
+    }
+
+    pub fn new_id(v: String) -> Expr {
+        Expr {
+            etype: Type::Unknown,
+            kind: Kind::Id(v),
         }
     }
 
@@ -144,7 +151,7 @@ mod tests {
 
     #[test]
     fn test_id() {
-        let expr = Expr::new_id("abc");
+        let expr = Expr::new_id_str("abc");
         assert_eq!("Id(abc)", expr.to_string());
     }
 
@@ -204,8 +211,8 @@ mod tests {
         let expr = Expr {
             etype: Type::Unknown,
             kind: Kind::FnCall(
-                Box::new(Expr::new_id("f")),
-                vec![Expr::new_id("a"), Expr::new_id("b")],
+                Box::new(Expr::new_id_str("f")),
+                vec![Expr::new_id_str("a"), Expr::new_id_str("b")],
             ),
         };
         assert_eq!("Fn(Id(f), Id(a), Id(b))", expr.to_string());
