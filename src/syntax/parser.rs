@@ -56,7 +56,7 @@ impl Parser<'_> {
             TokenKind::Int => self.parse_intlt(),
             TokenKind::String => self.parse_stringlt(),
             TokenKind::Lbrack => self.parse_arraylt(),
-            TokenKind::Lparan => self.parse_fn(),
+            TokenKind::Lparen => self.parse_fn(),
             _ => panic!("unsupported expr for parser"),
         };
 
@@ -64,6 +64,9 @@ impl Parser<'_> {
             err.emit_diagnosis_note_str("failed to parse expression")
                 .take()
         })
+    }
+    fn parse_fn(&mut self) -> Result<Expr, Error> {
+        unimplemented!();
     }
 
     fn parse_id(&mut self) -> Result<Expr, Error> {
