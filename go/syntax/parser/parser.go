@@ -70,7 +70,7 @@ func (p *Parser) parseExpression() (ast.Expression, *errors.DiagnosisError) {
 	}
 
 	switch p.curToken.Type {
-	case token.LPAREN:
+	case token.Lparen:
 		p.level += 1
 		defer func() { p.level -= 1 }()
 		return p.parseFunctionCallExpression()
@@ -109,10 +109,10 @@ func (p *Parser) parseFunctionCallExpression() (
 		}()
 	}
 
-	err := p.parseSingleTokenWithType(token.LPAREN)
+	err := p.parseSingleTokenWithType(token.Lparen)
 	if err != nil {
 		return nil, err.EmitDiagnosisNote(
-			"matching starting LPAREN for FunctionCall expression")
+			"matching starting Lparen for FunctionCall expression")
 	}
 
 	// TODO: Supports `fn`
@@ -131,7 +131,7 @@ func (p *Parser) parseFunctionCallExpression() (
 
 	var args []ast.Expression
 	// Args
-	for p.curToken.Type != token.RPAREN {
+	for p.curToken.Type != token.Rparen {
 		arg, err := p.parseExpression()
 		if err != nil {
 			return nil, err.EmitDiagnosisNote(
@@ -142,10 +142,10 @@ func (p *Parser) parseFunctionCallExpression() (
 	fc.Args = args
 
 	endPos = p.curToken.Location.Position + 1
-	err = p.parseSingleTokenWithType(token.RPAREN)
+	err = p.parseSingleTokenWithType(token.Rparen)
 	if err != nil {
 		return nil, err.EmitDiagnosisNote(
-			"matching ending RPAREN for FunctionCall expression")
+			"matching ending Rparen for FunctionCall expression")
 	}
 	return fc, nil
 }
@@ -230,7 +230,7 @@ func (p *Parser) parseArray() (*ast.ArrayLiteral, *errors.DiagnosisError) {
 	err = p.parseSingleTokenWithType(token.RSBRACKET)
 	if err != nil {
 		return nil, err.EmitDiagnosisNote(
-			"matching ending RPAREN for FunctionCall expression")
+			"matching ending Rparen for FunctionCall expression")
 	}
 
 	return nil, nil

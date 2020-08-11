@@ -34,10 +34,10 @@ func (l *Lexer) NextToken() *token.Token {
 
 	switch l.ch {
 	case '(':
-		tok.Type = token.LPAREN
+		tok.Type = token.Lparen
 		tok.Literal = "("
 	case ')':
-		tok.Type = token.RPAREN
+		tok.Type = token.Rparen
 		tok.Literal = ")"
 	case '[':
 		tok.Type = token.LSBRACKET

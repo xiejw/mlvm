@@ -5,8 +5,8 @@ import "fmt"
 type TokenType uint
 
 const (
-	LPAREN TokenType = iota
-	RPAREN
+	Lparen TokenType = iota
+	Rparen
 	LSBRACKET
 	RSBRACKET
 	BACKSLASH
@@ -37,10 +37,10 @@ func (tok *Token) String() string {
 
 func (t TokenType) String() string {
 	switch t {
-	case LPAREN:
-		return "LPAREN    "
-	case RPAREN:
-		return "RPAREN    "
+	case Lparen:
+		return "Lparen    "
+	case Rparen:
+		return "Rparen    "
 	case LSBRACKET:
 		return "LSBRACKET "
 	case RSBRACKET:

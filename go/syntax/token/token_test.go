@@ -9,8 +9,8 @@ func TestTokenString(t *testing.T) {
 		str       string
 		tokenType TokenType
 	}{
-		{"LPAREN    ", LPAREN},
-		{"RPAREN    ", RPAREN},
+		{"Lparen    ", Lparen},
+		{"Rparen    ", Rparen},
 		{"LSBRACKET ", LSBRACKET},
 		{"RSBRACKET ", RSBRACKET},
 		{"BACKSLASH ", BACKSLASH},
