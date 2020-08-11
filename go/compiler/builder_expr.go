@@ -8,11 +8,11 @@ import (
 // Compiles the expression.
 func (b *Builder) compileExpression(expr ast.Expr) *errors.DiagnosisError {
 	switch v := expr.(type) {
-	case *ast.IntegerLiteral:
+	case *ast.IntLit:
 		index := b.emitIntegerConstant(v)
 		b.emitLoadConstant(index)
 		return nil
-	case *ast.StringLiteral:
+	case *ast.StringLit:
 		index := b.emitStringConstant(v)
 		b.emitLoadConstant(index)
 		return nil

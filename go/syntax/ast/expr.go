@@ -33,23 +33,23 @@ type FunctionCall struct {
 	Args []Expr
 }
 
-type IntegerLiteral struct {
+type IntLit struct {
 	Value int64
 }
 
-type FloatLiteral struct {
+type FloatLit struct {
 	Value float32
 }
 
-type ShapeLiteral struct {
+type ShapeLit struct {
 	Dimensions []*Id
 }
 
-type ArrayLiteral struct {
-	Values []*FloatLiteral
+type ArrayLit struct {
+	Values []*FloatLit
 }
 
-type StringLiteral struct {
+type StringLit struct {
 	Value string
 }
 
@@ -65,13 +65,13 @@ func (fc *FunctionCall) ToHumanReadableString(w io.Writer) {
 	}
 	fmt.Fprintf(w, ")")
 }
-func (literal *IntegerLiteral) ToHumanReadableString(w io.Writer) {
+func (literal *IntLit) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "Int(%v)", literal.Value)
 }
-func (literal *FloatLiteral) ToHumanReadableString(w io.Writer) {
+func (literal *FloatLit) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "Float(%v)", literal.Value)
 }
-func (literal *ShapeLiteral) ToHumanReadableString(w io.Writer) {
+func (literal *ShapeLit) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "Shape(")
 	for i, dim := range literal.Dimensions {
 		dim.ToHumanReadableString(w)
@@ -81,7 +81,7 @@ func (literal *ShapeLiteral) ToHumanReadableString(w io.Writer) {
 	}
 	fmt.Fprintf(w, ")")
 }
-func (literal *ArrayLiteral) ToHumanReadableString(w io.Writer) {
+func (literal *ArrayLit) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "Array(")
 	for i, f := range literal.Values {
 		f.ToHumanReadableString(w)
@@ -91,7 +91,7 @@ func (literal *ArrayLiteral) ToHumanReadableString(w io.Writer) {
 	}
 	fmt.Fprintf(w, ")")
 }
-func (literal *StringLiteral) ToHumanReadableString(w io.Writer) {
+func (literal *StringLit) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "Str(\"%v\")", literal.Value)
 }
 

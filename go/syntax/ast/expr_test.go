@@ -23,18 +23,18 @@ func TestIdentifier(t *testing.T) {
 	assertAstOutput(t, p, `ID(abc)`)
 }
 
-func TestIntegerLiteral(t *testing.T) {
-	p := makeSingleExprProgram(&IntegerLiteral{123})
+func TestIntegerLit(t *testing.T) {
+	p := makeSingleExprProgram(&IntLit{123})
 	assertAstOutput(t, p, `Int(123)`)
 }
 
-func TestFloatLiteral(t *testing.T) {
-	p := makeSingleExprProgram(&FloatLiteral{98.76})
+func TestFloatLit(t *testing.T) {
+	p := makeSingleExprProgram(&FloatLit{98.76})
 	assertAstOutput(t, p, `Float(98.76)`)
 }
 
-func TestShapeLiteral(t *testing.T) {
-	p := makeSingleExprProgram(&ShapeLiteral{
+func TestShapeLit(t *testing.T) {
+	p := makeSingleExprProgram(&ShapeLit{
 		[]*Id{
 			&Id{"@a"},
 			&Id{"@b"},
@@ -43,18 +43,18 @@ func TestShapeLiteral(t *testing.T) {
 	assertAstOutput(t, p, `Shape(ID(@a), ID(@b))`)
 }
 
-func TestArrayLiteral(t *testing.T) {
-	p := makeSingleExprProgram(&ArrayLiteral{
-		[]*FloatLiteral{
-			&FloatLiteral{1.76},
-			&FloatLiteral{2.98},
+func TestArrayLit(t *testing.T) {
+	p := makeSingleExprProgram(&ArrayLit{
+		[]*FloatLit{
+			&FloatLit{1.76},
+			&FloatLit{2.98},
 		},
 	})
 	assertAstOutput(t, p, `Array(Float(1.76), Float(2.98))`)
 }
 
-func TestStringLiteral(t *testing.T) {
-	p := makeSingleExprProgram(&StringLiteral{"abc"})
+func TestStringLit(t *testing.T) {
+	p := makeSingleExprProgram(&StringLit{"abc"})
 	assertAstOutput(t, p, `Str("abc")`)
 }
 

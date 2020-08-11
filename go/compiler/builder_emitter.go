@@ -6,7 +6,7 @@ import (
 	"github.com/xiejw/mlvm/go/syntax/ast"
 )
 
-func (b *Builder) emitIntegerConstant(literal *ast.IntegerLiteral) int {
+func (b *Builder) emitIntegerConstant(literal *ast.IntLit) int {
 	var o object.Object
 	o = &object.Integer{literal.Value}
 	index := len(b.output.Constants)
@@ -14,7 +14,7 @@ func (b *Builder) emitIntegerConstant(literal *ast.IntegerLiteral) int {
 	return index
 }
 
-func (b *Builder) emitStringConstant(literal *ast.StringLiteral) int {
+func (b *Builder) emitStringConstant(literal *ast.StringLit) int {
 	var o object.Object
 	o = &object.String{literal.Value}
 	index := len(b.output.Constants)

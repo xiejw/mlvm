@@ -166,7 +166,7 @@ func (p *Parser) parseIdentifider() (*ast.Id, *errors.DiagnosisError) {
 	return id, nil
 }
 
-func (p *Parser) parseInteger() (*ast.IntegerLiteral, *errors.DiagnosisError) {
+func (p *Parser) parseInteger() (*ast.IntLit, *errors.DiagnosisError) {
 	if p.option.TraceParser {
 		p.logParserTracing("Integer")
 	}
@@ -184,12 +184,12 @@ func (p *Parser) parseInteger() (*ast.IntegerLiteral, *errors.DiagnosisError) {
 			p.curToken.Literal)
 	}
 
-	i := &ast.IntegerLiteral{Value: v}
+	i := &ast.IntLit{Value: v}
 	p.advanceToken()
 	return i, nil
 }
 
-func (p *Parser) parseString() (*ast.StringLiteral, *errors.DiagnosisError) {
+func (p *Parser) parseString() (*ast.StringLit, *errors.DiagnosisError) {
 	if p.option.TraceParser {
 		p.logParserTracing("String")
 	}
@@ -202,13 +202,13 @@ func (p *Parser) parseString() (*ast.StringLiteral, *errors.DiagnosisError) {
 
 	rawLiteral := p.curToken.Literal
 
-	// Unwraps the `"abc"` and puts `abc` into StringLiteral.
-	s := &ast.StringLiteral{Value: rawLiteral[1 : len(rawLiteral)-1]}
+	// Unwraps the `"abc"` and puts `abc` into StringLit.
+	s := &ast.StringLit{Value: rawLiteral[1 : len(rawLiteral)-1]}
 	p.advanceToken()
 	return s, nil
 }
 
-func (p *Parser) parseArray() (*ast.ArrayLiteral, *errors.DiagnosisError) {
+func (p *Parser) parseArray() (*ast.ArrayLit, *errors.DiagnosisError) {
 	var err *errors.DiagnosisError
 	if p.option.TraceParser {
 		p.logParserTracing("Array")
