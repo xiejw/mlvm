@@ -5,11 +5,15 @@ TEST_DIR=tests
 BUILD_DIR=.build
 INTEGRATION_TEST=yes
 
+# Folders
 LIBS=github.com/xiejw/${REPO}/${LIB_DIR}/...
 CMD_LIBS=github.com/xiejw/${REPO}/${CMD_DIR}/...
-CMD_CANDIDATES=$(patsubst cmd/%,%,$(wildcard cmd/*))  # convention is cmd/<binary>/main.go
 TEST_LIBS=github.com/xiejw/${REPO}/${TEST_DIR}/...
 
+# Cmds. Convention is cmd/<binary>/main.go
+CMD_CANDIDATES=$(patsubst cmd/%,%,$(wildcard cmd/*))
+
+# Actions
 compile: compile_lib compile_cmd
 
 compile_lib:
