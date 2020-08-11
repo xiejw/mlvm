@@ -10,32 +10,27 @@ import (
 /// Interfaces: Program, Expression
 ////////////////////////////////////////////////////////////////////////////////
 
-type Expressions []Expression
+type Expressions []Expr
 
 type Program struct {
 	Expressions Expressions
 }
 
-type Node interface {
+type Expr interface {
 	ToHumanReadableString(w io.Writer)
-}
-
-type Expression interface {
-	Node
-	expressionNode()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 /// Expressions
 ////////////////////////////////////////////////////////////////////////////////
 
-type Identifier struct {
+type Id struct {
 	Value string
 }
 
 type FunctionCall struct {
-	Func *Identifier
-	Args []Expression
+	Func *Id
+	Args []Expr
 }
 
 type IntegerLiteral struct {
@@ -47,7 +42,7 @@ type FloatLiteral struct {
 }
 
 type ShapeLiteral struct {
-	Dimensions []*Identifier
+	Dimensions []*Id
 }
 
 type ArrayLiteral struct {
@@ -58,15 +53,7 @@ type StringLiteral struct {
 	Value string
 }
 
-func (id *Identifier) expressionNode()          {}
-func (fc *FunctionCall) expressionNode()        {}
-func (literal *IntegerLiteral) expressionNode() {}
-func (literal *StringLiteral) expressionNode()  {}
-func (literal *FloatLiteral) expressionNode()   {}
-func (literal *ShapeLiteral) expressionNode()   {}
-func (literal *ArrayLiteral) expressionNode()   {}
-
-func (id *Identifier) ToHumanReadableString(w io.Writer) {
+func (id *Id) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "ID(%v)", id.Value)
 }
 func (fc *FunctionCall) ToHumanReadableString(w io.Writer) {

@@ -41,7 +41,7 @@ func makeOpHelper(t *testing.T, op code.Opcode, args ...int) []byte {
 
 func TestExprSingleLiteral(t *testing.T) {
 	c, err := Compile(&ast.Program{
-		Expressions: []ast.Expression{
+		Expressions: []ast.Expr{
 			&ast.IntegerLiteral{123},
 		},
 	})
@@ -57,10 +57,10 @@ func TestExprSingleLiteral(t *testing.T) {
 
 func TestExprTensorStoreLoad(t *testing.T) {
 	c, err := Compile(&ast.Program{
-		Expressions: []ast.Expression{
+		Expressions: []ast.Expr{
 			&ast.FunctionCall{
-				Func: &ast.Identifier{"store_load"},
-				Args: []ast.Expression{
+				Func: &ast.Id{"store_load"},
+				Args: []ast.Expr{
 					&ast.StringLiteral{"a"},
 				},
 			},

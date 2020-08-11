@@ -5,8 +5,8 @@ import (
 	"github.com/xiejw/mlvm/go/syntax/ast"
 )
 
-func checkSingleArg(fname string, args []ast.Expression) (
-	ast.Expression, *errors.DiagnosisError,
+func checkSingleArg(fname string, args []ast.Expr) (
+	ast.Expr, *errors.DiagnosisError,
 ) {
 	if len(args) != 1 {
 		return nil, errors.NewDiagnosisError(
@@ -16,8 +16,8 @@ func checkSingleArg(fname string, args []ast.Expression) (
 	return args[0], nil
 }
 
-func checkDoubleArgs(fname string, args []ast.Expression) (
-	ast.Expression, ast.Expression, *errors.DiagnosisError,
+func checkDoubleArgs(fname string, args []ast.Expr) (
+	ast.Expr, ast.Expr, *errors.DiagnosisError,
 ) {
 	if len(args) != 2 {
 		return nil, nil, errors.NewDiagnosisError(

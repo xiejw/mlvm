@@ -6,7 +6,7 @@ import (
 )
 
 // Compiles the expression.
-func (b *Builder) compileExpression(expr ast.Expression) *errors.DiagnosisError {
+func (b *Builder) compileExpression(expr ast.Expr) *errors.DiagnosisError {
 	switch v := expr.(type) {
 	case *ast.IntegerLiteral:
 		index := b.emitIntegerConstant(v)
@@ -31,6 +31,6 @@ func (b *Builder) compileExpression(expr ast.Expression) *errors.DiagnosisError 
 			"unsupported expression to be compiled. currently "+
 				"only support integer literal, string literal, "+
 				"function call. got: %+v",
-			ast.Expressions([]ast.Expression{expr}))
+			ast.Expressions([]ast.Expr{expr}))
 	}
 }

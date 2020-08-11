@@ -45,7 +45,7 @@ func NewWithOption(input []byte, option *Option) *Parser {
 
 func (p *Parser) ParseAst() (*ast.Program, *errors.DiagnosisError) {
 	program := &ast.Program{}
-	expressions := make([]ast.Expression, 0)
+	expressions := make([]ast.Expr, 0)
 	defer func() { p.level -= 1 }()
 
 	for p.curToken.Type != token.Eof {
@@ -64,9 +64,9 @@ func (p *Parser) ParseAst() (*ast.Program, *errors.DiagnosisError) {
 	return program, nil
 }
 
-func (p *Parser) parseExpression() (ast.Expression, *errors.DiagnosisError) {
+func (p *Parser) parseExpression() (ast.Expr, *errors.DiagnosisError) {
 	if p.option.TraceParser {
-		p.logParserTracing("Expression")
+		p.logParserTracing("Expr")
 	}
 
 	switch p.curToken.Type {
@@ -92,7 +92,7 @@ func (p *Parser) parseExpression() (ast.Expression, *errors.DiagnosisError) {
 }
 
 func (p *Parser) parseFunctionCallExpression() (
-	ast.Expression, *errors.DiagnosisError,
+	ast.Expr, *errors.DiagnosisError,
 ) {
 	fc := &ast.FunctionCall{}
 
@@ -105,7 +105,7 @@ func (p *Parser) parseFunctionCallExpression() (
 			p.logParserTracing("FunctionCallExpression %v: %v",
 				color.YellowString("source"), string(p.l.Bytes(startPos, endPos)))
 			p.logParserTracing("FunctionCallExpression %v: %v",
-				color.YellowString("result"), ast.Expressions([]ast.Expression{fc}))
+				color.YellowString("result"), ast.Expressions([]ast.Expr{fc}))
 		}()
 	}
 
@@ -129,7 +129,7 @@ func (p *Parser) parseFunctionCallExpression() (
 			p.curToken)
 	}
 
-	var args []ast.Expression
+	var args []ast.Expr
 	// Args
 	for p.curToken.Type != token.Rparen {
 		arg, err := p.parseExpression()
@@ -150,9 +150,9 @@ func (p *Parser) parseFunctionCallExpression() (
 	return fc, nil
 }
 
-func (p *Parser) parseIdentifider() (*ast.Identifier, *errors.DiagnosisError) {
+func (p *Parser) parseIdentifider() (*ast.Id, *errors.DiagnosisError) {
 	if p.option.TraceParser {
-		p.logParserTracing("Identifier")
+		p.logParserTracing("Id")
 	}
 
 	if !p.isCurrentTokenType(token.Id) {
@@ -161,7 +161,7 @@ func (p *Parser) parseIdentifider() (*ast.Identifier, *errors.DiagnosisError) {
 			p.curToken)
 	}
 
-	id := &ast.Identifier{Value: p.curToken.Literal}
+	id := &ast.Id{Value: p.curToken.Literal}
 	p.advanceToken()
 	return id, nil
 }
@@ -217,7 +217,7 @@ func (p *Parser) parseArray() (*ast.ArrayLiteral, *errors.DiagnosisError) {
 		// 	p.logParserTracing("ArrayLiteral %v: %v",
 		// 		color.YellowString("source"), string(p.l.Bytes(startPos, endPos)))
 		// 	p.logParserTracing("ArrayLiteral %v: %v",
-		// 		color.YellowString("result"), ast.Expressions([]ast.Expression{fc}))
+		// 		color.YellowString("result"), ast.Expressions([]ast.Expr{fc}))
 		// }()
 	}
 

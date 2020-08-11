@@ -36,7 +36,7 @@ func (b *Builder) Compile() *errors.DiagnosisError {
 			return err.EmitDiagnosisNote(
 				"compiling the %v-th expression: %v",
 				i+1,
-				strings.Trim(ast.Expressions([]ast.Expression{expr}).String(), "\n"),
+				strings.Trim(ast.Expressions([]ast.Expr{expr}).String(), "\n"),
 			)
 		}
 		if i != finalStatementIndex {

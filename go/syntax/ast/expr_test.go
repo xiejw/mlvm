@@ -14,12 +14,12 @@ func assertAstOutput(t *testing.T, ast *Program, expected string) {
 	}
 }
 
-func makeSingleExprProgram(expr Expression) *Program {
-	return &Program{Expressions: []Expression{expr}}
+func makeSingleExprProgram(expr Expr) *Program {
+	return &Program{Expressions: []Expr{expr}}
 }
 
 func TestIdentifier(t *testing.T) {
-	p := makeSingleExprProgram(&Identifier{"abc"})
+	p := makeSingleExprProgram(&Id{"abc"})
 	assertAstOutput(t, p, `ID(abc)`)
 }
 
@@ -35,9 +35,9 @@ func TestFloatLiteral(t *testing.T) {
 
 func TestShapeLiteral(t *testing.T) {
 	p := makeSingleExprProgram(&ShapeLiteral{
-		[]*Identifier{
-			&Identifier{"@a"},
-			&Identifier{"@b"},
+		[]*Id{
+			&Id{"@a"},
+			&Id{"@b"},
 		},
 	})
 	assertAstOutput(t, p, `Shape(ID(@a), ID(@b))`)
@@ -60,8 +60,8 @@ func TestStringLiteral(t *testing.T) {
 
 func TestFuncCall(t *testing.T) {
 	p := makeSingleExprProgram(&FunctionCall{
-		Func: &Identifier{"fn_name"},
-		Args: []Expression{&Identifier{"arg_0"}},
+		Func: &Id{"fn_name"},
+		Args: []Expr{&Id{"arg_0"}},
 	})
 	assertAstOutput(t, p, `Func(ID(fn_name), ID(arg_0))`)
 }
