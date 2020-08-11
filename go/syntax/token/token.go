@@ -9,13 +9,13 @@ const (
 	Rparen
 	Lbrack
 	Rbrack
-	BACKSLASH
+	Bslash
 	Id
 	Int
-	FLOAT
-	STRING
-	ILLEGAL
-	EOF
+	Float
+	String
+	Illegal
+	Eof
 )
 
 type Location struct {
@@ -45,20 +45,20 @@ func (t TokenType) String() string {
 		return "Lbrack    "
 	case Rbrack:
 		return "Rbrack    "
-	case BACKSLASH:
-		return "BACKSLASH "
+	case Bslash:
+		return "Bslash    "
 	case Id:
 		return "Id        "
 	case Int:
 		return "Int       "
-	case FLOAT:
-		return "FLOAT     "
-	case STRING:
-		return "STRING    "
-	case ILLEGAL:
-		return "ILLEGAL   "
-	case EOF:
-		return "EOF       "
+	case Float:
+		return "Float     "
+	case String:
+		return "String    "
+	case Illegal:
+		return "Illegal   "
+	case Eof:
+		return "Eof       "
 	default:
 		return fmt.Sprintf("(unknown token type: %d)", uint(t))
 	}

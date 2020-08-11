@@ -48,7 +48,7 @@ func TestLexerTokens(t *testing.T) {
 		{1, 3, 15, token.Id, "a"},
 		{1, 5, 17, token.Id, "a"},
 		{1, 6, 18, token.Rparen, ")"},
-		{2, 0, 20, token.EOF, ""},
+		{2, 0, 20, token.Eof, ""},
 	}
 
 	for i, expected := range expects {
@@ -63,9 +63,9 @@ func TestStringLiteral(t *testing.T) {
 	expects := []expectedToken{
 		{0, 0, 0, token.Lparen, "("},
 		{0, 1, 1, token.Id, "def"},
-		{0, 5, 5, token.STRING, `"123"`},
+		{0, 5, 5, token.String, `"123"`},
 		{0, 10, 10, token.Rparen, ")"},
-		{0, 11, 11, token.EOF, ""},
+		{0, 11, 11, token.Eof, ""},
 	}
 
 	for i, expected := range expects {
@@ -80,10 +80,10 @@ func TestPunctuation(t *testing.T) {
 	expects := []expectedToken{
 		{0, 0, 0, token.Lbrack, "["},
 		{0, 1, 1, token.Rbrack, "]"},
-		{0, 2, 2, token.BACKSLASH, `\`},
+		{0, 2, 2, token.Bslash, `\`},
 		{0, 3, 3, token.Lbrack, "["},
 		{0, 4, 4, token.Rbrack, "]"},
-		{0, 5, 5, token.EOF, ""},
+		{0, 5, 5, token.Eof, ""},
 	}
 
 	for i, expected := range expects {
@@ -97,10 +97,10 @@ func TestFloatPoint(t *testing.T) {
 
 	expects := []expectedToken{
 		{0, 0, 0, token.Lbrack, "["},
-		{0, 1, 1, token.FLOAT, "1.23"},
-		{0, 6, 6, token.FLOAT, "2.34"},
+		{0, 1, 1, token.Float, "1.23"},
+		{0, 6, 6, token.Float, "2.34"},
 		{0, 10, 10, token.Rbrack, "]"},
-		{0, 11, 11, token.EOF, ""},
+		{0, 11, 11, token.Eof, ""},
 	}
 
 	for i, expected := range expects {

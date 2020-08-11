@@ -46,12 +46,12 @@ func (l *Lexer) NextToken() *token.Token {
 		tok.Type = token.Rbrack
 		tok.Literal = "]"
 	case '\\':
-		tok.Type = token.BACKSLASH
+		tok.Type = token.Bslash
 		tok.Literal = "\\"
 	case 0:
-		tok.Type = token.EOF
+		tok.Type = token.Eof
 	case '"':
-		tok.Type = token.STRING
+		tok.Type = token.String
 		tok.Literal = l.readString()
 	default:
 		if isIdentifierChar(l.ch) {
@@ -60,7 +60,7 @@ func (l *Lexer) NextToken() *token.Token {
 		} else if isDigit(l.ch) {
 			tok.Literal, tok.Type = l.readNumber()
 		} else {
-			tok.Type = token.ILLEGAL
+			tok.Type = token.Illegal
 			tok.Literal = string(l.ch)
 		}
 		return &tok // skip the next readChar.
@@ -128,7 +128,7 @@ func (l *Lexer) readNumber() (string, token.TokenType) {
 		// decimal point should be hit at most once.
 		if l.ch == '.' && !hitDecimalPoint {
 			hitDecimalPoint = true
-			tokenType = token.FLOAT
+			tokenType = token.Float
 			l.readChar()
 			continue
 		}
@@ -140,7 +140,7 @@ func (l *Lexer) readNumber() (string, token.TokenType) {
 func (l *Lexer) readString() string {
 	pos := l.position
 	l.readChar()
-	// TODO: handle EOF and newline case.
+	// TODO: handle Eof and newline case.
 	for l.ch != '"' {
 		l.readChar()
 	}

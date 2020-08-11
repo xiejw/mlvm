@@ -13,13 +13,13 @@ func TestTokenString(t *testing.T) {
 		{"Rparen    ", Rparen},
 		{"Lbrack    ", Lbrack},
 		{"Rbrack    ", Rbrack},
-		{"BACKSLASH ", BACKSLASH},
+		{"Bslash    ", Bslash},
 		{"Int       ", Int},
-		{"FLOAT     ", FLOAT},
-		{"STRING    ", STRING},
+		{"Float     ", Float},
+		{"String    ", String},
 		{"Id        ", Id},
-		{"ILLEGAL   ", ILLEGAL},
-		{"EOF       ", EOF},
+		{"Illegal   ", Illegal},
+		{"Eof       ", Eof},
 	}
 
 	for _, expected := range expects {

@@ -48,7 +48,7 @@ func (p *Parser) ParseAst() (*ast.Program, *errors.DiagnosisError) {
 	expressions := make([]ast.Expression, 0)
 	defer func() { p.level -= 1 }()
 
-	for p.curToken.Type != token.EOF {
+	for p.curToken.Type != token.Eof {
 		expr, err := p.parseExpression()
 
 		if err != nil {
@@ -78,7 +78,7 @@ func (p *Parser) parseExpression() (ast.Expression, *errors.DiagnosisError) {
 		return p.parseIdentifider()
 	case token.Int:
 		return p.parseInteger()
-	case token.STRING:
+	case token.String:
 		return p.parseString()
 	case token.Lbrack:
 		return p.parseArray()
@@ -194,9 +194,9 @@ func (p *Parser) parseString() (*ast.StringLiteral, *errors.DiagnosisError) {
 		p.logParserTracing("String")
 	}
 
-	if !p.isCurrentTokenType(token.STRING) {
+	if !p.isCurrentTokenType(token.String) {
 		return nil, errors.NewDiagnosisError(
-			"expected to match a token exactly with STRING type, but got: %v",
+			"expected to match a token exactly with String type, but got: %v",
 			p.curToken)
 	}
 
