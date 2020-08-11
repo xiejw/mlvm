@@ -31,6 +31,6 @@ func (b *Builder) compileExpression(expr ast.Expr) *errors.DiagnosisError {
 			"unsupported expression to be compiled. currently "+
 				"only support integer literal, string literal, "+
 				"function call. got: %+v",
-			ast.Expressions([]ast.Expr{expr}))
+			ast.Exprs([]ast.Expr{expr}))
 	}
 }

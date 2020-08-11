@@ -27,7 +27,7 @@ func NewBuilder(src *ast.Program) *Builder {
 
 func (b *Builder) Compile() *errors.DiagnosisError {
 
-	expressions := b.input.Expressions
+	expressions := b.input.Exprs
 	finalStatementIndex := len(expressions) - 1
 
 	for i, expr := range expressions {
@@ -36,7 +36,7 @@ func (b *Builder) Compile() *errors.DiagnosisError {
 			return err.EmitDiagnosisNote(
 				"compiling the %v-th expression: %v",
 				i+1,
-				strings.Trim(ast.Expressions([]ast.Expr{expr}).String(), "\n"),
+				strings.Trim(ast.Exprs([]ast.Expr{expr}).String(), "\n"),
 			)
 		}
 		if i != finalStatementIndex {

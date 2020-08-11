@@ -60,7 +60,7 @@ func (p *Parser) ParseAst() (*ast.Program, *errors.DiagnosisError) {
 		expressions = append(expressions, expr)
 	}
 
-	program.Expressions = expressions
+	program.Exprs = expressions
 	return program, nil
 }
 
@@ -105,7 +105,7 @@ func (p *Parser) parseFunctionCallExpression() (
 			p.logParserTracing("FunctionCallExpression %v: %v",
 				color.YellowString("source"), string(p.l.Bytes(startPos, endPos)))
 			p.logParserTracing("FunctionCallExpression %v: %v",
-				color.YellowString("result"), ast.Expressions([]ast.Expr{fc}))
+				color.YellowString("result"), ast.Exprs([]ast.Expr{fc}))
 		}()
 	}
 
@@ -217,7 +217,7 @@ func (p *Parser) parseArray() (*ast.ArrayLit, *errors.DiagnosisError) {
 		// 	p.logParserTracing("ArrayLiteral %v: %v",
 		// 		color.YellowString("source"), string(p.l.Bytes(startPos, endPos)))
 		// 	p.logParserTracing("ArrayLiteral %v: %v",
-		// 		color.YellowString("result"), ast.Expressions([]ast.Expr{fc}))
+		// 		color.YellowString("result"), ast.Exprs([]ast.Expr{fc}))
 		// }()
 	}
 

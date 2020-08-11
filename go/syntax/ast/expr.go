@@ -10,10 +10,10 @@ import (
 /// Interfaces: Program, Expression
 ////////////////////////////////////////////////////////////////////////////////
 
-type Expressions []Expr
+type Exprs []Expr
 
 type Program struct {
-	Expressions Expressions
+	Exprs Exprs
 }
 
 type Expr interface {
@@ -92,10 +92,10 @@ func (literal *ArrayLit) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, ")")
 }
 func (literal *StringLit) ToHumanReadableString(w io.Writer) {
-	fmt.Fprintf(w, "Str(\"%v\")", literal.Value)
+	fmt.Fprintf(w, "String(\"%v\")", literal.Value)
 }
 
-func (exprs Expressions) String() string {
+func (exprs Exprs) String() string {
 	var buf bytes.Buffer
 	for _, expr := range exprs {
 		expr.ToHumanReadableString(&buf)

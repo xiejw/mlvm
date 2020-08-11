@@ -8,14 +8,14 @@ import (
 func assertAstOutput(t *testing.T, ast *Program, expected string) {
 	t.Helper()
 	expected = strings.Trim(expected, "\n")
-	got := strings.Trim(ast.Expressions.String(), "\n")
+	got := strings.Trim(ast.Exprs.String(), "\n")
 	if expected != got {
 		t.Errorf("ast mismatch. expected: `%v`, got: `%v`.", expected, got)
 	}
 }
 
 func makeSingleExprProgram(expr Expr) *Program {
-	return &Program{Expressions: []Expr{expr}}
+	return &Program{Exprs: []Expr{expr}}
 }
 
 func TestIdentifier(t *testing.T) {
@@ -55,7 +55,7 @@ func TestArrayLit(t *testing.T) {
 
 func TestStringLit(t *testing.T) {
 	p := makeSingleExprProgram(&StringLit{"abc"})
-	assertAstOutput(t, p, `Str("abc")`)
+	assertAstOutput(t, p, `String("abc")`)
 }
 
 func TestFuncCall(t *testing.T) {

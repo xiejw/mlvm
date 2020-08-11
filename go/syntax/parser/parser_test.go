@@ -18,7 +18,7 @@ func assertNoErr(t *testing.T, err *errors.DiagnosisError) {
 func assertAstOutput(t *testing.T, ast *ast.Program, expected string) {
 	t.Helper()
 	expected = strings.Trim(expected, "\n")
-	got := strings.Trim(ast.Expressions.String(), "\n")
+	got := strings.Trim(ast.Exprs.String(), "\n")
 	if expected != got {
 		t.Errorf("ast mismatch. expected: `%v`, got: `%v`.", expected, got)
 	}
