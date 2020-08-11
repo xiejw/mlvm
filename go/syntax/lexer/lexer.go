@@ -4,6 +4,7 @@ import (
 	"github.com/xiejw/mlvm/go/syntax/token"
 )
 
+// Lexer, which emits Tokens from input bytes.
 type Lexer struct {
 	input        []byte
 	position     uint
@@ -13,6 +14,9 @@ type Lexer struct {
 	loc          token.Loc
 }
 
+// Creates a Lexer, reay for use.
+//
+// Input is not expected to be changed later.
 func New(input []byte) *Lexer {
 	l := &Lexer{
 		input: input,
@@ -22,15 +26,17 @@ func New(input []byte) *Lexer {
 	return l
 }
 
+// Given a valid range startPos..endPos, returns the bytes.
 func (l *Lexer) Bytes(startPos, endPos uint) []byte {
 	return l.input[startPos:endPos]
 }
 
+// Returns the next token.
 func (l *Lexer) NextToken() *token.Token {
 	var tok token.Token
 	l.skipWhiteSpaces()
 
-	tok.Loc = l.loc // a copy
+	tok.Loc = l.loc // a "deep" copy
 
 	switch l.ch {
 	case '(':
@@ -70,6 +76,7 @@ func (l *Lexer) NextToken() *token.Token {
 	return &tok
 }
 
+// Skips all white spaces.
 func (l *Lexer) skipWhiteSpaces() {
 	for {
 		c := l.ch
@@ -81,6 +88,7 @@ func (l *Lexer) skipWhiteSpaces() {
 	}
 }
 
+// Reads the next char. Updates Loc info.
 func (l *Lexer) readChar() {
 	// handles the location. two special cases.
 	// case 1. just started
