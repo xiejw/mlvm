@@ -9,7 +9,8 @@ func TestDiagnosisErrorOutput(t *testing.T) {
 	err.EmitDiagnosisNote("during stack 2")
 	err.EmitDiagnosisNote("during stack 1")
 
-	expected := `Diagnosis Error
+	expected := `
+Diagnosis Error
   +-+ during stack 1
     +-+ during stack 2
       +-> root 1

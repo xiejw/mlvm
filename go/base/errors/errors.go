@@ -34,7 +34,7 @@ func EmitDiagnosisNote(err error, sfmt string, args ...interface{}) *DiagnosisEr
 func (de *DiagnosisError) String() string {
 	var buf bytes.Buffer
 
-	fmt.Fprint(&buf, "Diagnosis Error\n")
+	fmt.Fprint(&buf, "\nDiagnosis Error\n")
 
 	indentLevel := "  "
 	for index := len(de.notes) - 1; index >= 0; index-- {
