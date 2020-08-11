@@ -58,7 +58,7 @@ func TestExprSingleLiteral(t *testing.T) {
 func TestExprTensorStoreLoad(t *testing.T) {
 	c, err := Compile(&ast.Program{
 		Expressions: []ast.Expr{
-			&ast.FunctionCall{
+			&ast.App{
 				Func: &ast.Id{"store_load"},
 				Args: []ast.Expr{
 					&ast.StringLit{"a"},

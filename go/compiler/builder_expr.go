@@ -16,7 +16,7 @@ func (b *Builder) compileExpression(expr ast.Expr) *errors.DiagnosisError {
 		index := b.emitStringConstant(v)
 		b.emitLoadConstant(index)
 		return nil
-	case *ast.FunctionCall:
+	case *ast.App:
 		// Currently only supports limited bultin-ins.
 		err := b.compileBuiltinFn(v)
 		if err != nil {

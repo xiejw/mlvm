@@ -35,12 +35,12 @@ func TestFunctionCall(t *testing.T) {
 	p := New([]byte("(+ a 123)"))
 	ast, err := p.ParseAst()
 	assertNoErr(t, err)
-	assertAstOutput(t, ast, "Func(ID(+), ID(a), Int(123))")
+	assertAstOutput(t, ast, "Func(Id(+), Id(a), Int(123))")
 }
 
 func TestNestedFunctionCall(t *testing.T) {
 	p := New([]byte("(+ a (call b a))"))
 	ast, err := p.ParseAst()
 	assertNoErr(t, err)
-	assertAstOutput(t, ast, `Func(ID(+), ID(a), Func(ID(call), ID(b), ID(a)))`)
+	assertAstOutput(t, ast, `Func(Id(+), Id(a), Func(Id(call), Id(b), Id(a)))`)
 }

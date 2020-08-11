@@ -28,7 +28,7 @@ type Id struct {
 	Value string
 }
 
-type FunctionCall struct {
+type App struct {
 	Func *Id
 	Args []Expr
 }
@@ -54,9 +54,9 @@ type StringLit struct {
 }
 
 func (id *Id) ToHumanReadableString(w io.Writer) {
-	fmt.Fprintf(w, "ID(%v)", id.Value)
+	fmt.Fprintf(w, "Id(%v)", id.Value)
 }
-func (fc *FunctionCall) ToHumanReadableString(w io.Writer) {
+func (fc *App) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "Func(")
 	fc.Func.ToHumanReadableString(w)
 	for _, arg := range fc.Args {

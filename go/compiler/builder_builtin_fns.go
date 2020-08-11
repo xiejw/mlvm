@@ -27,7 +27,7 @@ func checkDoubleArgs(fname string, args []ast.Expr) (
 	return args[0], args[1], nil
 }
 
-func (b *Builder) compileBuiltinFn(fn *ast.FunctionCall) *errors.DiagnosisError {
+func (b *Builder) compileBuiltinFn(fn *ast.App) *errors.DiagnosisError {
 	fnName := fn.Func.Value
 
 	switch fnName {

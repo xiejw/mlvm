@@ -94,7 +94,7 @@ func (p *Parser) parseExpression() (ast.Expr, *errors.DiagnosisError) {
 func (p *Parser) parseFunctionCallExpression() (
 	ast.Expr, *errors.DiagnosisError,
 ) {
-	fc := &ast.FunctionCall{}
+	fc := &ast.App{}
 
 	startPos := p.curToken.Loc.Position
 	var endPos uint
@@ -112,7 +112,7 @@ func (p *Parser) parseFunctionCallExpression() (
 	err := p.parseSingleTokenWithType(token.Lparen)
 	if err != nil {
 		return nil, err.EmitDiagnosisNote(
-			"matching starting Lparen for FunctionCall expression")
+			"matching starting Lparen for App expression")
 	}
 
 	// TODO: Supports `fn`
@@ -145,7 +145,7 @@ func (p *Parser) parseFunctionCallExpression() (
 	err = p.parseSingleTokenWithType(token.Rparen)
 	if err != nil {
 		return nil, err.EmitDiagnosisNote(
-			"matching ending Rparen for FunctionCall expression")
+			"matching ending Rparen for App expression")
 	}
 	return fc, nil
 }
@@ -230,7 +230,7 @@ func (p *Parser) parseArray() (*ast.ArrayLit, *errors.DiagnosisError) {
 	err = p.parseSingleTokenWithType(token.Rbrack)
 	if err != nil {
 		return nil, err.EmitDiagnosisNote(
-			"matching ending Rparen for FunctionCall expression")
+			"matching ending Rparen for App expression")
 	}
 
 	return nil, nil

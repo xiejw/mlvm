@@ -20,7 +20,7 @@ func makeSingleExprProgram(expr Expr) *Program {
 
 func TestIdentifier(t *testing.T) {
 	p := makeSingleExprProgram(&Id{"abc"})
-	assertAstOutput(t, p, `ID(abc)`)
+	assertAstOutput(t, p, `Id(abc)`)
 }
 
 func TestIntegerLit(t *testing.T) {
@@ -40,7 +40,7 @@ func TestShapeLit(t *testing.T) {
 			&Id{"@b"},
 		},
 	})
-	assertAstOutput(t, p, `Shape(ID(@a), ID(@b))`)
+	assertAstOutput(t, p, `Shape(Id(@a), Id(@b))`)
 }
 
 func TestArrayLit(t *testing.T) {
@@ -59,9 +59,9 @@ func TestStringLit(t *testing.T) {
 }
 
 func TestFuncCall(t *testing.T) {
-	p := makeSingleExprProgram(&FunctionCall{
+	p := makeSingleExprProgram(&App{
 		Func: &Id{"fn_name"},
 		Args: []Expr{&Id{"arg_0"}},
 	})
-	assertAstOutput(t, p, `Func(ID(fn_name), ID(arg_0))`)
+	assertAstOutput(t, p, `Func(Id(fn_name), Id(arg_0))`)
 }
