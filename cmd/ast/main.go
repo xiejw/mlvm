@@ -18,7 +18,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	log.Printf("ast:\n%v", ast.Expressions)
+	log.Printf("ast:\n%v", ast.Exprs)
 
 	// 	statements := make([]ast.Statement, 0)
 	// 	statements = append(statements, &ast.ExprStatement{

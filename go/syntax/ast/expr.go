@@ -20,6 +20,15 @@ type Expr interface {
 	ToHumanReadableString(w io.Writer)
 }
 
+func (exprs Exprs) String() string {
+	var buf bytes.Buffer
+	for _, expr := range exprs {
+		expr.ToHumanReadableString(&buf)
+		fmt.Fprint(&buf, "\n")
+	}
+	return buf.String()
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 /// Expressions
 ////////////////////////////////////////////////////////////////////////////////
@@ -93,13 +102,4 @@ func (literal *ArrayLit) ToHumanReadableString(w io.Writer) {
 }
 func (literal *StringLit) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "String(\"%v\")", literal.Value)
-}
-
-func (exprs Exprs) String() string {
-	var buf bytes.Buffer
-	for _, expr := range exprs {
-		expr.ToHumanReadableString(&buf)
-		fmt.Fprint(&buf, "\n")
-	}
-	return buf.String()
 }
