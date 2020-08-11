@@ -74,13 +74,13 @@ func (p *Parser) parseExpression() (ast.Expression, *errors.DiagnosisError) {
 		p.level += 1
 		defer func() { p.level -= 1 }()
 		return p.parseFunctionCallExpression()
-	case token.IDENTIFIER:
+	case token.Id:
 		return p.parseIdentifider()
-	case token.INTEGER:
+	case token.Int:
 		return p.parseInteger()
 	case token.STRING:
 		return p.parseString()
-	case token.LSBRACKET:
+	case token.Lbrack:
 		return p.parseArray()
 	default:
 		err := errors.NewDiagnosisError(
@@ -117,7 +117,7 @@ func (p *Parser) parseFunctionCallExpression() (
 
 	// TODO: Supports `fn`
 	switch p.curToken.Type {
-	case token.IDENTIFIER:
+	case token.Id:
 		id, err := p.parseIdentifider()
 		if err != nil {
 			return nil, err.EmitDiagnosisNote("parsing function with identifier")
@@ -155,9 +155,9 @@ func (p *Parser) parseIdentifider() (*ast.Identifier, *errors.DiagnosisError) {
 		p.logParserTracing("Identifier")
 	}
 
-	if !p.isCurrentTokenType(token.IDENTIFIER) {
+	if !p.isCurrentTokenType(token.Id) {
 		return nil, errors.NewDiagnosisError(
-			"expected to match a token exactly with IDENTIFIER type, but got: %v",
+			"expected to match a token exactly with Id type, but got: %v",
 			p.curToken)
 	}
 
@@ -171,9 +171,9 @@ func (p *Parser) parseInteger() (*ast.IntegerLiteral, *errors.DiagnosisError) {
 		p.logParserTracing("Integer")
 	}
 
-	if !p.isCurrentTokenType(token.INTEGER) {
+	if !p.isCurrentTokenType(token.Int) {
 		return nil, errors.NewDiagnosisError(
-			"expected to match a token exactly with INTEGER type, but got: %v",
+			"expected to match a token exactly with Int type, but got: %v",
 			p.curToken)
 	}
 
@@ -221,13 +221,13 @@ func (p *Parser) parseArray() (*ast.ArrayLiteral, *errors.DiagnosisError) {
 		// }()
 	}
 
-	err = p.parseSingleTokenWithType(token.LSBRACKET)
+	err = p.parseSingleTokenWithType(token.Lbrack)
 	if err != nil {
 		return nil, err.EmitDiagnosisNote(
-			"matching starting LSBRACKET for Array literal expression")
+			"matching starting Lbrack for Array literal expression")
 	}
 
-	err = p.parseSingleTokenWithType(token.RSBRACKET)
+	err = p.parseSingleTokenWithType(token.Rbrack)
 	if err != nil {
 		return nil, err.EmitDiagnosisNote(
 			"matching ending Rparen for FunctionCall expression")
