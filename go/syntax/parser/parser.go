@@ -13,6 +13,7 @@ import (
 	"github.com/xiejw/mlvm/go/syntax/token"
 )
 
+// Parser, which consumes Tokens from input bytes and produces Expr as ast.Program.
 type Parser struct {
 	option *Option
 
@@ -23,8 +24,8 @@ type Parser struct {
 }
 
 type Option struct {
-	TraceLexer  bool
-	TraceParser bool
+	TraceLexer  bool // If true, print tracing info related to lexer.
+	TraceParser bool // If true, print tracing info related to parser.
 }
 
 func New(input []byte) *Parser {
@@ -43,24 +44,23 @@ func NewWithOption(input []byte, option *Option) *Parser {
 	return p
 }
 
+// Parse Ast from input bytes.
 func (p *Parser) ParseAst() (*ast.Program, *errors.DiagnosisError) {
 	program := &ast.Program{}
-	expressions := make([]ast.Expr, 0)
+	exprs := make([]ast.Expr, 0)
 	defer func() { p.level -= 1 }()
 
 	for p.curToken.Type != token.Eof {
 		expr, err := p.parseExpression()
+		exprs = append(exprs, expr)
 
 		if err != nil {
-			index := len(expressions)
 			return nil, err.EmitDiagnosisNote(
-				"during parsing ast, at %v-th expression", index+1)
+				"during parsing ast, at %v-th top level expression", len(exprs)+1)
 		}
-
-		expressions = append(expressions, expr)
 	}
 
-	program.Exprs = expressions
+	program.Exprs = exprs
 	return program, nil
 }
 
