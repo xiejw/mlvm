@@ -63,5 +63,5 @@ func TestFuncCall(t *testing.T) {
 		Func: &Id{"fn_name"},
 		Args: []Expr{&Id{"arg_0"}},
 	})
-	assertAstOutput(t, p, `Func(Id(fn_name), Id(arg_0))`)
+	assertAstOutput(t, p, `App(Id(fn_name), Id(arg_0))`)
 }

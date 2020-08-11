@@ -57,7 +57,7 @@ func (id *Id) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "Id(%v)", id.Value)
 }
 func (fc *App) ToHumanReadableString(w io.Writer) {
-	fmt.Fprintf(w, "Func(")
+	fmt.Fprintf(w, "App(")
 	fc.Func.ToHumanReadableString(w)
 	for _, arg := range fc.Args {
 		fmt.Fprintf(w, ", ")
