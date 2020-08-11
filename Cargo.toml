@@ -1,7 +1,0 @@
-[package]
-name = "mlvm"
-version = "0.1.0"
-authors = ["JXie <xiejw0217@gmail.com>"]
-edition = "2018"
-
-[dependencies]
