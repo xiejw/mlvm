@@ -5,11 +5,11 @@ import "fmt"
 type TokenType uint
 
 const (
-	Lparen TokenType = iota
-	Rparen
-	Lbrack
-	Rbrack
-	Bslash
+	Lparen TokenType = iota // (
+	Rparen                  // )
+	Lbrack                  // [
+	Rbrack                  // ]
+	Bslash                  // \
 	Id
 	Int
 	Float
@@ -18,21 +18,21 @@ const (
 	Eof
 )
 
-type Location struct {
+type Loc struct {
 	Row      uint
 	Column   uint
 	Position uint
 }
 
 type Token struct {
-	Type     TokenType
-	Literal  string
-	Location Location
+	Type    TokenType
+	Literal string
+	Loc     Loc
 }
 
 func (tok *Token) String() string {
 	return fmt.Sprintf("token{ type: %v, loc: (%3d, %3d), literal: \"%v\" }",
-		tok.Type, tok.Location.Row, tok.Location.Column, tok.Literal)
+		tok.Type, tok.Loc.Row, tok.Loc.Column, tok.Literal)
 }
 
 func (t TokenType) String() string {

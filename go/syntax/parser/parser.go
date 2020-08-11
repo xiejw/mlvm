@@ -96,7 +96,7 @@ func (p *Parser) parseFunctionCallExpression() (
 ) {
 	fc := &ast.FunctionCall{}
 
-	startPos := p.curToken.Location.Position
+	startPos := p.curToken.Loc.Position
 	var endPos uint
 
 	if p.option.TraceParser {
@@ -141,7 +141,7 @@ func (p *Parser) parseFunctionCallExpression() (
 	}
 	fc.Args = args
 
-	endPos = p.curToken.Location.Position + 1
+	endPos = p.curToken.Loc.Position + 1
 	err = p.parseSingleTokenWithType(token.Rparen)
 	if err != nil {
 		return nil, err.EmitDiagnosisNote(

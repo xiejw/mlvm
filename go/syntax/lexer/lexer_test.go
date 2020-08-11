@@ -23,13 +23,13 @@ func assertToken(t *testing.T, expected expectedToken, token *token.Token, i int
 		t.Errorf("literal mismatch for index: %v. expected: %v, got: %v",
 			i, expected.literal, token.Literal)
 	}
-	if token.Location.Row != expected.row {
+	if token.Loc.Row != expected.row {
 		t.Errorf("row mismatch for index: %v", i)
 	}
-	if token.Location.Column != expected.col {
+	if token.Loc.Column != expected.col {
 		t.Errorf("col mismatch for index: %v", i)
 	}
-	if token.Location.Position != expected.pos {
+	if token.Loc.Position != expected.pos {
 		t.Errorf("pos mismatch for index: %v", i)
 	}
 }

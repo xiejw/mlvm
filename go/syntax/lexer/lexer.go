@@ -10,7 +10,7 @@ type Lexer struct {
 	readPosition uint // after position
 	ch           byte
 	size         uint
-	loc          token.Location
+	loc          token.Loc
 }
 
 func New(input []byte) *Lexer {
@@ -30,7 +30,7 @@ func (l *Lexer) NextToken() *token.Token {
 	var tok token.Token
 	l.skipWhiteSpaces()
 
-	tok.Location = l.loc // a copy
+	tok.Loc = l.loc // a copy
 
 	switch l.ch {
 	case '(':
