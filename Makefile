@@ -3,6 +3,7 @@ LIB_DIR=go
 CMD_DIR=cmd
 TEST_DIR=tests
 BUILD_DIR=.build
+INTEGRATION_TEST=yes
 
 LIBS=github.com/xiejw/${REPO}/${LIB_DIR}/...
 CMD_LIBS=github.com/xiejw/${REPO}/${CMD_DIR}/...
@@ -24,11 +25,15 @@ compile_cmd:
 fmt:
 	go fmt ${LIBS}
 	go fmt ${CMD_LIBS}
+ifeq ($(INTEGRATION_TEST),yes)
 	go fmt ${TEST_LIBS}
+endif
 
 test:
 	go test ${LIBS}
+ifeq ($(INTEGRATION_TEST),yes)
 	go test ${TEST_LIBS}
+endif
 
 bench:
 	go test -bench=. ${LIBS}
