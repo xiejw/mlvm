@@ -45,7 +45,7 @@ func NewWithOption(input []byte, option *Option) *Parser {
 }
 
 // Parse Ast from input bytes.
-func (p *Parser) ParseAst() (*ast.Program, *errors.DiagnosisError) {
+func (p *Parser) ParseAst() (*ast.Program, *errors.DError) {
 	program := &ast.Program{}
 	exprs := make([]ast.Expr, 0)
 	defer func() { p.level -= 1 }()
@@ -64,7 +64,7 @@ func (p *Parser) ParseAst() (*ast.Program, *errors.DiagnosisError) {
 	return program, nil
 }
 
-func (p *Parser) parseExpression() (ast.Expr, *errors.DiagnosisError) {
+func (p *Parser) parseExpression() (ast.Expr, *errors.DError) {
 	if p.option.TraceParser {
 		p.logParserTracing("Expr")
 	}
@@ -92,7 +92,7 @@ func (p *Parser) parseExpression() (ast.Expr, *errors.DiagnosisError) {
 }
 
 func (p *Parser) parseFunctionCallExpression() (
-	ast.Expr, *errors.DiagnosisError,
+	ast.Expr, *errors.DError,
 ) {
 	fc := &ast.App{}
 
@@ -150,7 +150,7 @@ func (p *Parser) parseFunctionCallExpression() (
 	return fc, nil
 }
 
-func (p *Parser) parseIdentifider() (*ast.Id, *errors.DiagnosisError) {
+func (p *Parser) parseIdentifider() (*ast.Id, *errors.DError) {
 	if p.option.TraceParser {
 		p.logParserTracing("Id")
 	}
@@ -166,7 +166,7 @@ func (p *Parser) parseIdentifider() (*ast.Id, *errors.DiagnosisError) {
 	return id, nil
 }
 
-func (p *Parser) parseInteger() (*ast.IntLit, *errors.DiagnosisError) {
+func (p *Parser) parseInteger() (*ast.IntLit, *errors.DError) {
 	if p.option.TraceParser {
 		p.logParserTracing("Integer")
 	}
@@ -189,7 +189,7 @@ func (p *Parser) parseInteger() (*ast.IntLit, *errors.DiagnosisError) {
 	return i, nil
 }
 
-func (p *Parser) parseString() (*ast.StringLit, *errors.DiagnosisError) {
+func (p *Parser) parseString() (*ast.StringLit, *errors.DError) {
 	if p.option.TraceParser {
 		p.logParserTracing("String")
 	}
@@ -208,8 +208,8 @@ func (p *Parser) parseString() (*ast.StringLit, *errors.DiagnosisError) {
 	return s, nil
 }
 
-func (p *Parser) parseArray() (*ast.ArrayLit, *errors.DiagnosisError) {
-	var err *errors.DiagnosisError
+func (p *Parser) parseArray() (*ast.ArrayLit, *errors.DError) {
+	var err *errors.DError
 	if p.option.TraceParser {
 		p.logParserTracing("Array")
 
@@ -236,7 +236,7 @@ func (p *Parser) parseArray() (*ast.ArrayLit, *errors.DiagnosisError) {
 	return nil, nil
 }
 
-func (p *Parser) parseSingleTokenWithType(t token.TokenType) *errors.DiagnosisError {
+func (p *Parser) parseSingleTokenWithType(t token.TokenType) *errors.DError {
 	if p.option.TraceParser {
 		p.logParserTracing("Token with type: %v", t)
 	}

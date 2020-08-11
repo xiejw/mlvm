@@ -18,7 +18,7 @@ func assertNoErr(t *testing.T, err error) {
 	}
 }
 
-func assertNoDiagnosisError(t *testing.T, err *errors.DiagnosisError) {
+func assertNoDiagnosisError(t *testing.T, err *errors.DError) {
 	t.Helper()
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

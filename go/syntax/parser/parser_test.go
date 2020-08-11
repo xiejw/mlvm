@@ -8,7 +8,7 @@ import (
 	"github.com/xiejw/mlvm/go/syntax/ast"
 )
 
-func assertNoErr(t *testing.T, err *errors.DiagnosisError) {
+func assertNoErr(t *testing.T, err *errors.DError) {
 	t.Helper()
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

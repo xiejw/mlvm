@@ -25,7 +25,7 @@ func NewBuilder(src *ast.Program) *Builder {
 	}
 }
 
-func (b *Builder) Compile() *errors.DiagnosisError {
+func (b *Builder) Compile() *errors.DError {
 
 	expressions := b.input.Exprs
 	finalStatementIndex := len(expressions) - 1

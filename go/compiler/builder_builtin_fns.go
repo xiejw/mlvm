@@ -6,7 +6,7 @@ import (
 )
 
 func checkSingleArg(fname string, args []ast.Expr) (
-	ast.Expr, *errors.DiagnosisError,
+	ast.Expr, *errors.DError,
 ) {
 	if len(args) != 1 {
 		return nil, errors.NewDiagnosisError(
@@ -17,7 +17,7 @@ func checkSingleArg(fname string, args []ast.Expr) (
 }
 
 func checkDoubleArgs(fname string, args []ast.Expr) (
-	ast.Expr, ast.Expr, *errors.DiagnosisError,
+	ast.Expr, ast.Expr, *errors.DError,
 ) {
 	if len(args) != 2 {
 		return nil, nil, errors.NewDiagnosisError(
@@ -27,7 +27,7 @@ func checkDoubleArgs(fname string, args []ast.Expr) (
 	return args[0], args[1], nil
 }
 
-func (b *Builder) compileBuiltinFn(fn *ast.App) *errors.DiagnosisError {
+func (b *Builder) compileBuiltinFn(fn *ast.App) *errors.DError {
 	fnName := fn.Func.Value
 
 	switch fnName {

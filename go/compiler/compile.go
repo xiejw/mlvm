@@ -7,7 +7,7 @@ import (
 )
 
 // Compiles ast.Program to code.Program.
-func Compile(src *ast.Program) (*code.Program, *errors.DiagnosisError) {
+func Compile(src *ast.Program) (*code.Program, *errors.DError) {
 
 	b := NewBuilder(src)
 	err := b.Compile()

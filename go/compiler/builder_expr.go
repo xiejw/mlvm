@@ -6,7 +6,7 @@ import (
 )
 
 // Compiles the expression.
-func (b *Builder) compileExpression(expr ast.Expr) *errors.DiagnosisError {
+func (b *Builder) compileExpression(expr ast.Expr) *errors.DError {
 	switch v := expr.(type) {
 	case *ast.IntLit:
 		index := b.emitIntegerConstant(v)
