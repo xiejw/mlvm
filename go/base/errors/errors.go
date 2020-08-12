@@ -19,15 +19,11 @@ func New(sfmt string, args ...interface{}) *DError {
 	}
 }
 
-// Creates a DError with root cause specified by `err` and emit a note immediately..
-func NewWithNote(err error, sfmt string, args ...interface{}) *DError {
-	de := &DError{
+// Creates a DError with root cause specified by `err`.
+func From(err error) *DError {
+	return &DError{
 		rootCause: err,
 	}
-
-	note := fmt.Sprintf(sfmt, args...)
-	de.notes = append(de.notes, note)
-	return de
 }
 
 // Formats the error into string.

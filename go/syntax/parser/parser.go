@@ -179,8 +179,8 @@ func (p *Parser) parseInteger() (*ast.IntLit, *errors.DError) {
 
 	v, err := strconv.ParseInt(p.curToken.Literal, 10, 64)
 	if err != nil {
-		return nil, errors.NewWithNote(
-			err, "parsing integer expression for literal: %v",
+		return nil, errors.From(err).EmitNote(
+			"parsing integer expression for literal: %v",
 			p.curToken.Literal)
 	}
 
