@@ -33,7 +33,7 @@ func (b *Builder) Compile() *errors.DError {
 	for i, expr := range expressions {
 		err := b.compileExpression(expr)
 		if err != nil {
-			return err.EmitDiagnosisNote(
+			return err.EmitNote(
 				"compiling the %v-th expression: %v",
 				i+1,
 				strings.Trim(ast.Exprs([]ast.Expr{expr}).String(), "\n"),

@@ -20,7 +20,7 @@ func New(sfmt string, args ...interface{}) *DError {
 }
 
 // Creates a DError with root cause specified by `err` and emit a note immediately..
-func EmitDiagnosisNote(err error, sfmt string, args ...interface{}) *DError {
+func NewWithNote(err error, sfmt string, args ...interface{}) *DError {
 	de := &DError{
 		rootCause: err,
 	}
@@ -47,7 +47,7 @@ func (de *DError) String() string {
 }
 
 // Emit one more note to the DError.
-func (de *DError) EmitDiagnosisNote(sfmt string, args ...interface{}) *DError {
+func (de *DError) EmitNote(sfmt string, args ...interface{}) *DError {
 	note := fmt.Sprintf(sfmt, args...)
 	de.notes = append(de.notes, note)
 	return de

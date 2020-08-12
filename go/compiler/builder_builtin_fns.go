@@ -34,12 +34,12 @@ func (b *Builder) compileBuiltinFn(fn *ast.App) *errors.DError {
 	case "store_load":
 		arg, err := checkSingleArg(fnName, fn.Args)
 		if err != nil {
-			return err.EmitDiagnosisNote("compiling built-in function \"%v\"", fnName)
+			return err.EmitNote("compiling built-in function \"%v\"", fnName)
 		}
 
 		err = b.compileExpression(arg)
 		if err != nil {
-			return err.EmitDiagnosisNote(
+			return err.EmitNote(
 				"compiling the argument for built-in function \"%v\"", fnName)
 		}
 		b.emitLoadTensor()
@@ -48,18 +48,18 @@ func (b *Builder) compileBuiltinFn(fn *ast.App) *errors.DError {
 	case "+":
 		arg1, arg2, err := checkDoubleArgs(fnName, fn.Args)
 		if err != nil {
-			return err.EmitDiagnosisNote("compiling built-in function \"%v\"", fnName)
+			return err.EmitNote("compiling built-in function \"%v\"", fnName)
 		}
 
 		err = b.compileExpression(arg2)
 		if err != nil {
-			return err.EmitDiagnosisNote(
+			return err.EmitNote(
 				"compiling the second argument for built-in function \"%v\"", fnName)
 		}
 
 		err = b.compileExpression(arg1)
 		if err != nil {
-			return err.EmitDiagnosisNote(
+			return err.EmitNote(
 				"compiling the first argument for built-in function \"%v\"", fnName)
 		}
 		b.emitAdd()

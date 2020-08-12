@@ -55,7 +55,7 @@ func (p *Parser) ParseAst() (*ast.Program, *errors.DError) {
 		exprs = append(exprs, expr)
 
 		if err != nil {
-			return nil, err.EmitDiagnosisNote(
+			return nil, err.EmitNote(
 				"during parsing ast, at %v-th top level expression", len(exprs)+1)
 		}
 	}
@@ -85,7 +85,7 @@ func (p *Parser) parseExpression() (ast.Expr, *errors.DError) {
 	default:
 		err := errors.New(
 			"unsupported starting token to be parsed for expression: %v", p.curToken)
-		return nil, err.EmitDiagnosisNote(
+		return nil, err.EmitNote(
 			"supported starting token for expressions are: " +
 				"function call, identifier, integer literal, string literal, array literal.")
 	}
@@ -111,7 +111,7 @@ func (p *Parser) parseFunctionCallExpression() (
 
 	err := p.parseSingleTokenWithType(token.Lparen)
 	if err != nil {
-		return nil, err.EmitDiagnosisNote(
+		return nil, err.EmitNote(
 			"matching starting Lparen for App expression")
 	}
 
@@ -120,7 +120,7 @@ func (p *Parser) parseFunctionCallExpression() (
 	case token.Id:
 		id, err := p.parseIdentifider()
 		if err != nil {
-			return nil, err.EmitDiagnosisNote("parsing function with identifier")
+			return nil, err.EmitNote("parsing function with identifier")
 		}
 		fc.Func = id
 	default:
@@ -134,7 +134,7 @@ func (p *Parser) parseFunctionCallExpression() (
 	for p.curToken.Type != token.Rparen {
 		arg, err := p.parseExpression()
 		if err != nil {
-			return nil, err.EmitDiagnosisNote(
+			return nil, err.EmitNote(
 				"parsing the %v-th function argument", len(args)+1)
 		}
 		args = append(args, arg)
@@ -144,7 +144,7 @@ func (p *Parser) parseFunctionCallExpression() (
 	endPos = p.curToken.Loc.Position + 1
 	err = p.parseSingleTokenWithType(token.Rparen)
 	if err != nil {
-		return nil, err.EmitDiagnosisNote(
+		return nil, err.EmitNote(
 			"matching ending Rparen for App expression")
 	}
 	return fc, nil
@@ -179,7 +179,7 @@ func (p *Parser) parseInteger() (*ast.IntLit, *errors.DError) {
 
 	v, err := strconv.ParseInt(p.curToken.Literal, 10, 64)
 	if err != nil {
-		return nil, errors.EmitDiagnosisNote(
+		return nil, errors.NewWithNote(
 			err, "parsing integer expression for literal: %v",
 			p.curToken.Literal)
 	}
@@ -223,13 +223,13 @@ func (p *Parser) parseArray() (*ast.ArrayLit, *errors.DError) {
 
 	err = p.parseSingleTokenWithType(token.Lbrack)
 	if err != nil {
-		return nil, err.EmitDiagnosisNote(
+		return nil, err.EmitNote(
 			"matching starting Lbrack for Array literal expression")
 	}
 
 	err = p.parseSingleTokenWithType(token.Rbrack)
 	if err != nil {
-		return nil, err.EmitDiagnosisNote(
+		return nil, err.EmitNote(
 			"matching ending Rparen for App expression")
 	}
 

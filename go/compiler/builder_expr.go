@@ -20,7 +20,7 @@ func (b *Builder) compileExpression(expr ast.Expr) *errors.DError {
 		// Currently only supports limited bultin-ins.
 		err := b.compileBuiltinFn(v)
 		if err != nil {
-			return err.EmitDiagnosisNote(
+			return err.EmitNote(
 				"compiling function call. currently only support " +
 					"built-in functions")
 		}

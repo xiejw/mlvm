@@ -6,8 +6,8 @@ import (
 
 func TestDiagnosisErrorOutput(t *testing.T) {
 	err := New("root 1")
-	err.EmitDiagnosisNote("during stack 2")
-	err.EmitDiagnosisNote("during stack 1")
+	err.EmitNote("during stack 2")
+	err.EmitNote("during stack 1")
 
 	expected := `
 Diagnosis Error
