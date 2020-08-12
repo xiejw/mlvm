@@ -3,7 +3,7 @@ User Code
 ```
 (defn @batch  3)
 (defn @hidden_size 2)
-(defn s \[@batch, @hidden_size])
+(defn s [@batch, @hidden_size])
 
 (defn key_tuple (rng_split (rng_new 456)))
 
@@ -15,7 +15,7 @@ User Code
 (defn c
     (tr_reshape
         (tr_new [1.0 2.0 3.0 4.0 5.0 6.0])
-        \[@batch @hidden_size]
+        [@batch @hidden_size]
     )
 )
 
@@ -25,3 +25,7 @@ User Code
 Language Design
 - Type scheme deduction for dimension.
 - Functional.
+
+Basic Types
+- List<a>
+- Dim
