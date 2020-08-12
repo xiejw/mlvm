@@ -48,6 +48,7 @@ func (p *Parser) parseApp() (ast.Expr, *errors.DError) {
 	var endPos uint
 
 	if p.option.TraceParser {
+		// For App, we do some heavy work here. 1. logs the entry point 2. logs the exit point.
 		p.logP("App")
 		defer func() {
 			p.logP("App %v: %v",
@@ -57,42 +58,42 @@ func (p *Parser) parseApp() (ast.Expr, *errors.DError) {
 		}()
 	}
 
+	// Consumes the Lparen.
 	if err := p.parseSingleTokenWithType(token.Lparen); err != nil {
 		return nil, err.EmitNote("matching starting Lparen for App")
 	}
 
-	// TODO: Supports `fn`
+	// Consumes the App.Func.  TODO: Supports General Expr returning Fn.
 	switch p.curToken.Type {
 	case token.Id:
 		id, err := p.parseId()
 		if err != nil {
-			return nil, err.EmitNote("parsing function with identifier")
+			return nil, err.EmitNote("parsing App.Func with Id")
 		}
 		fc.Func = id
 	default:
-		return nil, errors.New(
-			"unsupported function. currently only identifier is supported. got: %v",
-			p.curToken)
+		return nil, errors.New("unsupported App.Func. Only Id is supported. got: %v", p.curToken)
 	}
 
+	// Consumes App.Args.
 	var args []ast.Expr
-	// Args
 	for p.curToken.Type != token.Rparen {
 		arg, err := p.parseExpr()
-		if err != nil {
-			return nil, err.EmitNote(
-				"parsing the %v-th function argument", len(args)+1)
-		}
 		args = append(args, arg)
+		if err != nil {
+			return nil, err.EmitNote("parsing the %v-th of App arg", len(args))
+		}
 	}
 	fc.Args = args
 
+	// Records the final position for tracing.
 	endPos = p.curToken.Loc.Position + 1
-	err := p.parseSingleTokenWithType(token.Rparen)
-	if err != nil {
-		return nil, err.EmitNote(
-			"matching ending Rparen for App expression")
+
+	// Consumes the Rparen.
+	if err := p.parseSingleTokenWithType(token.Rparen); err != nil {
+		return nil, err.EmitNote("matching ending Rparen for App")
 	}
+
 	return fc, nil
 }
 
