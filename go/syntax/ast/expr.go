@@ -20,6 +20,12 @@ type Expr interface {
 	ToHumanReadableString(w io.Writer)
 }
 
+func String(e Expr) string {
+	var buf bytes.Buffer
+	e.ToHumanReadableString(&buf)
+	return buf.String()
+}
+
 func (exprs Exprs) String() string {
 	var buf bytes.Buffer
 	for _, expr := range exprs {
@@ -30,36 +36,57 @@ func (exprs Exprs) String() string {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+/// Base Expr
+////////////////////////////////////////////////////////////////////////////////
+
+type baseExpr struct {
+}
+
+////////////////////////////////////////////////////////////////////////////////
 /// Expressions
 ////////////////////////////////////////////////////////////////////////////////
 
 type Id struct {
 	Value string
+
+	baseExpr
 }
 
 type App struct {
 	Func *Id
 	Args []Expr
+
+	baseExpr
 }
 
 type IntLit struct {
 	Value int64
+
+	baseExpr
 }
 
 type FloatLit struct {
 	Value float32
+
+	baseExpr
 }
 
 type ShapeLit struct {
-	Dimensions []*Id
+	Dims []*Id
+
+	baseExpr
 }
 
 type ArrayLit struct {
 	Values []*FloatLit
+
+	baseExpr
 }
 
 type StringLit struct {
 	Value string
+
+	baseExpr
 }
 
 func (id *Id) ToHumanReadableString(w io.Writer) {
@@ -82,9 +109,9 @@ func (literal *FloatLit) ToHumanReadableString(w io.Writer) {
 }
 func (literal *ShapeLit) ToHumanReadableString(w io.Writer) {
 	fmt.Fprintf(w, "Shape(")
-	for i, dim := range literal.Dimensions {
+	for i, dim := range literal.Dims {
 		dim.ToHumanReadableString(w)
-		if i != len(literal.Dimensions)-1 {
+		if i != len(literal.Dims)-1 {
 			fmt.Fprintf(w, ", ")
 		}
 	}

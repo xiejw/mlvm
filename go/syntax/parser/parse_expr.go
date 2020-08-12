@@ -53,8 +53,7 @@ func (p *Parser) parseApp() (ast.Expr, *errors.DError) {
 		defer func() {
 			p.logP("App %v: %v",
 				color.YellowString("source"), string(p.l.Bytes(startPos, endPos)))
-			p.logP("App %v: %v",
-				color.YellowString("result"), ast.Exprs([]ast.Expr{fc}))
+			p.logP("App %v: %v", color.YellowString("result"), ast.String(fc))
 		}()
 	}
 
