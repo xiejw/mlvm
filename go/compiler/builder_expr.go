@@ -27,7 +27,7 @@ func (b *Builder) compileExpression(expr ast.Expr) *errors.DError {
 		return nil
 
 	default:
-		return errors.NewDiagnosisError(
+		return errors.New(
 			"unsupported expression to be compiled. currently "+
 				"only support integer literal, string literal, "+
 				"function call. got: %+v",

@@ -9,7 +9,7 @@ func checkSingleArg(fname string, args []ast.Expr) (
 	ast.Expr, *errors.DError,
 ) {
 	if len(args) != 1 {
-		return nil, errors.NewDiagnosisError(
+		return nil, errors.New(
 			"function (\"%v\") should have exactly 1 arg, got: %v.",
 			fname, len(args))
 	}
@@ -20,7 +20,7 @@ func checkDoubleArgs(fname string, args []ast.Expr) (
 	ast.Expr, ast.Expr, *errors.DError,
 ) {
 	if len(args) != 2 {
-		return nil, nil, errors.NewDiagnosisError(
+		return nil, nil, errors.New(
 			"function (\"%v\") should have exactly 2 args, got: %v.",
 			fname, len(args))
 	}
@@ -65,6 +65,6 @@ func (b *Builder) compileBuiltinFn(fn *ast.App) *errors.DError {
 		b.emitAdd()
 		return nil
 	default:
-		return errors.NewDiagnosisError("unsupported built-in function name: %v", fnName)
+		return errors.New("unsupported built-in function name: %v", fnName)
 	}
 }

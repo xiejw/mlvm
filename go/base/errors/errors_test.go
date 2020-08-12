@@ -5,7 +5,7 @@ import (
 )
 
 func TestDiagnosisErrorOutput(t *testing.T) {
-	err := NewDiagnosisError("root 1")
+	err := New("root 1")
 	err.EmitDiagnosisNote("during stack 2")
 	err.EmitDiagnosisNote("during stack 1")
 

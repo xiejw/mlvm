@@ -13,7 +13,7 @@ type DError struct {
 }
 
 // Creates a DError with root cause specified by the message.
-func NewDiagnosisError(sfmt string, args ...interface{}) *DError {
+func New(sfmt string, args ...interface{}) *DError {
 	return &DError{
 		rootCause: fmt.Errorf(sfmt, args...),
 	}

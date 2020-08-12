@@ -83,7 +83,7 @@ func (p *Parser) parseExpression() (ast.Expr, *errors.DError) {
 	case token.Lbrack:
 		return p.parseArray()
 	default:
-		err := errors.NewDiagnosisError(
+		err := errors.New(
 			"unsupported starting token to be parsed for expression: %v", p.curToken)
 		return nil, err.EmitDiagnosisNote(
 			"supported starting token for expressions are: " +
@@ -124,7 +124,7 @@ func (p *Parser) parseFunctionCallExpression() (
 		}
 		fc.Func = id
 	default:
-		return nil, errors.NewDiagnosisError(
+		return nil, errors.New(
 			"unsupported function. currently only identifier is supported. got: %v",
 			p.curToken)
 	}
@@ -156,7 +156,7 @@ func (p *Parser) parseIdentifider() (*ast.Id, *errors.DError) {
 	}
 
 	if !p.isCurrentTokenType(token.Id) {
-		return nil, errors.NewDiagnosisError(
+		return nil, errors.New(
 			"expected to match a token exactly with Id type, but got: %v",
 			p.curToken)
 	}
@@ -172,7 +172,7 @@ func (p *Parser) parseInteger() (*ast.IntLit, *errors.DError) {
 	}
 
 	if !p.isCurrentTokenType(token.Int) {
-		return nil, errors.NewDiagnosisError(
+		return nil, errors.New(
 			"expected to match a token exactly with Int type, but got: %v",
 			p.curToken)
 	}
@@ -195,7 +195,7 @@ func (p *Parser) parseString() (*ast.StringLit, *errors.DError) {
 	}
 
 	if !p.isCurrentTokenType(token.String) {
-		return nil, errors.NewDiagnosisError(
+		return nil, errors.New(
 			"expected to match a token exactly with String type, but got: %v",
 			p.curToken)
 	}
@@ -242,7 +242,7 @@ func (p *Parser) parseSingleTokenWithType(t token.TokenType) *errors.DError {
 	}
 
 	if !p.isCurrentTokenType(t) {
-		return errors.NewDiagnosisError(
+		return errors.New(
 			"expected to match a token exactly with specific type: %v, but got: %v",
 			t, p.curToken)
 	}
