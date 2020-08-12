@@ -97,15 +97,14 @@ func (p *Parser) parseApp() (ast.Expr, *errors.DError) {
 	return fc, nil
 }
 
+// Parses Id.
 func (p *Parser) parseId() (*ast.Id, *errors.DError) {
 	if p.option.TraceParser {
 		p.logP("Id")
 	}
 
 	if !p.isCurrentTokenType(token.Id) {
-		return nil, errors.New(
-			"expected to match a token exactly with Id type, but got: %v",
-			p.curToken)
+		return nil, errors.New("expected to match a token with Id type, got: %v", p.curToken)
 	}
 
 	id := &ast.Id{Value: p.curToken.Literal}
@@ -113,22 +112,20 @@ func (p *Parser) parseId() (*ast.Id, *errors.DError) {
 	return id, nil
 }
 
+// Parses IntLit.
 func (p *Parser) parseIntLit() (*ast.IntLit, *errors.DError) {
 	if p.option.TraceParser {
-		p.logP("Integer")
+		p.logP("IntLit")
 	}
 
 	if !p.isCurrentTokenType(token.Int) {
-		return nil, errors.New(
-			"expected to match a token exactly with Int type, but got: %v",
-			p.curToken)
+		return nil, errors.New("expected to match a token with Int type, got: %v", p.curToken)
 	}
 
 	v, err := strconv.ParseInt(p.curToken.Literal, 10, 64)
 	if err != nil {
 		return nil, errors.From(err).EmitNote(
-			"parsing integer expression for literal: %v",
-			p.curToken.Literal)
+			"parsing Int expression for literal: %v", p.curToken.Literal)
 	}
 
 	i := &ast.IntLit{Value: v}
@@ -136,62 +133,47 @@ func (p *Parser) parseIntLit() (*ast.IntLit, *errors.DError) {
 	return i, nil
 }
 
+// Parses IntLit.
 func (p *Parser) parseStringLit() (*ast.StringLit, *errors.DError) {
 	if p.option.TraceParser {
-		p.logP("String")
+		p.logP("StringLit")
 	}
 
 	if !p.isCurrentTokenType(token.String) {
-		return nil, errors.New(
-			"expected to match a token exactly with String type, but got: %v",
-			p.curToken)
+		return nil, errors.New("expected to match a token with String type, got: %v", p.curToken)
 	}
 
-	rawLiteral := p.curToken.Literal
-
 	// Unwraps the `"abc"` and puts `abc` into StringLit.
+	rawLiteral := p.curToken.Literal
 	s := &ast.StringLit{Value: rawLiteral[1 : len(rawLiteral)-1]}
 	p.advanceToken()
 	return s, nil
 }
 
+// Parses ArrayLit.
 func (p *Parser) parseArrayLit() (*ast.ArrayLit, *errors.DError) {
-	var err *errors.DError
 	if p.option.TraceParser {
-		p.logP("Array")
-
-		// defer func() {
-		// 	p.logP("ArrayLiteral %v: %v",
-		// 		color.YellowString("source"), string(p.l.Bytes(startPos, endPos)))
-		// 	p.logP("ArrayLiteral %v: %v",
-		// 		color.YellowString("result"), ast.Exprs([]ast.Expr{fc}))
-		// }()
+		p.logP("ArrayLit")
 	}
 
-	err = p.parseSingleTokenWithType(token.Lbrack)
-	if err != nil {
-		return nil, err.EmitNote(
-			"matching starting Lbrack for Array literal expression")
+	if err := p.parseSingleTokenWithType(token.Lbrack); err != nil {
+		return nil, err.EmitNote("matching starting Lbrack for ArrayLit")
 	}
 
-	err = p.parseSingleTokenWithType(token.Rbrack)
-	if err != nil {
-		return nil, err.EmitNote(
-			"matching ending Rparen for App expression")
+	if err := p.parseSingleTokenWithType(token.Rbrack); err != nil {
+		return nil, err.EmitNote("matching ending Rbrack for ArrayLit")
 	}
 
-	return nil, nil
+	panic("unimplemented.") // return nil, nil
 }
 
 func (p *Parser) parseSingleTokenWithType(t token.TokenType) *errors.DError {
 	if p.option.TraceParser {
-		p.logP("Token with type: %v", t)
+		p.logP("%v", t)
 	}
 
 	if !p.isCurrentTokenType(t) {
-		return errors.New(
-			"expected to match a token exactly with specific type: %v, but got: %v",
-			t, p.curToken)
+		return errors.New("expected to match a token with type: %v, got: %v", t, p.curToken)
 	}
 
 	p.advanceToken()
