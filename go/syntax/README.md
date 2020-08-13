@@ -1,4 +1,4 @@
-User Code
+### User Code 1
 
 ```
 (defn @batch  3)
@@ -29,3 +29,33 @@ Language Design
 Basic Types
 - List<a>
 - Dim
+
+### User Code 2
+
+```
+(defn @batch  3)
+(defn @hidden_size 2)
+(defn s [@batch, @hidden_size])
+
+(defn key_tuple (rng_split (rng_new 456)))
+
+(defn key_1 (nth 0 key_tuple))
+(defn key_2 (nth 1 key_tuple))
+
+(defn a (rng_norm key_1 s))
+(defn b (rng_norm key_2 s))
+
+(defn r (+ a b))
+
+(defn t_list (IO read "weights")) // [Object]
+
+(defn w::Tensor<@hidden_size> (nth 0 t_list)) // Tensor<@hidden_size>
+
+(IO write "weight" (list::[Object] (+ a w)))
+
+```
+
+Type checking at runtime.
+Type in parser and inference.
+Pure vs inpure.
+
