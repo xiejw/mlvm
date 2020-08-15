@@ -59,3 +59,41 @@ Type checking at runtime.
 Type in parser and inference.
 Pure vs inpure.
 
+### User Code 2
+
+```
+(= lr (tr_new [0.001]))
+(= @batch  3)
+(= @hidden_size 2)
+(= s [@batch, @hidden_size])
+
+(= key_tuple (rng_split (IO read "key")::Rng))
+
+(= ws::[Tensor;2] (IO read "weights"))
+
+(= w::Tensor<1, @hidden_size> (nth 0 ws))
+(= b::Tensor<@hidden_size> (nth 1 ws))
+
+(= inputs (IO chan_in "inputs"))
+
+(= x::Tensor<@batch, 1> (nth 0 inputs))
+(= y::Tensor<@batch, 1> (nth 1 inputs))
+
+(= a (rng_norm (nth 0 key_tuple) s))
+(= x (+ x a)) // Shallow
+(= logits  (+ (tr_matmul x w) b)
+
+(=loss (mse y logits))
+(=grad (diff loss ws))
+
+(= new_ws (map (fn w g (- w  (lr * g))) (zip (ws, grad))))
+
+// Write back
+
+(= key_2 (nth 1 key_tuple))
+(IO write "key" (list key_2))
+(IO write "weight" new_ws)
+
+```
+
+Comments
