@@ -69,10 +69,7 @@ Pure vs inpure.
 
 (= key_tuple (rng_split (IO read "key")::Rng))
 
-(= ws::[Tensor;2] (IO read "weights"))
-
-(= w::Tensor<1, @hidden_size> (nth 0 ws))
-(= b::Tensor<@hidden_size> (nth 1 ws))
+(=[] ws [w::Tensor<1, @hidden_size> b::Tensor<@hidden_size>] (IO read "weights"))
 
 (= inputs (IO chan_in "inputs"))
 
