@@ -3,7 +3,7 @@ LIB_DIR=go
 CMD_DIR=cmd
 TEST_DIR=tests
 BUILD_DIR=.build
-INTEGRATION_TEST=yes
+INTEGRATION_TEST=no
 
 # Folders
 LIBS=github.com/xiejw/${REPO}/${LIB_DIR}/...
