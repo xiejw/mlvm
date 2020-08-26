@@ -18,6 +18,7 @@ type Program struct {
 
 type Expr interface {
 	ToHumanReadableString(w io.Writer)
+	Type() Type
 }
 
 func String(e Expr) string {
@@ -40,6 +41,11 @@ func (exprs Exprs) String() string {
 ////////////////////////////////////////////////////////////////////////////////
 
 type baseExpr struct {
+	etype Type
+}
+
+func (e *baseExpr) Type() Type {
+	return e.etype
 }
 
 ////////////////////////////////////////////////////////////////////////////////
