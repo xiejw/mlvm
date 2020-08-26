@@ -5,20 +5,19 @@ import (
 
 	_ "github.com/xiejw/mlvm/go/compiler"
 	_ "github.com/xiejw/mlvm/go/syntax/ast"
-	"github.com/xiejw/mlvm/go/syntax/parser"
 	_ "github.com/xiejw/mlvm/go/vm"
 )
 
 func main() {
 	log.Printf("Hello MLVM")
 
-	p := parser.NewWithOption([]byte("(def a 123)\n(+ a a)\n"),
-		&parser.Option{TraceLexer: true, TraceParser: true})
-	ast, err := p.ParseAst()
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	log.Printf("ast:\n%v", ast.Exprs)
+	// p := parser.NewWithOption([]byte("(def a 123)\n(+ a a)\n"),
+	// 	&parser.Option{TraceLexer: true, TraceParser: true})
+	// ast, err := p.ParseAst()
+	// if err != nil {
+	// 	log.Fatalf("error: %v", err)
+	// }
+	// log.Printf("ast:\n%v", ast.Exprs)
 
 	// 	statements := make([]ast.Statement, 0)
 	// 	statements = append(statements, &ast.ExprStatement{
