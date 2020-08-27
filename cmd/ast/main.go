@@ -4,13 +4,15 @@ import (
 	"log"
 
 	_ "github.com/xiejw/mlvm/go/compiler"
-	_ "github.com/xiejw/mlvm/go/syntax/ast"
+	"github.com/xiejw/mlvm/go/syntax/ast"
 	_ "github.com/xiejw/mlvm/go/vm"
 )
 
 func main() {
 	log.Printf("Hello MLVM")
 
+	b := ast.NewBuilder()
+	b.NewIntLit(12)
 	// p := parser.NewWithOption([]byte("(def a 123)\n(+ a a)\n"),
 	// 	&parser.Option{TraceLexer: true, TraceParser: true})
 	// ast, err := p.ParseAst()
