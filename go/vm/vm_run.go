@@ -88,7 +88,7 @@ func (vm *VM) Run() (Outputs, error) {
 
 			////////////////////////////////////////////////////////////////////////////////////////////////
 			// Prng
-		case code.OpPrngNew:
+		case code.OpRNG:
 			seed, err := vm.popInteger()
 			if err != nil {
 				return nil, vm.canonicalError(op, "expect to get Prng seed from stack: %v.", err)
@@ -100,7 +100,7 @@ func (vm *VM) Run() (Outputs, error) {
 				return nil, vm.canonicalError(op, "internal error: %v.", err)
 			}
 
-		case code.OpPrngDist:
+		case code.OpRNGV:
 			distType := code.ReadUint16(vm.instructions[ip+1:])
 			ip += 2
 
