@@ -15,8 +15,8 @@ const (
 	OpPOP
 	OpLOAD
 	OpSTORE
-	OpLoadT
-	OpStoreT
+	OpLOADS
+	OpSTORES
 	OpPrngNew
 	OpPrngDist
 	OpTensor
@@ -32,27 +32,41 @@ type Definition struct {
 var definitions = map[Opcode]*Definition{
 	// Loads constant object from Program into stack.
 	//
-	// Operands: (uint16) object index.
+	// Operand: (uint16) object index.
+	// Stack  : push the object to the top.
 	OpCONST: {"OpCONST", []int{2}},
 
 	// Pops out top item on stack.
 	//
-	// No operand.
+	// Operand: no.
+	// Stack  : pop the object from the top.
 	OpPOP: {"OpPOP", []int{}},
 
-	// Loads top object from global memory, and pops it out.
+	// Loads top object from global memory.
 	//
-	// Operands: (uint16) object index.
+	// Operand: (uint16) object index.
+	// Stack  : push the object to the top.
 	OpLOAD: {"OpLOAD", []int{2}},
 
-	// Stores object into global memory, and pops it out.
+	// Stores object into global memory.
 	//
-	// Operands: (uint16) object index.
+	// Operand: (uint16) object index.
+	// Stack  : pop the object from the top.
 	OpSTORE: {"OpSTORE", []int{2}},
-	// Loads Tensor from Tensor store.
-	OpLoadT: {"OpLoadT", []int{}},
-	// Loads Tensor from Tensor store.
-	OpStoreT: {"OpStoreT", []int{}},
+
+	// Loads object from key-value store.
+	//
+	// Operand: no.
+	// Stack  : pops the top item and uses it as string key.
+	OpLOADS: {"OpLOADS", []int{}},
+
+	// Stores the object into key-value store.
+	//
+	// Operand: no.
+	// Stack  : pops the top item and uses it as the object.
+	//          pops the second item and uses it as string key.
+	OpSTORES: {"OpSTORES", []int{}},
+
 	// Creates a new Prng source. The top stack operand is the seed.
 	OpPrngNew: {"OpPrngNew", []int{}},
 	// Creates an Array with distribution (uint16 dist type index). Two stack operands are prng source

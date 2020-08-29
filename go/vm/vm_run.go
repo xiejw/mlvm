@@ -69,7 +69,7 @@ func (vm *VM) Run() (Outputs, error) {
 				return nil, vm.canonicalError(op, "internal error: %v.", err)
 			}
 
-		case code.OpLoadT:
+		case code.OpLOADS:
 			key, err := vm.popString()
 			if err != nil {
 				return nil, vm.canonicalError(op, "expect to get key name from stack: %v.", err)
