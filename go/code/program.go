@@ -33,24 +33,24 @@ func NewProgram() *Program {
 
 func (p *Program) String() string {
 	var buf bytes.Buffer
-	p.ToHumanReadableString(&buf)
+	p.DebugString(&buf)
 	return buf.String()
 }
 
-func (p *Program) ToHumanReadableString(w io.Writer) {
+func (p *Program) DebugString(w io.Writer) {
 	fmt.Fprint(w, "-> Constants:\n\n")
-	p.Constants.ToHumanReadableString(w)
-	fmt.Fprintf(w, "\n\n-> Instruction:\n\n%v\n",
+	p.Constants.DebugString(w)
+	fmt.Fprintf(w, "\n-> Instruction:\n\n%v\n",
 		p.Instructions)
 }
 
 func (cs Constants) String() string {
 	var buf bytes.Buffer
-	cs.ToHumanReadableString(&buf)
+	cs.DebugString(&buf)
 	return buf.String()
 }
 
-func (cs Constants) ToHumanReadableString(w io.Writer) {
+func (cs Constants) DebugString(w io.Writer) {
 	if len(cs) == 0 {
 		fmt.Fprintf(w, "(empty)")
 		return
@@ -60,7 +60,7 @@ func (cs Constants) ToHumanReadableString(w io.Writer) {
 	for i, c := range cs {
 		fmt.Fprintf(w, "  %3d: %v\n", i, c)
 	}
-	fmt.Fprint(w, "]")
+	fmt.Fprint(w, "]\n")
 }
 
 // Prints all instructions in disassembly form.
