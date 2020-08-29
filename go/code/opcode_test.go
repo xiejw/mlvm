@@ -30,8 +30,8 @@ func TestOpcodes(t *testing.T) {
 	}{
 		{OpCONST, "OpCONST"},
 		{OpPOP, "OpPOP"},
-		{OpLoadG, "OpLoadG"},
-		{OpStoreG, "OpStoreG"},
+		{OpLOAD, "OpLOAD"},
+		{OpSTORE, "OpSTORE"},
 		{OpLoadT, "OpLoadT"},
 		{OpStoreT, "OpStoreT"},
 		{OpPrngNew, "OpPrngNew"},
@@ -61,8 +61,8 @@ func TestInstructionDisassembly(t *testing.T) {
 	}{
 		{"\n000000 OpCONST    123\n", OpCONST, []int{123}},
 		{"\n000000 OpPOP     \n", OpPOP, []int{}},
-		{"\n000000 OpLoadG    456\n", OpLoadG, []int{456}},
-		{"\n000000 OpStoreG   789\n", OpStoreG, []int{789}},
+		{"\n000000 OpLOAD     456\n", OpLOAD, []int{456}},
+		{"\n000000 OpSTORE    789\n", OpSTORE, []int{789}},
 		{"\n000000 OpLoadT   \n", OpLoadT, []int{}},
 		{"\n000000 OpStoreT  \n", OpStoreT, []int{}},
 		{"\n000000 OpPrngNew \n", OpPrngNew, []int{}},
@@ -86,9 +86,9 @@ func TestMultiInstructionsDisassembly(t *testing.T) {
 
 	ins1, err := MakeOp(OpCONST, 123)
 	checkNoErr(t, err)
-	ins2, err := MakeOp(OpStoreG, 456)
+	ins2, err := MakeOp(OpSTORE, 456)
 	checkNoErr(t, err)
-	ins3, err := MakeOp(OpLoadG, 789)
+	ins3, err := MakeOp(OpLOAD, 789)
 	checkNoErr(t, err)
 
 	ins = append(ins, ins1...)
@@ -97,8 +97,8 @@ func TestMultiInstructionsDisassembly(t *testing.T) {
 	expected :=
 		`
 000000 OpCONST    123
-000003 OpStoreG   456
-000006 OpLoadG    789
+000003 OpSTORE    456
+000006 OpLOAD     789
 `
 	got := Instructions(ins).String()
 

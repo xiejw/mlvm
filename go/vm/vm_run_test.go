@@ -56,8 +56,8 @@ func TestRunWithOpCONST(t *testing.T) {
 func TestOpStoreAndLoad(t *testing.T) {
 	var ins code.Instructions
 	ins = append(ins, makeOpHelper(t, code.OpCONST, 0)...)
-	ins = append(ins, makeOpHelper(t, code.OpStoreG, 0)...)
-	ins = append(ins, makeOpHelper(t, code.OpLoadG, 0)...)
+	ins = append(ins, makeOpHelper(t, code.OpSTORE, 0)...)
+	ins = append(ins, makeOpHelper(t, code.OpLOAD, 0)...)
 
 	array := &object.Array{[]float32{1.0, 2.0}}
 

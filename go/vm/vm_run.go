@@ -40,7 +40,7 @@ func (vm *VM) Run() (Outputs, error) {
 				return nil, vm.canonicalError(op, "internal error: %v.", err)
 			}
 
-		case code.OpStoreG:
+		case code.OpSTORE:
 			memSlotIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
 			ip += 2
 
@@ -54,7 +54,7 @@ func (vm *VM) Run() (Outputs, error) {
 					"failed to store object to global memory at %v: %v.", memSlotIndex, err)
 			}
 
-		case code.OpLoadG:
+		case code.OpLOAD:
 			memSlotIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
 			ip += 2
 

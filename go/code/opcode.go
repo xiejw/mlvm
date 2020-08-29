@@ -13,8 +13,8 @@ const (
 	// For meaning, see Definition.
 	OpCONST Opcode = iota
 	OpPOP
-	OpLoadG
-	OpStoreG
+	OpLOAD
+	OpSTORE
 	OpLoadT
 	OpStoreT
 	OpPrngNew
@@ -30,14 +30,25 @@ type Definition struct {
 }
 
 var definitions = map[Opcode]*Definition{
-	// Loads constant object, uint16 index, from Program.
+	// Loads constant object from Program into stack.
+	//
+	// Operands: (uint16) object index.
 	OpCONST: {"OpCONST", []int{2}},
+
 	// Pops out top item on stack.
+	//
+	// No operand.
 	OpPOP: {"OpPOP", []int{}},
-	// Loads object, uint16 index, from Global memory.
-	OpLoadG: {"OpLoadG", []int{2}},
-	// Stores objec, uint16 index, to Global memory.
-	OpStoreG: {"OpStoreG", []int{2}},
+
+	// Loads top object from global memory, and pops it out.
+	//
+	// Operands: (uint16) object index.
+	OpLOAD: {"OpLOAD", []int{2}},
+
+	// Stores object into global memory, and pops it out.
+	//
+	// Operands: (uint16) object index.
+	OpSTORE: {"OpSTORE", []int{2}},
 	// Loads Tensor from Tensor store.
 	OpLoadT: {"OpLoadT", []int{}},
 	// Loads Tensor from Tensor store.
