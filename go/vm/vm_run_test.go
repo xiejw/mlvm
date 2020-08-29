@@ -38,9 +38,9 @@ func assertSingleOutput(t *testing.T, outputs Outputs, err error) object.Object 
 	return outputs[0]
 }
 
-func TestRunWithOpConstant(t *testing.T) {
+func TestRunWithOpCONST(t *testing.T) {
 	program := &code.Program{
-		Instructions: makeOpHelper(t, code.OpConstant, 0),
+		Instructions: makeOpHelper(t, code.OpCONST, 0),
 		Constants:    []object.Object{&object.Integer{123}},
 	}
 
@@ -55,7 +55,7 @@ func TestRunWithOpConstant(t *testing.T) {
 
 func TestOpStoreAndLoad(t *testing.T) {
 	var ins code.Instructions
-	ins = append(ins, makeOpHelper(t, code.OpConstant, 0)...)
+	ins = append(ins, makeOpHelper(t, code.OpCONST, 0)...)
 	ins = append(ins, makeOpHelper(t, code.OpStoreG, 0)...)
 	ins = append(ins, makeOpHelper(t, code.OpLoadG, 0)...)
 
@@ -76,8 +76,8 @@ func TestOpStoreAndLoad(t *testing.T) {
 
 func TestRunWithOpTensor(t *testing.T) {
 	var ins code.Instructions
-	ins = append(ins, makeOpHelper(t, code.OpConstant, 0)...)
-	ins = append(ins, makeOpHelper(t, code.OpConstant, 1)...)
+	ins = append(ins, makeOpHelper(t, code.OpCONST, 0)...)
+	ins = append(ins, makeOpHelper(t, code.OpCONST, 1)...)
 	ins = append(ins, makeOpHelper(t, code.OpTensor)...)
 
 	shape := object.NewShape([]object.NamedDim{{"x", 2}})
@@ -102,8 +102,8 @@ func TestRunWithOpPrng(t *testing.T) {
 	shape := object.NewShape([]object.NamedDim{{"x", 4}})
 
 	var ins code.Instructions
-	ins = append(ins, makeOpHelper(t, code.OpConstant, 1)...)
-	ins = append(ins, makeOpHelper(t, code.OpConstant, 0)...)
+	ins = append(ins, makeOpHelper(t, code.OpCONST, 1)...)
+	ins = append(ins, makeOpHelper(t, code.OpCONST, 0)...)
 	ins = append(ins, makeOpHelper(t, code.OpPrngNew)...)
 	ins = append(ins, makeOpHelper(t, code.OpPrngDist, 0)...)
 
@@ -127,8 +127,8 @@ func TestRunWithOpTensorAdd(t *testing.T) {
 	constants = append(constants, shape)
 	constants = append(constants, array)
 
-	ins1 := makeOpHelper(t, code.OpConstant, 0)
-	ins2 := makeOpHelper(t, code.OpConstant, 1)
+	ins1 := makeOpHelper(t, code.OpCONST, 0)
+	ins2 := makeOpHelper(t, code.OpCONST, 1)
 	ins3 := makeOpHelper(t, code.OpTensor)
 
 	var ins code.Instructions

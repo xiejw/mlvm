@@ -27,7 +27,7 @@ func (vm *VM) Run() (Outputs, error) {
 		switch op {
 		////////////////////////////////////////////////////////////////////////////////////////////////
 		// Load/Stores (Constants, Global Memory, etc)
-		case code.OpConstant:
+		case code.OpCONST:
 			constantIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
 			ip += 2
 

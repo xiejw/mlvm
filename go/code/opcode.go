@@ -11,16 +11,16 @@ const (
 	// Opcode string name should be at most 10 chars. Enforced in test.
 	//
 	// For meaning, see Definition.
-	OpConstant Opcode = iota // Loads constant object, uint16 index, from Program.
-	OpPop                    // Pops out top item on stack.
-	OpLoadG                  // Loads object, uint16 index, from Global memory.
-	OpStoreG                 // Stores objec, uint16 index, to Global memory.
-	OpLoadT                  // Loads Tensor from Tensor store.
-	OpStoreT                 // Loads Tensor from Tensor store.
-	OpPrngNew                // Creates a new Prng source. The top stack operand is the seed.
-	OpPrngDist               // Creates an Array with distribution (uint16 dist type index). Two stack operands are prng source (top), shape.
-	OpTensor                 // Creates a new Tensor. Two stack operands are shape, array (top).
-	OpAdd                    // Adds two stack operands.
+	OpCONST Opcode = iota
+	OpPOP
+	OpLoadG
+	OpStoreG
+	OpLoadT
+	OpStoreT
+	OpPrngNew
+	OpPrngDist
+	OpTensor
+	OpAdd
 )
 
 // Defines the string name and operand requirements.
@@ -30,16 +30,27 @@ type Definition struct {
 }
 
 var definitions = map[Opcode]*Definition{
-	OpConstant: {"OpConstant", []int{2}},
-	OpPop:      {"OpPop", []int{}},
-	OpLoadG:    {"OpLoadG", []int{2}},
-	OpStoreG:   {"OpStoreG", []int{2}},
-	OpLoadT:    {"OpLoadT", []int{}},
-	OpStoreT:   {"OpStoreT", []int{}},
-	OpPrngNew:  {"OpPrngNew", []int{}},
+	// Loads constant object, uint16 index, from Program.
+	OpCONST: {"OpCONST", []int{2}},
+	// Pops out top item on stack.
+	OpPOP: {"OpPOP", []int{}},
+	// Loads object, uint16 index, from Global memory.
+	OpLoadG: {"OpLoadG", []int{2}},
+	// Stores objec, uint16 index, to Global memory.
+	OpStoreG: {"OpStoreG", []int{2}},
+	// Loads Tensor from Tensor store.
+	OpLoadT: {"OpLoadT", []int{}},
+	// Loads Tensor from Tensor store.
+	OpStoreT: {"OpStoreT", []int{}},
+	// Creates a new Prng source. The top stack operand is the seed.
+	OpPrngNew: {"OpPrngNew", []int{}},
+	// Creates an Array with distribution (uint16 dist type index). Two stack operands are prng source
+	// (top), shape.
 	OpPrngDist: {"OpPrngDist", []int{2}},
-	OpTensor:   {"OpTensor", []int{}},
-	OpAdd:      {"OpAdd", []int{}},
+	// Creates a new Tensor. Two stack operands are shape, array (top).
+	OpTensor: {"OpTensor", []int{}},
+	// Adds two stack operands.
+	OpAdd: {"OpAdd", []int{}},
 }
 
 func Lookup(op Opcode) (*Definition, error) {
