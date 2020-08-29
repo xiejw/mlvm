@@ -8,8 +8,9 @@ import (
 type Opcode byte
 
 const (
-	// Opcode Name should be at most 10 chars.
+	// Opcode string name should be at most 10 chars. Enforced in test.
 	//
+	// For meaning, see Definition.
 	OpConstant Opcode = iota // Loads constant object, uint16 index, from Program.
 	OpPop                    // Pops out top item on stack.
 	OpLoadG                  // Loads object, uint16 index, from Global memory.
@@ -22,6 +23,7 @@ const (
 	OpAdd                    // Adds two stack operands.
 )
 
+// Defines the string name and operand requirements.
 type Definition struct {
 	Name          string
 	OperandWidths []int
