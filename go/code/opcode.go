@@ -64,6 +64,7 @@ var definitions = map[Opcode]*Definition{
 	OpAdd: {"OpAdd", []int{}},
 }
 
+// Looks up the Definition of the op code.
 func Lookup(op Opcode) (*Definition, error) {
 	def, ok := definitions[op]
 	if !ok {
@@ -73,14 +74,8 @@ func Lookup(op Opcode) (*Definition, error) {
 	return def, nil
 }
 
-func (opcode Opcode) String() string {
-	def, ok := definitions[opcode]
-	if !ok {
-		panic(fmt.Errorf("Opcode %d undefined", opcode))
-	}
-	return def.Name
-}
-
+// Encodes the op code with its operands, if any.
+//
 // This is Opcode encoder. The decoder is in vm.
 func MakeOp(op Opcode, operands ...int) ([]byte, error) {
 	def, err := Lookup(op)
@@ -115,9 +110,22 @@ func MakeOp(op Opcode, operands ...int) ([]byte, error) {
 	return instruction, nil
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 // Public Helper Methods
+////////////////////////////////////////////////////////////////////////////////
 
 func ReadUint16(ins Instructions) uint16 {
 	return binary.BigEndian.Uint16(ins)
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// String Related.
+////////////////////////////////////////////////////////////////////////////////
+
+func (opcode Opcode) String() string {
+	def, ok := definitions[opcode]
+	if !ok {
+		panic(fmt.Errorf("Opcode %d undefined", opcode))
+	}
+	return def.Name
 }
