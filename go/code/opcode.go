@@ -18,7 +18,7 @@ const (
 	OpLOADS
 	OpSTORES
 	OpRNG
-	OpRNGV
+	OpRNGT
 	OpTensor
 	OpAdd
 )
@@ -73,9 +73,13 @@ var definitions = map[Opcode]*Definition{
 	// Stack  : pops the top item and uses it as (Integer) seed.
 	OpRNG: {"OpRNG", []int{}},
 
-	// Creates an Tensor with distribution (uint16 dist type index). Two stack operands are prng source
-	// (top), shape.
-	OpRNGV: {"OpRNGV", []int{2}},
+	// Creates an Tensor with distribution.
+	//
+	// Operand: (uint16) distribution type index.
+	// Stack  : pops the top item and uses it as rng source.
+	//          pops the second item and uses it as (Shape).
+	OpRNGT: {"OpRNGT", []int{2}},
+
 	// Creates a new Tensor. Two stack operands are shape, array (top).
 	OpTensor: {"OpTensor", []int{}},
 	// Adds two stack operands.

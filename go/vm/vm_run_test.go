@@ -105,7 +105,7 @@ func TestRunWithOpPrng(t *testing.T) {
 	ins = append(ins, makeOpHelper(t, code.OpCONST, 1)...)
 	ins = append(ins, makeOpHelper(t, code.OpCONST, 0)...)
 	ins = append(ins, makeOpHelper(t, code.OpRNG)...)
-	ins = append(ins, makeOpHelper(t, code.OpRNGV, 0)...)
+	ins = append(ins, makeOpHelper(t, code.OpRNGT, 0)...)
 
 	vm := NewVM(&code.Program{
 		Instructions: ins,

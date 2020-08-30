@@ -100,7 +100,7 @@ func (vm *VM) Run() (Outputs, error) {
 				return nil, vm.canonicalError(op, "internal error: %v.", err)
 			}
 
-		case code.OpRNGV:
+		case code.OpRNGT:
 			distType := code.ReadUint16(vm.instructions[ip+1:])
 			ip += 2
 
