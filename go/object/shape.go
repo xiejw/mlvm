@@ -6,28 +6,15 @@ import (
 	"io"
 )
 
-// For a `@batch` dimension name, the DimName is "batch".
-type DimName string
-
-// Prints the canonical name with leading `@`.
-func (name DimName) String() string {
-	return "@" + string(name)
-}
-
-type NamedDim struct {
-	Name DimName // Dimension string name (without `@`)
-	Size uint    // Static dimension size. Cannot be zero.
-}
-
 type Shape struct {
-	Dimensions []NamedDim // Cannot have dup names.
-	Rank       uint       // Length of `Dimensions`
+	Dims []uint // Cannot have 0.
+	Rank uint   // Length of `Dims`
 }
 
-func NewShape(dims []NamedDim) *Shape {
+func NewShape(dims []uint) *Shape {
 	return &Shape{
-		Dimensions: dims,
-		Rank:       uint(len(dims)),
+		Dims: dims,
+		Rank: uint(len(dims)),
 	}
 }
 
@@ -37,13 +24,13 @@ func (shape *Shape) Type() ObjectType {
 
 func (shape *Shape) Size() uint64 {
 	var size uint64 = 1
-	for _, dim := range shape.Dimensions {
-		size *= uint64(dim.Size)
+	for _, dim := range shape.Dims {
+		size *= uint64(dim)
 	}
 	return size
 }
 
-// Formats as `Shape(<@x(2), @y(3)>)`.
+// Formats as `Shape(<2, 3>)`.
 func (shape *Shape) String() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "Shape(")
@@ -57,8 +44,8 @@ func (shape *Shape) toHumanReadableString(w io.Writer) {
 	rank := shape.Rank
 	finalIndex := int(rank - 1)
 	fmt.Fprintf(w, "<")
-	for i, dim := range shape.Dimensions {
-		fmt.Fprintf(w, "%v(%v)", dim.Name, dim.Size)
+	for i, dim := range shape.Dims {
+		fmt.Fprintf(w, "%v", dim)
 		if i != finalIndex {
 			fmt.Fprintf(w, ", ")
 		}

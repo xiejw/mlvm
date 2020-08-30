@@ -39,8 +39,8 @@ func TestRng(t *testing.T) {
 
 func TestShape(t *testing.T) {
 	var o Object
-	o = NewShape([]NamedDim{{"x", 2}, {"y", 3}})
-	assertStringAndType(t, "Shape(<@x(2), @y(3)>)", ShapeType, o)
+	o = NewShape([]uint{2, 3})
+	assertStringAndType(t, "Shape(<2, 3>)", ShapeType, o)
 }
 
 func TestArray(t *testing.T) {
@@ -49,10 +49,10 @@ func TestArray(t *testing.T) {
 	assertStringAndType(t, "Array([  1.000,  2.000])", ArrayType, o)
 }
 func TestTensor(t *testing.T) {
-	shape := NewShape([]NamedDim{{"x", 2}})
+	shape := NewShape([]uint{2})
 	array := &Array{[]float32{1.0, 2.0}}
 
 	var o Object
 	o = &Tensor{shape, array}
-	assertStringAndType(t, "Tensor(<@x(2)> [  1.000,  2.000])", TensorType, o)
+	assertStringAndType(t, "Tensor(<2> [  1.000,  2.000])", TensorType, o)
 }

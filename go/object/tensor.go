@@ -9,11 +9,8 @@ type Tensor struct {
 	Array *Array
 }
 
-func NewTensor(dims []NamedDim, value []float32) *Tensor {
-	return &Tensor{
-		NewShape(dims),
-		&Array{value},
-	}
+func NewTensor(dims []uint, value []float32) *Tensor {
+	return &Tensor{NewShape(dims), &Array{value}}
 }
 
 func (t *Tensor) Type() ObjectType {

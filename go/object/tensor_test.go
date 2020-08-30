@@ -6,7 +6,7 @@ import (
 )
 
 func TestTensorFields(t *testing.T) {
-	shape := NewShape([]NamedDim{{"x", 2}})
+	shape := NewShape([]uint{2})
 	array := &Array{[]float32{1.0, 2.0}}
 	tensor := Tensor{shape, array}
 
