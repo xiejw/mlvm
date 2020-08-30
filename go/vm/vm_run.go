@@ -8,7 +8,7 @@ import (
 	"github.com/xiejw/mlvm/go/vm/prng64"
 )
 
-const canonicalErr = "program error: current opcode: %v"
+const vmErr = "virtual machine error: current opcode %v"
 
 type Outputs []object.Object
 
@@ -35,58 +35,56 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 			ip += 2
 
 			if cIndex >= len(vm.constants) {
-				return nil, errors.New("const (id: %v) not exist.", cIndex).EmitNote(canonicalErr, op)
+				return nil, errors.New("const (id: %v) not exist.", cIndex).EmitNote(vmErr, op)
 			}
 
 			err := vm.stack.Push(vm.constants[cIndex])
 			if err != nil {
-				return nil, err.EmitNote("failed to push const to stack.").EmitNote(canonicalErr, op)
+				return nil, err.EmitNote("failed to push const to stack.").EmitNote(vmErr, op)
 			}
 
 		case code.OpSTORE:
-			memSlotIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
+			mIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
 			ip += 2
 
 			o, err := vm.pop()
 			if err != nil {
-				return nil, err.EmitNote("failed to get object for store.").EmitNote(canonicalErr, op)
+				return nil, err.EmitNote("failed to get object from stack.").EmitNote(vmErr, op)
 			}
-			err = vm.globalMem.Set(memSlotIndex, o)
+			err = vm.globalMem.Set(mIndex, o)
 			if err != nil {
-				return nil, vm.canonicalError(op,
-					"failed to store object to global memory at %v: %v.", memSlotIndex, err)
+				return nil, err.EmitNote("failed to store obj to mem @%v.", mIndex).EmitNote(vmErr, op)
 			}
 
 		case code.OpLOAD:
-			memSlotIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
+			mIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
 			ip += 2
 
-			o, err := vm.globalMem.Get(memSlotIndex)
+			o, err := vm.globalMem.Get(mIndex)
 			if err != nil {
-				return nil, vm.canonicalError(op,
-					"failed to load object from global memory at %v: %v.", memSlotIndex, err)
+				return nil, err.EmitNote("failed to load obj from mem @%v.", mIndex).EmitNote(vmErr, op)
 			}
 
 			err = vm.stack.Push(o)
 			if err != nil {
-				return nil, vm.canonicalError(op, "internal error: %v.", err)
+				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 		case code.OpLOADS:
 			key, err := vm.popString()
 			if err != nil {
-				return nil, vm.canonicalError(op, "expect to get key name from stack: %v.", err)
+				return nil, err.EmitNote("failed to get key from stack.").EmitNote(vmErr, op)
 			}
 
-			tensor, err := vm.store.Load(key.Value)
+			keyStr := key.Value
+			tensor, err := vm.store.Load(keyStr)
 			if err != nil {
-				return nil, vm.canonicalError(op,
-					"failed to load tensor (key: \"%s\") from tensor store: %v.", key.Value, err)
+				return nil, err.EmitNote("failed to load obj (k:\"%s\") from store.", keyStr).EmitNote(vmErr, op)
 			}
 
 			err = vm.stack.Push(tensor)
 			if err != nil {
-				return nil, vm.canonicalError(op, "internal error: %v.", err)
+				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 			////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,13 +92,13 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 		case code.OpRNG:
 			seed, err := vm.popInteger()
 			if err != nil {
-				return nil, vm.canonicalError(op, "expect to get rng seed from stack: %v.", err)
+				return nil, err.EmitNote("failed to get rng seed from stack.").EmitNote(vmErr, op)
 			}
 			src := prng64.NewPrng64(uint64(seed.Value))
 			prng := &object.Rng{src.Seed, src.Gamma, src.NextGammaSeed}
 			err = vm.stack.Push(prng)
 			if err != nil {
-				return nil, vm.canonicalError(op, "internal error: %v.", err)
+				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 		case code.OpRNGT:
@@ -109,16 +107,16 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			o, err := vm.pop()
 			if err != nil {
-				return nil, vm.canonicalError(op, "expect to get Prng object from stack: %v.", err)
+				return nil, err.EmitNote("failed to get rng from stack.").EmitNote(vmErr, op)
 			}
 			rng, ok := o.(*object.Rng)
 			if !ok {
-				return nil, vm.canonicalError(op, "expect Prng source from stack: %v.", err)
+				return nil, errors.New("failed to cast obj to rng.").EmitNote(vmErr, op)
 			}
 
 			shape, err := vm.popShape()
 			if err != nil {
-				return nil, vm.canonicalError(op, "expect shape from stack: %v.", err)
+				return nil, err.EmitNote("failed to get hape from stack.").EmitNote(vmErr, op)
 			}
 
 			size := shape.Size()
@@ -134,7 +132,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			err = vm.stack.Push(&object.Array{value})
 			if err != nil {
-				return nil, vm.canonicalError(op, "internal error: %v.", err)
+				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +151,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 			tensor := &object.Tensor{shape, array}
 			err = vm.stack.Push(tensor)
 			if err != nil {
-				return nil, vm.canonicalError(op, "internal error: %v.", err)
+				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 		case code.OpTADD:
@@ -168,18 +166,18 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			tensor, err1 := kernel.TensorAdd(operand1, operand2)
 			if err1 != nil {
-				return nil, vm.canonicalError(op, "internal error: %v.", err)
+				return nil, errors.From(err1).EmitNote("kernel error for TensorAdd").EmitNote(vmErr, op)
 			}
 
 			err = vm.stack.Push(tensor)
 			if err != nil {
-				return nil, vm.canonicalError(op, "internal error: %v.", err)
+				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 		default:
 			startIndex := ip
 			numInstructionsToPrint := 5
-			return nil, vm.canonicalError(op, "unsupported Opcode in vm at @%d:\n\n%v\n",
+			return nil, errors.New("unsupported OpCode in vm at @%d:\n\n%v\n",
 				ip,
 				code.Instructions(
 					vm.instructions[ip:]).DebugString(startIndex, numInstructionsToPrint))
