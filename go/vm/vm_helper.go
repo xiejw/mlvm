@@ -2,13 +2,8 @@ package vm
 
 import (
 	"github.com/xiejw/mlvm/go/base/errors"
-	"github.com/xiejw/mlvm/go/code"
 	"github.com/xiejw/mlvm/go/object"
 )
-
-func (vm *VM) canonicalError(op code.Opcode, format string, args ...interface{}) *errors.DError {
-	return errors.New(format, args...).EmitNote("program error: current opcode: %v: ", op)
-}
 
 func (vm *VM) pop() (object.Object, *errors.DError) {
 	o, err := vm.stack.Pop()
