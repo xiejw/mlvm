@@ -1,7 +1,13 @@
-package vm
+package mach
 
 import (
+	"errors"
+
 	"github.com/xiejw/mlvm/go/object"
+)
+
+var (
+	ErrTSTensorNotFound = errors.New("tensor not found in tensor store ")
 )
 
 // TensorStore is a key-Tensor store.

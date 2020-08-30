@@ -4,6 +4,7 @@ package vm
 import (
 	"github.com/xiejw/mlvm/go/code"
 	"github.com/xiejw/mlvm/go/object"
+	"github.com/xiejw/mlvm/go/vm/mach"
 )
 
 // VM is a machine which runs the user provided program. The program is not mutable; while the
@@ -16,25 +17,25 @@ type VM struct {
 	constants    []object.Object
 
 	// Internal States.
-	stack       *Stack
-	globalMem   *Memory
-	tensorStore TensorStore
+	stack       *mach.Stack
+	globalMem   *mach.Memory
+	tensorStore mach.TensorStore
 }
 
 func NewVM(program *code.Program) *VM {
-	return NewVMWithTensorStore(program, NewTensorStore())
+	return NewVMWithTensorStore(program, mach.NewTensorStore())
 }
 
-func NewVMWithTensorStore(program *code.Program, tensorStore TensorStore) *VM {
+func NewVMWithTensorStore(program *code.Program, tensorStore mach.TensorStore) *VM {
 	return &VM{
 		instructions: program.Instructions,
 		constants:    program.Constants,
-		stack:        NewStack(),
-		globalMem:    NewMemory(),
+		stack:        mach.NewStack(),
+		globalMem:    mach.NewMemory(),
 		tensorStore:  tensorStore,
 	}
 }
 
-func (vm *VM) TensorStore() TensorStore {
+func (vm *VM) TensorStore() mach.TensorStore {
 	return vm.tensorStore
 }
