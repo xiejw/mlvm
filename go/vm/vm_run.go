@@ -87,14 +87,14 @@ func (vm *VM) Run() (Outputs, error) {
 			}
 
 			////////////////////////////////////////////////////////////////////////////////////////////////
-			// Prng
+			// Rng
 		case code.OpRNG:
 			seed, err := vm.popInteger()
 			if err != nil {
-				return nil, vm.canonicalError(op, "expect to get Prng seed from stack: %v.", err)
+				return nil, vm.canonicalError(op, "expect to get rng seed from stack: %v.", err)
 			}
 
-			prng := &object.Prng{Source: prng64.NewPrng64(uint64(seed.Value))}
+			prng := &object.Rng{Source: prng64.NewPrng64(uint64(seed.Value))}
 			err = vm.stack.Push(prng)
 			if err != nil {
 				return nil, vm.canonicalError(op, "internal error: %v.", err)
@@ -108,7 +108,7 @@ func (vm *VM) Run() (Outputs, error) {
 			if err != nil {
 				return nil, vm.canonicalError(op, "expect to get Prng object from stack: %v.", err)
 			}
-			prng, ok := o.(*object.Prng)
+			prng, ok := o.(*object.Rng)
 			if !ok {
 				return nil, vm.canonicalError(op, "expect Prng source from stack: %v.", err)
 			}

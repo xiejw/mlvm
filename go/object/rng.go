@@ -6,16 +6,17 @@ import (
 	"github.com/xiejw/mlvm/go/object/prng64"
 )
 
-type Prng struct {
+type Rng struct {
 	Source *prng64.Prng64
 }
 
-func (prng *Prng) Type() ObjectType {
-	return PrngType
+func (rng *Rng) Type() ObjectType {
+	return RngType
 }
 
-func (prng *Prng) String() string {
-	return "Prng()"
+func (rng *Rng) String() string {
+	src := rng.Source
+	return fmt.Sprintf("Rng(%x, %x, %x)", src.Seed, src.Gamma, src.NextGammaSeed)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -29,13 +30,13 @@ const (
 	DistTruncNorm
 )
 
-func (prng *Prng) FillDist(distType DistType, value []float32) {
+func (rng *Rng) FillDist(distType DistType, value []float32) {
 	switch distType {
 	case DistNorm:
-		prng.Source.Norm(value)
+		rng.Source.Norm(value)
 		return
 	case DistTruncNorm:
-		prng.Source.TruncNorm(value)
+		rng.Source.TruncNorm(value)
 		return
 	default:
 		panic(fmt.Sprintf("unknown distribution type: %v", distType))

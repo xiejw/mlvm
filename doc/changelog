@@ -3,8 +3,6 @@
 - remove number of files in object.
 - change error in vm
 - remove namedim in object
-- rename prng to rng
-- add prng as state.
 - lower the 1 + 1
 
 ## changelog
