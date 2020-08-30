@@ -5,6 +5,7 @@
 
 ## changelog
 
+2020-08-30 made object immutable and serializable.
 2020-08-30 moved prng64 into vm.
 2020-07-06 added diagnosis error in parser..
 2020-07-05 changed to lisp style.

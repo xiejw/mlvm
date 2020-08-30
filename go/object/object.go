@@ -12,6 +12,7 @@ const (
 	TensorType                    // tensor.go
 )
 
+// All object implementations must be immutable and serializable.
 type Object interface {
 	Type() ObjectType
 	String() string
