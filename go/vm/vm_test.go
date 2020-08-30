@@ -4,11 +4,12 @@ import (
 	"math"
 	"testing"
 
+	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/code"
 	"github.com/xiejw/mlvm/go/object"
 )
 
-func assertNoErr(t *testing.T, err error) {
+func assertNoErr(t *testing.T, err *errors.DError) {
 	t.Helper()
 
 	if err != nil {
@@ -29,7 +30,9 @@ func TestCreateVM(t *testing.T) {
 func makeOpHelper(t *testing.T, op code.Opcode, args ...int) []byte {
 	t.Helper()
 	ins, err := code.MakeOp(op, args...)
-	assertNoErr(t, err)
+	if err != nil {
+		t.Fatalf("unxpected make op error: %v", err)
+	}
 
 	return ins
 }
@@ -47,7 +50,7 @@ func assertAllClose(t *testing.T, expected, got []float32, tol float64) {
 	}
 }
 
-func assertSingleOutput(t *testing.T, outputs Outputs, err error) object.Object {
+func assertSingleOutput(t *testing.T, outputs Outputs, err *errors.DError) object.Object {
 	t.Helper()
 	assertNoErr(t, err)
 	if len(outputs) != 1 {

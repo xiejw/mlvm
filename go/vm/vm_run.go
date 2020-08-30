@@ -1,6 +1,7 @@
 package vm
 
 import (
+	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/code"
 	"github.com/xiejw/mlvm/go/object"
 	"github.com/xiejw/mlvm/go/vm/kernel"
@@ -18,7 +19,7 @@ type Outputs []object.Object
 //
 // During any run, if any error raised, the system's state becomes unknown. Creating a new VM is
 // recommended.
-func (vm *VM) Run() (Outputs, error) {
+func (vm *VM) Run() (Outputs, *errors.DError) {
 	end := len(vm.instructions)
 
 	for ip := 0; ip < end; ip++ {
@@ -163,8 +164,8 @@ func (vm *VM) Run() (Outputs, error) {
 				return nil, err
 			}
 
-			tensor, err := kernel.TensorAdd(operand1, operand2)
-			if err != nil {
+			tensor, err1 := kernel.TensorAdd(operand1, operand2)
+			if err1 != nil {
 				return nil, vm.canonicalError(op, "internal error: %v.", err)
 			}
 
@@ -186,7 +187,7 @@ func (vm *VM) Run() (Outputs, error) {
 }
 
 // Clears the stack and moves items (in reverse order) as outputs.
-func (vm *VM) popOutputs() (Outputs, error) {
+func (vm *VM) popOutputs() (Outputs, *errors.DError) {
 	var outputs Outputs
 	stack := vm.stack
 

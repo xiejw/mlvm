@@ -1,16 +1,14 @@
 package mach
 
 import (
-	"errors"
-	"fmt"
-
+	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/object"
 )
 
 const defaultMemoryInitSize = 256
 
 var (
-	errRetrieveFromInvalidSlot = "Retrieves an item from in valid slot at: %d (current memory size: %d)."
+	errRetrieveFromInvalidSlot = "retrieves an item from in valid slot at: %d (current memory size: %d)."
 )
 
 // An abstraction of memory to store and load item from slots. If the size is not enough, internally
@@ -31,14 +29,14 @@ func NewMemory() *Memory {
 	return memory
 }
 
-func (m *Memory) Get(index int) (object.Object, error) {
+func (m *Memory) Get(index int) (object.Object, *errors.DError) {
 	if index >= m.size {
-		return nil, errors.New(fmt.Sprintf(errRetrieveFromInvalidSlot, index, m.size))
+		return nil, errors.New(errRetrieveFromInvalidSlot, index, m.size)
 	}
 	return m.slots[index], nil
 }
 
-func (m *Memory) Set(index int, item object.Object) error {
+func (m *Memory) Set(index int, item object.Object) *errors.DError {
 	if index >= m.size {
 		panic("Index is too large. Enlarging is planning.")
 	}

@@ -3,16 +3,17 @@ package mach
 import (
 	"testing"
 
+	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/object"
 )
 
-func checkNotErr(t *testing.T, err error) {
+func checkNotErr(t *testing.T, err *errors.DError) {
 	if err != nil {
 		t.Fatalf("Unexpected err: %v", err)
 	}
 }
 
-func checkStringValue(t *testing.T, err error, got object.Object, expected string) {
+func checkStringValue(t *testing.T, err *errors.DError, got object.Object, expected string) {
 	if err != nil {
 		t.Fatalf("Unexpected err: %v", err)
 	}
@@ -22,7 +23,7 @@ func checkStringValue(t *testing.T, err error, got object.Object, expected strin
 	}
 }
 
-func checkIntValue(t *testing.T, err error, got object.Object, expected int64) {
+func checkIntValue(t *testing.T, err *errors.DError, got object.Object, expected int64) {
 	if err != nil {
 		t.Fatalf("Unexpected err: %v", err)
 	}

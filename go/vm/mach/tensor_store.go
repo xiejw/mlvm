@@ -1,19 +1,18 @@
 package mach
 
 import (
-	"errors"
-
+	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/object"
 )
 
 var (
-	ErrTSTensorNotFound = errors.New("tensor not found in tensor store ")
+	ErrTSTensorNotFound = errors.New("object not found in key-value store ")
 )
 
 // TensorStore is a key-Tensor store.
 type TensorStore interface {
-	Load(key string) (*object.Tensor, error)
-	Store(key string, value *object.Tensor) error
+	Load(key string) (*object.Tensor, *errors.DError)
+	Store(key string, value *object.Tensor) *errors.DError
 }
 
 type storeImpl struct {
@@ -26,7 +25,7 @@ func NewTensorStore() TensorStore {
 	}
 }
 
-func (st *storeImpl) Load(key string) (*object.Tensor, error) {
+func (st *storeImpl) Load(key string) (*object.Tensor, *errors.DError) {
 	tensor, ok := st.db[key]
 	if !ok {
 		return nil, ErrTSTensorNotFound
@@ -34,7 +33,7 @@ func (st *storeImpl) Load(key string) (*object.Tensor, error) {
 	return tensor, nil
 }
 
-func (st *storeImpl) Store(key string, value *object.Tensor) error {
+func (st *storeImpl) Store(key string, value *object.Tensor) *errors.DError {
 	st.db[key] = value
 	return nil
 }
