@@ -17,6 +17,7 @@ const (
 	OpSTORE
 	OpLOADS
 	OpSTORES
+	OpIOR
 	OpRNG
 	OpRNGT
 	OpRNGS
@@ -67,6 +68,13 @@ var definitions = map[Opcode]*Definition{
 	// Stack  : pops the top item and uses it as the object.
 	//          pops the second item and uses it as (String) key.
 	OpSTORES: {"OpSTORES", []int{}},
+
+	// Reads objects from infeed channel.
+	//
+	// Operand: (uint16) num of objects to read.
+	// Stack  : pops the top item and uses it as (Integer) seed.
+	//          stores the rng source into the stack.
+	OpIOR: {"OpIOR", []int{2}},
 
 	// Creates a new rng source.
 	//
