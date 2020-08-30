@@ -75,7 +75,7 @@ func (vm *VM) Run() (Outputs, error) {
 				return nil, vm.canonicalError(op, "expect to get key name from stack: %v.", err)
 			}
 
-			tensor, err := vm.tensorStore.Load(key.Value)
+			tensor, err := vm.store.Load(key.Value)
 			if err != nil {
 				return nil, vm.canonicalError(op,
 					"failed to load tensor (key: \"%s\") from tensor store: %v.", key.Value, err)

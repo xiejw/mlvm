@@ -7,8 +7,8 @@ import (
 	"github.com/xiejw/mlvm/go/vm/mach"
 )
 
-// VM is a machine which runs the user provided program. The program is not mutable; while the
-// TensorStore might be mutated according to the program.
+// VM is a machine which runs the user provided program. The program is immutable; while the
+// key-value store might be mutated according to the program.
 //
 // Check Run() to see the lifetime of VM.
 type VM struct {
@@ -17,25 +17,17 @@ type VM struct {
 	constants    []object.Object
 
 	// Internal States.
-	stack       *mach.Stack
-	globalMem   *mach.Memory
-	tensorStore mach.TensorStore
+	stack     *mach.Stack
+	globalMem *mach.Memory
+	store     mach.TensorStore
 }
 
 func NewVM(program *code.Program) *VM {
-	return NewVMWithTensorStore(program, mach.NewTensorStore())
-}
-
-func NewVMWithTensorStore(program *code.Program, tensorStore mach.TensorStore) *VM {
 	return &VM{
 		instructions: program.Instructions,
 		constants:    program.Constants,
 		stack:        mach.NewStack(),
 		globalMem:    mach.NewMemory(),
-		tensorStore:  tensorStore,
+		store:        mach.NewTensorStore(),
 	}
-}
-
-func (vm *VM) TensorStore() mach.TensorStore {
-	return vm.tensorStore
 }
