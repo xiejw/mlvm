@@ -1,12 +1,11 @@
 ## TODO
 
-- compile
-- type inference
-
-- handle outputs well. stack should be empty.
-- plot?
+- remove number of files in object.
+- change error in vm
+- remove namedim in object
+- rename prng to rng
+- add prng as state.
 - lower the 1 + 1
-- add an AST for ideal program and lower it.
 
 ## changelog
 
