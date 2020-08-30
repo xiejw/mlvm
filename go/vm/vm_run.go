@@ -8,6 +8,8 @@ import (
 	"github.com/xiejw/mlvm/go/vm/prng64"
 )
 
+const canonicalErr = "program error: current opcode: %v"
+
 type Outputs []object.Object
 
 // Run is expected to be call multiple times.
@@ -29,16 +31,16 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 		////////////////////////////////////////////////////////////////////////////////////////////////
 		// Load/Stores (Constants, Global Memory, etc)
 		case code.OpCONST:
-			constantIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
+			cIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
 			ip += 2
 
-			if constantIndex >= len(vm.constants) {
-				return nil, vm.canonicalError(op, "const (id: %v) does not exist.", constantIndex)
+			if cIndex >= len(vm.constants) {
+				return nil, errors.New("const (id: %v) not exist.", cIndex).EmitNote(canonicalErr, op)
 			}
 
-			err := vm.stack.Push(vm.constants[constantIndex])
+			err := vm.stack.Push(vm.constants[cIndex])
 			if err != nil {
-				return nil, vm.canonicalError(op, "internal error: %v.", err)
+				return nil, err.EmitNote("failed to push const to stack.").EmitNote(canonicalErr, op)
 			}
 
 		case code.OpSTORE:
@@ -47,7 +49,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			o, err := vm.pop()
 			if err != nil {
-				return nil, vm.canonicalError(op, "expect to get object for store: %v.", err)
+				return nil, err.EmitNote("failed to get object for store.").EmitNote(canonicalErr, op)
 			}
 			err = vm.globalMem.Set(memSlotIndex, o)
 			if err != nil {
