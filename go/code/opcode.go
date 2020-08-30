@@ -19,6 +19,7 @@ const (
 	OpSTORES
 	OpRNG
 	OpRNGT
+	OpRNGS
 	OpTensor
 	OpAdd
 )
@@ -71,14 +72,24 @@ var definitions = map[Opcode]*Definition{
 	//
 	// Operand: no.
 	// Stack  : pops the top item and uses it as (Integer) seed.
+	//          stores the rng source into the stack.
 	OpRNG: {"OpRNG", []int{}},
 
-	// Creates an Tensor with distribution.
+	// Creates a Tensor with selectd distribution.
 	//
 	// Operand: (uint16) distribution type index.
 	// Stack  : pops the top item and uses it as rng source.
 	//          pops the second item and uses it as (Shape).
+	//          stores the Tensor into the stack.
 	OpRNGT: {"OpRNGT", []int{2}},
+
+	// Splits the rng source.
+	//
+	// Operand: no
+	// Stack  : pops the top item and uses it as rng source.
+	//          stores the first item of the result into the stack.
+	//          then stores the second item of the result into the stack.
+	OpRNGS: {"OpRNGS", []int{}},
 
 	// Creates a new Tensor. Two stack operands are shape, array (top).
 	OpTensor: {"OpTensor", []int{}},
