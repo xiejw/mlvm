@@ -141,7 +141,7 @@ func TestRunWithOpTensorAdd(t *testing.T) {
 	ins = append(ins, ins2...)
 	ins = append(ins, ins3...)
 	// Final Add
-	ins = append(ins, makeOpHelper(t, code.OpAdd)...)
+	ins = append(ins, makeOpHelper(t, code.OpTADD)...)
 
 	program := &code.Program{
 		Instructions: ins,

@@ -147,7 +147,7 @@ func (vm *VM) Run() (Outputs, error) {
 				return nil, vm.canonicalError(op, "internal error: %v.", err)
 			}
 
-		case code.OpAdd:
+		case code.OpTADD:
 			operand1, err := vm.popTensor()
 			if err != nil {
 				return nil, err

@@ -21,7 +21,7 @@ const (
 	OpRNGT
 	OpRNGS
 	OpTensor
-	OpAdd
+	OpTADD
 )
 
 // Defines the string name and operand requirements.
@@ -93,8 +93,14 @@ var definitions = map[Opcode]*Definition{
 
 	// Creates a new Tensor. Two stack operands are shape, array (top).
 	OpTensor: {"OpTensor", []int{}},
-	// Adds two stack operands.
-	OpAdd: {"OpAdd", []int{}},
+
+	// Adds two tensors.
+	//
+	// Operand: no.
+	// Stack  : pops the top item and uses it as second operand.
+	//          then pops the top item and uses it as first operand.
+	//          stores the result into the stack.
+	OpTADD: {"OpTADD", []int{}},
 }
 
 // Looks up the Definition of the op code.
