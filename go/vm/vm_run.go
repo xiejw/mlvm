@@ -3,8 +3,8 @@ package vm
 import (
 	"github.com/xiejw/mlvm/go/code"
 	"github.com/xiejw/mlvm/go/object"
-	"github.com/xiejw/mlvm/go/object/prng64"
 	"github.com/xiejw/mlvm/go/vm/kernel"
+	"github.com/xiejw/mlvm/go/vm/prng64"
 )
 
 type Outputs []object.Object
@@ -93,8 +93,8 @@ func (vm *VM) Run() (Outputs, error) {
 			if err != nil {
 				return nil, vm.canonicalError(op, "expect to get rng seed from stack: %v.", err)
 			}
-
-			prng := &object.Rng{Source: prng64.NewPrng64(uint64(seed.Value))}
+			src := prng64.NewPrng64(uint64(seed.Value))
+			prng := &object.Rng{src.Seed, src.Gamma, src.NextGammaSeed}
 			err = vm.stack.Push(prng)
 			if err != nil {
 				return nil, vm.canonicalError(op, "internal error: %v.", err)
@@ -108,7 +108,7 @@ func (vm *VM) Run() (Outputs, error) {
 			if err != nil {
 				return nil, vm.canonicalError(op, "expect to get Prng object from stack: %v.", err)
 			}
-			prng, ok := o.(*object.Rng)
+			rng, ok := o.(*object.Rng)
 			if !ok {
 				return nil, vm.canonicalError(op, "expect Prng source from stack: %v.", err)
 			}
@@ -121,7 +121,13 @@ func (vm *VM) Run() (Outputs, error) {
 			size := shape.Size()
 
 			value := make([]float32, size)
-			prng.FillDist(object.DistType(distType), value)
+			prng := prng64.Prng64{
+				Seed:          rng.Seed,
+				Gamma:         rng.Gamma,
+				NextGammaSeed: rng.NextGammaSeed,
+			}
+
+			prng64.FillDist(&prng, prng64.DistType(distType), value)
 
 			err = vm.stack.Push(&object.Array{value})
 			if err != nil {

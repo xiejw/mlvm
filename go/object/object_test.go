@@ -2,8 +2,6 @@ package object
 
 import (
 	"testing"
-
-	"github.com/xiejw/mlvm/go/object/prng64"
 )
 
 func assertStringAndType(t *testing.T, expectedStr string, expectType ObjectType, got Object) {
@@ -32,9 +30,9 @@ func TestString(t *testing.T) {
 
 func TestRng(t *testing.T) {
 	var o Object
-	o = &Rng{Source: prng64.NewPrng64(uint64(123))}
+	o = &Rng{123, 456, 789}
 
-	assertStringAndType(t, "Rng(7b, 6d28d1a31588aa, 281e2dba6606f3)", RngType, o)
+	assertStringAndType(t, "Rng(7b, 1c8, 315)", RngType, o)
 }
 
 func TestShape(t *testing.T) {
