@@ -5,9 +5,9 @@ type ObjectType int
 const (
 	IntegerType ObjectType = iota // builtin.go
 	StringType                    // builtin.go
-	RngType                       // Rng.go
-	ShapeType                     // shape.go
-	ArrayType                     // array.go
+	RngType                       // rng.go
+	ShapeType                     // tensor.go
+	ArrayType                     // tensor.go
 	TensorType                    // tensor.go
 )
 
