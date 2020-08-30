@@ -20,7 +20,7 @@ const (
 	OpRNG
 	OpRNGT
 	OpRNGS
-	OpTensor
+	OpT
 	OpTADD
 )
 
@@ -91,8 +91,13 @@ var definitions = map[Opcode]*Definition{
 	//          then stores the second item of the result into the stack.
 	OpRNGS: {"OpRNGS", []int{}},
 
-	// Creates a new Tensor. Two stack operands are shape, array (top).
-	OpTensor: {"OpTensor", []int{}},
+	// Creates a new Tensor.
+	//
+	// Operand: no.
+	// Stack  : pops the top item and uses it as (Array).
+	//          pops the second item and uses it as (Shape).
+	//          stores the Tensor into the stack.
+	OpT: {"OpT", []int{}},
 
 	// Adds two tensors.
 	//

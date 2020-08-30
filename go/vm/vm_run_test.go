@@ -78,7 +78,7 @@ func TestRunWithOpTensor(t *testing.T) {
 	var ins code.Instructions
 	ins = append(ins, makeOpHelper(t, code.OpCONST, 0)...)
 	ins = append(ins, makeOpHelper(t, code.OpCONST, 1)...)
-	ins = append(ins, makeOpHelper(t, code.OpTensor)...)
+	ins = append(ins, makeOpHelper(t, code.OpT)...)
 
 	shape := object.NewShape([]uint{2})
 	array := &object.Array{[]float32{1.0, 2.0}}
@@ -129,7 +129,7 @@ func TestRunWithOpTensorAdd(t *testing.T) {
 
 	ins1 := makeOpHelper(t, code.OpCONST, 0)
 	ins2 := makeOpHelper(t, code.OpCONST, 1)
-	ins3 := makeOpHelper(t, code.OpTensor)
+	ins3 := makeOpHelper(t, code.OpT)
 
 	var ins code.Instructions
 	// Operand 1

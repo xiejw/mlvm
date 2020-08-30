@@ -130,7 +130,7 @@ func (vm *VM) Run() (Outputs, error) {
 
 		////////////////////////////////////////////////////////////////////////////////////////////////
 		// Tensor Related.
-		case code.OpTensor:
+		case code.OpT:
 			array, err := vm.popArray()
 			if err != nil {
 				return nil, err

@@ -37,7 +37,7 @@ func TestOpcodes(t *testing.T) {
 		{OpRNG, "OpRNG"},
 		{OpRNGT, "OpRNGT"},
 		{OpRNGS, "OpRNGS"},
-		{OpTensor, "OpTensor"},
+		{OpT, "OpT"},
 		{OpTADD, "OpTADD"},
 	}
 
@@ -69,7 +69,7 @@ func TestInstructionDisassembly(t *testing.T) {
 		{"\n000000 OpRNG     \n", OpRNG, []int{}},
 		{"\n000000 OpRNGT     111\n", OpRNGT, []int{111}},
 		{"\n000000 OpRNGS    \n", OpRNGS, []int{}},
-		{"\n000000 OpTensor  \n", OpTensor, []int{}},
+		{"\n000000 OpT       \n", OpT, []int{}},
 		{"\n000000 OpTADD    \n", OpTADD, []int{}},
 	}
 
