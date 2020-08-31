@@ -1,6 +1,8 @@
 package vm
 
 import (
+	"log"
+
 	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/code"
 	"github.com/xiejw/mlvm/go/object"
@@ -86,6 +88,22 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 			if err != nil {
 				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
+
+		case code.OpIOR:
+			n := int(code.ReadUint16(vm.instructions[ip+1:]))
+			ip += 2
+
+			log.Printf("vm infeed %v objects start", n)
+
+			for i := 0; i < n; i++ {
+				o := <-vm.c
+				err := vm.stack.Push(o)
+				if err != nil {
+					return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+				}
+			}
+
+			log.Printf("vm infeed %v objects end", n)
 
 			////////////////////////////////////////////////////////////////////////////////////////////////
 			// Rng

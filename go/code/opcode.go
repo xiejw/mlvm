@@ -72,8 +72,7 @@ var definitions = map[Opcode]*Definition{
 	// Reads objects from infeed channel.
 	//
 	// Operand: (uint16) num of objects to read.
-	// Stack  : pops the top item and uses it as (Integer) seed.
-	//          stores the rng source into the stack.
+	// Stack  : reads N objects from infeed channel and pushes to stack one by one in seq.
 	OpIOR: {"OpIOR", []int{2}},
 
 	// Creates a new rng source.

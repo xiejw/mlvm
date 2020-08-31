@@ -95,6 +95,30 @@ func TestOpStoreAndLoad(t *testing.T) {
 	assertAllClose(t, expected, o.(*object.Array).Value, 1e-6)
 }
 
+func TestOpIOR(t *testing.T) {
+	var ins code.Instructions
+	ins = append(ins, makeOpHelper(t, code.OpIOR, 1)...)
+
+	obj := &object.Integer{123}
+
+	program := &code.Program{
+		Instructions: ins,
+		Constants:    []object.Object{},
+	}
+
+	vm := NewVM(program)
+	c := vm.InfeedChan()
+	go func() {
+		c <- obj
+	}()
+	outputs, err := vm.Run()
+	o := assertSingleOutput(t, outputs, err)
+
+	if o.(*object.Integer).Value != obj.Value {
+		t.Errorf("value mismatch.")
+	}
+}
+
 func TestRunWithOpTensor(t *testing.T) {
 	var ins code.Instructions
 	ins = append(ins, makeOpHelper(t, code.OpCONST, 0)...)

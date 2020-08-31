@@ -20,6 +20,7 @@ type VM struct {
 	stack     *mach.Stack
 	globalMem *mach.Memory
 	store     mach.TensorStore
+	c         chan object.Object
 }
 
 func NewVM(program *code.Program) *VM {
@@ -29,5 +30,11 @@ func NewVM(program *code.Program) *VM {
 		stack:        mach.NewStack(),
 		globalMem:    mach.NewMemory(),
 		store:        mach.NewTensorStore(),
+		c:            make(chan object.Object),
 	}
+}
+
+// Returns the infeed chan to enqueue objects.
+func (m *VM) InfeedChan() chan<- object.Object {
+	return m.c
 }
