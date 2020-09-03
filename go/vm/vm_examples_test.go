@@ -9,20 +9,21 @@ import (
 
 func TestExample1(t *testing.T) {
 	var ins code.Instructions
-	ins = append(ins, makeOpHelper(t, code.OpCONST, 0)...)
-	ins = append(ins, makeOpHelper(t, code.OpCONST, 1)...)
-	ins = append(ins, makeOpHelper(t, code.OpT)...)
-	ins = append(ins, makeOpHelper(t, code.OpCONST, 0)...)
-	ins = append(ins, makeOpHelper(t, code.OpCONST, 1)...)
-	ins = append(ins, makeOpHelper(t, code.OpT)...)
-	ins = append(ins, makeOpHelper(t, code.OpTADD)...)
+	addIns(t, &ins, code.OpCONST, 0)
+	addIns(t, &ins, code.OpCONST, 1)
+	addIns(t, &ins, code.OpT)
+	addIns(t, &ins, code.OpCONST, 0)
+	addIns(t, &ins, code.OpCONST, 1)
+	addIns(t, &ins, code.OpT)
+	addIns(t, &ins, code.OpTADD)
 
 	shape := object.NewShape([]uint{2, 3})
 	array := &object.Array{[]float32{1.0, 2.0, 3.0, 4.0, 5.0, 6.0}}
+	consts := []object.Object{shape, array}
 
 	program := &code.Program{
 		Instructions: ins,
-		Constants:    []object.Object{shape, array},
+		Constants:    consts,
 	}
 
 	vm := NewVM(program)

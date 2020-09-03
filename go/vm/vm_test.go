@@ -17,16 +17,6 @@ func assertNoErr(t *testing.T, err *errors.DError) {
 	}
 }
 
-func TestCreateVM(t *testing.T) {
-	vm := NewVM(&code.Program{})
-	outputs, err := vm.Run()
-	assertNoErr(t, err)
-
-	if len(outputs) != 0 {
-		t.Fatalf("stack should be empty.")
-	}
-}
-
 func makeOpHelper(t *testing.T, op code.Opcode, args ...int) []byte {
 	t.Helper()
 	ins, err := code.MakeOp(op, args...)
@@ -35,6 +25,10 @@ func makeOpHelper(t *testing.T, op code.Opcode, args ...int) []byte {
 	}
 
 	return ins
+}
+
+func addIns(t *testing.T, ins *code.Instructions, op code.Opcode, args ...int) {
+	*ins = append(*ins, makeOpHelper(t, op, args...)...)
 }
 
 func assertAllClose(t *testing.T, expected, got []float32, tol float64) {
@@ -57,6 +51,16 @@ func assertSingleOutput(t *testing.T, outputs Outputs, err *errors.DError) objec
 		t.Fatalf("unexpected single output, got: %v", outputs)
 	}
 	return outputs[0]
+}
+
+func TestCreateVM(t *testing.T) {
+	vm := NewVM(&code.Program{})
+	outputs, err := vm.Run()
+	assertNoErr(t, err)
+
+	if len(outputs) != 0 {
+		t.Fatalf("stack should be empty.")
+	}
 }
 
 func TestRunWithOpCONST(t *testing.T) {
