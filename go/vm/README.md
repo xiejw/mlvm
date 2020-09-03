@@ -14,7 +14,7 @@ OpT            # create 1st operand.
 
 OpCONST    0
 OpCONST    1
-OpT            # create 1nd operand.
+OpT            # create 2nd operand.
 
 OpTADD
 ```
