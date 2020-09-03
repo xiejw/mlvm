@@ -5,15 +5,21 @@ TEST_DIR=tests
 BUILD_DIR=.build
 INTEGRATION_TEST=no
 
-# Folders
+# folders
 LIBS=github.com/xiejw/${REPO}/${LIB_DIR}/...
 CMD_LIBS=github.com/xiejw/${REPO}/${CMD_DIR}/...
 TEST_LIBS=github.com/xiejw/${REPO}/${TEST_DIR}/...
 
-# Cmds. Convention is cmd/<binary>/main.go
+# cmds. convention is cmd/<binary>/main.go
 CMD_CANDIDATES=$(patsubst cmd/%,%,$(wildcard cmd/*))
 
-# Actions
+# verbose
+TEST_FLAGS=
+ifeq (1, $(VERBOSE))
+TEST_FLAGS="-v"
+endif
+
+# actions
 compile: compile_lib compile_cmd
 
 compile_lib:
@@ -34,7 +40,7 @@ ifeq ($(INTEGRATION_TEST),yes)
 endif
 
 test:
-	go test ${LIBS}
+	go test $(TEST_FLAGS) ${LIBS}
 ifeq ($(INTEGRATION_TEST),yes)
 	go test ${TEST_LIBS}
 endif
