@@ -165,7 +165,7 @@ func TestRunWithOpPrng(t *testing.T) {
 	o := assertSingleOutput(t, outputs, err)
 
 	expected := []float32{1.3481823, -1.6701441, 1.4310317, 0.6320735}
-	assertAllClose(t, expected, o.(*object.Array).Value, 1e-6)
+	assertAllClose(t, expected, o.(*object.Tensor).ArrayValue(), 1e-6)
 }
 
 func TestRunWithOpTensorAdd(t *testing.T) {

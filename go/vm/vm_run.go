@@ -148,7 +148,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			prng64.FillDist(&prng, prng64.DistType(distType), value)
 
-			err = vm.stack.Push(&object.Array{value})
+			err = vm.stack.Push(&object.Tensor{shape, &object.Array{value}})
 			if err != nil {
 				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
