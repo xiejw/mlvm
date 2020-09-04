@@ -37,5 +37,5 @@ OpSTORE    0  # store to 0
 OpLOAD     0  # load 0 (tensor)
 OpLOAD     0  # load 0 (tensor)
 
-OpAdd
+OpTADD
 ```
