@@ -31,12 +31,7 @@ OpTADD
 OpCONST    0  # shape
 OpCONST    1  # seed int
 OpRNG
-
 OpRNGT     0  # tensor with noraml dist
-OpSTORE    0  # store to 0
-OpCONST    0  # shape
-OpLOAD     0  # load 0 (array)
-OpT
 
 OpSTORE    0  # store to 0
 OpLOAD     0  # load 0 (tensor)

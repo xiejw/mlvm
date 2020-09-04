@@ -40,9 +40,10 @@ func TestExample2(t *testing.T) {
 	addIns(t, &ins, code.OpCONST, 1)
 	addIns(t, &ins, code.OpRNG)
 	addIns(t, &ins, code.OpRNGT, 0)
-	// addIns(t, &ins, code.OpCONST, 1)
-	// addIns(t, &ins, code.OpT)
-	// addIns(t, &ins, code.OpTADD)
+	addIns(t, &ins, code.OpSTORE, 0)
+	addIns(t, &ins, code.OpLOAD, 0)
+	addIns(t, &ins, code.OpLOAD, 0)
+	addIns(t, &ins, code.OpTADD)
 
 	shape := object.NewShape([]uint{2, 3})
 	seed := &object.Integer{456}
@@ -61,5 +62,8 @@ func TestExample2(t *testing.T) {
 	}
 
 	expected := []float32{1.3481823, -1.6701441, 1.4310317, 0.6320735, 0.28827125, 1.6303506}
+	for i, e := range expected {
+		expected[i] = 2 * e
+	}
 	assertAllClose(t, expected, o.(*object.Tensor).ArrayValue(), 1e-6)
 }
