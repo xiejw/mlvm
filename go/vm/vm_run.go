@@ -16,10 +16,21 @@ type Outputs []object.Object
 
 // Run is expected to be call multiple times.
 //
-// Lifetime invariance.
+// # Lifetime invariance.
+//
 //   - Upon and after run, the stack is empty.
-//   - Upon run, the memory is reset.
-//   - Across multiple runs, TensorStore is the only approach to persist data.
+//   - Upon run, the memory is reset. Though toward optimization, reset might not be performed.
+//   - Across multiple runs, key value store is the only approach to persist data.
+//
+//
+// # Tensor vs TensorArray
+//
+// Inside vm, TensorArray is the source of truth for tensor operations. So, conversion is performed
+// at all boundaries, including loading/storing from key value store, returning outputs, infeeding,
+// load constants, etc.
+//
+//
+// # Error Handling.
 //
 // During any run, if any error raised, the system's state becomes unknown. Creating a new VM is
 // recommended.
