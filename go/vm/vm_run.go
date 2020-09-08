@@ -8,6 +8,7 @@ import (
 	"github.com/xiejw/mlvm/go/object"
 	"github.com/xiejw/mlvm/go/vm/kernel"
 	"github.com/xiejw/mlvm/go/vm/prng64"
+	"github.com/xiejw/mlvm/go/vm/tensorarray"
 )
 
 const vmErr = "virtual machine error: current opcode %v"
@@ -215,6 +216,10 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 	return vm.popOutputs()
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Helper Methods.
+///////////////////////////////////////////////////////////////////////////////
+
 // Clears the stack and moves items (in reverse order) as outputs.
 func (vm *VM) popOutputs() (Outputs, *errors.DError) {
 	var outputs Outputs
@@ -233,4 +238,17 @@ func (vm *VM) popOutputs() (Outputs, *errors.DError) {
 		outputs = append(outputs, item)
 	}
 	return outputs, nil
+}
+
+func toStandardObject(o object.Object) object.Object {
+	if o.Type() != object.TensorType {
+		return o
+	}
+
+	_, ok := o.(*tensorarray.TensorArray)
+	if !ok {
+		panic("internal representation for tensor should be tensor array.")
+	}
+
+	return nil
 }
