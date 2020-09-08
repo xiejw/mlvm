@@ -24,7 +24,7 @@ type Outputs []object.Object
 //   - Across multiple runs, key value store is the only approach to persist data.
 //
 //
-// # Tensor vs TensorArray
+// # Internal Representations: Tensor vs TensorArray
 //
 // Inside vm, TensorArray is the source of truth for tensor operations. So, conversion is performed
 // at all boundaries, including loading/storing from key value store, returning outputs, infeeding,
@@ -42,7 +42,9 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 		op := code.Opcode(vm.instructions[ip])
 		switch op {
-		////////////////////////////////////////////////////////////////////////////////////////////////
+
+		////////////////////////////////////////////////////////////////////////////
+		//
 		// Load/Stores (Constants, Global Memory, etc)
 		case code.OpCONST:
 			cIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
@@ -51,8 +53,9 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 			if cIndex >= len(vm.constants) {
 				return nil, errors.New("const (id: %v) not exist.", cIndex).EmitNote(vmErr, op)
 			}
-
-			err := vm.stack.Push(vm.constants[cIndex])
+			c := vm.constants[cIndex]
+			c = normalizeObject(c)
+			err := vm.stack.Push(c)
 			if err != nil {
 				return nil, err.EmitNote("failed to push const to stack.").EmitNote(vmErr, op)
 			}
@@ -96,7 +99,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 				return nil, err.EmitNote("failed to load obj (k:\"%s\") from store.", keyStr).EmitNote(vmErr, op)
 			}
 
-			err = vm.stack.Push(tensor)
+			err = vm.stack.Push(normalizeObject(tensor))
 			if err != nil {
 				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
@@ -109,6 +112,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			for i := 0; i < n; i++ {
 				o := <-vm.c
+				o = normalizeObject(o)
 				err := vm.stack.Push(o)
 				if err != nil {
 					return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
@@ -117,8 +121,8 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			log.Printf("vm infeed %v objects end", n)
 
-			////////////////////////////////////////////////////////////////////////////////////////////////
-			// Rng
+		////////////////////////////////////////////////////////////////////////////
+		// Rng
 		case code.OpRNG:
 			seed, err := vm.popInteger()
 			if err != nil {
@@ -160,12 +164,13 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			prng64.FillDist(&prng, prng64.DistType(distType), value)
 
-			err = vm.stack.Push(&object.Tensor{shape, &object.Array{value}})
+			err = vm.stack.Push(normalizeObject(&object.Tensor{shape, &object.Array{value}}))
 			if err != nil {
 				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
-		////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////
+		//
 		// Tensor Related.
 		case code.OpT:
 			array, err := vm.popArray()
@@ -178,7 +183,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 				return nil, err
 			}
 
-			tensor := &object.Tensor{shape, array}
+			tensor := normalizeObject(&object.Tensor{shape, array})
 			err = vm.stack.Push(tensor)
 			if err != nil {
 				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
@@ -240,15 +245,31 @@ func (vm *VM) popOutputs() (Outputs, *errors.DError) {
 	return outputs, nil
 }
 
+// Normalize external Object into internal representations.
+func normalizeObject(o object.Object) object.Object {
+	if o.Type() != object.TensorType {
+		return o
+	}
+
+	t, ok := o.(*object.Tensor)
+	if !ok {
+		panic("external representation for tensor should be tensor.")
+	}
+
+	return tensorarray.FromTensor(t)
+
+}
+
+// Covnerts internal representations of Object to external standard versions.
 func toStandardObject(o object.Object) object.Object {
 	if o.Type() != object.TensorType {
 		return o
 	}
 
-	_, ok := o.(*tensorarray.TensorArray)
+	ta, ok := o.(*tensorarray.TensorArray)
 	if !ok {
 		panic("internal representation for tensor should be tensor array.")
 	}
 
-	return nil
+	return ta.ToTensor()
 }

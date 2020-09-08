@@ -41,7 +41,6 @@ func (ta *TensorArray) ToTensor() *object.Tensor {
 	return object.NewTensor(ta.Dims, ta.Value)
 }
 
-
 // Conform object.Object
 func (ta *TensorArray) String() string {
 	return "TensorArray"
