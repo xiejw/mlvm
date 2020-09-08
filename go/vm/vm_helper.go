@@ -3,6 +3,7 @@ package vm
 import (
 	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/object"
+	"github.com/xiejw/mlvm/go/vm/tensorarray"
 )
 
 func (vm *VM) pop() (object.Object, *errors.DError) {
@@ -61,14 +62,14 @@ func (vm *VM) popShape() (*object.Shape, *errors.DError) {
 	return shape, nil
 }
 
-func (vm *VM) popTensor() (*object.Tensor, *errors.DError) {
+func (vm *VM) popTensor() (*tensorarray.TensorArray, *errors.DError) {
 	tensorObject, err := vm.stack.Pop()
 	if err != nil {
 		return nil, err.EmitNote("failed to pop tensor from stack.")
 	}
-	tensor, ok := tensorObject.(*object.Tensor)
+	ta, ok := tensorObject.(*tensorarray.TensorArray)
 	if !ok {
-		return nil, errors.New("failed to pop tensor from stack: wrong type.")
+		return nil, errors.New("failed to pop tensor (array) from stack: wrong type.")
 	}
-	return tensor, nil
+	return ta, nil
 }

@@ -2,9 +2,12 @@ package kernel
 
 import (
 	"github.com/xiejw/mlvm/go/object"
+	"github.com/xiejw/mlvm/go/vm/tensorarray"
 )
 
-func TensorAdd(operand1, operand2 *object.Tensor) (*object.Tensor, error) {
+func TensorAdd(o1, o2 *tensorarray.TensorArray) (*tensorarray.TensorArray, error) {
+	operand1 := o1.ToTensor()
+	operand2 := o2.ToTensor()
 	shape := operand1.Shape
 	size := shape.Size()
 
@@ -18,5 +21,5 @@ func TensorAdd(operand1, operand2 *object.Tensor) (*object.Tensor, error) {
 		buf[i] = buf1[i] + buf2[i]
 	}
 
-	return &object.Tensor{shape, &object.Array{buf}}, nil
+	return tensorarray.FromTensor(&object.Tensor{shape, &object.Array{buf}}), nil
 }

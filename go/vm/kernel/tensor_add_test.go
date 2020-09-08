@@ -4,11 +4,14 @@ import (
 	"testing"
 
 	"github.com/xiejw/mlvm/go/object"
+	"github.com/xiejw/mlvm/go/vm/tensorarray"
 )
 
 func TestTensorAdd(t *testing.T) {
-	tensor := object.NewTensor([]uint{2}, []float32{1.0, 2.0})
-	result, err := TensorAdd(tensor, tensor)
+	tensor := tensorarray.FromTensor(
+		object.NewTensor([]uint{2}, []float32{1.0, 2.0}))
+	o, err := TensorAdd(tensor, tensor)
+	result := o.ToTensor()
 
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

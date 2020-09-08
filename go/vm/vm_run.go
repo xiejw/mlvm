@@ -240,7 +240,7 @@ func (vm *VM) popOutputs() (Outputs, *errors.DError) {
 			return nil, err
 		}
 
-		outputs = append(outputs, item)
+		outputs = append(outputs, toStandardObject(item))
 	}
 	return outputs, nil
 }
