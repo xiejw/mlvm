@@ -40,6 +40,7 @@ func TestOpcodes(t *testing.T) {
 		{OpRNGS, "OpRNGS"},
 		{OpT, "OpT"},
 		{OpTADD, "OpTADD"},
+		{OpTBROAD, "OpTBROAD"},
 	}
 
 	for _, testOp := range ops {
@@ -73,6 +74,7 @@ func TestInstructionDisassembly(t *testing.T) {
 		{"\n000000 OpRNGS    \n", OpRNGS, []int{}},
 		{"\n000000 OpT       \n", OpT, []int{}},
 		{"\n000000 OpTADD    \n", OpTADD, []int{}},
+		{"\n000000 OpTBROAD  \n", OpTBROAD, []int{}},
 	}
 
 	for _, testOp := range ops {

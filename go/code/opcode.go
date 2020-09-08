@@ -23,6 +23,7 @@ const (
 	OpRNGS
 	OpT
 	OpTADD
+	OpTBROAD
 )
 
 // Defines the string name and operand requirements.
@@ -112,7 +113,17 @@ var definitions = map[Opcode]*Definition{
 	// Stack  : pops the top item and uses it as second operand.
 	//          then pops the top item and uses it as first operand.
 	//          stores the result into the stack.
+	// Shape  : both operands must have same shapes.
 	OpTADD: {"OpTADD", []int{}},
+
+	// Broadcasts the shape of the tensor operand to a new shape.
+	//
+	// Operand: no.
+	// Stack  : pops the top item and uses it as new shape.
+	//          then pops the top item and uses it as tensor operand.
+	//          stores the new result into the stack.
+	// Shape  : the new shape is the left extension of the old shape.
+	OpTBROAD: {"OpTBROAD", []int{}},
 }
 
 // Looks up the Definition of the op code.
