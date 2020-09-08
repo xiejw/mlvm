@@ -33,6 +33,15 @@ func FromTensor(t *object.Tensor) *TensorArray {
 	}
 }
 
+func (ta *TensorArray) ToTensor() *object.Tensor {
+	if ta.Compressed {
+		panic("Converting compressed TensorArray to Tensor is not impl'ed.")
+	}
+
+	return object.NewTensor(ta.Dims, ta.Value)
+}
+
+
 // Conform object.Object
 func (ta *TensorArray) String() string {
 	return "TensorArray"
