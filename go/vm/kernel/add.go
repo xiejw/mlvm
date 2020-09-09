@@ -15,8 +15,12 @@ import (
 // 2. If the strides are not same, then using a recursive loop to form add in each dim.
 func TensorAdd(o1, o2 *tensorarray.TensorArray) (*tensorarray.TensorArray, error) {
 
-	if !areDimsEqual(o1.Dims, o2.Dims) {
+	if !areUIntSliceEq(o1.Dims, o2.Dims) {
 		return nil, errors.New("dims mismatch.")
+	}
+
+	if !areUIntSliceEq(o1.Strides, o2.Strides) {
+		return nil, errors.New("strides mismatch.")
 	}
 
 	operand1 := o1.ToTensor()
@@ -29,15 +33,14 @@ func TensorAdd(o1, o2 *tensorarray.TensorArray) (*tensorarray.TensorArray, error
 	buf1 := operand1.ArrayValue()
 	buf2 := operand2.ArrayValue()
 
-	var i uint64
-	for i = 0; i < size; i++ {
+	for i := 0; i < size; i++ {
 		buf[i] = buf1[i] + buf2[i]
 	}
 
 	return tensorarray.FromTensor(&object.Tensor{shape, &object.Array{buf}}), nil
 }
 
-func areDimsEqual(d1, d2 []uint) bool {
+func areUIntSliceEq(d1, d2 []int) bool {
 	l1 := len(d1)
 	if l1 != len(d2) {
 		return false

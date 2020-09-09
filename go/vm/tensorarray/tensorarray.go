@@ -6,32 +6,32 @@ import (
 )
 
 type TensorArray struct {
-	Dims       []uint
-	Strides    []uint
-	Rank       uint
+	Dims       []int
+	Strides    []int
+	Rank       int
 	Value      []float32
 	Compressed bool
 }
 
-func (ta *TensorArray) Size() uint64 {
-	var size uint64 = 1
+func (ta *TensorArray) Size() int {
+	var size = 1
 	for _, dim := range ta.Dims {
-		size *= uint64(dim)
+		size *= dim
 	}
 	return size
 }
 
-func (ta *TensorArray) RealSize() uint64 {
-	return uint64(len(ta.Value))
+func (ta *TensorArray) RealSize() int {
+	return len(ta.Value)
 }
 
 func FromTensor(t *object.Tensor) *TensorArray {
 	dims := t.Shape.Dims
 	rank := t.Shape.Rank
-	strides := make([]uint, rank)
+	strides := make([]int, rank)
 
-	var stride uint = 1
-	for i := int(rank - 1); i >= 0; i-- {
+	var stride = 1
+	for i := rank - 1; i >= 0; i-- {
 		strides[i] = stride
 		stride *= dims[i]
 	}

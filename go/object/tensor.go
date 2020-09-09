@@ -7,14 +7,14 @@ import (
 )
 
 type Shape struct {
-	Dims []uint // Cannot have 0.
-	Rank uint   // Length of `Dims`
+	Dims []int // Cannot have 0.
+	Rank int   // Length of `Dims`
 }
 
-func NewShape(dims []uint) *Shape {
+func NewShape(dims []int) *Shape {
 	return &Shape{
 		Dims: dims,
-		Rank: uint(len(dims)),
+		Rank: int(len(dims)),
 	}
 }
 
@@ -22,10 +22,10 @@ type Array struct {
 	Value []float32
 }
 
-func (shape *Shape) Size() uint64 {
-	var size uint64 = 1
+func (shape *Shape) Size() int {
+	var size = 1
 	for _, dim := range shape.Dims {
-		size *= uint64(dim)
+		size *= dim
 	}
 	return size
 }
@@ -35,7 +35,7 @@ type Tensor struct {
 	Array *Array
 }
 
-func NewTensor(dims []uint, value []float32) *Tensor {
+func NewTensor(dims []int, value []float32) *Tensor {
 	return &Tensor{NewShape(dims), &Array{value}}
 }
 
