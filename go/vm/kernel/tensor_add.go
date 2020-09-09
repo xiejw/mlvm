@@ -27,3 +27,6 @@ func TensorAdd(o1, o2 *tensorarray.TensorArray) (*tensorarray.TensorArray, error
 
 	return tensorarray.FromTensor(&object.Tensor{shape, &object.Array{buf}}), nil
 }
+
+func isShapeEqual() bool {
+}
