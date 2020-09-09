@@ -7,8 +7,10 @@ import (
 
 // Algorithrm for the binary Ops.
 //
-// Input Requirments:
-// 1. The
+// Input Requirments: The shape must match exactly. For program writer, use OpTBROAD if needed.
+//
+// 1. If the strides are same, then performn buffer adding directly.
+// 2. If the strides are not same, then using a recursive loop to form add in each dim.
 func TensorAdd(o1, o2 *tensorarray.TensorArray) (*tensorarray.TensorArray, error) {
 	operand1 := o1.ToTensor()
 	operand2 := o2.ToTensor()
