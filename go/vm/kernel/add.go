@@ -1,6 +1,8 @@
 package kernel
 
 import (
+	"errors"
+
 	"github.com/xiejw/mlvm/go/object"
 	"github.com/xiejw/mlvm/go/vm/tensorarray"
 )
@@ -12,6 +14,11 @@ import (
 // 1. If the strides are same, then performn buffer adding directly.
 // 2. If the strides are not same, then using a recursive loop to form add in each dim.
 func TensorAdd(o1, o2 *tensorarray.TensorArray) (*tensorarray.TensorArray, error) {
+
+	if !areDimsEqual(o1.Dims, o2.Dims) {
+		return nil, errors.New("dims mismatch.")
+	}
+
 	operand1 := o1.ToTensor()
 	operand2 := o2.ToTensor()
 	shape := operand1.Shape
@@ -30,6 +37,16 @@ func TensorAdd(o1, o2 *tensorarray.TensorArray) (*tensorarray.TensorArray, error
 	return tensorarray.FromTensor(&object.Tensor{shape, &object.Array{buf}}), nil
 }
 
-func isShapeEqual() bool {
+func areDimsEqual(d1, d2 []uint) bool {
+	l1 := len(d1)
+	if l1 != len(d2) {
+		return false
+	}
+
+	for i := 0; i < l1; i++ {
+		if d1[i] != d2[i] {
+			return false
+		}
+	}
 	return true
 }
