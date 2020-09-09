@@ -17,7 +17,7 @@ func TestExample1(t *testing.T) {
 	addIns(t, &ins, code.OpT)
 	addIns(t, &ins, code.OpTADD)
 
-	shape := object.NewShape([]uint{2, 3})
+	shape := object.NewShape([]int{2, 3})
 	array := &object.Array{[]float32{1.0, 2.0, 3.0, 4.0, 5.0, 6.0}}
 	consts := []object.Object{shape, array}
 
@@ -45,7 +45,7 @@ func TestExample2(t *testing.T) {
 	addIns(t, &ins, code.OpLOAD, 0)
 	addIns(t, &ins, code.OpTADD)
 
-	shape := object.NewShape([]uint{2, 3})
+	shape := object.NewShape([]int{2, 3})
 	seed := &object.Integer{456}
 	consts := []object.Object{shape, seed}
 

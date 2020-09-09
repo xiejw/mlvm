@@ -9,7 +9,7 @@ import (
 
 func TestTensorAdd(t *testing.T) {
 	tensor := tensorarray.FromTensor(
-		object.NewTensor([]uint{2}, []float32{1.0, 2.0}))
+		object.NewTensor([]int{2}, []float32{1.0, 2.0}))
 	o, err := TensorAdd(tensor, tensor)
 	result := o.ToTensor()
 
