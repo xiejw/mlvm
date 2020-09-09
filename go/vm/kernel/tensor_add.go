@@ -5,6 +5,10 @@ import (
 	"github.com/xiejw/mlvm/go/vm/tensorarray"
 )
 
+// Algorithrm for the binary Ops.
+//
+// Input Requirments:
+// 1. The
 func TensorAdd(o1, o2 *tensorarray.TensorArray) (*tensorarray.TensorArray, error) {
 	operand1 := o1.ToTensor()
 	operand2 := o2.ToTensor()

@@ -13,6 +13,18 @@ type TensorArray struct {
 	Compressed bool
 }
 
+func (ta *TensorArray) Size() uint64 {
+	var size uint64 = 1
+	for _, dim := range ta.Dims {
+		size *= uint64(dim)
+	}
+	return size
+}
+
+func (ta *TensorArray) RealSize() uint64 {
+	return uint64(len(ta.Value))
+}
+
 func FromTensor(t *object.Tensor) *TensorArray {
 	dims := t.Shape.Dims
 	rank := t.Shape.Rank
