@@ -23,6 +23,8 @@ const (
 	OpRNGS
 	OpT
 	OpTADD
+	OpTMINUS
+	OpTMUL
 	OpTBROAD
 )
 
@@ -107,7 +109,7 @@ var definitions = map[Opcode]*Definition{
 	//          stores the Tensor into the stack.
 	OpT: {"OpT", []int{}},
 
-	// Adds two tensors.
+	// Does addition two tensors.
 	//
 	// Operand: no.
 	// Stack  : pops the top item and uses it as second operand.
@@ -115,6 +117,24 @@ var definitions = map[Opcode]*Definition{
 	//          stores the result into the stack.
 	// Shape  : both operands must have same shapes.
 	OpTADD: {"OpTADD", []int{}},
+
+	// Does minus for two tensors.
+	//
+	// Operand: no.
+	// Stack  : pops the top item and uses it as second operand.
+	//          then pops the top item and uses it as first operand.
+	//          stores the result into the stack.
+	// Shape  : both operands must have same shapes.
+	OpTMINUS: {"OpTMINUS", []int{}},
+
+	// Does (element-wise) multiplication for two tensors.
+	//
+	// Operand: no.
+	// Stack  : pops the top item and uses it as second operand.
+	//          then pops the top item and uses it as first operand.
+	//          stores the result into the stack.
+	// Shape  : both operands must have same shapes.
+	OpTMUL: {"OpTMUL", []int{}},
 
 	// Broadcasts the shape of the tensor operand to a new shape.
 	//
