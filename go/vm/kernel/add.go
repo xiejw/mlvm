@@ -31,4 +31,5 @@ func TensorAdd(o1, o2 *tensorarray.TensorArray) (*tensorarray.TensorArray, error
 }
 
 func isShapeEqual() bool {
+	return true
 }
