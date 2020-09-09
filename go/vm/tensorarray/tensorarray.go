@@ -25,9 +25,9 @@ func (ta *TensorArray) RealSize() int {
 	return len(ta.Value)
 }
 
-func FromTensor(t *object.Tensor) *TensorArray {
-	dims := t.Shape.Dims
-	rank := t.Shape.Rank
+// Creates TensorArray from raw components.
+func FromRaw(dims []int, value []float32) *TensorArray {
+	rank := len(dims)
 	strides := make([]int, rank)
 
 	var stride = 1
@@ -40,9 +40,14 @@ func FromTensor(t *object.Tensor) *TensorArray {
 		Dims:       dims,
 		Strides:    strides,
 		Rank:       rank,
-		Value:      t.ArrayValue(),
+		Value:      value,
 		Compressed: false,
 	}
+}
+
+// Helper Method to create TensorArray from Tensor.
+func FromTensor(t *object.Tensor) *TensorArray {
+	return FromRaw(t.Shape.Dims, t.Array.Value)
 }
 
 func (ta *TensorArray) ToTensor() *object.Tensor {

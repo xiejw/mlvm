@@ -164,7 +164,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			prng64.FillDist(&prng, prng64.DistType(distType), value)
 
-			err = vm.stack.Push(normalizeObject(&object.Tensor{shape, &object.Array{value}}))
+			err = vm.stack.Push(tensorarray.FromRaw(shape.Dims, value))
 			if err != nil {
 				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
@@ -183,7 +183,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 				return nil, err
 			}
 
-			tensor := normalizeObject(&object.Tensor{shape, array})
+			tensor := tensorarray.FromRaw(shape.Dims, array.Value)
 			err = vm.stack.Push(tensor)
 			if err != nil {
 				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)

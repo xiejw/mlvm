@@ -3,7 +3,6 @@ package kernel
 import (
 	"errors"
 
-	"github.com/xiejw/mlvm/go/object"
 	"github.com/xiejw/mlvm/go/vm/tensorarray"
 )
 
@@ -37,7 +36,7 @@ func TensorAdd(o1, o2 *tensorarray.TensorArray) (*tensorarray.TensorArray, error
 		buf[i] = buf1[i] + buf2[i]
 	}
 
-	return tensorarray.FromTensor(&object.Tensor{shape, &object.Array{buf}}), nil
+	return tensorarray.FromRaw(shape.Dims, buf), nil
 }
 
 func areUIntSliceEq(d1, d2 []int) bool {
