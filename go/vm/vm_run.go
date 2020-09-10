@@ -190,18 +190,14 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 			}
 
 		case code.OpTADD:
-			operand1, err := vm.popTensor()
-			if err != nil {
-				return nil, err
-			}
-			operand2, err := vm.popTensor()
+			lhs, rhs, err := vm.popTwoTensorsInSeq()
 			if err != nil {
 				return nil, err
 			}
 
-			tensor, err1 := kernel.TensorAdd(operand1, operand2)
-			if err1 != nil {
-				return nil, errors.From(err1).EmitNote("kernel error for TensorAdd").EmitNote(vmErr, op)
+			tensor, err := kernel.TensorAdd(lhs, rhs)
+			if err != nil {
+				return nil, err.EmitNote("kernel error for add").EmitNote(vmErr, op)
 			}
 
 			err = vm.stack.Push(tensor)

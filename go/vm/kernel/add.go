@@ -1,8 +1,7 @@
 package kernel
 
 import (
-	"errors"
-
+	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/vm/tensorarray"
 )
 
@@ -12,7 +11,7 @@ import (
 //
 // 1. If the strides are same, then performn buffer adding directly.
 // 2. If the strides are not same, then using a recursive loop to form add in each dim.
-func TensorAdd(o1, o2 *tensorarray.TensorArray) (*tensorarray.TensorArray, error) {
+func TensorAdd(o1, o2 *tensorarray.TensorArray) (*tensorarray.TensorArray, *errors.DError) {
 
 	if !areUIntSliceEq(o1.Dims, o2.Dims) {
 		return nil, errors.New("dims mismatch.")
