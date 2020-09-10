@@ -26,6 +26,7 @@ const (
 	OpTMINUS
 	OpTMUL
 	OpTBROAD
+	OpTREDUCE
 )
 
 // Defines the string name and operand requirements.
@@ -144,6 +145,13 @@ var definitions = map[Opcode]*Definition{
 	//          stores the new result into the stack.
 	// Shape  : the new shape is the left extension of the old shape.
 	OpTBROAD: {"OpTBROAD", []int{}},
+
+	// Reduce the tensor.
+	//
+	// Operand: (uint16) reduce merge Op index (see MergeType)
+	// Stack  : pops the top item and uses it as tensor operan.
+	//          stores the new result into the stack.
+	OpTREDUCE: {"OpTREDUCE", []int{2}},
 }
 
 // Looks up the Definition of the op code.

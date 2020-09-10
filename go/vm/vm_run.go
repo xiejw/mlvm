@@ -211,6 +211,25 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
+		case code.OpTREDUCE:
+			merge_type := kernel.MergeType(code.ReadUint16(vm.instructions[ip+1:]))
+			ip += 2
+
+			ta, err := vm.popTensor()
+			if err != nil {
+				return nil, err
+			}
+
+			r, err := kernel.Reduce(ta, merge_type)
+			if err != nil {
+				return nil, err.EmitNote("kernel error for reduce").EmitNote(vmErr, op)
+			}
+
+			err = vm.stack.Push(r)
+			if err != nil {
+				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+			}
+
 		default:
 			startIndex := ip
 			numInstructionsToPrint := 5
