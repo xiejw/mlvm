@@ -26,8 +26,8 @@ func BinaryOp(o1, o2 *tensorarray.TensorArray, kern_type KernelType) (
 		return nil, errors.New("dims mismatch.")
 	}
 
-	if !areUIntSliceEq(o1.Strides, o2.Strides) {
-		return nil, errors.New("strides mismatch.")
+	if o1.RealSize != o2.RealSize {
+		return nil, errors.New("real size mismatch.")
 	}
 
 	operand1 := o1.ToTensor()

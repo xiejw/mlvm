@@ -6,28 +6,22 @@ import (
 )
 
 type TensorArray struct {
-	Dims       []int
-	Strides    []int
-	Rank       int
-	Value      []float32
-	Compressed bool
-}
-
-func (ta *TensorArray) Size() int {
-	var size = 1
-	for _, dim := range ta.Dims {
-		size *= dim
-	}
-	return size
-}
-
-func (ta *TensorArray) RealSize() int {
-	return len(ta.Value)
+	Dims     []int
+	Rank     int
+	Size     int
+	RealSize int
+	Value    []float32
 }
 
 // Creates TensorArray from raw components.
 func FromRaw(dims []int, value []float32) *TensorArray {
 	rank := len(dims)
+
+	var size = 1
+	for _, dim := range dims {
+		size *= dim
+	}
+
 	strides := make([]int, rank)
 
 	var stride = 1
@@ -37,11 +31,11 @@ func FromRaw(dims []int, value []float32) *TensorArray {
 	}
 
 	return &TensorArray{
-		Dims:       dims,
-		Strides:    strides,
-		Rank:       rank,
-		Value:      value,
-		Compressed: false,
+		Dims:     dims,
+		Rank:     rank,
+		Size:     size,
+		RealSize: len(value),
+		Value:    value,
 	}
 }
 
@@ -51,11 +45,15 @@ func FromTensor(t *object.Tensor) *TensorArray {
 }
 
 func (ta *TensorArray) ToTensor() *object.Tensor {
-	if ta.Compressed {
+	if ta.IsCompressed() {
 		panic("Converting compressed TensorArray to Tensor is not impl'ed.")
 	}
 
 	return object.NewTensor(ta.Dims, ta.Value)
+}
+
+func (ta *TensorArray) IsCompressed() bool {
+	return ta.Size != ta.RealSize
 }
 
 // Conform object.Object
