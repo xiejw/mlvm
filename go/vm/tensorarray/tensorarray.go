@@ -22,14 +22,6 @@ func FromRaw(dims []int, value []float32) *TensorArray {
 		size *= dim
 	}
 
-	strides := make([]int, rank)
-
-	var stride = 1
-	for i := rank - 1; i >= 0; i-- {
-		strides[i] = stride
-		stride *= dims[i]
-	}
-
 	return &TensorArray{
 		Dims:     dims,
 		Rank:     rank,
