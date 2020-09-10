@@ -10,7 +10,8 @@ import (
 func TestTensorAdd(t *testing.T) {
 	tensor := tensorarray.FromTensor(
 		object.NewTensor([]int{2}, []float32{1.0, 2.0}))
-	o, err := TensorAdd(tensor, tensor)
+
+	o, err := BinaryOp(tensor, tensor, BinaryAdd)
 	result := o.ToTensor()
 
 	if err != nil {

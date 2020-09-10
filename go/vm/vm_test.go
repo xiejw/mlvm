@@ -205,3 +205,39 @@ func TestRunWithOpTensorAdd(t *testing.T) {
 		t.Errorf("value mismatch: got `%v`", o.(*object.Tensor).String())
 	}
 }
+
+func TestRunWithOpTensorMinus(t *testing.T) {
+	shape := object.NewShape([]int{2})
+	array1 := &object.Array{[]float32{1.0, 2.0}}
+	array2 := &object.Array{[]float32{1.0, 3.0}}
+
+	var constants []object.Object
+	constants = append(constants, shape)
+	constants = append(constants, array1)
+	constants = append(constants, array2)
+
+	var ins code.Instructions
+	// Operand 1
+	addIns(t, &ins, code.OpCONST, 0)
+	addIns(t, &ins, code.OpCONST, 1)
+	addIns(t, &ins, code.OpT)
+	// Operand 2
+	addIns(t, &ins, code.OpCONST, 0)
+	addIns(t, &ins, code.OpCONST, 2)
+	addIns(t, &ins, code.OpT)
+	// Final Add
+	ins = append(ins, makeOpHelper(t, code.OpTMINUS)...)
+
+	program := &code.Program{
+		Instructions: ins,
+		Constants:    constants,
+	}
+
+	vm := NewVM(program)
+	outputs, err := vm.Run()
+	o := assertSingleOutput(t, outputs, err)
+
+	if o.(*object.Tensor).String() != "Tensor(<2> [  0.000, -1.000])" {
+		t.Errorf("value mismatch: got `%v`", o.(*object.Tensor).String())
+	}
+}
