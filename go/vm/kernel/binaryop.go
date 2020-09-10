@@ -30,7 +30,7 @@ func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (
 
 	if o1.RealSize == o2.RealSize {
 		// Simple case. Perform operations directly.
-		size := o1.Size
+		size := o1.RealSize
 		buf1 := o1.Value
 		buf2 := o2.Value
 
@@ -53,6 +53,7 @@ func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (
 			err := errors.New("unsupported binary op type %v", op_type)
 			return nil, err
 		}
+
 	} else if o1.RealSize == 1 {
 		real_size_2 := o2.RealSize
 		buf2 := o2.Value
@@ -77,6 +78,7 @@ func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (
 			err := errors.New("unsupported binary op type %v", op_type)
 			return nil, err
 		}
+
 	} else if o2.RealSize == 1 {
 		real_size_1 := o1.RealSize
 		buf1 := o1.Value
@@ -104,26 +106,61 @@ func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (
 
 	} else {
 
-		// real_size_1 := o1.RealSize
-		// real_size_2 := o2.RealSize
+		real_size_1 := o1.RealSize
+		real_size_2 := o2.RealSize
+		buf1 := o1.Value
+		buf2 := o2.Value
 
-		// max_size := real_size_1
-		// min_size := real_size_2
+		max_size := real_size_1
+		min_size := real_size_2
 
-		// if max_size < min_size {
-		// 	max_size = real_size_2
-		// 	min_size = real_size_1
-		// }
+		if max_size < min_size {
+			max_size = real_size_2
+			min_size = real_size_1
+		}
 
-		// if max_size%min_size != 0 {
-		// 	return nil, errors.New(
-		// 		"real size of operands are invalid. they should be multiple of each other: got: %v and %v",
-		// 		real_size_1, real_size_2)
-		// }
+		if max_size%min_size != 0 {
+			return nil, errors.New(
+				"real size of operands are invalid. they should be multiple of each other: got: %v and %v",
+				real_size_1, real_size_2)
+		}
 
-		// for i := 0; i < max_size; i++ {
-		// }
+		buf = make([]float32, max_size)
 
+		lhs := 0
+		rhs := 0
+		i := 0
+		for {
+
+			switch op_type {
+			case BinaryAdd:
+				for j := 0; j < min_size; j++ {
+					buf[i+j] = buf1[lhs+j] + buf2[rhs+j]
+				}
+			case BinaryMinus:
+				for j := 0; j < min_size; j++ {
+					buf[i+j] = buf1[lhs+j] - buf2[rhs+j]
+				}
+			case BinaryMul:
+				for j := 0; j < min_size; j++ {
+					buf[i+j] = buf1[lhs+j] * buf2[rhs+j]
+				}
+			default:
+				err := errors.New("unsupported binary op type %v", op_type)
+				return nil, err
+			}
+
+			i += min_size
+			lhs += min_size
+			rhs += min_size
+
+			if lhs >= max_size || rhs >= max_size {
+				break
+			}
+
+			lhs %= real_size_1
+			rhs %= real_size_2
+		}
 	}
 
 	return tensorarray.FromRaw(o1.Dims, buf), nil
