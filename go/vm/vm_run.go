@@ -192,6 +192,8 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 		case code.OpTADD:
 			fallthrough
 		case code.OpTMINUS:
+			fallthrough
+		case code.OpTMUL:
 			kern_type := kernel.KernelType(int(op) - int(code.OpTADD) + int(kernel.BinaryAdd))
 
 			lhs, rhs, err := vm.popTwoTensorsInSeq()
