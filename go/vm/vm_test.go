@@ -176,20 +176,13 @@ func TestRunWithOpTensorAdd(t *testing.T) {
 	constants = append(constants, shape)
 	constants = append(constants, array)
 
-	ins1 := makeOpHelper(t, code.OpCONST, 0)
-	ins2 := makeOpHelper(t, code.OpCONST, 1)
-	ins3 := makeOpHelper(t, code.OpT)
-
 	var ins code.Instructions
-	// Operand 1
-	ins = append(ins, ins1...)
-	ins = append(ins, ins2...)
-	ins = append(ins, ins3...)
-	// Operand 2
-	ins = append(ins, ins1...)
-	ins = append(ins, ins2...)
-	ins = append(ins, ins3...)
-	// Final Add
+	addIns(t, &ins, code.OpCONST, 0)
+	addIns(t, &ins, code.OpCONST, 1)
+	addIns(t, &ins, code.OpT) // operand 1
+	addIns(t, &ins, code.OpCONST, 0)
+	addIns(t, &ins, code.OpCONST, 1)
+	addIns(t, &ins, code.OpT) // operand 2
 	ins = append(ins, makeOpHelper(t, code.OpTADD)...)
 
 	program := &code.Program{
@@ -217,15 +210,12 @@ func TestRunWithOpTensorMinus(t *testing.T) {
 	constants = append(constants, array2)
 
 	var ins code.Instructions
-	// Operand 1
 	addIns(t, &ins, code.OpCONST, 0)
 	addIns(t, &ins, code.OpCONST, 1)
-	addIns(t, &ins, code.OpT)
-	// Operand 2
+	addIns(t, &ins, code.OpT) // operand 1
 	addIns(t, &ins, code.OpCONST, 0)
 	addIns(t, &ins, code.OpCONST, 2)
-	addIns(t, &ins, code.OpT)
-	// Final Add
+	addIns(t, &ins, code.OpT) // operand 2
 	ins = append(ins, makeOpHelper(t, code.OpTMINUS)...)
 
 	program := &code.Program{
