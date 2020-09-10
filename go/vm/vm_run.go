@@ -194,14 +194,14 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 		case code.OpTMINUS:
 			fallthrough
 		case code.OpTMUL:
-			kern_type := kernel.KernelType(int(op) - int(code.OpTADD) + int(kernel.BinaryAdd))
+			op_type := kernel.BinaryOpType(int(op) - int(code.OpTADD) + int(kernel.BinaryAdd))
 
 			lhs, rhs, err := vm.popTwoTensorsInSeq()
 			if err != nil {
 				return nil, err
 			}
 
-			tensor, err := kernel.BinaryOp(lhs, rhs, kern_type)
+			tensor, err := kernel.BinaryOp(lhs, rhs, op_type)
 			if err != nil {
 				return nil, err.EmitNote("kernel error for add").EmitNote(vmErr, op)
 			}
