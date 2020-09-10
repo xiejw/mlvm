@@ -225,6 +225,18 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 // Helper Methods.
 ///////////////////////////////////////////////////////////////////////////////
 
+func (vm *VM) popTwoTensorsInSeq() (
+	lhs *tensorarray.TensorArray, rhs *tensorarray.TensorArray, err *errors.DError) {
+
+	rhs, err = vm.popTensor()
+	if err != nil {
+		return
+	}
+	lhs, err = vm.popTensor()
+	return
+
+}
+
 // Clears the stack and moves items (in reverse order) as outputs.
 func (vm *VM) popOutputs() (Outputs, *errors.DError) {
 	var outputs Outputs
