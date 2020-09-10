@@ -26,7 +26,7 @@ func TestReduce(t *testing.T) {
 }
 
 func TestReduceWithCompressedTensor(t *testing.T) {
-	ta := tensorarray.FromRaw([]int{4}, []float32{2.0})
+	ta := tensorarray.FromRaw([]int{3, 1}, []float32{2.0})
 	if !ta.IsCompressed() {
 		t.Fatalf("should be compressed.")
 	}
@@ -37,7 +37,7 @@ func TestReduceWithCompressedTensor(t *testing.T) {
 	}
 
 	result := o.ToTensor()
-	expected := "Tensor(<1> [  8.000])"
+	expected := "Tensor(<1> [  6.000])"
 
 	if result.String() != expected {
 		t.Errorf("value mismatch: expected:\n`%v`\ngot:\n`%v`\n", expected, result)

@@ -21,8 +21,14 @@ func Reduce(ta *tensorarray.TensorArray, merge_type MergeType) (*tensorarray.Ten
 		buf := ta.Value
 		real_size := ta.RealSize
 
-		for i := 0; i < ta.Size; i++ {
-			v += buf[i%real_size]
+		switch merge_type {
+		case MergeSum:
+			for i := 0; i < real_size; i++ {
+				v += buf[i]
+			}
+			v *= float32(ta.Size / real_size)
+		default:
+			return nil, errors.New("unsupported merge_type: %v", merge_type)
 		}
 	} else {
 		buf := ta.Value
