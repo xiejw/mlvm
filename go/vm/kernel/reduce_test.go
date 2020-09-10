@@ -13,16 +13,9 @@ func TestReduce(t *testing.T) {
 	}
 
 	o, err := Reduce(ta, MergeSum)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	result := o.ToTensor()
-	expected := "Tensor(<1> [  3.000])"
-
-	if result.String() != expected {
-		t.Errorf("value mismatch: expected:\n`%v`\ngot:\n`%v`\n", expected, result)
-	}
+	assertNoErr(t, err)
+	assertShape(t, []int{1}, o.Dims)
+	assertAllClose(t, []float32{3.0}, o.Value, 1e-6)
 }
 
 func TestReduceWithCompressedTensor(t *testing.T) {
@@ -32,14 +25,7 @@ func TestReduceWithCompressedTensor(t *testing.T) {
 	}
 
 	o, err := Reduce(ta, MergeSum)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	result := o.ToTensor()
-	expected := "Tensor(<1> [  6.000])"
-
-	if result.String() != expected {
-		t.Errorf("value mismatch: expected:\n`%v`\ngot:\n`%v`\n", expected, result)
-	}
+	assertNoErr(t, err)
+	assertShape(t, []int{1}, o.Dims)
+	assertAllClose(t, []float32{6.0}, o.Value, 1e-6)
 }
