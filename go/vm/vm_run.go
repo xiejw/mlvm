@@ -87,6 +87,20 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
+		case code.OpMOVE:
+			mIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
+			ip += 2
+
+			o, err := vm.globalMem.Drop(mIndex)
+			if err != nil {
+				return nil, err.EmitNote("failed to obtain obj from mem @%v.", mIndex).EmitNote(vmErr, op)
+			}
+
+			err = vm.stack.Push(o)
+			if err != nil {
+				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+			}
+
 		case code.OpLOADS:
 			key, err := vm.popString()
 			if err != nil {
