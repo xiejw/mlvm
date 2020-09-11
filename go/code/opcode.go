@@ -14,6 +14,7 @@ const (
 	OpCONST Opcode = iota
 	OpPOP
 	OpLOAD
+	OpMOVE
 	OpSTORE
 	OpLOADS
 	OpSTORES
@@ -48,11 +49,17 @@ var definitions = map[Opcode]*Definition{
 	// Stack  : pop the object from the top.
 	OpPOP: {"OpPOP", []int{}},
 
-	// Loads top object from global memory.
+	// Loads the object from global memory.
 	//
 	// Operand: (uint16) object index.
 	// Stack  : push the object to the top.
 	OpLOAD: {"OpLOAD", []int{2}},
+
+	// Loads the object from global memory (and deletes it from memory)
+	//
+	// Operand: (uint16) object index.
+	// Stack  : push the object to the top.
+	OpMOVE: {"OpMOVE", []int{2}},
 
 	// Stores object into global memory.
 	//
