@@ -50,39 +50,95 @@ y = w_1 * x_1 + w_2 * x_2 + w_3 * x_3 + n
 
 ```
 # Constants
-# 0 object.String("w")
-# 1 object.String("b")
-# 2 object.Shape(<3, 1>)
-# 3 object.Integer(456)
-
-OpIOR      2  # read (x,y) for current batch.
-OpSTORE    0  # store y and put aside
-
-
-OpCONST    0  # param key "w"
-OPLOADS       # pull "w" from key-value store
-OpTMATMUL     # o_1 = matmul(x, w)
-OpSTORE    1  # store o_1
-
-OpCONST    1  # param key "b"
-OPLOADS       # pull "b" from key-value store
-OpLOAD     1
-OpTSHAPE      # get shape from o_1
-OpTBROAD      # align shape
-
-OpMOVE     1  # move o_1 back
-OpTADD        # o_2 = o_1 + b
-
-OpMOVE     0  # move y to stack top
-OpTMINUS      # diff_o = y - o_2
-
-OpSTORE    0
-OpLOAD     0
-OpMOVE     0  # basically dup the diff_o
-
-OpTREDUCE  0  # loss = reduce_sum(diff_o)
-
+# @w object.String("w")
+# @b object.String("b")
+# @lr object.Tensor(<1> [0.001])
 
 # Code
+
+%tmp
+%x   1
+%y   2
+%w   3
+%b   4
+%o1  5
+%do  6
+%lo  7
+%db  8
+%dw  9
+
+# reads input batch
+
+OpIOR      2     # read (x,y) for current batch.
+OpSTORE    %y    # store y and put aside
+OpSTORE    %x    # store x and put aside
+
+# reads model params
+
+OpCONST    @w    # param key "w"
+OPLOADS          # pull "w" from key-value store
+OpSTORE    %w
+
+OpCONST    @b     # param key "b"
+OPLOADS          # pull "b" from key-value store
+OpSTORE    %b
+
+# forward pass
+
+OpLOAD     %x
+OpLOAD     %w
+OpTMATMUL        # o1 = matmul(x, w)
+OpSTORE    %o1   # store o1
+
+OpLOAD     %o1
+OpTSHAPE         # get shape from o1
+OpTBROAD         # align shape
+
+OpMOVE     %o1   # move o1 back
+OpTADD           # o2 = o1 + b
+
+OpMOVE     %y    # move y to stack top
+OpTMINUS         # diff_o = y - o2
+OpSTORE    %do
+
+OpLOAD     %do
+OpMOVE     %do   # basically dup the diff_o
+
+OpTREDUCE  0     # loss = reduce_sum(diff_o)
+OpSTORE    %lo
+
+# backprop pass
+
+OpLOAD     %do
+OPTREDUCE  0     # grad for w
+OpSTORE    %db
+
+# optimizer apply
+
+OpLOAD     %b
+OpCONST    @lr
+OpLOAD     %db
+OpTMUL
+OpTMINUS         # b = b - lr * grad_b
+OpSTORE    %b
+
+OpLOAD     %w
+OpCONST    @lr
+OpLOAD     %dw
+OpTMUL
+OpTMINUS         # w = w - lr * grad_w
+OpSTORE    %w
+
+
+# store back new params
+OpCONST    @b
+OpMOVE     %b
+OpSTORES
+
+OpCONST    @w
+OpMOVE     %w
+OpSTORES
+
+
 ```
 
