@@ -1,18 +1,20 @@
 package mach
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/xiejw/mlvm/go/object"
 )
 
 func checkMemoryNilValue(t *testing.T, memory *Memory, index int) {
-	v, err := memory.Get(index)
-	if err != nil {
-		t.Errorf("Should not fail.")
+	_, err := memory.Get(index)
+	if err == nil {
+		t.Errorf("Should fail.")
 	}
-	if v != nil {
-		t.Errorf("Value mismatch. Expect nil.")
+
+	if !strings.Contains(err.String(), "empty") {
+		t.Errorf("should see empty error.")
 	}
 }
 

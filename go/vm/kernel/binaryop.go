@@ -19,7 +19,10 @@ const (
 //
 // 1. If both the size and real_size are same, then performn buffer operation directly. This is
 //    trivial.
-// 2. If any of the operands j
+// 2. If any of the operands have only one value, specialize this for perf reasons.
+// 3. For the rest case, one real_size must be divisible by another. We basically do an inner+outer
+//    loop. The inner loop iteratson on the smaller real_size, and the outer loop keeps this
+//    pattern.
 func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (
 	*tensorarray.TensorArray, *errors.DError) {
 

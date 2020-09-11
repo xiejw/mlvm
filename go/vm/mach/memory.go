@@ -33,6 +33,19 @@ func (m *Memory) Get(index int) (object.Object, *errors.DError) {
 	if index >= m.size {
 		return nil, errors.New(errRetrieveFromInvalidSlot, index, m.size)
 	}
+
+	item := m.slots[index]
+	if item == nil {
+		return nil, errors.New("the memory slot at %v is empty.", index)
+	}
+	return item, nil
+}
+
+// Deletes the item in memory and returns it.
+func (m *Memory) Drop(index int) (object.Object, *errors.DError) {
+	if index >= m.size {
+		return nil, errors.New(errRetrieveFromInvalidSlot, index, m.size)
+	}
 	return m.slots[index], nil
 }
 
