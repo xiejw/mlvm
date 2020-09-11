@@ -46,7 +46,12 @@ func (m *Memory) Drop(index int) (object.Object, *errors.DError) {
 	if index >= m.size {
 		return nil, errors.New(errRetrieveFromInvalidSlot, index, m.size)
 	}
-	return m.slots[index], nil
+	item := m.slots[index]
+	if item == nil {
+		return nil, errors.New("the memory slot at %v is empty.", index)
+	}
+	m.slots[index] = nil
+	return item, nil
 }
 
 func (m *Memory) Set(index int, item object.Object) *errors.DError {
