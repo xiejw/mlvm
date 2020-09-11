@@ -17,8 +17,9 @@ const (
 //
 // Input Requirments: The shape must match exactly. For program writer, use OpTBROAD if needed.
 //
-// 1. If both the size and real_size are same, then performn buffer operation directly.
-// 2. otherwise,, then using a recursive loop to form binary op in each dim.
+// 1. If both the size and real_size are same, then performn buffer operation directly. This is
+//    trivial.
+// 2. If any of the operands j
 func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (
 	*tensorarray.TensorArray, *errors.DError) {
 
