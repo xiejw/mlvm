@@ -40,7 +40,7 @@ OpLOAD     0  # load 0 (tensor)
 OpTADD
 ```
 
-## Example 3 (Linear Regression)
+### Example 3 (Linear Regression)
 
 ```
 # all w_i and x_i are scalar, i.e., elements in a vectors.
@@ -50,9 +50,9 @@ y = w_1 * x_1 + w_2 * x_2 + w_3 * x_3 + n
 
 ```
 # Constants
-# @w object.String("w")
-# @b object.String("b")
-# @lr object.Tensor(<1> [0.001])
+# @key_w object.String("w")
+# @key_b object.String("b")
+# @key_lr object.Tensor(<1> [0.001])
 
 # Code
 
@@ -75,11 +75,11 @@ OpSTORE    %x    # store x and put aside
 
 # reads model params
 
-OpCONST    @w    # param key "w"
+OpCONST    @key_w    # param key "w"
 OPLOADS          # pull "w" from key-value store
 OpSTORE    %w
 
-OpCONST    @b     # param key "b"
+OpCONST    @key_b     # param key "b"
 OPLOADS          # pull "b" from key-value store
 OpSTORE    %b
 
@@ -87,7 +87,7 @@ OpSTORE    %b
 
 OpLOAD     %x
 OpLOAD     %w
-OpTMATMUL        # o1 = matmul(x, w)
+OpTMATMUL  0     # o1 = matmul(x, w)
 OpSTORE    %o1   # store o1
 
 OpLOAD     %o1
@@ -110,20 +110,25 @@ OpSTORE    %lo
 # backprop pass
 
 OpLOAD     %do
-OPTREDUCE  0     # grad for w
+OPTREDUCE  0     # grad for b
 OpSTORE    %db
+
+OpLOAD     %x
+OpLOAD     %do
+OpTMATMUL  1     # matmul(x^T, diff_o)
+OpSTORE    %dw   # grad for w
 
 # optimizer apply
 
 OpLOAD     %b
-OpCONST    @lr
+OpCONST    @key_lr
 OpLOAD     %db
 OpTMUL
 OpTMINUS         # b = b - lr * grad_b
 OpSTORE    %b
 
 OpLOAD     %w
-OpCONST    @lr
+OpCONST    @key_lr
 OpLOAD     %dw
 OpTMUL
 OpTMINUS         # w = w - lr * grad_w
@@ -131,14 +136,18 @@ OpSTORE    %w
 
 
 # store back new params
-OpCONST    @b
+
+OpCONST    @key_b
 OpMOVE     %b
 OpSTORES
 
-OpCONST    @w
+OpCONST    @key_w
 OpMOVE     %w
 OpSTORES
 
+# final output
+
+OpMOVE     %lo   # loss
 
 ```
 
