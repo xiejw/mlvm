@@ -2,7 +2,14 @@
 package tensorarray
 
 import (
+	"unsafe"
+
 	"github.com/xiejw/mlvm/go/object"
+)
+
+var (
+	sizeInt     int = int(unsafe.Sizeof(int(1)))
+	sizeFloat32 int = int(unsafe.Sizeof(float32(1.0)))
 )
 
 // TensorArray supports one simple form of broadcasting, on top of the normal Tensor representation.
@@ -70,6 +77,10 @@ func (ta *TensorArray) IsCompressed() bool {
 // Conform object.Object
 func (ta *TensorArray) String() string {
 	return "TensorArray"
+}
+
+func (ta *TensorArray) MemSize() int {
+	return (ta.Rank+3)*sizeInt + ta.RealSize*sizeFloat32
 }
 
 func (ta *TensorArray) Type() object.ObjectType {

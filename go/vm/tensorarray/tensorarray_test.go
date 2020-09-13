@@ -48,3 +48,10 @@ func TestCompressedTA(t *testing.T) {
 		t.Errorf("rank mismatch.")
 	}
 }
+
+func TestMemSize(t *testing.T) {
+	ta := FromRaw([]int{2, 3}, []float32{1.2})
+	if ta.MemSize() != (2+3)*sizeInt+sizeFloat32 {
+		t.Errorf("mem size mismatch.")
+	}
+}

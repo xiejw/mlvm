@@ -4,6 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"unsafe"
+)
+
+var (
+	sizeInt     int = int(unsafe.Sizeof(int(1)))
+	sizeFloat32 int = int(unsafe.Sizeof(float32(1.0)))
 )
 
 type Shape struct {
@@ -41,6 +47,14 @@ func NewTensor(dims []int, value []float32) *Tensor {
 
 // Shortcut for t.Array.Value.
 func (t *Tensor) ArrayValue() []float32 { return t.Array.Value }
+
+///////////////////////////////////////////////////////////////////////////////
+// Mem Size Related.
+///////////////////////////////////////////////////////////////////////////////
+
+func (a *Array) MemSize() int  { return len(a.Value) * sizeFloat32 }
+func (s *Shape) MemSize() int  { return s.Rank * sizeInt }
+func (t *Tensor) MemSize() int { return t.Shape.MemSize() + t.Array.MemSize() }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Type Related.

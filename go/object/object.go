@@ -14,7 +14,7 @@ const (
 
 // All object implementations must be immutable and serializable.
 type Object interface {
-	Type() ObjectType  // The type of this instance.
-	String() string // String representation.
-	Size() int // Size occupied.
+	Type() ObjectType // The type of this instance.
+	String() string   // String representation.
+	MemSize() int     // Estimated size occupied in memory
 }

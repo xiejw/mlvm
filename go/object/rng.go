@@ -11,9 +11,8 @@ type Rng struct {
 	NextGammaSeed uint64
 }
 
-func (rng *Rng) Type() ObjectType {
-	return RngType
-}
+func (rng *Rng) Type() ObjectType { return RngType }
+func (rng *Rng) MemSize() int     { return 3 * sizeUint64 }
 
 func (rng *Rng) String() string {
 	return fmt.Sprintf("Rng(%x, %x, %x)", rng.Seed, rng.Gamma, rng.NextGammaSeed)
