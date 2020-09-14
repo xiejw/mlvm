@@ -32,6 +32,10 @@ func NewMemory() *Memory {
 	return memory
 }
 
+func (m *Memory) SizeInBytes() int {
+	return m.size_in_bytes
+}
+
 func (m *Memory) Get(index int) (object.Object, *errors.DError) {
 	if index >= m.slot_count {
 		return nil, errors.New(errRetrieveFromInvalidSlot, index, m.slot_count)

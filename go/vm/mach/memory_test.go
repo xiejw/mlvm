@@ -7,46 +7,6 @@ import (
 	"github.com/xiejw/mlvm/go/object"
 )
 
-func checkMemoryNilValue(t *testing.T, memory *Memory, index int) {
-	_, err := memory.Get(index)
-	if err == nil {
-		t.Errorf("Should fail due to empty slot.")
-	}
-	if !strings.Contains(err.String(), "empty") {
-		t.Errorf("should see empty error.")
-	}
-}
-
-func checkMemoryNilValueViaDrop(t *testing.T, memory *Memory, index int) {
-	_, err := memory.Drop(index)
-	if err == nil {
-		t.Errorf("Should fail due to empty slot.")
-	}
-	if !strings.Contains(err.String(), "empty") {
-		t.Errorf("should see empty error.")
-	}
-}
-
-func checkMemoryIntValue(t *testing.T, memory *Memory, index int, expected int64) {
-	v, err := memory.Get(index)
-	if err != nil {
-		t.Errorf("Should not fail.")
-	}
-	if v.(*object.Integer).Value != expected {
-		t.Errorf("Value mismatch.")
-	}
-}
-
-func checkMemoryStringValue(t *testing.T, memory *Memory, index int, expected string) {
-	v, err := memory.Get(index)
-	if err != nil {
-		t.Errorf("Should not fail.")
-	}
-	if v.(*object.String).Value != expected {
-		t.Errorf("Value mismatch.")
-	}
-}
-
 func TestGetAndSet(t *testing.T) {
 	memory := NewMemory()
 
@@ -75,4 +35,55 @@ func TestDrop(t *testing.T) {
 	}
 
 	checkMemoryNilValueViaDrop(t, memory, 10)
+}
+
+func checkMemoryNilValue(t *testing.T, memory *Memory, index int) {
+	t.Helper()
+	_, err := memory.Get(index)
+	if err == nil {
+		t.Errorf("Should fail due to empty slot.")
+	}
+	if !strings.Contains(err.String(), "empty") {
+		t.Errorf("should see empty error.")
+	}
+}
+
+func checkMemoryNilValueViaDrop(t *testing.T, memory *Memory, index int) {
+	t.Helper()
+	_, err := memory.Drop(index)
+	if err == nil {
+		t.Errorf("Should fail due to empty slot.")
+	}
+	if !strings.Contains(err.String(), "empty") {
+		t.Errorf("should see empty error.")
+	}
+}
+
+func checkMemoryIntValue(t *testing.T, memory *Memory, index int, expected int64) {
+	t.Helper()
+	v, err := memory.Get(index)
+	if err != nil {
+		t.Errorf("Should not fail.")
+	}
+	if v.(*object.Integer).Value != expected {
+		t.Errorf("Value mismatch.")
+	}
+}
+
+func checkMemoryStringValue(t *testing.T, memory *Memory, index int, expected string) {
+	t.Helper()
+	v, err := memory.Get(index)
+	if err != nil {
+		t.Errorf("Should not fail.")
+	}
+	if v.(*object.String).Value != expected {
+		t.Errorf("Value mismatch.")
+	}
+}
+
+func assertIntEq(t *testing.T, expected, got int) {
+	t.Helper()
+	if expected != got {
+		t.Fatalf("expected: %v, got: %v", expected, got)
+	}
 }
