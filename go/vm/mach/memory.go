@@ -32,7 +32,7 @@ func NewMemory() *Memory {
 	return memory
 }
 
-func (m *Memory) SizeInBytes() int {
+func (m *Memory) ByteSize() int {
 	return m.size_in_bytes
 }
 

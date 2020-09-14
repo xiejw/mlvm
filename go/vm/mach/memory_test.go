@@ -9,9 +9,11 @@ import (
 
 func TestGetAndSet(t *testing.T) {
 	memory := NewMemory()
+	assertByteSizeEmpty(t, memory)
 
 	memory.Set(10, &object.Integer{123})
 	memory.Set(11, &object.String{"hello"})
+	assertByteSizeNonEmpty(t, memory)
 
 	checkMemoryNilValue(t, memory, 0)
 	checkMemoryIntValue(t, memory, 10, 123)
@@ -20,8 +22,10 @@ func TestGetAndSet(t *testing.T) {
 
 func TestDrop(t *testing.T) {
 	memory := NewMemory()
+	assertByteSizeEmpty(t, memory)
 
 	memory.Set(10, &object.Integer{123})
+	assertByteSizeNonEmpty(t, memory)
 
 	checkMemoryNilValueViaDrop(t, memory, 0)
 	checkMemoryIntValue(t, memory, 10, 123)
@@ -34,8 +38,13 @@ func TestDrop(t *testing.T) {
 		t.Errorf("Value mismatch.")
 	}
 
+	assertByteSizeEmpty(t, memory)
 	checkMemoryNilValueViaDrop(t, memory, 10)
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Helper Methods.
+///////////////////////////////////////////////////////////////////////////////
 
 func checkMemoryNilValue(t *testing.T, memory *Memory, index int) {
 	t.Helper()
@@ -81,9 +90,19 @@ func checkMemoryStringValue(t *testing.T, memory *Memory, index int, expected st
 	}
 }
 
-func assertIntEq(t *testing.T, expected, got int) {
+func assertByteSizeEmpty(t *testing.T, m *Memory) {
 	t.Helper()
+	expected := 0
+	got := m.ByteSize()
 	if expected != got {
 		t.Fatalf("expected: %v, got: %v", expected, got)
+	}
+}
+
+func assertByteSizeNonEmpty(t *testing.T, m *Memory) {
+	t.Helper()
+	got := m.ByteSize()
+	if got == 0 {
+		t.Fatalf("expected memory byte size non empty.")
 	}
 }
