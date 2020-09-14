@@ -23,6 +23,7 @@ const (
 	OpRNGT
 	OpRNGS
 	OpT
+	OpTSHAPE
 	OpTADD
 	OpTMINUS
 	OpTMUL
@@ -116,6 +117,13 @@ var definitions = map[Opcode]*Definition{
 	//          pops the second item and uses it as (Shape).
 	//          stores the Tensor into the stack.
 	OpT: {"OpT", []int{}},
+
+	// Gets the shape from the Tensor.
+	//
+	// Operand: no.
+	// Stack  : pops the top item and uses it as Tensor operand.
+	//          stores the shape of it into the stack.
+	OpTSHAPE: {"OpTSHAPE", []int{}},
 
 	// Does addition two tensors.
 	//
