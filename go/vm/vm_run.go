@@ -44,8 +44,9 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 		switch op {
 
 		////////////////////////////////////////////////////////////////////////////
-		//
-		// Load/Stores (Constants, Global Memory, etc)
+		// Load/Store/Move (Constants, Global Memory, etc)
+		////////////////////////////////////////////////////////////////////////////
+
 		case code.OpCONST:
 			cIndex := int(code.ReadUint16(vm.instructions[ip+1:]))
 			ip += 2
@@ -101,6 +102,10 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
+		////////////////////////////////////////////////////////////////////////////
+		// External I/Os. Key-value Store and Infeed Channel.
+		////////////////////////////////////////////////////////////////////////////
+
 		case code.OpLOADS:
 			key, err := vm.popString()
 			if err != nil {
@@ -135,8 +140,11 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			log.Printf("vm infeed %v objects end", n)
 
+
 		////////////////////////////////////////////////////////////////////////////
-		// Rng
+		// Random Number Generator.
+		////////////////////////////////////////////////////////////////////////////
+
 		case code.OpRNG:
 			seed, err := vm.popInteger()
 			if err != nil {
@@ -184,8 +192,9 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 			}
 
 		////////////////////////////////////////////////////////////////////////////
-		//
 		// Tensor Related.
+		////////////////////////////////////////////////////////////////////////////
+
 		case code.OpT:
 			array, err := vm.popArray()
 			if err != nil {
