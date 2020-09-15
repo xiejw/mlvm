@@ -50,7 +50,29 @@ func TestCompressedTA(t *testing.T) {
 	}
 }
 
-func TestCompressedTAToFullArray(t *testing.T) {
+func TestToFullArray(t *testing.T) {
+	ta := FromRaw([]int{2, 3}, []float32{1.2, 2.3, 3.4})
+	if !ta.IsCompressed() {
+		t.Errorf("expected to be compressed.")
+	}
+
+	ta = ta.ToFullArray()
+
+	if ta.Size != 6 {
+		t.Errorf("size mismatch.")
+	}
+	if ta.RealSize != 6 {
+		t.Errorf("real size mismatch.")
+	}
+	if ta.Rank != 2 {
+		t.Errorf("rank mismatch.")
+	}
+	if !reflect.DeepEqual([]float32{1.2, 2.3, 3.4, 1.2, 2.3, 3.4}, ta.Value) {
+		t.Errorf("value mismatch.")
+	}
+}
+
+func TestToFullArrayWithSingleV(t *testing.T) {
 	ta := FromRaw([]int{2, 3}, []float32{1.2})
 	if !ta.IsCompressed() {
 		t.Errorf("expected to be compressed.")

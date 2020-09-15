@@ -83,13 +83,24 @@ func (ta *TensorArray) ToFullArray() *TensorArray {
 		return ta
 	}
 
-	repeated_times := ta.Size / ta.RealSize
-	src := ta.Value
-	dest := make([]float32, 0, ta.Size)
+	var dst []float32
 
-	// Apprently, we can append quicker by append with a larger blocker.
-	for i := 0; i < repeated_times; i++ {
-		dest = append(dest, src...)
+	if ta.RealSize > 1 {
+		src := ta.Value
+		dst = make([]float32, 0, ta.Size)
+		repeated_times := ta.Size / ta.RealSize
+		// Apprently, we can append quicker by append with a larger blocker.
+		for i := 0; i < repeated_times; i++ {
+			dst = append(dst, src...)
+		}
+	} else {
+		// Special optimization for single element
+		v := ta.Value[0]
+		dst = make([]float32, ta.Size)
+		size := ta.Size
+		for i := 0; i < size; i++ {
+			dst[i] = v
+		}
 	}
 
 	return &TensorArray{
@@ -97,7 +108,7 @@ func (ta *TensorArray) ToFullArray() *TensorArray {
 		Rank:     ta.Rank,
 		Size:     ta.Size,
 		RealSize: ta.Size,
-		Value:    dest,
+		Value:    dst,
 	}
 }
 
