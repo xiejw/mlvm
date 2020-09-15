@@ -6,7 +6,7 @@ import (
 	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/code"
 	"github.com/xiejw/mlvm/go/object"
-	"github.com/xiejw/mlvm/go/vm/kernel"
+	"github.com/xiejw/mlvm/go/vm/mat"
 	"github.com/xiejw/mlvm/go/vm/prng64"
 	"github.com/xiejw/mlvm/go/vm/tensorarray"
 )
@@ -228,16 +228,16 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 		case code.OpTMINUS:
 			fallthrough
 		case code.OpTMUL:
-			op_type := kernel.BinaryOpType(int(op) - int(code.OpTADD) + int(kernel.BinaryAdd))
+			op_type := mat.BinaryOpType(int(op) - int(code.OpTADD) + int(mat.BinaryAdd))
 
 			lhs, rhs, err := vm.popTwoTensorsInSeq()
 			if err != nil {
 				return nil, err.EmitNote(vmErr, op)
 			}
 
-			tensor, err := kernel.BinaryOp(lhs, rhs, op_type)
+			tensor, err := mat.BinaryOp(lhs, rhs, op_type)
 			if err != nil {
-				return nil, err.EmitNote("kernel error for add").EmitNote(vmErr, op)
+				return nil, err.EmitNote("unexpected error for binary op").EmitNote(vmErr, op)
 			}
 
 			err = vm.stack.Push(tensor)
@@ -246,7 +246,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 			}
 
 		case code.OpTREDUCE:
-			merge_type := kernel.MergeType(code.ReadUint16(vm.instructions[ip+1:]))
+			merge_type := mat.MergeType(code.ReadUint16(vm.instructions[ip+1:]))
 			ip += 2
 
 			ta, err := vm.popTensor()
@@ -254,9 +254,9 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 				return nil, err
 			}
 
-			r, err := kernel.Reduce(ta, merge_type)
+			r, err := mat.Reduce(ta, merge_type)
 			if err != nil {
-				return nil, err.EmitNote("kernel error for reduce").EmitNote(vmErr, op)
+				return nil, err.EmitNote("unexpected error for reduce").EmitNote(vmErr, op)
 			}
 
 			err = vm.stack.Push(r)

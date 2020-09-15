@@ -1,4 +1,4 @@
-package kernel
+package mat
 
 import (
 	"github.com/xiejw/mlvm/go/base/errors"
