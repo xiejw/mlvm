@@ -140,7 +140,6 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			log.Printf("vm infeed %v objects end", n)
 
-
 		////////////////////////////////////////////////////////////////////////////
 		// Random Number Generator.
 		////////////////////////////////////////////////////////////////////////////
@@ -212,6 +211,18 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
+		case code.OpTSHAPE:
+			ta, err := vm.popTensor()
+			if err != nil {
+				return nil, err.EmitNote("failed to pop tensor from stack").EmitNote(vmErr, op)
+			}
+
+			shape := object.NewShape(ta.Dims)
+			err = vm.stack.Push(shape)
+			if err != nil {
+				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+			}
+
 		case code.OpTADD:
 			fallthrough
 		case code.OpTMINUS:
@@ -221,7 +232,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			lhs, rhs, err := vm.popTwoTensorsInSeq()
 			if err != nil {
-				return nil, err
+				return nil, err.EmitNote(vmErr, op)
 			}
 
 			tensor, err := kernel.BinaryOp(lhs, rhs, op_type)
@@ -274,9 +285,13 @@ func (vm *VM) popTwoTensorsInSeq() (
 
 	rhs, err = vm.popTensor()
 	if err != nil {
+		err.EmitNote("failed to the right hand side operand.")
 		return
 	}
 	lhs, err = vm.popTensor()
+	if err != nil {
+		err.EmitNote("failed to the left hand side operand.")
+	}
 	return
 
 }
