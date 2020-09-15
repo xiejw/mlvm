@@ -1,6 +1,7 @@
 package tensorarray
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/xiejw/mlvm/go/object"
@@ -46,6 +47,28 @@ func TestCompressedTA(t *testing.T) {
 	}
 	if ta.Rank != 2 {
 		t.Errorf("rank mismatch.")
+	}
+}
+
+func TestCompressedTAToFullArray(t *testing.T) {
+	ta := FromRaw([]int{2, 3}, []float32{1.2})
+	if !ta.IsCompressed() {
+		t.Errorf("expected to be compressed.")
+	}
+
+	ta = ta.ToFullArray()
+
+	if ta.Size != 6 {
+		t.Errorf("size mismatch.")
+	}
+	if ta.RealSize != 6 {
+		t.Errorf("real size mismatch.")
+	}
+	if ta.Rank != 2 {
+		t.Errorf("rank mismatch.")
+	}
+	if !reflect.DeepEqual([]float32{1.2, 1.2, 1.2, 1.2, 1.2, 1.2}, ta.Value) {
+		t.Errorf("value mismatch.")
 	}
 }
 

@@ -57,7 +57,14 @@ func FromRaw(dims []int, value []float32) *TensorArray {
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////
 // Helper Method to create TensorArray from Tensor.
+///////////////////////////////////////////////////////////////////////////////
+//
+func (ta *TensorArray) IsCompressed() bool {
+	return ta.Size != ta.RealSize
+}
+
 func FromTensor(t *object.Tensor) *TensorArray {
 	return FromRaw(t.Shape.Dims, t.Array.Value)
 }
@@ -70,11 +77,34 @@ func (ta *TensorArray) ToTensor() *object.Tensor {
 	return object.NewTensor(ta.Dims, ta.Value)
 }
 
-func (ta *TensorArray) IsCompressed() bool {
-	return ta.Size != ta.RealSize
+// Converts the compressed tensor array to full array, i.e., `!IsCompressed()`.
+func (ta *TensorArray) ToFullArray() *TensorArray {
+	if !ta.IsCompressed() {
+		return ta
+	}
+
+	repeated_times := ta.Size / ta.RealSize
+	src := ta.Value
+	dest := make([]float32, 0, ta.Size)
+
+	// Apprently, we can append quicker by append with a larger blocker.
+	for i := 0; i < repeated_times; i++ {
+		dest = append(dest, src...)
+	}
+
+	return &TensorArray{
+		Dims:     ta.Dims,
+		Rank:     ta.Rank,
+		Size:     ta.Size,
+		RealSize: ta.Size,
+		Value:    dest,
+	}
 }
 
+///////////////////////////////////////////////////////////////////////////////
 // Conform object.Object
+///////////////////////////////////////////////////////////////////////////////
+
 func (ta *TensorArray) String() string {
 	return "TensorArray"
 }
