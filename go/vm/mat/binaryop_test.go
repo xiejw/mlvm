@@ -9,39 +9,11 @@ import (
 	"github.com/xiejw/mlvm/go/vm/tensorarray"
 )
 
-func assertNoErr(t *testing.T, err *errors.DError) {
-	t.Helper()
-
-	if err != nil {
-		t.Fatalf("did not expect error. got: %v", err)
-	}
-}
-
-func assertShape(t *testing.T, expected, got []int) {
-	t.Helper()
-	if !reflect.DeepEqual(expected, got) {
-		t.Fatalf("shape mismatch. expected: %v, got: %v", expected, got)
-	}
-}
-
-func assertAllClose(t *testing.T, expected, got []float32, tol float64) {
-	t.Helper()
-	if len(expected) != len(got) {
-		t.Fatalf("value length mismatch. expected: %v, got: %v.", len(expected), len(got))
-	}
-
-	for i := 0; i < len(expected); i++ {
-		if math.Abs(float64(expected[i]-got[i])) >= tol {
-			t.Errorf("\nelement mismatch at %v: expected %v, got %v\n", i, expected[i], got[i])
-		}
-	}
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 // Basic Operations.
 ///////////////////////////////////////////////////////////////////////////////
 
-func TestTensorAdd(t *testing.T) {
+func TestBinaryAdd(t *testing.T) {
 	tensor := tensorarray.FromRaw([]int{2}, []float32{1.0, 2.0})
 
 	o, err := BinaryOp(tensor, tensor, BinaryAdd)
@@ -53,7 +25,7 @@ func TestTensorAdd(t *testing.T) {
 	}
 }
 
-func TestTensorMinus(t *testing.T) {
+func TestBinaryMinus(t *testing.T) {
 	lhs := tensorarray.FromRaw([]int{2}, []float32{1.0, 2.0})
 	rhs := tensorarray.FromRaw([]int{2}, []float32{2.0, 3.0})
 
@@ -64,7 +36,7 @@ func TestTensorMinus(t *testing.T) {
 	assertAllClose(t, []float32{-1.0, -1.0}, o.Value, 1e-6)
 }
 
-func TestTensorMul(t *testing.T) {
+func TestBinaryMul(t *testing.T) {
 	lhs := tensorarray.FromRaw([]int{2}, []float32{1.0, 2.0})
 	rhs := tensorarray.FromRaw([]int{2}, []float32{2.0, 3.0})
 
@@ -127,4 +99,35 @@ func TestBinaryOpWithBroadcastOperandtInLHS(t *testing.T) {
 	assertNoErr(t, err)
 	assertShape(t, []int{3, 2}, o.Dims)
 	assertAllClose(t, []float32{2.0, 0.0, 0.0, -2.0, -2.0, -4.0}, o.Value, 1e-6)
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Helper Method.
+///////////////////////////////////////////////////////////////////////////////
+func assertNoErr(t *testing.T, err *errors.DError) {
+	t.Helper()
+
+	if err != nil {
+		t.Fatalf("did not expect error. got: %v", err)
+	}
+}
+
+func assertShape(t *testing.T, expected, got []int) {
+	t.Helper()
+	if !reflect.DeepEqual(expected, got) {
+		t.Fatalf("shape mismatch. expected: %v, got: %v", expected, got)
+	}
+}
+
+func assertAllClose(t *testing.T, expected, got []float32, tol float64) {
+	t.Helper()
+	if len(expected) != len(got) {
+		t.Fatalf("value length mismatch. expected: %v, got: %v.", len(expected), len(got))
+	}
+
+	for i := 0; i < len(expected); i++ {
+		if math.Abs(float64(expected[i]-got[i])) >= tol {
+			t.Errorf("\nelement mismatch at %v: expected %v, got %v\n", i, expected[i], got[i])
+		}
+	}
 }

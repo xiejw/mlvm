@@ -59,7 +59,7 @@ func Matmul(lhs, rhs *tensorarray.TensorArray, trans_type MatmulTransType,
 		for k := 0; k < rhs_dim_k; k++ {
 			v_index := i*rhs_dim_k + k
 			for j := 0; j < lhs_dim_j; j++ {
-				v[v_index] += buf1[i+lhs_dim_j+j] * buf2[j*rhs_dim_k+k]
+				v[v_index] += buf1[i*lhs_dim_j+j] * buf2[j*rhs_dim_k+k]
 			}
 		}
 	}
