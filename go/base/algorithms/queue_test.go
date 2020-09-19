@@ -14,6 +14,27 @@ func TestQueue(t *testing.T) {
 	if v != 2 {
 		t.Errorf("value mismatch.")
 	}
+	_, err = q.Dequeue()
+	if err == nil {
+		t.Errorf("expect error.")
+	}
+
+	q.Enqueue(22)
+	q.Enqueue(33)
+	v, err = q.Dequeue()
+	assertNoErr(t, err)
+	if v != 22 {
+		t.Errorf("value mismatch.")
+	}
+	v, err = q.Dequeue()
+	assertNoErr(t, err)
+	if v != 33 {
+		t.Errorf("value mismatch.")
+	}
+	_, err = q.Dequeue()
+	if err == nil {
+		t.Errorf("expect error.")
+	}
 }
 
 func assertNoErr(t *testing.T, err *errors.DError) {
