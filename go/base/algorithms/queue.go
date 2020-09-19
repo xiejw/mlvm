@@ -37,10 +37,12 @@ func (q *Queue) Enqueue(item Item) *errors.DError {
 		return nil
 	}
 
-	q.end.N = &qNode{
+	n := &qNode{
 		V: item,
 		N: nil,
 	}
+	q.end.N = n
+	q.end = n
 	return nil
 }
 
