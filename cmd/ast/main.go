@@ -21,11 +21,10 @@ func main() {
 	assertNoErr(err)
 
 	v := f.IntLiteral(12)
-	f.SetOutput(v)
+	f.SetOutput(v.GetResult())
 
 	m, err := b.Finalize()
 	assertNoErr(err)
 
-	fns := m.Fns()
-	log.Printf("Fns: %v", fns)
+	log.Printf("module: \n%v", m)
 }

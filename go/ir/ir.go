@@ -1,6 +1,10 @@
 package ir
 
 import (
+	"bytes"
+	"fmt"
+	"io"
+
 	"github.com/xiejw/mlvm/go/base/errors"
 )
 
@@ -27,14 +31,47 @@ type IntLiteral struct {
 	Value int64
 }
 
+func (lit *IntLiteral) GetResult() Value {
+	return lit
+}
+
+func (lit *IntLiteral) GetResults() []Value {
+	return []Value{lit}
+}
+
 type Fn struct {
 	b         *Builder
 	name      string
 	finalized bool
 }
 
+func (f *Fn) DebugString(w io.Writer) {
+	fmt.Fprintf(w, "fn %v()", f.name)
+}
+
+func (f *Fn) String() string {
+	buf := bytes.Buffer{}
+	f.DebugString(&buf)
+	return buf.String()
+}
+
 type Module struct {
 	fns []*Fn
+}
+
+func (m *Module) DebugString(w io.Writer) {
+	fmt.Fprintf(w, "module {\n")
+	for _, f := range m.fns {
+		fmt.Fprintf(w, "\nfn %v() {\n", f.name)
+		fmt.Fprintf(w, "}\n")
+	}
+	fmt.Fprintf(w, "\n}\n")
+}
+
+func (m *Module) String() string {
+	buf := bytes.Buffer{}
+	m.DebugString(&buf)
+	return buf.String()
 }
 
 func (m *Module) Fns() []*Fn {
