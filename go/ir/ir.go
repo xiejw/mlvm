@@ -24,6 +24,12 @@ type Inst interface {
 
 type Fn struct{}
 
+type Module struct{}
+
+func (m *Module) Fns() []*Fn {
+	return nil
+}
+
 type Builder struct {
 }
 
@@ -52,4 +58,8 @@ func (f *Fn) SetInput(v Value) Inst {
 }
 
 func (f *Fn) SetOutput(v Value) {
+}
+
+func (b *Builder) Finalize() (*Module, *errors.DError) {
+	return nil, nil
 }
