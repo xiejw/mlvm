@@ -16,6 +16,25 @@ func TestModule(t *testing.T) {
 	}
 }
 
+func TestSimpleFn(t *testing.T) {
+	b := NewBuilder()
+
+	f, err := b.NewFn("main")
+	assertNoErr(t, err)
+
+	v := f.IntLiteral(12)
+	f.SetOutput(v)
+
+	m, err := b.Finalize()
+	assertNoErr(t, err)
+
+	fns := m.Fns()
+
+	if len(fns) != 1 {
+		t.Errorf("expect one fn .")
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Helper Methods.
 ///////////////////////////////////////////////////////////////////////////////
