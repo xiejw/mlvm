@@ -2,53 +2,30 @@ package main
 
 import (
 	"log"
+
+	"github.com/xiejw/mlvm/go/base/errors"
+	"github.com/xiejw/mlvm/go/ir"
 )
+
+func assertNoErr(err *errors.DError) {
+	if err != nil {
+		log.Fatalf("did not expect error: %v", err)
+	}
+}
 
 func main() {
 	log.Printf("Hello MLVM")
 
-	// p := parser.NewWithOption([]byte("(def a 123)\n(+ a a)\n"),
-	// 	&parser.Option{TraceLexer: true, TraceParser: true})
-	// ast, err := p.ParseAst()
-	// if err != nil {
-	// 	log.Fatalf("error: %v", err)
-	// }
-	// log.Printf("ast:\n%v", ast.Exprs)
+	b := ir.NewBuilder()
+	f, err := b.NewFn("main")
+	assertNoErr(err)
 
-	// 	statements := make([]ast.Statement, 0)
-	// 	statements = append(statements, &ast.ExprStatement{
-	// 		Value: &ast.FunctionCall{
-	// 			Name: &ast.Identifier{"prng_dist"},
-	// 			Args: []ast.Expression{
-	// 				&ast.FunctionCall{
-	// 					Name: &ast.Identifier{"prng_new"},
-	// 					Args: []ast.Expression{
-	// 						&ast.IntegerLiteral{123}, // seed
-	// 					},
-	// 				},
-	// 				&ast.IntegerLiteral{1}, // dist type
-	// 			},
-	// 		},
-	// 	})
-	//
-	// 	p := &ast.Program{
-	// 		Statements: statements,
-	// 	}
-	//
-	// 	o, err := compiler.Compile(p)
-	// 	if err != nil {
-	// 		log.Fatalf("failed to compile: %v", err)
-	// 	}
-	//
-	// 	log.Printf("Compiled Code:\n\n%v", o)
-	//
-	// 	m := vm.NewVM(o)
-	//
-	// 	log.Printf("Running VM\n")
-	// 	outputs, err := m.Run()
-	// 	if err != nil {
-	// 		log.Fatalf("failed to run vm: %v", err)
-	// 	}
-	//
-	// 	log.Printf("Results:\n%v\n", outputs)
+	v := f.IntLiteral(12)
+	f.SetOutput(v)
+
+	m, err := b.Finalize()
+	assertNoErr(err)
+
+	fns := m.Fns()
+	log.Printf("Fns: %v", fns)
 }
