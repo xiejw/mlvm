@@ -16,7 +16,9 @@ type Shape struct {
 // Value
 ///////////////////////////////////////////////////////////////////////////////
 
-type Value interface{}
+type Value interface {
+	valueInterface()
+}
 
 type TensorValue struct {
 	Shape *Shape
@@ -25,6 +27,14 @@ type TensorValue struct {
 type TupleValue struct {
 }
 
+type Result struct {
+	Name string
+	Src  Inst
+}
+
+// Conform Value
+func (r *Result) valueInterface() {}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Inst
 ///////////////////////////////////////////////////////////////////////////////
@@ -32,15 +42,20 @@ type TupleValue struct {
 type Inst interface {
 	GetResult() Value
 	GetResults() []Value
+	String() string
 }
 
 type IntLiteral struct {
-	Value int64
+	Value  int64
+	Result *Result
 }
 
 // Conform Inst
-func (lit *IntLiteral) GetResult() Value    { return lit }
-func (lit *IntLiteral) GetResults() []Value { return []Value{lit} }
+func (lit *IntLiteral) GetResult() Value    { return lit.Result }
+func (lit *IntLiteral) GetResults() []Value { return []Value{lit.Result} }
+func (lit *IntLiteral) String() string {
+	return fmt.Sprintf("%%%v = IntLit(%v)", lit.Result.Name, lit.Value)
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Fn
@@ -50,10 +65,27 @@ type Fn struct {
 	b         *Builder
 	name      string
 	finalized bool
+	result_i  int
+	inss      []Inst
+}
+
+func (f *Fn) nextResult(src Inst) *Result {
+	i := f.result_i
+	f.result_i++
+	return &Result{
+		Name: fmt.Sprintf("%v", i),
+		Src:  src,
+	}
 }
 
 func (f *Fn) IntLiteral(v int64) *IntLiteral {
-	return &IntLiteral{v}
+	ins := &IntLiteral{
+		Value:  v,
+		Result: nil,
+	}
+	ins.Result = f.nextResult(ins)
+	f.inss = append(f.inss, ins)
+	return ins
 }
 
 func (f *Fn) ReadKVStore(key string, s *Shape) Inst {
@@ -134,7 +166,11 @@ func (b *Builder) Finalize() (*Module, *errors.DError) {
 ///////////////////////////////////////////////////////////////////////////////
 
 func (f *Fn) DebugString(w io.Writer) {
-	fmt.Fprintf(w, "fn %v()", f.name)
+	fmt.Fprintf(w, "fn %v() {\n", f.name)
+	for _, ins := range f.inss {
+		fmt.Fprintf(w, "  %v\n", ins)
+	}
+	fmt.Fprintf(w, "}\n")
 }
 
 func (f *Fn) String() string {
@@ -146,8 +182,7 @@ func (f *Fn) String() string {
 func (m *Module) DebugString(w io.Writer) {
 	fmt.Fprintf(w, "module {\n")
 	for _, f := range m.fns {
-		fmt.Fprintf(w, "\nfn %v() {\n", f.name)
-		fmt.Fprintf(w, "}\n")
+		fmt.Fprintf(w, "\n%v", f)
 	}
 	fmt.Fprintf(w, "\n}\n")
 }

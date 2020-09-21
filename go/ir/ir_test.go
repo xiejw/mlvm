@@ -23,7 +23,7 @@ func TestSimpleFn(t *testing.T) {
 	assertNoErr(t, err)
 
 	v := f.IntLiteral(12)
-	f.SetOutput(v)
+	f.SetOutput(v.GetResult())
 
 	m, err := b.Finalize()
 	assertNoErr(t, err)
