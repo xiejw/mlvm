@@ -18,6 +18,7 @@ type Shape struct {
 
 type Value interface {
 	valueInterface()
+	String() string
 }
 
 type TensorValue struct {
@@ -34,6 +35,7 @@ type Result struct {
 
 // Conform Value
 func (r *Result) valueInterface() {}
+func (r *Result) String() string  { return r.Name }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Inst
@@ -54,7 +56,18 @@ type IntLiteral struct {
 func (lit *IntLiteral) GetResult() Value    { return lit.Result }
 func (lit *IntLiteral) GetResults() []Value { return []Value{lit.Result} }
 func (lit *IntLiteral) String() string {
-	return fmt.Sprintf("%%%v = IntLit(%v)", lit.Result.Name, lit.Value)
+	return fmt.Sprintf("%v = IntLit(%v)", lit.Result, lit.Value)
+}
+
+type Return struct {
+	Value Value
+}
+
+// Conform Inst
+func (r *Return) GetResult() Value    { return nil }
+func (r *Return) GetResults() []Value { return nil }
+func (r *Return) String() string {
+	return fmt.Sprintf("return %v", r.Value)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -73,7 +86,7 @@ func (f *Fn) nextResult(src Inst) *Result {
 	i := f.result_i
 	f.result_i++
 	return &Result{
-		Name: fmt.Sprintf("%v", i),
+		Name: fmt.Sprintf("%%%v", i),
 		Src:  src,
 	}
 }
@@ -109,6 +122,7 @@ func (f *Fn) NoOutput() {
 }
 
 func (f *Fn) SetOutput(v Value) {
+	f.inss = append(f.inss, &Return{v})
 	f.finalize()
 }
 
