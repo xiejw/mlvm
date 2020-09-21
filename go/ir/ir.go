@@ -12,6 +12,10 @@ type Shape struct {
 	Dims []int
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Value
+///////////////////////////////////////////////////////////////////////////////
+
 type Value interface{}
 
 type TensorValue struct {
@@ -21,80 +25,31 @@ type TensorValue struct {
 type TupleValue struct {
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Inst
+///////////////////////////////////////////////////////////////////////////////
+
 type Inst interface {
 	GetResult() Value
 	GetResults() []Value
 }
 
-// Conform Value
 type IntLiteral struct {
 	Value int64
 }
 
-func (lit *IntLiteral) GetResult() Value {
-	return lit
-}
+// Conform Inst
+func (lit *IntLiteral) GetResult() Value    { return lit }
+func (lit *IntLiteral) GetResults() []Value { return []Value{lit} }
 
-func (lit *IntLiteral) GetResults() []Value {
-	return []Value{lit}
-}
+///////////////////////////////////////////////////////////////////////////////
+// Fn
+///////////////////////////////////////////////////////////////////////////////
 
 type Fn struct {
 	b         *Builder
 	name      string
 	finalized bool
-}
-
-func (f *Fn) DebugString(w io.Writer) {
-	fmt.Fprintf(w, "fn %v()", f.name)
-}
-
-func (f *Fn) String() string {
-	buf := bytes.Buffer{}
-	f.DebugString(&buf)
-	return buf.String()
-}
-
-type Module struct {
-	fns []*Fn
-}
-
-func (m *Module) DebugString(w io.Writer) {
-	fmt.Fprintf(w, "module {\n")
-	for _, f := range m.fns {
-		fmt.Fprintf(w, "\nfn %v() {\n", f.name)
-		fmt.Fprintf(w, "}\n")
-	}
-	fmt.Fprintf(w, "\n}\n")
-}
-
-func (m *Module) String() string {
-	buf := bytes.Buffer{}
-	m.DebugString(&buf)
-	return buf.String()
-}
-
-func (m *Module) Fns() []*Fn {
-	return m.fns
-}
-
-type Builder struct {
-	fns   []*Fn
-	f_map map[string]*Fn
-}
-
-func NewBuilder() *Builder {
-	return &Builder{
-		fns:   nil,
-		f_map: make(map[string]*Fn),
-	}
-}
-
-func (b *Builder) NewFn(fn_name string) (*Fn, *errors.DError) {
-	if _, existed := b.f_map[fn_name]; existed {
-		return nil, errors.New("fn name already existed in module: %v", fn_name)
-	}
-	return &Fn{b: b, name: fn_name}, nil
 }
 
 func (f *Fn) IntLiteral(v int64) *IntLiteral {
@@ -127,8 +82,7 @@ func (f *Fn) SetOutput(v Value) {
 
 func (f *Fn) finalize() {
 	if f.finalized {
-		// internel bug.
-		panic("fn has finalized already.")
+		panic("fn has finalized already.") // internel bug.
 	}
 
 	f.finalized = true
@@ -136,6 +90,70 @@ func (f *Fn) finalize() {
 	f.b.f_map[f.name] = f
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Module
+///////////////////////////////////////////////////////////////////////////////
+
+type Module struct {
+	fns []*Fn
+}
+
+func (m *Module) Fns() []*Fn {
+	return m.fns
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Builder
+///////////////////////////////////////////////////////////////////////////////
+
+type Builder struct {
+	fns   []*Fn
+	f_map map[string]*Fn
+}
+
+func NewBuilder() *Builder {
+	return &Builder{
+		fns:   nil,
+		f_map: make(map[string]*Fn),
+	}
+}
+
+func (b *Builder) NewFn(fn_name string) (*Fn, *errors.DError) {
+	if _, existed := b.f_map[fn_name]; existed {
+		return nil, errors.New("fn name already existed in module: %v", fn_name)
+	}
+	return &Fn{b: b, name: fn_name}, nil
+}
+
 func (b *Builder) Finalize() (*Module, *errors.DError) {
 	return &Module{fns: b.fns}, nil
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// All String Helpers
+///////////////////////////////////////////////////////////////////////////////
+
+func (f *Fn) DebugString(w io.Writer) {
+	fmt.Fprintf(w, "fn %v()", f.name)
+}
+
+func (f *Fn) String() string {
+	buf := bytes.Buffer{}
+	f.DebugString(&buf)
+	return buf.String()
+}
+
+func (m *Module) DebugString(w io.Writer) {
+	fmt.Fprintf(w, "module {\n")
+	for _, f := range m.fns {
+		fmt.Fprintf(w, "\nfn %v() {\n", f.name)
+		fmt.Fprintf(w, "}\n")
+	}
+	fmt.Fprintf(w, "\n}\n")
+}
+
+func (m *Module) String() string {
+	buf := bytes.Buffer{}
+	m.DebugString(&buf)
+	return buf.String()
 }
