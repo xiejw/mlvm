@@ -82,6 +82,10 @@ type Fn struct {
 	inss      []Inst
 }
 
+func (f *Fn) Instructions() []Inst {
+	return f.inss
+}
+
 func (f *Fn) nextResult(src Inst) *Result {
 	i := f.result_i
 	f.result_i++
