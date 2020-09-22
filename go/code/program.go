@@ -52,7 +52,7 @@ func (cs Constants) String() string {
 
 func (cs Constants) DebugString(w io.Writer) {
 	if len(cs) == 0 {
-		fmt.Fprintf(w, "(empty)")
+		fmt.Fprintf(w, "(empty)\n")
 		return
 	}
 
