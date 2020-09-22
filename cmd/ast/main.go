@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/xiejw/mlvm/go/base/errors"
+	"github.com/xiejw/mlvm/go/compiler"
 	"github.com/xiejw/mlvm/go/ir"
 )
 
@@ -27,4 +28,9 @@ func main() {
 	assertNoErr(err)
 
 	log.Printf("module: \n%v", m)
+
+	p, err := compiler.Compile(m)
+	assertNoErr(err)
+
+	log.Printf("program: \n%v", p)
 }

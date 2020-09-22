@@ -82,6 +82,10 @@ type Fn struct {
 	inss      []Inst
 }
 
+func (f *Fn) Name() string {
+	return f.name
+}
+
 func (f *Fn) Instructions() []Inst {
 	return f.inss
 }
