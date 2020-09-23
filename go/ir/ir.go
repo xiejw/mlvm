@@ -86,7 +86,7 @@ func (f *Fn) Name() string {
 	return f.name
 }
 
-func (f *Fn) Instructions() []Inst {
+func (f *Fn) Insts() []Inst {
 	return f.inss
 }
 
