@@ -42,6 +42,7 @@ func (r *Result) String() string  { return r.Name }
 ///////////////////////////////////////////////////////////////////////////////
 
 type Inst interface {
+	GetOperand() Value // Could be nil
 	GetResult() Value
 	GetResults() []Value
 	String() string
@@ -53,6 +54,7 @@ type IntLiteral struct {
 }
 
 // Conform Inst
+func (lit *IntLiteral) GetOperand() Value   { return nil }
 func (lit *IntLiteral) GetResult() Value    { return lit.Result }
 func (lit *IntLiteral) GetResults() []Value { return []Value{lit.Result} }
 func (lit *IntLiteral) String() string {
@@ -64,6 +66,7 @@ type Return struct {
 }
 
 // Conform Inst
+func (r *Return) GetOperand() Value   { return r.Value }
 func (r *Return) GetResult() Value    { return nil }
 func (r *Return) GetResults() []Value { return nil }
 func (r *Return) String() string {
