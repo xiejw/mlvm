@@ -27,7 +27,18 @@ func codeGen(fn *ir.Fn) (*code.Program, *errors.DError) {
 
 	insts := make([]byte, 0)
 	consts := make([]object.Object, 0)
-	const_map := make(map[string]int)
+
+	value_loader := make(map[ir.Result]func() ([]byte, *errors.DError))
+
+	const_loader := func(c_index int) func() ([]byte, *errors.DError) {
+		return func() ([]byte, *errors.DError) {
+			ins, err := code.MakeOp(code.OpCONST, c_index)
+			if err != nil {
+				return nil, errors.From(err)
+			}
+			return ins, nil
+		}
+	}
 
 	for _, ins := range fn.Insts() {
 		switch v := ins.(type) {
@@ -35,14 +46,13 @@ func codeGen(fn *ir.Fn) (*code.Program, *errors.DError) {
 			c := &object.Integer{Value: v.Value}
 			index := len(consts)
 			consts = append(consts, c)
-			const_map[v.Result.Name] = index
+			value_loader[*v.GetResult().(*ir.Result)] = const_loader(index)
 
 		case *ir.Return:
 			operand := v.GetOperand().(*ir.Result)
-			index := const_map[operand.Name]
-			ins, err := code.MakeOp(code.OpCONST, index)
+			ins, err := value_loader[*operand]()
 			if err != nil {
-				return nil, errors.From(err)
+				return nil, err
 			}
 			insts = append(insts, ins...)
 
