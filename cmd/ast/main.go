@@ -6,6 +6,7 @@ import (
 	"github.com/xiejw/mlvm/go/base/errors"
 	"github.com/xiejw/mlvm/go/compiler"
 	"github.com/xiejw/mlvm/go/ir"
+	vm_lib "github.com/xiejw/mlvm/go/vm"
 )
 
 func assertNoErr(err *errors.DError) {
@@ -41,4 +42,12 @@ func main() {
 	assertNoErr(err)
 
 	log.Printf("program: \n%v", p)
+
+	/////////////////////////////////////////////////////////////////////////////
+	// To Run with VM
+	/////////////////////////////////////////////////////////////////////////////
+	vm := vm_lib.NewVM(p)
+	outputs, err := vm.Run()
+	assertNoErr(err)
+	log.Printf("vm output: \n%v", outputs)
 }
