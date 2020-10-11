@@ -12,20 +12,13 @@ type Shape struct {
 	Dims []int
 }
 
-///////////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 // Value
-///////////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 
 type Value interface {
 	valueInterface()
 	String() string
-}
-
-type TensorValue struct {
-	Shape *Shape
-}
-
-type TupleValue struct {
 }
 
 type Result struct {
@@ -37,9 +30,14 @@ type Result struct {
 func (r *Result) valueInterface() {}
 func (r *Result) String() string  { return r.Name }
 
-///////////////////////////////////////////////////////////////////////////////
+// delete this?
+type TensorValue struct {
+	Shape *Shape
+}
+
+//-----------------------------------------------------------------------------
 // Inst
-///////////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 
 type Inst interface {
 	GetOperand() Value // Could be nil
@@ -53,29 +51,25 @@ type IntLiteral struct {
 	Result *Result
 }
 
-// Conform Inst
-func (lit *IntLiteral) GetOperand() Value   { return nil }
-func (lit *IntLiteral) GetResult() Value    { return lit.Result }
-func (lit *IntLiteral) GetResults() []Value { return []Value{lit.Result} }
-func (lit *IntLiteral) String() string {
-	return fmt.Sprintf("%v = IntLit(%v)", lit.Result, lit.Value)
-}
-
 type Return struct {
 	Value Value
 }
 
 // Conform Inst
+func (lit *IntLiteral) GetOperand() Value   { return nil }
+func (lit *IntLiteral) GetResult() Value    { return lit.Result }
+func (lit *IntLiteral) GetResults() []Value { return []Value{lit.Result} }
+func (lit *IntLiteral) String() string      { return fmt.Sprintf("%v = IntLit(%v)", lit.Result, lit.Value) }
+
+// Conform Inst
 func (r *Return) GetOperand() Value   { return r.Value }
 func (r *Return) GetResult() Value    { return nil }
 func (r *Return) GetResults() []Value { return nil }
-func (r *Return) String() string {
-	return fmt.Sprintf("return %v", r.Value)
-}
+func (r *Return) String() string      { return fmt.Sprintf("return %v", r.Value) }
 
-///////////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 // Fn
-///////////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 
 type Fn struct {
 	b         *Builder
@@ -147,9 +141,9 @@ func (f *Fn) finalize() {
 	f.b.f_map[f.name] = f
 }
 
-///////////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 // Module
-///////////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 
 type Module struct {
 	fns []*Fn
@@ -159,9 +153,9 @@ func (m *Module) Fns() []*Fn {
 	return m.fns
 }
 
-///////////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 // Builder
-///////////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 
 type Builder struct {
 	fns   []*Fn
@@ -186,9 +180,9 @@ func (b *Builder) Finalize() (*Module, *errors.DError) {
 	return &Module{fns: b.fns}, nil
 }
 
-///////////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 // All String Helpers
-///////////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 
 func (f *Fn) DebugString(w io.Writer) {
 	fmt.Fprintf(w, "fn %v() {\n", f.name)
