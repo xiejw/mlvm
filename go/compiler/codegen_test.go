@@ -1,9 +1,11 @@
 package compiler
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/xiejw/mlvm/go/base/errors"
+	"github.com/xiejw/mlvm/go/code"
 	"github.com/xiejw/mlvm/go/ir"
 )
 
@@ -20,13 +22,36 @@ func TestConst(t *testing.T) {
 	assertNoErr(t, err)
 
 	//--- compile
-	_, err = Compile(m)
+	got, err := Compile(m)
 	assertNoErr(t, err)
+
+	expected := `
+-> Constants:
+
+[
+    0: Integer(12)
+]
+
+-> Instruction:
+
+000000 OpCONST    0
+`
+	assertProgram(t, expected, got)
 }
 
 //-----------------------------------------------------------------------------
 // Helper Methods.
 //-----------------------------------------------------------------------------
+
+func assertProgram(t *testing.T, expectedStr string, p *code.Program) {
+	t.Helper()
+	expected := strings.Trim(expectedStr, "\n")
+	got := strings.Trim(p.String(), "\n")
+
+	if expected != got {
+		t.Fatalf("expected program:\n\n===> expected:\n%v\n\n===> got:\n%v", expected, got)
+	}
+}
 
 func assertNoErr(t *testing.T, err *errors.DError) {
 	t.Helper()
