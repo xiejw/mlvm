@@ -27,7 +27,8 @@ func main() {
 	assertNoErr(err)
 
 	v := f.IntLiteral(12)
-	f.SetOutput(v.GetResult())
+	r := f.RngSeed(v)
+	f.SetOutput(r.GetResult())
 
 	m, err := b.Finalize()
 	assertNoErr(err)

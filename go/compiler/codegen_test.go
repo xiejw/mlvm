@@ -49,7 +49,7 @@ func assertProgram(t *testing.T, expectedStr string, p *code.Program) {
 	got := strings.Trim(p.String(), "\n")
 
 	if expected != got {
-		t.Fatalf("expected program:\n\n===> expected:\n%v\n\n===> got:\n%v", expected, got)
+		t.Fatalf("mismatch program:\n\n===> expected:\n%v\n\n===> got:\n%v", expected, got)
 	}
 }
 

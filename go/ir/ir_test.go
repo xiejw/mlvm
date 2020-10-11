@@ -1,6 +1,7 @@
 package ir
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/xiejw/mlvm/go/base/errors"
@@ -16,28 +17,71 @@ func TestModule(t *testing.T) {
 	}
 }
 
-func TestSimpleFn(t *testing.T) {
-	b := NewBuilder()
-
-	f, err := b.NewFn("main")
-	assertNoErr(t, err)
+func TestIntLit(t *testing.T) {
+	f, b := newMainFn(t)
 
 	v := f.IntLiteral(12)
 	f.SetOutput(v.GetResult())
 
-	m, err := b.Finalize()
+	got, err := b.Finalize()
 	assertNoErr(t, err)
 
-	fns := m.Fns()
+	expected := `
+module {
 
-	if len(fns) != 1 {
-		t.Errorf("expect one fn .")
-	}
+fn main() {
+  %0 = IntLit(12)
+  return %0
+}
+
+}`
+	assertModule(t, expected, got)
+}
+
+func TestRndSeed(t *testing.T) {
+	f, b := newMainFn(t)
+
+	v := f.IntLiteral(12)
+	r := f.RngSeed(v)
+	f.SetOutput(r.GetResult())
+
+	got, err := b.Finalize()
+	assertNoErr(t, err)
+
+	expected := `
+module {
+
+fn main() {
+  %0 = IntLit(12)
+  %1 = RngSeed(%0)
+  return %1
+}
+
+}`
+	assertModule(t, expected, got)
 }
 
 //-----------------------------------------------------------------------------
 // Helper Methods.
 //-----------------------------------------------------------------------------
+
+func newMainFn(t *testing.T) (*Fn, *Builder) {
+	t.Helper()
+	b := NewBuilder()
+	f, err := b.NewFn("main")
+	assertNoErr(t, err)
+	return f, b
+}
+
+func assertModule(t *testing.T, expectedStr string, m *Module) {
+	t.Helper()
+	expected := strings.Trim(expectedStr, "\n")
+	got := strings.Trim(m.String(), "\n")
+
+	if expected != got {
+		t.Fatalf("mismatch module:\n\n===> expected:\n%v\n\n===> got:\n%v", expected, got)
+	}
+}
 
 func assertNoErr(t *testing.T, err *errors.DError) {
 	t.Helper()

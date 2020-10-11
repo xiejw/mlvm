@@ -49,17 +49,28 @@ type IntLiteral struct {
 	Result *Result
 }
 
+type RngSeed struct {
+	Input  *IntLiteral
+	Result *Result
+}
+
 type Return struct {
 	Value Value
 }
 
-// Conform Inst
+//-- Conform Inst
 func (lit *IntLiteral) GetOperand() Value   { return nil }
 func (lit *IntLiteral) GetResult() Value    { return lit.Result }
 func (lit *IntLiteral) GetResults() []Value { return []Value{lit.Result} }
 func (lit *IntLiteral) String() string      { return fmt.Sprintf("%v = IntLit(%v)", lit.Result, lit.Value) }
 
-// Conform Inst
+func (rng *RngSeed) GetOperand() Value   { return rng.Input.Result }
+func (rng *RngSeed) GetResult() Value    { return rng.Result }
+func (rng *RngSeed) GetResults() []Value { return []Value{rng.Result} }
+func (rng *RngSeed) String() string {
+	return fmt.Sprintf("%v = RngSeed(%v)", rng.Result, rng.Input.Result)
+}
+
 func (r *Return) GetOperand() Value   { return r.Value }
 func (r *Return) GetResult() Value    { return nil }
 func (r *Return) GetResults() []Value { return nil }
@@ -94,6 +105,18 @@ func (f *Fn) IntLiteral(v int64) *IntLiteral {
 	f.inss = append(f.inss, ins)
 	return ins
 }
+
+func (f *Fn) RngSeed(lit *IntLiteral) *RngSeed {
+	ins := &RngSeed{
+		Input:  lit,
+		Result: nil,
+	}
+	ins.Result = f.nextResult(ins)
+	f.inss = append(f.inss, ins)
+	return ins
+}
+
+//-- Output
 
 func (f *Fn) NoOutput() {
 	f.finalize()
