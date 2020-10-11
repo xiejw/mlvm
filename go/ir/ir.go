@@ -8,10 +8,6 @@ import (
 	"github.com/xiejw/mlvm/go/base/errors"
 )
 
-type Shape struct {
-	Dims []int
-}
-
 //-----------------------------------------------------------------------------
 // Value
 //-----------------------------------------------------------------------------
@@ -30,10 +26,13 @@ type Result struct {
 func (r *Result) valueInterface() {}
 func (r *Result) String() string  { return r.Name }
 
-// delete this?
-type TensorValue struct {
-	Shape *Shape
-}
+// type TensorValue struct {
+// 	Shape *Shape
+// }
+// type Shape struct {
+// 	Dims []int
+// }
+
 
 //-----------------------------------------------------------------------------
 // Inst
@@ -87,15 +86,6 @@ func (f *Fn) Insts() []Inst {
 	return f.inss
 }
 
-func (f *Fn) nextResult(src Inst) *Result {
-	i := f.result_i
-	f.result_i++
-	return &Result{
-		Name: fmt.Sprintf("%%%v", i),
-		Src:  src,
-	}
-}
-
 func (f *Fn) IntLiteral(v int64) *IntLiteral {
 	ins := &IntLiteral{
 		Value:  v,
@@ -106,22 +96,6 @@ func (f *Fn) IntLiteral(v int64) *IntLiteral {
 	return ins
 }
 
-func (f *Fn) ReadKVStore(key string, s *Shape) Inst {
-	return nil
-}
-
-func (f *Fn) TAdd(lhs, rhs *TensorValue) Inst {
-	return nil
-}
-
-func (f *Fn) MakeTuple(args ...*TensorValue) Inst {
-	return nil
-}
-
-func (f *Fn) SetInput(v Value) Inst {
-	return nil
-}
-
 func (f *Fn) NoOutput() {
 	f.finalize()
 }
@@ -130,6 +104,34 @@ func (f *Fn) SetOutput(v Value) {
 	f.inss = append(f.inss, &Return{v})
 	f.finalize()
 }
+
+
+//-- Helper Methods.
+
+func (f *Fn) nextResult(src Inst) *Result {
+	i := f.result_i
+	f.result_i++
+	return &Result{
+		Name: fmt.Sprintf("%%%v", i),
+		Src:  src,
+	}
+}
+
+// func (f *Fn) ReadKVStore(key string, s *Shape) Inst {
+// 	return nil
+// }
+//
+// func (f *Fn) TAdd(lhs, rhs *TensorValue) Inst {
+// 	return nil
+// }
+//
+// func (f *Fn) MakeTuple(args ...*TensorValue) Inst {
+// 	return nil
+// }
+//
+// func (f *Fn) SetInput(v Value) Inst {
+// 	return nil
+// }
 
 func (f *Fn) finalize() {
 	if f.finalized {
