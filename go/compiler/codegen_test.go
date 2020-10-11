@@ -1,24 +1,15 @@
-package ir
+package compiler
 
 import (
 	"testing"
 
 	"github.com/xiejw/mlvm/go/base/errors"
+	"github.com/xiejw/mlvm/go/ir"
 )
 
-func TestModule(t *testing.T) {
-	b := NewBuilder()
-	m, err := b.Finalize()
-	assertNoErr(t, err)
-
-	if m.Fns() != nil {
-		t.Errorf("expect empty module.")
-	}
-}
-
-func TestSimpleFn(t *testing.T) {
-	b := NewBuilder()
-
+func TestConst(t *testing.T) {
+	//--- ir
+	b := ir.NewBuilder()
 	f, err := b.NewFn("main")
 	assertNoErr(t, err)
 
@@ -28,11 +19,9 @@ func TestSimpleFn(t *testing.T) {
 	m, err := b.Finalize()
 	assertNoErr(t, err)
 
-	fns := m.Fns()
-
-	if len(fns) != 1 {
-		t.Errorf("expect one fn .")
-	}
+	//--- compile
+	_, err = Compile(m)
+	assertNoErr(t, err)
 }
 
 //-----------------------------------------------------------------------------

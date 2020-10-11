@@ -33,7 +33,6 @@ func (r *Result) String() string  { return r.Name }
 // 	Dims []int
 // }
 
-
 //-----------------------------------------------------------------------------
 // Inst
 //-----------------------------------------------------------------------------
@@ -104,7 +103,6 @@ func (f *Fn) SetOutput(v Value) {
 	f.inss = append(f.inss, &Return{v})
 	f.finalize()
 }
-
 
 //-- Helper Methods.
 
