@@ -50,6 +50,7 @@ type IntLiteral struct {
 }
 
 type RngSeed struct {
+	// TODO Expect a value with Int type
 	Input  *IntLiteral
 	Result *Result
 }

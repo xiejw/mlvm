@@ -128,7 +128,7 @@ func fmtInstruction(def *Definition, operands []int) string {
 
 	switch count {
 	case 0:
-		return fmt.Sprintf("%-10s", def.Name)
+		return fmt.Sprintf("%s", def.Name)
 	case 1:
 		return fmt.Sprintf("%-10s %d", def.Name, operands[0])
 	default:

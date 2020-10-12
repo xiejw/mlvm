@@ -39,17 +39,56 @@ func TestConst(t *testing.T) {
 	assertProgram(t, expected, got)
 }
 
+func TestRngSeed(t *testing.T) {
+	//--- ir
+	b := ir.NewBuilder()
+	f, err := b.NewFn("main")
+	assertNoErr(t, err)
+
+	v := f.IntLiteral(12)
+	r := f.RngSeed(v)
+	f.SetOutput(r.GetResult())
+
+	m, err := b.Finalize()
+	assertNoErr(t, err)
+
+	//--- compile
+	got, err := Compile(m)
+	assertNoErr(t, err)
+
+	expected := `
+-> Constants:
+
+[
+    0: Integer(12)
+]
+
+-> Instruction:
+
+000000 OpCONST    0
+000003 OpRNG
+000004 OpSTORE    0
+000007 OpLOAD     0
+`
+	assertProgram(t, expected, got)
+}
+
 //-----------------------------------------------------------------------------
 // Helper Methods.
 //-----------------------------------------------------------------------------
 
 func assertProgram(t *testing.T, expectedStr string, p *code.Program) {
 	t.Helper()
-	expected := strings.Trim(expectedStr, "\n")
-	got := strings.Trim(p.String(), "\n")
+	expected := strings.Trim(expectedStr, "\n\a")
+	got := strings.Trim(p.String(), "\n\a")
 
 	if expected != got {
-		t.Fatalf("mismatch program:\n\n===> expected:\n%v\n\n===> got:\n%v", expected, got)
+		t.Errorf("mismatch program:\n\n===> expected:\n%v\n\n===> got:\n%v", expected, got)
+		for i, c := range expected {
+			if byte(c) != got[i] {
+				t.Fatalf("the %d-th char is different: `%v` vs `%v`", i, c, got[i])
+			}
+		}
 	}
 }
 
