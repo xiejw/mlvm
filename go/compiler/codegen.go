@@ -50,22 +50,42 @@ func codeGen(fn *ir.Fn) (*code.Program, *errors.DError) {
 
 	for _, ins := range fn.Insts() {
 		switch v := ins.(type) {
+
 		case *ir.IntLiteral:
 			c := &object.Integer{Value: v.Value}
 			index := len(consts)
 			consts = append(consts, c)
 			value_loader[*v.GetResult().(*ir.Result)] = constLoaderFn(index)
 
+		case *ir.RngSeed:
+			int_lit := v.Input.Result
+			ins, err := value_loader[*int_lit]()
+			if err != nil {
+				return nil, err
+			}
+			insts = append(insts, ins...)
+
+			ins, err_1 := code.MakeOp(code.OpRNG)
+			if err_1 != nil {
+				return nil, errors.From(err_1)
+			}
+			insts = append(insts, ins...)
+
 		case *ir.Return:
 			operand := v.GetOperand().(*ir.Result)
-			ins, err := value_loader[*operand]()
+			loader, existed := value_loader[*operand]
+			if !existed {
+				panic(fmt.Sprintf("value loader for result (%v) does not exist.", operand))
+			}
+
+			ins, err := loader()
 			if err != nil {
 				return nil, err
 			}
 			insts = append(insts, ins...)
 
 		default:
-			panic(fmt.Sprintf("unsupported ins type for codegen: %v", v))
+			panic(fmt.Sprintf("unsupported ins type for codegen: %v", v)) // internal bug.
 		}
 	}
 
