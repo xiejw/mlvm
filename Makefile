@@ -54,3 +54,17 @@ clean:
 
 # Optionally include a local Makefile.
 -include Makefile.local
+
+C_FMT=docker run --rm -ti \
+			--user `id -u ${USER}`:`id -g ${USER}` \
+			-v `pwd`:/workdir xiejw/clang-format \
+			/clang-format.sh
+
+CFLAGS=-std=c99 -O2 -Wall -Werror -pedantic -Wno-c11-extensions ${CLAGS}
+
+c:
+	${CC} ${CLAGS} -Isrc -o /tmp/1 cmd/c/main.c
+
+c_fmt:
+	${C_FMT} cmd/c src
+
