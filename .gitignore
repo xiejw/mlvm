@@ -1,8 +1,4 @@
-# CXX outputs
-.debug
-.release
-
-# Go outputs
+# c outputs
 .build
 
 # Vim
@@ -13,8 +9,3 @@
 *.log
 doc/*.pdf
 
-# Yacc
-
-cmd/yacc/testdata/expr/expr
-cmd/yacc/testdata/expr/expr.go
-cmd/yacc/testdata/expr/y.output
