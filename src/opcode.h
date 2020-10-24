@@ -1,6 +1,9 @@
 #ifndef OPCODE_H_
 #define OPCODE_H_
 
+#define OPCODE_MAX_NUM_OPERANDS 1
+#define OPCODE_MAX_CODE_LEN     OPCODE_MAX_NUM_OPERANDS + 1
+
 typedef enum {
   OP_CONST,
   OP_POP,

@@ -1,11 +1,12 @@
 #include "opcode.h"
 
-typedef int error_t;
+typedef int  errort;
+typedef char codet;
 
 typedef struct {
   char* name;
   int   num_operand;
-  int   widths[1];  // operands width. maximum as 1 now.
+  int   widths[OPCODE_MAX_NUM_OPERANDS];
 } opdeft;
 
 static opdeft opDefs[OP_END] = {
@@ -35,8 +36,10 @@ static opdeft opDefs[OP_END] = {
 #define OK         0
 #define ENOT_FOUND -2
 
-error_t opLookup(opcodet c, opdeft** def) {
+errort opLookup(opcodet c, opdeft** def) {
   if (c < 0 || c >= OP_END) return ENOT_FOUND;
   *def = &opDefs[c];
   return OK;
 }
+
+errort opMake(opcodet c, codet* code) { return OK; }
