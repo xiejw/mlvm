@@ -5,10 +5,10 @@ import (
 
 	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/code"
+	"github.com/xiejw/mlvm/vm/mach/mat"
+	"github.com/xiejw/mlvm/vm/mach/prng64"
+	"github.com/xiejw/mlvm/vm/mach/tensorarray"
 	"github.com/xiejw/mlvm/vm/object"
-	"github.com/xiejw/mlvm/vm/vm/mat"
-	"github.com/xiejw/mlvm/vm/vm/prng64"
-	"github.com/xiejw/mlvm/vm/vm/tensorarray"
 )
 
 const vmErr = "virtual machine error: current opcode %v"

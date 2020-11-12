@@ -2,8 +2,8 @@ package vm
 
 import (
 	"github.com/xiejw/mlvm/vm/base/errors"
+	"github.com/xiejw/mlvm/vm/mach/tensorarray"
 	"github.com/xiejw/mlvm/vm/object"
-	"github.com/xiejw/mlvm/vm/vm/tensorarray"
 )
 
 func (vm *VM) pop() (object.Object, *errors.DError) {

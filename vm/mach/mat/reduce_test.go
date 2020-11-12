@@ -3,7 +3,7 @@ package mat
 import (
 	"testing"
 
-	"github.com/xiejw/mlvm/vm/vm/tensorarray"
+	"github.com/xiejw/mlvm/vm/mach/tensorarray"
 )
 
 func TestReduce(t *testing.T) {

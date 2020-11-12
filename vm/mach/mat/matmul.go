@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/xiejw/mlvm/vm/base/errors"
-	"github.com/xiejw/mlvm/vm/vm/tensorarray"
+	"github.com/xiejw/mlvm/vm/mach/tensorarray"
 )
 
 type MatmulTransType int

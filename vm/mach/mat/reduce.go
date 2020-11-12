@@ -2,7 +2,7 @@ package mat
 
 import (
 	"github.com/xiejw/mlvm/vm/base/errors"
-	"github.com/xiejw/mlvm/vm/vm/tensorarray"
+	"github.com/xiejw/mlvm/vm/mach/tensorarray"
 )
 
 type MergeType int
