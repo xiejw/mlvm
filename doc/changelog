@@ -1,5 +1,6 @@
 ## TODO
 
+- add simple type to ir
 - change error in vm
 - lower the 1 + 1
 
