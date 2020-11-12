@@ -3,7 +3,7 @@ package vm
 
 import (
 	"github.com/xiejw/mlvm/vm/code"
-	"github.com/xiejw/mlvm/vm/mach/mach"
+	"github.com/xiejw/mlvm/vm/mach/parts"
 	"github.com/xiejw/mlvm/vm/object"
 )
 
@@ -17,9 +17,9 @@ type VM struct {
 	constants    []object.Object
 
 	// Internal States.
-	stack     *mach.Stack
-	globalMem *mach.Memory
-	store     mach.TensorStore
+	stack     *parts.Stack
+	globalMem *parts.Memory
+	store     parts.TensorStore
 	c         chan object.Object
 }
 
@@ -27,9 +27,9 @@ func NewVM(program *code.Program) *VM {
 	return &VM{
 		instructions: program.Instructions,
 		constants:    program.Constants,
-		stack:        mach.NewStack(),
-		globalMem:    mach.NewMemory(),
-		store:        mach.NewTensorStore(),
+		stack:        parts.NewStack(),
+		globalMem:    parts.NewMemory(),
+		store:        parts.NewTensorStore(),
 		c:            make(chan object.Object),
 	}
 }
