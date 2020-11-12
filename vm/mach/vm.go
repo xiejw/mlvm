@@ -1,5 +1,5 @@
-// Package `vm` provides the implementation of the stack virtual machine.
-package vm
+// Package `mach` provides the implementation of the stack virtual machine.
+package mach
 
 import (
 	"github.com/xiejw/mlvm/vm/code"

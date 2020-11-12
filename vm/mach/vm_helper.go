@@ -1,4 +1,4 @@
-package vm
+package mach
 
 import (
 	"github.com/xiejw/mlvm/vm/base/errors"
