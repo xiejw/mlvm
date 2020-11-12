@@ -1,11 +1,6 @@
-# c outputs
-.build
-
-# Vim
+# vim
 *.swo
 *.swp
 
-# TeX
-*.log
-doc/*.pdf
-
+# binary output
+.build
