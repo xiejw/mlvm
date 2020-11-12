@@ -1,7 +1,0 @@
-#ifndef MLVM_IR_ERROR_H_
-#define MLVM_IR_ERROR_H_
-
-#define MLVM_ERROR_INCOMPATIBLE_SHAPE           -2
-#define MLVM_ERROR_UNSUPPORTED_INSTRUCTION_TYPE -3
-
-#endif
