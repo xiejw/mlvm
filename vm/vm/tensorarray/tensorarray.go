@@ -4,7 +4,7 @@ package tensorarray
 import (
 	"unsafe"
 
-	"github.com/xiejw/mlvm/go/object"
+	"github.com/xiejw/mlvm/vm/object"
 )
 
 var (

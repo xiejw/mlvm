@@ -3,8 +3,8 @@ package vm
 import (
 	"testing"
 
-	"github.com/xiejw/mlvm/go/code"
-	"github.com/xiejw/mlvm/go/object"
+	"github.com/xiejw/mlvm/vm/code"
+	"github.com/xiejw/mlvm/vm/object"
 )
 
 func TestExample1(t *testing.T) {

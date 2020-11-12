@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/xiejw/mlvm/go/object"
+	"github.com/xiejw/mlvm/vm/object"
 )
 
 const defaultProgramInitSize = 128

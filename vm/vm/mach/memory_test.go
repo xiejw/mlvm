@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/xiejw/mlvm/go/object"
+	"github.com/xiejw/mlvm/vm/object"
 )
 
 func TestGetAndSet(t *testing.T) {

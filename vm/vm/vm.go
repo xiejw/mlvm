@@ -2,9 +2,9 @@
 package vm
 
 import (
-	"github.com/xiejw/mlvm/go/code"
-	"github.com/xiejw/mlvm/go/object"
-	"github.com/xiejw/mlvm/go/vm/mach"
+	"github.com/xiejw/mlvm/vm/code"
+	"github.com/xiejw/mlvm/vm/object"
+	"github.com/xiejw/mlvm/vm/vm/mach"
 )
 
 // VM is a machine which runs the user provided program. The program is immutable; while the

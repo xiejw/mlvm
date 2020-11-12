@@ -3,7 +3,7 @@ package algorithrms
 import (
 	"testing"
 
-	"github.com/xiejw/mlvm/go/base/errors"
+	"github.com/xiejw/mlvm/vm/base/errors"
 )
 
 func TestQueue(t *testing.T) {

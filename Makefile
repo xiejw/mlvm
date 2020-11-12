@@ -1,5 +1,5 @@
 REPO=mlvm
-LIB_DIR=go
+LIB_DIR=vm
 CMD_DIR=cmd
 TEST_DIR=tests
 BUILD_DIR=.build

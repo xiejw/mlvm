@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/xiejw/mlvm/go/object"
+	"github.com/xiejw/mlvm/vm/object"
 )
 
 func TestObjectInterface(t *testing.T) {

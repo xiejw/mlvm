@@ -1,9 +1,9 @@
 package vm
 
 import (
-	"github.com/xiejw/mlvm/go/base/errors"
-	"github.com/xiejw/mlvm/go/object"
-	"github.com/xiejw/mlvm/go/vm/tensorarray"
+	"github.com/xiejw/mlvm/vm/base/errors"
+	"github.com/xiejw/mlvm/vm/object"
+	"github.com/xiejw/mlvm/vm/vm/tensorarray"
 )
 
 func (vm *VM) pop() (object.Object, *errors.DError) {

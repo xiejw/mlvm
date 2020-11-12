@@ -4,9 +4,9 @@ import (
 	"math"
 	"testing"
 
-	"github.com/xiejw/mlvm/go/base/errors"
-	"github.com/xiejw/mlvm/go/code"
-	"github.com/xiejw/mlvm/go/object"
+	"github.com/xiejw/mlvm/vm/base/errors"
+	"github.com/xiejw/mlvm/vm/code"
+	"github.com/xiejw/mlvm/vm/object"
 )
 
 func TestCreateVM(t *testing.T) {

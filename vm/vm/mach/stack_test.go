@@ -3,8 +3,8 @@ package mach
 import (
 	"testing"
 
-	"github.com/xiejw/mlvm/go/base/errors"
-	"github.com/xiejw/mlvm/go/object"
+	"github.com/xiejw/mlvm/vm/base/errors"
+	"github.com/xiejw/mlvm/vm/object"
 )
 
 func checkNotErr(t *testing.T, err *errors.DError) {

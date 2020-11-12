@@ -1,8 +1,8 @@
 package mat
 
 import (
-	"github.com/xiejw/mlvm/go/base/errors"
-	"github.com/xiejw/mlvm/go/vm/tensorarray"
+	"github.com/xiejw/mlvm/vm/base/errors"
+	"github.com/xiejw/mlvm/vm/vm/tensorarray"
 )
 
 type BinaryOpType int

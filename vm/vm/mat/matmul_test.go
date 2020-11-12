@@ -3,7 +3,7 @@ package mat
 import (
 	"testing"
 
-	"github.com/xiejw/mlvm/go/vm/tensorarray"
+	"github.com/xiejw/mlvm/vm/vm/tensorarray"
 )
 
 func TestMatMul(t *testing.T) {

@@ -3,12 +3,12 @@ package vm
 import (
 	"log"
 
-	"github.com/xiejw/mlvm/go/base/errors"
-	"github.com/xiejw/mlvm/go/code"
-	"github.com/xiejw/mlvm/go/object"
-	"github.com/xiejw/mlvm/go/vm/mat"
-	"github.com/xiejw/mlvm/go/vm/prng64"
-	"github.com/xiejw/mlvm/go/vm/tensorarray"
+	"github.com/xiejw/mlvm/vm/base/errors"
+	"github.com/xiejw/mlvm/vm/code"
+	"github.com/xiejw/mlvm/vm/object"
+	"github.com/xiejw/mlvm/vm/vm/mat"
+	"github.com/xiejw/mlvm/vm/vm/prng64"
+	"github.com/xiejw/mlvm/vm/vm/tensorarray"
 )
 
 const vmErr = "virtual machine error: current opcode %v"

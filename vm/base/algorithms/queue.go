@@ -1,7 +1,7 @@
 package algorithrms
 
 import (
-	"github.com/xiejw/mlvm/go/base/errors"
+	"github.com/xiejw/mlvm/vm/base/errors"
 )
 
 type Item interface{}

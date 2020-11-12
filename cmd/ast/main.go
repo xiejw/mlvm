@@ -2,53 +2,52 @@ package main
 
 import (
 	"log"
-
-	"github.com/xiejw/mlvm/go/base/errors"
-	"github.com/xiejw/mlvm/go/compiler"
-	"github.com/xiejw/mlvm/go/ir"
-	vm_lib "github.com/xiejw/mlvm/go/vm"
+	// "github.com/xiejw/mlvm/go/base/errors"
+	// "github.com/xiejw/mlvm/go/compiler"
+	// "github.com/xiejw/mlvm/go/ir"
+	// vm_lib "github.com/xiejw/mlvm/go/vm"
 )
 
-func assertNoErr(err *errors.DError) {
-	if err != nil {
-		log.Fatalf("did not expect error: %v", err)
-	}
-}
+// func assertNoErr(err *errors.DError) {
+// 	if err != nil {
+// 		log.Fatalf("did not expect error: %v", err)
+// 	}
+// }
 
 func main() {
 	log.Printf("Hello MLVM")
 
-	//---------------------------------------------------------------------------
-	// Builds IR
-	//---------------------------------------------------------------------------
+	// //---------------------------------------------------------------------------
+	// // Builds IR
+	// //---------------------------------------------------------------------------
 
-	b := ir.NewBuilder()
-	f, err := b.NewFn("main")
-	assertNoErr(err)
+	// b := ir.NewBuilder()
+	// f, err := b.NewFn("main")
+	// assertNoErr(err)
 
-	v := f.IntLiteral(12)
-	r := f.RngSeed(v)
-	f.SetOutput(r.GetResult())
+	// v := f.IntLiteral(12)
+	// r := f.RngSeed(v)
+	// f.SetOutput(r.GetResult())
 
-	m, err := b.Finalize()
-	assertNoErr(err)
+	// m, err := b.Finalize()
+	// assertNoErr(err)
 
-	log.Printf("module: \n%v", m)
+	// log.Printf("module: \n%v", m)
 
-	//---------------------------------------------------------------------------
-	// Compiles to Program
-	//---------------------------------------------------------------------------
+	// //---------------------------------------------------------------------------
+	// // Compiles to Program
+	// //---------------------------------------------------------------------------
 
-	p, err := compiler.Compile(m)
-	assertNoErr(err)
+	// p, err := compiler.Compile(m)
+	// assertNoErr(err)
 
-	log.Printf("program: \n%v", p)
+	// log.Printf("program: \n%v", p)
 
-	//---------------------------------------------------------------------------
-	// To Run with VM
-	//---------------------------------------------------------------------------
-	vm := vm_lib.NewVM(p)
-	outputs, err := vm.Run()
-	assertNoErr(err)
-	log.Printf("vm output: \n%v", outputs)
+	// //---------------------------------------------------------------------------
+	// // To Run with VM
+	// //---------------------------------------------------------------------------
+	// vm := vm_lib.NewVM(p)
+	// outputs, err := vm.Run()
+	// assertNoErr(err)
+	// log.Printf("vm output: \n%v", outputs)
 }

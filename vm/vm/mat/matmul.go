@@ -3,8 +3,8 @@ package mat
 import (
 	"log"
 
-	"github.com/xiejw/mlvm/go/base/errors"
-	"github.com/xiejw/mlvm/go/vm/tensorarray"
+	"github.com/xiejw/mlvm/vm/base/errors"
+	"github.com/xiejw/mlvm/vm/vm/tensorarray"
 )
 
 type MatmulTransType int
