@@ -68,7 +68,7 @@ func codeGen(fn *ir.Fn) (*code.Program, *errors.DError) {
 
 	value_loader := make(map[ir.Result]LoaderFn)
 
-	for _, ins := range fn.Insts() {
+	for _, ins := range fn.Instructions() {
 		switch v := ins.(type) {
 
 		case *ir.IntLiteral:

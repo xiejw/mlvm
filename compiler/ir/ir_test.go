@@ -9,7 +9,7 @@ import (
 
 func TestModule(t *testing.T) {
 	b := NewBuilder()
-	m, err := b.Finalize()
+	m, err := b.Done()
 	assertNoErr(t, err)
 
 	if m.Fns() != nil {
@@ -21,9 +21,9 @@ func TestIntLit(t *testing.T) {
 	f, b := newMainFn(t)
 
 	v := f.IntLiteral(12)
-	f.SetOutput(v.GetResult())
+	f.SetOutputAndDone(v.GetResult())
 
-	got, err := b.Finalize()
+	got, err := b.Done()
 	assertNoErr(t, err)
 
 	expected := `
@@ -43,9 +43,9 @@ func TestRndSeed(t *testing.T) {
 
 	v := f.IntLiteral(12)
 	r := f.RngSeed(v)
-	f.SetOutput(r.GetResult())
+	f.SetOutputAndDone(r.GetResult())
 
-	got, err := b.Finalize()
+	got, err := b.Done()
 	assertNoErr(t, err)
 
 	expected := `

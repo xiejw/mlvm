@@ -8,9 +8,9 @@ import (
 	"github.com/xiejw/mlvm/compiler/base/errors"
 )
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Value
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 type Value interface {
 	valueInterface()
@@ -19,25 +19,18 @@ type Value interface {
 
 type Result struct {
 	Name string
-	Src  Inst
+	Src  Instruction
 }
 
-// Conform Value
+// -- Conform Value
 func (r *Result) valueInterface() {}
 func (r *Result) String() string  { return r.Name }
 
-// type TensorValue struct {
-// 	Shape *Shape
-// }
-// type Shape struct {
-// 	Dims []int
-// }
+// -----------------------------------------------------------------------------
+// Instruction
+// -----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-// Inst
-//-----------------------------------------------------------------------------
-
-type Inst interface {
+type Instruction interface {
 	GetOperand() Value // Could be nil
 	GetResult() Value
 	GetResults() []Value
@@ -59,7 +52,7 @@ type Return struct {
 	Value Value
 }
 
-//-- Conform Inst
+// -- Conform Instruction
 func (lit *IntLiteral) GetOperand() Value   { return nil }
 func (lit *IntLiteral) GetResult() Value    { return lit.Result }
 func (lit *IntLiteral) GetResults() []Value { return []Value{lit.Result} }
@@ -77,24 +70,23 @@ func (r *Return) GetResult() Value    { return nil }
 func (r *Return) GetResults() []Value { return nil }
 func (r *Return) String() string      { return fmt.Sprintf("return %v", r.Value) }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Fn
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 type Fn struct {
-	b         *Builder
-	name      string
-	finalized bool
-	result_i  int
-	inss      []Inst
+	b         *Builder      // Parent builder.
+	name      string        // Func name.
+	res_index int           // Next result index.
+	insts     []Instruction // Instructions
 }
 
 func (f *Fn) Name() string {
 	return f.name
 }
 
-func (f *Fn) Insts() []Inst {
-	return f.inss
+func (f *Fn) Instructions() []Instruction {
+	return f.insts
 }
 
 func (f *Fn) IntLiteral(v int64) *IntLiteral {
@@ -103,7 +95,7 @@ func (f *Fn) IntLiteral(v int64) *IntLiteral {
 		Result: nil,
 	}
 	ins.Result = f.nextResult(ins)
-	f.inss = append(f.inss, ins)
+	f.insts = append(f.insts, ins)
 	return ins
 }
 
@@ -113,61 +105,36 @@ func (f *Fn) RngSeed(lit *IntLiteral) *RngSeed {
 		Result: nil,
 	}
 	ins.Result = f.nextResult(ins)
-	f.inss = append(f.inss, ins)
+	f.insts = append(f.insts, ins)
 	return ins
 }
 
-//-- Output
+// -- Output
 
-func (f *Fn) NoOutput() {
-	f.finalize()
+func (f *Fn) SetOutputAndDone(v Value) {
+	f.insts = append(f.insts, &Return{v})
+	f.Done()
 }
 
-func (f *Fn) SetOutput(v Value) {
-	f.inss = append(f.inss, &Return{v})
-	f.finalize()
-}
+// -- Helper Methods.
 
-//-- Helper Methods.
-
-func (f *Fn) nextResult(src Inst) *Result {
-	i := f.result_i
-	f.result_i++
+func (f *Fn) nextResult(src Instruction) *Result {
+	i := f.res_index
+	f.res_index++
 	return &Result{
 		Name: fmt.Sprintf("%%%v", i),
 		Src:  src,
 	}
 }
 
-// func (f *Fn) ReadKVStore(key string, s *Shape) Inst {
-// 	return nil
-// }
-//
-// func (f *Fn) TAdd(lhs, rhs *TensorValue) Inst {
-// 	return nil
-// }
-//
-// func (f *Fn) MakeTuple(args ...*TensorValue) Inst {
-// 	return nil
-// }
-//
-// func (f *Fn) SetInput(v Value) Inst {
-// 	return nil
-// }
-
-func (f *Fn) finalize() {
-	if f.finalized {
-		panic("fn has finalized already.") // internel bug.
-	}
-
-	f.finalized = true
+func (f *Fn) Done() {
 	f.b.fns = append(f.b.fns, f)
 	f.b.f_map[f.name] = f
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Module
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 type Module struct {
 	fns []*Fn
@@ -177,9 +144,9 @@ func (m *Module) Fns() []*Fn {
 	return m.fns
 }
 
-//-----------------------------------------------------------------------------
-// Builder
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// Builder (Producing Module)
+// -----------------------------------------------------------------------------
 
 type Builder struct {
 	fns   []*Fn
@@ -200,17 +167,17 @@ func (b *Builder) NewFn(fn_name string) (*Fn, *errors.DError) {
 	return &Fn{b: b, name: fn_name}, nil
 }
 
-func (b *Builder) Finalize() (*Module, *errors.DError) {
+func (b *Builder) Done() (*Module, *errors.DError) {
 	return &Module{fns: b.fns}, nil
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // All String Helpers
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 func (f *Fn) DebugString(w io.Writer) {
 	fmt.Fprintf(w, "fn %v() {\n", f.name)
-	for _, ins := range f.inss {
+	for _, ins := range f.insts {
 		fmt.Fprintf(w, "  %v\n", ins)
 	}
 	fmt.Fprintf(w, "}\n")

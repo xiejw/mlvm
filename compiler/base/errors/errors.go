@@ -1,3 +1,4 @@
+// An alias of vm/base/errors.
 package errors
 
 import (

@@ -16,9 +16,9 @@ func TestConst(t *testing.T) {
 	assertNoErr(t, err)
 
 	v := f.IntLiteral(12)
-	f.SetOutput(v.GetResult())
+	f.SetOutputAndDone(v.GetResult())
 
-	m, err := b.Finalize()
+	m, err := b.Done()
 	assertNoErr(t, err)
 
 	//--- compile
@@ -47,9 +47,9 @@ func TestRngSeed(t *testing.T) {
 
 	v := f.IntLiteral(12)
 	r := f.RngSeed(v)
-	f.SetOutput(r.GetResult())
+	f.SetOutputAndDone(r.GetResult())
 
-	m, err := b.Finalize()
+	m, err := b.Done()
 	assertNoErr(t, err)
 
 	//--- compile
