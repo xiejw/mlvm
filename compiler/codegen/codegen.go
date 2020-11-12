@@ -1,12 +1,12 @@
-package compiler
+package codegen
 
 import (
 	"fmt"
 
-	"github.com/xiejw/mlvm/go/base/errors"
-	"github.com/xiejw/mlvm/go/code"
-	"github.com/xiejw/mlvm/go/ir"
-	"github.com/xiejw/mlvm/go/object"
+	"github.com/xiejw/mlvm/compiler/base/errors"
+	"github.com/xiejw/mlvm/compiler/ir"
+	"github.com/xiejw/mlvm/vm/code"
+	"github.com/xiejw/mlvm/vm/object"
 )
 
 // Compiles the source module to program.

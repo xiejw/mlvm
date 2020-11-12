@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/xiejw/mlvm/go/base/errors"
+	"github.com/xiejw/mlvm/compiler/base/errors"
 )
 
 //-----------------------------------------------------------------------------

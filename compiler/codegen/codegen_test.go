@@ -1,12 +1,12 @@
-package compiler
+package codegen
 
 import (
 	"strings"
 	"testing"
 
-	"github.com/xiejw/mlvm/go/base/errors"
-	"github.com/xiejw/mlvm/go/code"
-	"github.com/xiejw/mlvm/go/ir"
+	"github.com/xiejw/mlvm/compiler/base/errors"
+	"github.com/xiejw/mlvm/compiler/ir"
+	"github.com/xiejw/mlvm/vm/code"
 )
 
 func TestConst(t *testing.T) {

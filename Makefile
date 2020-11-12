@@ -1,14 +1,13 @@
 REPO=mlvm
-LIB_DIR=vm
+VM_LIB_DIR=vm
+COMPILER_LIB_DIR=compiler
 CMD_DIR=cmd
-TEST_DIR=tests
 BUILD_DIR=.build
-INTEGRATION_TEST=no
 
 # folders
-LIBS=github.com/xiejw/${REPO}/${LIB_DIR}/...
+VM_LIBS=github.com/xiejw/${REPO}/${VM_LIB_DIR}/...
+COMPILER_LIBS=github.com/xiejw/${REPO}/${COMPILER_LIB_DIR}/...
 CMD_LIBS=github.com/xiejw/${REPO}/${CMD_DIR}/...
-TEST_LIBS=github.com/xiejw/${REPO}/${TEST_DIR}/...
 
 # cmds. convention is cmd/<binary>/main.go
 CMD_CANDIDATES=$(patsubst cmd/%,%,$(wildcard cmd/*))
@@ -23,7 +22,7 @@ endif
 compile: compile_lib compile_cmd
 
 compile_lib:
-	go build ${LIBS}
+	go build ${VM_LIBS} ${COMPILER_LIBS}
 
 compile_cmd:
 	@mkdir -p ${BUILD_DIR}
@@ -33,20 +32,10 @@ compile_cmd:
 	done
 
 fmt:
-	go fmt ${LIBS}
-	go fmt ${CMD_LIBS}
-ifeq ($(INTEGRATION_TEST),yes)
-	go fmt ${TEST_LIBS}
-endif
+	go fmt ${VM_LIBS} ${COMPILER_LIBS} ${CMD_LIBS}
 
 test:
-	go test $(TEST_FLAGS) ${LIBS}
-ifeq ($(INTEGRATION_TEST),yes)
-	go test ${TEST_LIBS}
-endif
-
-bench:
-	go test -bench=. ${LIBS}
+	go test $(TEST_FLAGS) ${VM_LIBS} ${COMPILER_LIBS}
 
 clean:
 	go mod tidy
