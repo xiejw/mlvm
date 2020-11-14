@@ -8,4 +8,10 @@ type Type struct {
 
 const (
 	KInt TypeKind = iota
+	KRng
+)
+
+var (
+	IntType = &Type{Kind: KInt}
+	RngType = &Type{Kind: KRng}
 )

@@ -13,17 +13,21 @@ import (
 // -----------------------------------------------------------------------------
 
 type Value interface {
+	Type() *Type
 	valueInterface()
 	String() string
 }
 
 type Result struct {
-	Name string
-	Src  Instruction
+	Name     string
+	T        *Type
+	Src      Instruction
+	SrcIndex int
 }
 
 // -- Conform Value
 func (r *Result) valueInterface() {}
+func (r *Result) Type() *Type     { return r.T }
 func (r *Result) String() string  { return r.Name }
 
 // -----------------------------------------------------------------------------
@@ -94,7 +98,7 @@ func (f *Fn) IntLiteral(v int64) *IntLiteral {
 		Value:  v,
 		Result: nil,
 	}
-	ins.Result = f.nextResult(ins)
+	ins.Result = f.nextResult(ins, 0, IntType)
 	f.insts = append(f.insts, ins)
 	return ins
 }
@@ -104,7 +108,7 @@ func (f *Fn) RngSeed(lit *IntLiteral) *RngSeed {
 		Input:  lit,
 		Result: nil,
 	}
-	ins.Result = f.nextResult(ins)
+	ins.Result = f.nextResult(ins, 0, RngType)
 	f.insts = append(f.insts, ins)
 	return ins
 }
@@ -118,12 +122,14 @@ func (f *Fn) SetOutputAndDone(v Value) {
 
 // -- Helper Methods.
 
-func (f *Fn) nextResult(src Instruction) *Result {
+func (f *Fn) nextResult(src Instruction, outputIndex int, t *Type) *Result {
 	i := f.res_index
 	f.res_index++
 	return &Result{
-		Name: fmt.Sprintf("%%%v", i),
-		Src:  src,
+		Name:     fmt.Sprintf("%%%v", i),
+		T:        t,
+		Src:      src,
+		SrcIndex: outputIndex,
 	}
 }
 
