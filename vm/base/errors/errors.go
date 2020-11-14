@@ -30,9 +30,9 @@ func From(err error) *DError {
 func (de *DError) String() string {
 	var buf bytes.Buffer
 
-	fmt.Fprint(&buf, "\nDiagnosis Error\n")
+	fmt.Fprint(&buf, "Diagnosis Error:\n")
 
-	indentLevel := "  "
+	indentLevel := ""
 	for index := len(de.notes) - 1; index >= 0; index-- {
 		fmt.Fprintf(&buf, "%v+-+ %v\n", indentLevel, de.notes[index])
 		indentLevel += "  "
