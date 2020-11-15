@@ -77,6 +77,12 @@ func codeGen(fn *ir.Fn) (*code.Program, *errors.DError) {
 			consts = append(consts, c)
 			value_loader[v.GetResult().(*ir.Result)] = constLoaderFn(index)
 
+		case *ir.ShapeLiteral:
+			s := object.NewShape(v.Dims)
+			index := len(consts)
+			consts = append(consts, s)
+			value_loader[v.GetResult().(*ir.Result)] = constLoaderFn(index)
+
 		case *ir.RngSource:
 			//-- Load int seed
 			int_seed := v.Input
