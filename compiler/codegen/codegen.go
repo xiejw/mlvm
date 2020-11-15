@@ -66,7 +66,7 @@ func codeGen(fn *ir.Fn) (*code.Program, *errors.DError) {
 	consts := make([]object.Object, 0)
 	mem_slot_i := 0
 
-	value_loader := make(map[ir.Result]LoaderFn)
+	value_loader := make(map[ir.Value]LoaderFn)
 
 	for _, ins := range fn.Instructions() {
 		switch v := ins.(type) {
@@ -75,12 +75,12 @@ func codeGen(fn *ir.Fn) (*code.Program, *errors.DError) {
 			c := &object.Integer{Value: v.Value}
 			index := len(consts)
 			consts = append(consts, c)
-			value_loader[*v.GetResult().(*ir.Result)] = constLoaderFn(index)
+			value_loader[v.GetResult().(*ir.Result)] = constLoaderFn(index)
 
 		case *ir.RngSeed:
 			//-- Load int seed
-			int_lit := v.Input.Result
-			ins, err := value_loader[*int_lit]()
+			int_seed := v.Input
+			ins, err := value_loader[int_seed]()
 			if err != nil {
 				return nil, err
 			}
@@ -94,7 +94,7 @@ func codeGen(fn *ir.Fn) (*code.Program, *errors.DError) {
 			insts = append(insts, ins...)
 
 			//-- Push to memory
-			value_loader[*v.Result] = memLoaderFn(mem_slot_i)
+			value_loader[v.Result] = memLoaderFn(mem_slot_i)
 			ins, err = storeToMem(&mem_slot_i)
 			if err != nil {
 				return nil, err
@@ -103,7 +103,7 @@ func codeGen(fn *ir.Fn) (*code.Program, *errors.DError) {
 
 		case *ir.Return:
 			operand := v.GetOperand().(*ir.Result)
-			loader, existed := value_loader[*operand]
+			loader, existed := value_loader[operand]
 			if !existed {
 				panic(fmt.Sprintf("value loader for result (%v) does not exist.", operand))
 			}

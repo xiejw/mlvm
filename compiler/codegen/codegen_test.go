@@ -46,7 +46,7 @@ func TestRngSeed(t *testing.T) {
 	assertNoErr(t, err)
 
 	v := f.IntLiteral(12)
-	r := f.RngSeed(v)
+	r := f.RngSeed(v.GetResult())
 	f.SetOutputAndDone(r.GetResult())
 
 	m, err := b.Done()

@@ -20,7 +20,7 @@ func main() {
 	f, err := b.NewFn("main")
 	assertNoErr(err)
 
-	v := f.IntLiteral(12)
+	v := f.IntLiteral(12).GetResult()
 	r := f.RngSeed(v)
 	f.SetOutputAndDone(r.GetResult())
 

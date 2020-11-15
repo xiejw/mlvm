@@ -47,8 +47,7 @@ type IntLiteral struct {
 }
 
 type RngSeed struct {
-	// TODO Expect a value with Int type
-	Input  *IntLiteral
+	Input  Value
 	Result *Result
 }
 
@@ -62,11 +61,11 @@ func (lit *IntLiteral) GetResult() Value    { return lit.Result }
 func (lit *IntLiteral) GetResults() []Value { return []Value{lit.Result} }
 func (lit *IntLiteral) String() string      { return fmt.Sprintf("%v = IntLit(%v)", lit.Result, lit.Value) }
 
-func (rng *RngSeed) GetOperand() Value   { return rng.Input.Result }
+func (rng *RngSeed) GetOperand() Value   { return rng.Input }
 func (rng *RngSeed) GetResult() Value    { return rng.Result }
 func (rng *RngSeed) GetResults() []Value { return []Value{rng.Result} }
 func (rng *RngSeed) String() string {
-	return fmt.Sprintf("%v = RngSeed(%v)", rng.Result, rng.Input.Result)
+	return fmt.Sprintf("%v = RngSeed(%v)", rng.Result, rng.Input)
 }
 
 func (r *Return) GetOperand() Value   { return r.Value }
@@ -103,9 +102,9 @@ func (f *Fn) IntLiteral(v int64) *IntLiteral {
 	return ins
 }
 
-func (f *Fn) RngSeed(lit *IntLiteral) *RngSeed {
+func (f *Fn) RngSeed(v Value) *RngSeed {
 	ins := &RngSeed{
-		Input:  lit,
+		Input:  v,
 		Result: nil,
 	}
 	ins.Result = f.nextResult(ins, 0, RngType)

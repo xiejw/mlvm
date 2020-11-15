@@ -41,7 +41,7 @@ fn main() {
 func TestRndSeed(t *testing.T) {
 	f, b := newMainFn(t)
 
-	v := f.IntLiteral(12)
+	v := f.IntLiteral(12).GetResult()
 	r := f.RngSeed(v)
 	f.SetOutputAndDone(r.GetResult())
 
