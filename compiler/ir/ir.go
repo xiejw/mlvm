@@ -39,6 +39,7 @@ type Instruction interface {
 	GetResult() Value
 	GetResults() []Value
 	String() string
+	Check() *errors.DError
 }
 
 type IntLiteral struct {
@@ -47,7 +48,7 @@ type IntLiteral struct {
 }
 
 type RngSeed struct {
-	Input  Value
+	Input  Value // Must KInt as Type
 	Result *Result
 }
 
@@ -56,10 +57,11 @@ type Return struct {
 }
 
 // -- Conform Instruction
-func (lit *IntLiteral) GetOperand() Value   { return nil }
-func (lit *IntLiteral) GetResult() Value    { return lit.Result }
-func (lit *IntLiteral) GetResults() []Value { return []Value{lit.Result} }
-func (lit *IntLiteral) String() string      { return fmt.Sprintf("%v = IntLit(%v)", lit.Result, lit.Value) }
+func (lit *IntLiteral) GetOperand() Value     { return nil }
+func (lit *IntLiteral) GetResult() Value      { return lit.Result }
+func (lit *IntLiteral) GetResults() []Value   { return []Value{lit.Result} }
+func (lit *IntLiteral) String() string        { return fmt.Sprintf("%v = IntLit(%v)", lit.Result, lit.Value) }
+func (lit *IntLiteral) Check() *errors.DError { return nil }
 
 func (rng *RngSeed) GetOperand() Value   { return rng.Input }
 func (rng *RngSeed) GetResult() Value    { return rng.Result }
@@ -67,11 +69,19 @@ func (rng *RngSeed) GetResults() []Value { return []Value{rng.Result} }
 func (rng *RngSeed) String() string {
 	return fmt.Sprintf("%v = RngSeed(%v)", rng.Result, rng.Input)
 }
+func (rng *RngSeed) Check() *errors.DError {
+	if !rng.Input.Type().IsInt() {
+		return errors.New("RngSeed expects int as input, but got: %v",
+			rng.Input.Type()).EmitNote("RngSeed: %v", rng)
+	}
+	return nil
+}
 
-func (r *Return) GetOperand() Value   { return r.Value }
-func (r *Return) GetResult() Value    { return nil }
-func (r *Return) GetResults() []Value { return nil }
-func (r *Return) String() string      { return fmt.Sprintf("return %v", r.Value) }
+func (r *Return) GetOperand() Value     { return r.Value }
+func (r *Return) GetResult() Value      { return nil }
+func (r *Return) GetResults() []Value   { return nil }
+func (r *Return) String() string        { return fmt.Sprintf("return %v", r.Value) }
+func (r *Return) Check() *errors.DError { return nil }
 
 // -----------------------------------------------------------------------------
 // Fn
@@ -173,6 +183,15 @@ func (b *Builder) NewFn(fn_name string) (*Fn, *errors.DError) {
 }
 
 func (b *Builder) Done() (*Module, *errors.DError) {
+	for _, fn := range b.fns {
+		for _, ins := range fn.insts {
+			err := ins.Check()
+			if err != nil {
+				return nil, err.EmitNote("Failed to check Instrunction: %v",
+					ins).EmitNote("Failed to check the fn (`%v`)", fn.Name())
+			}
+		}
+	}
 	return &Module{fns: b.fns}, nil
 }
 
