@@ -77,7 +77,7 @@ func codeGen(fn *ir.Fn) (*code.Program, *errors.DError) {
 			consts = append(consts, c)
 			value_loader[v.GetResult().(*ir.Result)] = constLoaderFn(index)
 
-		case *ir.RngSeed:
+		case *ir.RngSource:
 			//-- Load int seed
 			int_seed := v.Input
 			ins, err := value_loader[int_seed]()

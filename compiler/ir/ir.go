@@ -47,10 +47,21 @@ type IntLiteral struct {
 	Result *Result
 }
 
-type RngSeed struct {
+type ShapeLiteral struct {
+	Dims   []int
+	Result *Result
+}
+
+type RngSource struct {
 	Input  Value // Must KInt as Type
 	Result *Result
 }
+
+//type RngTensor struct {
+//	Shape
+//
+//	// Support more type
+//}
 
 type Return struct {
 	Value Value
@@ -63,16 +74,31 @@ func (lit *IntLiteral) GetResults() []Value   { return []Value{lit.Result} }
 func (lit *IntLiteral) String() string        { return fmt.Sprintf("%v = IntLit(%v)", lit.Result, lit.Value) }
 func (lit *IntLiteral) Check() *errors.DError { return nil }
 
-func (rng *RngSeed) GetOperand() Value   { return rng.Input }
-func (rng *RngSeed) GetResult() Value    { return rng.Result }
-func (rng *RngSeed) GetResults() []Value { return []Value{rng.Result} }
-func (rng *RngSeed) String() string {
-	return fmt.Sprintf("%v = RngSeed(%v)", rng.Result, rng.Input)
+func (lit *ShapeLiteral) GetOperand() Value   { return nil }
+func (lit *ShapeLiteral) GetResult() Value    { return lit.Result }
+func (lit *ShapeLiteral) GetResults() []Value { return []Value{lit.Result} }
+func (lit *ShapeLiteral) String() string {
+	return fmt.Sprintf("%v = ShapeLit(%v)", lit.Result, lit.Dims)
 }
-func (rng *RngSeed) Check() *errors.DError {
+func (lit *ShapeLiteral) Check() *errors.DError {
+	for _, d := range lit.Dims {
+		if d <= 0 {
+			return errors.New("All Dims of ShapeLiteral must be positive, but got: %v", lit.Dims)
+		}
+	}
+	return nil
+}
+
+func (rng *RngSource) GetOperand() Value   { return rng.Input }
+func (rng *RngSource) GetResult() Value    { return rng.Result }
+func (rng *RngSource) GetResults() []Value { return []Value{rng.Result} }
+func (rng *RngSource) String() string {
+	return fmt.Sprintf("%v = RngSource(%v)", rng.Result, rng.Input)
+}
+func (rng *RngSource) Check() *errors.DError {
 	if !rng.Input.Type().IsInt() {
-		return errors.New("RngSeed expects int as input, but got: %v",
-			rng.Input.Type()).EmitNote("RngSeed: %v", rng)
+		return errors.New("RngSource expects int as seed input, but got: %v",
+			rng.Input.Type()).EmitNote("RngSource: %v", rng)
 	}
 	return nil
 }
@@ -112,8 +138,18 @@ func (f *Fn) IntLiteral(v int64) *IntLiteral {
 	return ins
 }
 
-func (f *Fn) RngSeed(v Value) *RngSeed {
-	ins := &RngSeed{
+func (f *Fn) ShapeLiteral(dims []int) *ShapeLiteral {
+	ins := &ShapeLiteral{
+		Dims:   dims,
+		Result: nil,
+	}
+	ins.Result = f.nextResult(ins, 0, &Type{Kind: KShape, Dims: dims})
+	f.insts = append(f.insts, ins)
+	return ins
+}
+
+func (f *Fn) RngSource(v Value) *RngSource {
+	ins := &RngSource{
 		Input:  v,
 		Result: nil,
 	}

@@ -1,14 +1,20 @@
 package ir
 
+import (
+	"github.com/xiejw/mlvm/vm/object"
+)
+
 type TypeKind int
 
 type Type struct {
 	Kind TypeKind
+	Dims []int // KShape
 }
 
 const (
 	KInt TypeKind = iota
 	KRng
+	KShape
 )
 
 var (
@@ -23,6 +29,8 @@ func (t *Type) String() string {
 		return "Int"
 	case KRng:
 		return "Rng"
+	case KShape:
+		return object.NewShape(t.Dims).String()
 	default:
 		panic("unknown type string.")
 	}

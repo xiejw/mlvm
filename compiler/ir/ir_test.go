@@ -38,11 +38,32 @@ fn main() {
 	assertModule(t, expected, got)
 }
 
+func TestShapeLit(t *testing.T) {
+	f, b := newMainFn(t)
+
+	v := f.ShapeLiteral([]int{1, 2})
+	f.SetOutputAndDone(v.GetResult())
+
+	got, err := b.Done()
+	assertNoErr(t, err)
+
+	expected := `
+module {
+
+fn main() {
+  %0 = ShapeLit([1 2])
+  return %0
+}
+
+}`
+	assertModule(t, expected, got)
+}
+
 func TestRndSeed(t *testing.T) {
 	f, b := newMainFn(t)
 
 	v := f.IntLiteral(12).GetResult()
-	r := f.RngSeed(v)
+	r := f.RngSource(v)
 	f.SetOutputAndDone(r.GetResult())
 
 	got, err := b.Done()
@@ -53,13 +74,15 @@ module {
 
 fn main() {
   %0 = IntLit(12)
-  %1 = RngSeed(%0)
+  %1 = RngSource(%0)
   return %1
 }
 
 }`
 	assertModule(t, expected, got)
 }
+
+//func TestRndSeed(t *testing.T) {
 
 //-----------------------------------------------------------------------------
 // Helper Methods.

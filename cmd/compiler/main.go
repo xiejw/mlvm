@@ -21,7 +21,7 @@ func main() {
 	assertNoErr(err)
 
 	v := f.IntLiteral(12).GetResult()
-	r := f.RngSeed(v)
+	r := f.RngSource(v)
 	f.SetOutputAndDone(r.GetResult())
 
 	m, err := b.Done()
