@@ -64,48 +64,6 @@ func (f *Fn) Instructions() []Instruction {
 	return f.insts
 }
 
-func (f *Fn) IntLiteral(v int64) *IntLiteral {
-	ins := &IntLiteral{
-		Value:  v,
-		Result: nil,
-	}
-	ins.Result = f.nextResult(ins, 0, IntType)
-	f.insts = append(f.insts, ins)
-	return ins
-}
-
-func (f *Fn) ShapeLiteral(dims []int) *ShapeLiteral {
-	ins := &ShapeLiteral{
-		Dims:   dims,
-		Result: nil,
-	}
-	ins.Result = f.nextResult(ins, 0, &Type{Kind: KShape, Dims: dims})
-	f.insts = append(f.insts, ins)
-	return ins
-}
-
-func (f *Fn) RngSource(v Value) *RngSource {
-	ins := &RngSource{
-		Input:  v,
-		Result: nil,
-	}
-	ins.Result = f.nextResult(ins, 0, RngType)
-	f.insts = append(f.insts, ins)
-	return ins
-}
-
-func (f *Fn) RngTensor(src Value, s Value) *RngTensor {
-	ins := &RngTensor{
-		Source: src,
-		Shape:  s,
-		Result: nil,
-	}
-	dims := s.Type().Dims // could be nil
-	ins.Result = f.nextResult(ins, 0, &Type{Kind: KTensor, Dims: dims})
-	f.insts = append(f.insts, ins)
-	return ins
-}
-
 // -- Output
 
 func (f *Fn) SetOutputAndDone(v Value) {

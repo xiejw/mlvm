@@ -34,7 +34,56 @@ type Return struct {
 	Value Value
 }
 
-// -- Conform Instruction
+// -----------------------------------------------------------------------------
+// Constructors (from Fn)
+// -----------------------------------------------------------------------------
+func (f *Fn) IntLiteral(v int64) *IntLiteral {
+	ins := &IntLiteral{
+		Value:  v,
+		Result: nil,
+	}
+	ins.Result = f.nextResult(ins, 0, IntType)
+	f.insts = append(f.insts, ins)
+	return ins
+}
+
+func (f *Fn) ShapeLiteral(dims []int) *ShapeLiteral {
+	ins := &ShapeLiteral{
+		Dims:   dims, // `Check` checks validness.
+		Result: nil,
+	}
+	ins.Result = f.nextResult(ins, 0, &Type{Kind: KShape, Dims: dims})
+	f.insts = append(f.insts, ins)
+	return ins
+}
+
+func (f *Fn) RngSource(v Value) *RngSource {
+	ins := &RngSource{
+		Input:  v,
+		Result: nil,
+	}
+	ins.Result = f.nextResult(ins, 0, RngType)
+	f.insts = append(f.insts, ins)
+	return ins
+}
+
+func (f *Fn) RngTensor(src Value, s Value) *RngTensor {
+	ins := &RngTensor{
+		Source: src,
+		Shape:  s,
+		Result: nil,
+	}
+	dims := s.Type().Dims // could be nil
+	ins.Result = f.nextResult(ins, 0, &Type{Kind: KTensor, Dims: dims})
+	f.insts = append(f.insts, ins)
+	return ins
+}
+
+// -----------------------------------------------------------------------------
+// Conform Instruction
+// -----------------------------------------------------------------------------
+
+// -- Conform Instruction IntLiteral
 func (lit *IntLiteral) GetOperand() Value    { return nil }
 func (lit *IntLiteral) GetOperands() []Value { return nil }
 func (lit *IntLiteral) GetResult() Value     { return lit.Result }
@@ -44,6 +93,7 @@ func (lit *IntLiteral) String() string {
 }
 func (lit *IntLiteral) Check() *errors.DError { return nil }
 
+// -- Conform Instruction ShapeLiteral
 func (lit *ShapeLiteral) GetOperand() Value    { return nil }
 func (lit *ShapeLiteral) GetOperands() []Value { return nil }
 func (lit *ShapeLiteral) GetResult() Value     { return lit.Result }
@@ -64,6 +114,7 @@ func (lit *ShapeLiteral) Check() *errors.DError {
 	return nil
 }
 
+// -- Conform Instruction RngSource
 func (rng *RngSource) GetOperand() Value    { return rng.Input }
 func (rng *RngSource) GetOperands() []Value { return []Value{rng.Input} }
 func (rng *RngSource) GetResult() Value     { return rng.Result }
@@ -79,6 +130,7 @@ func (rng *RngSource) Check() *errors.DError {
 	return nil
 }
 
+// -- Conform Instruction RngTensor
 func (rng *RngTensor) GetOperand() Value {
 	panic("GetOperand should not be called with multiple operands.")
 }
@@ -102,6 +154,7 @@ func (rng *RngTensor) Check() *errors.DError {
 	return nil
 }
 
+// -- Conform Instruction Return
 func (r *Return) GetOperand() Value     { return r.Value }
 func (r *Return) GetOperands() []Value  { return []Value{r.Value} }
 func (r *Return) GetResult() Value      { return r.Value }
