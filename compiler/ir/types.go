@@ -1,6 +1,9 @@
 package ir
 
 import (
+	"bytes"
+	"fmt"
+
 	"github.com/xiejw/mlvm/vm/object"
 )
 
@@ -32,6 +35,12 @@ func (t *Type) String() string {
 		return "Rng"
 	case KShape:
 		return object.NewShape(t.Dims).String()
+	case KTensor:
+		var buf bytes.Buffer
+		fmt.Fprintf(&buf, "Tensor(")
+		object.NewShape(t.Dims).ToHumanReadableString(&buf)
+		fmt.Fprintf(&buf, ")")
+		return buf.String()
 	default:
 		panic("unknown type string.")
 	}

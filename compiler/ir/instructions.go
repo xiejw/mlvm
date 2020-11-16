@@ -35,11 +35,13 @@ type Return struct {
 }
 
 // -- Conform Instruction
-func (lit *IntLiteral) GetOperand() Value     { return nil }
-func (lit *IntLiteral) GetOperands() []Value  { return nil }
-func (lit *IntLiteral) GetResult() Value      { return lit.Result }
-func (lit *IntLiteral) GetResults() []Value   { return []Value{lit.Result} }
-func (lit *IntLiteral) String() string        { return fmt.Sprintf("%v = IntLit(%v)", lit.Result, lit.Value) }
+func (lit *IntLiteral) GetOperand() Value    { return nil }
+func (lit *IntLiteral) GetOperands() []Value { return nil }
+func (lit *IntLiteral) GetResult() Value     { return lit.Result }
+func (lit *IntLiteral) GetResults() []Value  { return []Value{lit.Result} }
+func (lit *IntLiteral) String() string {
+	return fmt.Sprintf("%v = IntLit(%v)", lit.Result, lit.Value)
+}
 func (lit *IntLiteral) Check() *errors.DError { return nil }
 
 func (lit *ShapeLiteral) GetOperand() Value    { return nil }
@@ -48,7 +50,6 @@ func (lit *ShapeLiteral) GetResult() Value     { return lit.Result }
 func (lit *ShapeLiteral) GetResults() []Value  { return []Value{lit.Result} }
 func (lit *ShapeLiteral) String() string {
 	var buf bytes.Buffer
-
 	fmt.Fprintf(&buf, "%v = ShapeLit(", lit.Result)
 	object.NewShape(lit.Dims).ToHumanReadableString(&buf)
 	fmt.Fprintf(&buf, ")")
@@ -103,7 +104,7 @@ func (rng *RngTensor) Check() *errors.DError {
 
 func (r *Return) GetOperand() Value     { return r.Value }
 func (r *Return) GetOperands() []Value  { return []Value{r.Value} }
-func (r *Return) GetResult() Value      { return nil }
-func (r *Return) GetResults() []Value   { return nil }
+func (r *Return) GetResult() Value      { return r.Value }
+func (r *Return) GetResults() []Value   { return []Value{r.Value} }
 func (r *Return) String() string        { return fmt.Sprintf("return %v", r.Value) }
 func (r *Return) Check() *errors.DError { return nil }

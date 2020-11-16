@@ -189,7 +189,8 @@ func (b *Builder) Done() (*Module, *errors.DError) {
 func (f *Fn) DebugString(w io.Writer) {
 	fmt.Fprintf(w, "fn %v() {\n", f.name)
 	for _, ins := range f.insts {
-		fmt.Fprintf(w, "  %v\n", ins)
+		// prints ins with type.
+		fmt.Fprintf(w, "  %-40s:: %v\n", ins.String(), ins.GetResult().Type())
 	}
 	fmt.Fprintf(w, "}\n")
 }
