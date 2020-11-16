@@ -8,13 +8,14 @@ type TypeKind int
 
 type Type struct {
 	Kind TypeKind
-	Dims []int // KShape
+	Dims []int // KShape, KTensor
 }
 
 const (
 	KInt TypeKind = iota
 	KRng
 	KShape
+	KTensor
 )
 
 var (

@@ -51,7 +51,7 @@ func TestShapeLit(t *testing.T) {
 module {
 
 fn main() {
-  %0 = ShapeLit([1 2])
+  %0 = ShapeLit(<1, 2>)
   return %0
 }
 

@@ -1,9 +1,11 @@
 package ir
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/xiejw/mlvm/compiler/base/errors"
+	"github.com/xiejw/mlvm/vm/object"
 )
 
 type IntLiteral struct {
@@ -45,7 +47,12 @@ func (lit *ShapeLiteral) GetOperands() []Value { return nil }
 func (lit *ShapeLiteral) GetResult() Value     { return lit.Result }
 func (lit *ShapeLiteral) GetResults() []Value  { return []Value{lit.Result} }
 func (lit *ShapeLiteral) String() string {
-	return fmt.Sprintf("%v = ShapeLit(%v)", lit.Result, lit.Dims)
+	var buf bytes.Buffer
+
+	fmt.Fprintf(&buf, "%v = ShapeLit(", lit.Result)
+	object.NewShape(lit.Dims).ToHumanReadableString(&buf)
+	fmt.Fprintf(&buf, ")")
+	return buf.String()
 }
 func (lit *ShapeLiteral) Check() *errors.DError {
 	for _, d := range lit.Dims {

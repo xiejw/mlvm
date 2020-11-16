@@ -95,12 +95,17 @@ func (f *Fn) RngSource(v Value) *RngSource {
 }
 
 func (f *Fn) RngTensor(src Value, s Value) *RngTensor {
+	t := s.Type()
+	if t.Kind != KShape {
+		panic("RngTensor expects shape as second operand.")
+	}
+
 	ins := &RngTensor{
 		Source: src,
 		Shape:  s,
 		Result: nil,
 	}
-	ins.Result = f.nextResult(ins, 0, RngType)
+	ins.Result = f.nextResult(ins, 0, &Type{Kind: KTensor, Dims: t.Dims})
 	f.insts = append(f.insts, ins)
 	return ins
 }
