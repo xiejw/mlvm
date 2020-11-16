@@ -72,8 +72,8 @@ func (rng *RngSource) String() string {
 }
 func (rng *RngSource) Check() *errors.DError {
 	if !rng.Input.Type().IsInt() {
-		return errors.New("RngSource expects int as seed input, but got: %v",
-			rng.Input.Type()).EmitNote("RngSource: %v", rng)
+		return errors.New(
+			"RngSource expects int as seed input, but got type: %v", rng.Input.Type())
 	}
 	return nil
 }
@@ -88,10 +88,16 @@ func (rng *RngTensor) String() string {
 	return fmt.Sprintf("%v = RngTensor(%v, %v)", rng.Result, rng.Source, rng.Shape)
 }
 func (rng *RngTensor) Check() *errors.DError {
-	//if !rng.Input.Type().IsInt() {
-	//	return errors.New("RngTensor expects int as seed input, but got: %v",
-	//		rng.Input.Type()).EmitNote("RngTensor: %v", rng)
-	//}
+	if rng.Source.Type().Kind != KRng {
+		return errors.New(
+			"RngTensor expects RngSource as the first operand, but got type: %v", rng.Source.Type())
+	}
+	if rng.Shape.Type().Kind != KShape {
+		return errors.New(
+			"RngTensor expects Shape as the second operand, but got type: %v", rng.Shape.Type())
+	}
+	// forwards the shape
+	rng.Result.Type().Dims = rng.Shape.Type().Dims
 	return nil
 }
 

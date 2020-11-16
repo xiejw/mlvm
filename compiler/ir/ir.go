@@ -95,17 +95,13 @@ func (f *Fn) RngSource(v Value) *RngSource {
 }
 
 func (f *Fn) RngTensor(src Value, s Value) *RngTensor {
-	t := s.Type()
-	if t.Kind != KShape {
-		panic("RngTensor expects shape as second operand.")
-	}
-
 	ins := &RngTensor{
 		Source: src,
 		Shape:  s,
 		Result: nil,
 	}
-	ins.Result = f.nextResult(ins, 0, &Type{Kind: KTensor, Dims: t.Dims})
+	dims := s.Type().Dims // could be nil
+	ins.Result = f.nextResult(ins, 0, &Type{Kind: KTensor, Dims: dims})
 	f.insts = append(f.insts, ins)
 	return ins
 }
@@ -175,8 +171,11 @@ func (b *Builder) Done() (*Module, *errors.DError) {
 		for _, ins := range fn.insts {
 			err := ins.Check()
 			if err != nil {
-				return nil, err.EmitNote("Failed to check Instrunction: %v",
-					ins).EmitNote("Failed to check the fn (`%v`)", fn.Name())
+				return nil, err.EmitNote(
+					"Failed to check Instrunction: %v", ins,
+				).EmitNote(
+					"Failed to check the fn (`%v`):\n\n%v", fn.Name(), fn,
+				)
 			}
 		}
 	}

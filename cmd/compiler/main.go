@@ -21,7 +21,9 @@ func main() {
 	assertNoErr(err)
 
 	v := f.IntLiteral(12).GetResult()
-	r := f.RngSource(v)
+	s := f.ShapeLiteral([]int{2, 3}).GetResult()
+	src := f.RngSource(v)
+	r := f.RngTensor(src.GetResult(), s)
 	f.SetOutputAndDone(r.GetResult())
 
 	m, err := b.Done()
