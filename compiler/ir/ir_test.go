@@ -1,6 +1,7 @@
 package ir
 
 import (
+	"bytes"
 	"strings"
 	"testing"
 
@@ -99,7 +100,10 @@ func newMainFn(t *testing.T) (*Fn, *Builder) {
 func assertModule(t *testing.T, expectedStr string, m *Module) {
 	t.Helper()
 	expected := strings.Trim(expectedStr, "\n")
-	got := strings.Trim(m.String(), "\n")
+
+	var buf bytes.Buffer
+	m.DebugString(&buf, false /* printType*/)
+	got := strings.Trim(buf.String(), "\n")
 
 	if expected != got {
 		t.Fatalf("mismatch module:\n\n===> expected:\n%v\n\n===> got:\n%v", expected, got)

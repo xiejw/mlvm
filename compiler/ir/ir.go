@@ -186,31 +186,35 @@ func (b *Builder) Done() (*Module, *errors.DError) {
 // All String Helpers
 // -----------------------------------------------------------------------------
 
-func (f *Fn) DebugString(w io.Writer) {
+func (f *Fn) DebugString(w io.Writer, printType bool) {
 	fmt.Fprintf(w, "fn %v() {\n", f.name)
 	for _, ins := range f.insts {
-		// prints ins with type.
-		fmt.Fprintf(w, "  %-40s:: %v\n", ins.String(), ins.GetResult().Type())
+		if printType {
+			fmt.Fprintf(w, "  %-40s:: %v\n", ins.String(), ins.GetResult().Type())
+		} else {
+			fmt.Fprintf(w, "  %v\n", ins)
+		}
 	}
 	fmt.Fprintf(w, "}\n")
 }
 
 func (f *Fn) String() string {
 	buf := bytes.Buffer{}
-	f.DebugString(&buf)
+	f.DebugString(&buf, true /*printType*/)
 	return buf.String()
 }
 
-func (m *Module) DebugString(w io.Writer) {
+func (m *Module) DebugString(w io.Writer, printType bool) {
 	fmt.Fprintf(w, "module {\n")
 	for _, f := range m.fns {
-		fmt.Fprintf(w, "\n%v", f)
+		fmt.Fprintf(w, "\n")
+		f.DebugString(w, printType)
 	}
 	fmt.Fprintf(w, "\n}\n")
 }
 
 func (m *Module) String() string {
 	buf := bytes.Buffer{}
-	m.DebugString(&buf)
+	m.DebugString(&buf, true /*printType*/)
 	return buf.String()
 }
