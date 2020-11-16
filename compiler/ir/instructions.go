@@ -37,6 +37,7 @@ type Return struct {
 // -----------------------------------------------------------------------------
 // Constructors (from Fn)
 // -----------------------------------------------------------------------------
+
 func (f *Fn) IntLiteral(v int64) *IntLiteral {
 	ins := &IntLiteral{
 		Value:  v,
@@ -80,31 +81,11 @@ func (f *Fn) RngTensor(src Value, s Value) *RngTensor {
 }
 
 // -----------------------------------------------------------------------------
-// Conform Instruction
+// Check (Propagate shape dims, validate types, etc )
 // -----------------------------------------------------------------------------
 
-// -- Conform Instruction IntLiteral
-func (lit *IntLiteral) GetOperand() Value    { return nil }
-func (lit *IntLiteral) GetOperands() []Value { return nil }
-func (lit *IntLiteral) GetResult() Value     { return lit.Result }
-func (lit *IntLiteral) GetResults() []Value  { return []Value{lit.Result} }
-func (lit *IntLiteral) String() string {
-	return fmt.Sprintf("%v = IntLit(%v)", lit.Result, lit.Value)
-}
 func (lit *IntLiteral) Check() *errors.DError { return nil }
 
-// -- Conform Instruction ShapeLiteral
-func (lit *ShapeLiteral) GetOperand() Value    { return nil }
-func (lit *ShapeLiteral) GetOperands() []Value { return nil }
-func (lit *ShapeLiteral) GetResult() Value     { return lit.Result }
-func (lit *ShapeLiteral) GetResults() []Value  { return []Value{lit.Result} }
-func (lit *ShapeLiteral) String() string {
-	var buf bytes.Buffer
-	fmt.Fprintf(&buf, "%v = ShapeLit(", lit.Result)
-	object.NewShape(lit.Dims).ToHumanReadableString(&buf)
-	fmt.Fprintf(&buf, ")")
-	return buf.String()
-}
 func (lit *ShapeLiteral) Check() *errors.DError {
 	for _, d := range lit.Dims {
 		if d <= 0 {
@@ -114,14 +95,6 @@ func (lit *ShapeLiteral) Check() *errors.DError {
 	return nil
 }
 
-// -- Conform Instruction RngSource
-func (rng *RngSource) GetOperand() Value    { return rng.Input }
-func (rng *RngSource) GetOperands() []Value { return []Value{rng.Input} }
-func (rng *RngSource) GetResult() Value     { return rng.Result }
-func (rng *RngSource) GetResults() []Value  { return []Value{rng.Result} }
-func (rng *RngSource) String() string {
-	return fmt.Sprintf("%v = RngSource(%v)", rng.Result, rng.Input)
-}
 func (rng *RngSource) Check() *errors.DError {
 	if !rng.Input.Type().IsInt() {
 		return errors.New(
@@ -130,16 +103,6 @@ func (rng *RngSource) Check() *errors.DError {
 	return nil
 }
 
-// -- Conform Instruction RngTensor
-func (rng *RngTensor) GetOperand() Value {
-	panic("GetOperand should not be called with multiple operands.")
-}
-func (rng *RngTensor) GetOperands() []Value { return []Value{rng.Source, rng.Shape} }
-func (rng *RngTensor) GetResult() Value     { return rng.Result }
-func (rng *RngTensor) GetResults() []Value  { return []Value{rng.Result} }
-func (rng *RngTensor) String() string {
-	return fmt.Sprintf("%v = RngTensor(%v, %v)", rng.Result, rng.Source, rng.Shape)
-}
 func (rng *RngTensor) Check() *errors.DError {
 	if rng.Source.Type().Kind != KRng {
 		return errors.New(
@@ -154,10 +117,64 @@ func (rng *RngTensor) Check() *errors.DError {
 	return nil
 }
 
-// -- Conform Instruction Return
-func (r *Return) GetOperand() Value     { return r.Value }
-func (r *Return) GetOperands() []Value  { return []Value{r.Value} }
-func (r *Return) GetResult() Value      { return r.Value }
-func (r *Return) GetResults() []Value   { return []Value{r.Value} }
-func (r *Return) String() string        { return fmt.Sprintf("return %v", r.Value) }
 func (r *Return) Check() *errors.DError { return nil }
+
+// -----------------------------------------------------------------------------
+// String
+// -----------------------------------------------------------------------------
+
+func (lit *IntLiteral) String() string {
+	return fmt.Sprintf("%v = IntLit(%v)", lit.Result, lit.Value)
+}
+
+func (lit *ShapeLiteral) String() string {
+	var buf bytes.Buffer
+	fmt.Fprintf(&buf, "%v = ShapeLit(", lit.Result)
+	object.NewShape(lit.Dims).ToHumanReadableString(&buf)
+	fmt.Fprintf(&buf, ")")
+	return buf.String()
+}
+
+func (rng *RngSource) String() string {
+	return fmt.Sprintf("%v = RngSource(%v)", rng.Result, rng.Input)
+}
+
+func (rng *RngTensor) String() string {
+	return fmt.Sprintf("%v = RngTensor(%v, %v)", rng.Result, rng.Source, rng.Shape)
+}
+
+func (r *Return) String() string { return fmt.Sprintf("return %v", r.Value) }
+
+// -----------------------------------------------------------------------------
+// Conform Instruction
+// -----------------------------------------------------------------------------
+
+// -- IntLiteral
+func (lit *IntLiteral) GetOperand() Value    { return nil }
+func (lit *IntLiteral) GetOperands() []Value { return nil }
+func (lit *IntLiteral) GetResult() Value     { return lit.Result }
+func (lit *IntLiteral) GetResults() []Value  { return []Value{lit.Result} }
+
+// -- ShapeLiteral
+func (lit *ShapeLiteral) GetOperand() Value    { return nil }
+func (lit *ShapeLiteral) GetOperands() []Value { return nil }
+func (lit *ShapeLiteral) GetResult() Value     { return lit.Result }
+func (lit *ShapeLiteral) GetResults() []Value  { return []Value{lit.Result} }
+
+// -- RngSource
+func (rng *RngSource) GetOperand() Value    { return rng.Input }
+func (rng *RngSource) GetOperands() []Value { return []Value{rng.Input} }
+func (rng *RngSource) GetResult() Value     { return rng.Result }
+func (rng *RngSource) GetResults() []Value  { return []Value{rng.Result} }
+
+// -- RngTensor
+func (rng *RngTensor) GetOperand() Value    { panic("invalid with multiple operands.") }
+func (rng *RngTensor) GetOperands() []Value { return []Value{rng.Source, rng.Shape} }
+func (rng *RngTensor) GetResult() Value     { return rng.Result }
+func (rng *RngTensor) GetResults() []Value  { return []Value{rng.Result} }
+
+// -- Return
+func (r *Return) GetOperand() Value    { return r.Value }
+func (r *Return) GetOperands() []Value { return []Value{r.Value} }
+func (r *Return) GetResult() Value     { return r.Value }
+func (r *Return) GetResults() []Value  { return []Value{r.Value} }
