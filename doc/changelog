@@ -1,8 +1,5 @@
 ## TODO
 
-- immutable rng
-- simplify the codege (value not result)
-
 ## changelog
 
 2020-11-18 used error for method signatures.
