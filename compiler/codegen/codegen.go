@@ -75,13 +75,13 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 			c := &object.Integer{Value: v.Value}
 			index := len(consts)
 			consts = append(consts, c)
-			value_loader[v.GetResult().(*ir.Result)] = constLoaderFn(index)
+			value_loader[v.GetResult()] = constLoaderFn(index)
 
 		case *ir.ShapeLiteral:
 			s := object.NewShape(v.Dims)
 			index := len(consts)
 			consts = append(consts, s)
-			value_loader[v.GetResult().(*ir.Result)] = constLoaderFn(index)
+			value_loader[v.GetResult()] = constLoaderFn(index)
 
 		case *ir.RngSource:
 			//-- Load int seed
@@ -108,7 +108,7 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 			insts = append(insts, ins...)
 
 		case *ir.Return:
-			operand := v.GetOperand().(*ir.Result)
+			operand := v.GetOperand()
 			loader, existed := value_loader[operand]
 			if !existed {
 				panic(fmt.Sprintf("value loader for result (%v) does not exist.", operand))
