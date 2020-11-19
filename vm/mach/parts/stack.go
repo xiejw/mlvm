@@ -22,7 +22,7 @@ func NewStack() *Stack {
 	return stack
 }
 
-func (stack *Stack) Push(item object.Object) *errors.DError {
+func (stack *Stack) Push(item object.Object) error {
 	stack.top++
 	top := stack.top
 
@@ -36,7 +36,7 @@ func (stack *Stack) Push(item object.Object) *errors.DError {
 	return nil
 }
 
-func (stack *Stack) Pop() (object.Object, *errors.DError) {
+func (stack *Stack) Pop() (object.Object, error) {
 	top := stack.top
 	if top < 0 {
 		return nil, errPopOnEmptyStack

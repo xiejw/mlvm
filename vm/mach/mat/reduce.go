@@ -1,7 +1,8 @@
 package mat
 
 import (
-	"github.com/xiejw/mlvm/vm/base/errors"
+	"fmt"
+
 	"github.com/xiejw/mlvm/vm/mach/tensorarray"
 )
 
@@ -11,9 +12,9 @@ const (
 	MergeSum MergeType = iota
 )
 
-func Reduce(ta *tensorarray.TensorArray, merge_type MergeType) (*tensorarray.TensorArray, *errors.DError) {
+func Reduce(ta *tensorarray.TensorArray, merge_type MergeType) (*tensorarray.TensorArray, error) {
 	if merge_type != MergeSum {
-		return nil, errors.New("merge type for reduce is not supported: %v", merge_type)
+		return nil, fmt.Errorf("merge type for reduce is not supported: %v", merge_type)
 	}
 
 	var v float32 = 0.0
@@ -28,7 +29,7 @@ func Reduce(ta *tensorarray.TensorArray, merge_type MergeType) (*tensorarray.Ten
 			}
 			v *= float32(ta.Size / real_size)
 		default:
-			return nil, errors.New("unsupported merge_type: %v", merge_type)
+			return nil, fmt.Errorf("unsupported merge_type: %v", merge_type)
 		}
 	} else {
 		buf := ta.Value

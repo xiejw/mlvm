@@ -2,8 +2,6 @@ package algorithrms
 
 import (
 	"testing"
-
-	"github.com/xiejw/mlvm/vm/base/errors"
 )
 
 func TestQueue(t *testing.T) {
@@ -37,7 +35,7 @@ func TestQueue(t *testing.T) {
 	}
 }
 
-func assertNoErr(t *testing.T, err *errors.DError) {
+func assertNoErr(t *testing.T, err error) {
 	t.Helper()
 	if err != nil {
 		t.Fatalf("did not expect error. got: %v", err)

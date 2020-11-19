@@ -5,7 +5,6 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/mach/tensorarray"
 )
 
@@ -104,7 +103,7 @@ func TestBinaryOpWithBroadcastOperandtInLHS(t *testing.T) {
 ///////////////////////////////////////////////////////////////////////////////
 // Helper Method.
 ///////////////////////////////////////////////////////////////////////////////
-func assertNoErr(t *testing.T, err *errors.DError) {
+func assertNoErr(t *testing.T, err error) {
 	t.Helper()
 
 	if err != nil {

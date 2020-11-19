@@ -3,17 +3,16 @@ package parts
 import (
 	"testing"
 
-	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/object"
 )
 
-func checkNotErr(t *testing.T, err *errors.DError) {
+func checkNotErr(t *testing.T, err error) {
 	if err != nil {
 		t.Fatalf("Unexpected err: %v", err)
 	}
 }
 
-func checkStringValue(t *testing.T, err *errors.DError, got object.Object, expected string) {
+func checkStringValue(t *testing.T, err error, got object.Object, expected string) {
 	if err != nil {
 		t.Fatalf("Unexpected err: %v", err)
 	}
@@ -23,7 +22,7 @@ func checkStringValue(t *testing.T, err *errors.DError, got object.Object, expec
 	}
 }
 
-func checkIntValue(t *testing.T, err *errors.DError, got object.Object, expected int64) {
+func checkIntValue(t *testing.T, err error, got object.Object, expected int64) {
 	if err != nil {
 		t.Fatalf("Unexpected err: %v", err)
 	}

@@ -12,6 +12,17 @@ type DError struct {
 	rootCause error
 }
 
+// Emit one more note to the error and return as error interface.
+func EmitNote(err error, sfmt string, args ...interface{}) error {
+	if de, ok := err.(*DError); ok {
+		note := fmt.Sprintf(sfmt, args...)
+		de.notes = append(de.notes, note)
+		return de
+	} else {
+		return From(err).EmitNote(sfmt, args...)
+	}
+}
+
 // Creates a DError with root cause specified by the message.
 func New(sfmt string, args ...interface{}) *DError {
 	return &DError{
@@ -21,10 +32,17 @@ func New(sfmt string, args ...interface{}) *DError {
 
 // Creates a DError with root cause specified by `err`.
 func From(err error) *DError {
+	if de, ok := err.(*DError); ok {
+		return de
+	}
+
 	return &DError{
 		rootCause: err,
 	}
 }
+
+// Conform error interface.
+func (de *DError) Error() string { return de.String() }
 
 // Formats the error into string.
 func (de *DError) String() string {

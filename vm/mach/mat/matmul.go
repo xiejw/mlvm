@@ -1,9 +1,9 @@
 package mat
 
 import (
+	"fmt"
 	"log"
 
-	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/mach/tensorarray"
 )
 
@@ -13,25 +13,24 @@ const (
 	MatMulNoTrans MatmulTransType = iota
 )
 
-func Matmul(lhs, rhs *tensorarray.TensorArray, trans_type MatmulTransType,
-) (*tensorarray.TensorArray, *errors.DError) {
+func Matmul(lhs, rhs *tensorarray.TensorArray, trans_type MatmulTransType) (*tensorarray.TensorArray, error) {
 	/////////////////////////////////////////////////////////////////////////////
 	// Error checking.
 	/////////////////////////////////////////////////////////////////////////////
 	if lhs.Rank != 2 {
-		return nil, errors.New("matmul requires rank 2 lhs operand; got: %v", lhs.Rank)
+		return nil, fmt.Errorf("matmul requires rank 2 lhs operand; got: %v", lhs.Rank)
 	}
 	if rhs.Rank != 2 {
-		return nil, errors.New("matmul requires rank 2 rhs operand; got: %v", rhs.Rank)
+		return nil, fmt.Errorf("matmul requires rank 2 rhs operand; got: %v", rhs.Rank)
 	}
 	switch trans_type {
 	case MatMulNoTrans:
 		if lhs.Dims[1] != rhs.Dims[0] {
-			return nil, errors.New(
+			return nil, fmt.Errorf(
 				"operand shape incompatable: lhs 1-th dim %v, rhs 0-th dim %v", lhs.Dims[1], rhs.Dims[0])
 		}
 	default:
-		return nil, errors.New("trans type %v is not supported for matmul.", trans_type)
+		return nil, fmt.Errorf("trans type %v is not supported for matmul.", trans_type)
 	}
 	if lhs.IsCompressed() {
 		log.Printf("matmul lhs compressed. try to optimize")

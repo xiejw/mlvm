@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/code"
 	"github.com/xiejw/mlvm/vm/mach"
 	"github.com/xiejw/mlvm/vm/object"
@@ -36,7 +35,7 @@ func main() {
 // Helper methods
 // ----------------------------------------------------------------------------
 
-func assertNoErr(err *errors.DError) {
+func assertNoErr(err error) {
 	if err != nil {
 		log.Fatalf("did not expect error. got: %v", err)
 	}

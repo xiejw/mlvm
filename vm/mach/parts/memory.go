@@ -36,7 +36,7 @@ func (m *Memory) ByteSize() int {
 	return m.size_in_bytes
 }
 
-func (m *Memory) Get(index int) (object.Object, *errors.DError) {
+func (m *Memory) Get(index int) (object.Object, error) {
 	if index >= m.slot_count {
 		return nil, errors.New(errRetrieveFromInvalidSlot, index, m.slot_count)
 	}
@@ -49,7 +49,7 @@ func (m *Memory) Get(index int) (object.Object, *errors.DError) {
 }
 
 // Deletes the item in memory and returns it.
-func (m *Memory) Drop(index int) (object.Object, *errors.DError) {
+func (m *Memory) Drop(index int) (object.Object, error) {
 	if index >= m.slot_count {
 		return nil, errors.New(errRetrieveFromInvalidSlot, index, m.slot_count)
 	}
@@ -62,7 +62,7 @@ func (m *Memory) Drop(index int) (object.Object, *errors.DError) {
 	return item, nil
 }
 
-func (m *Memory) Set(index int, item object.Object) *errors.DError {
+func (m *Memory) Set(index int, item object.Object) error {
 	if index >= m.slot_count {
 		panic("Index is too large. Enlarging is planning.")
 	}

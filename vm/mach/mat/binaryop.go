@@ -1,7 +1,8 @@
 package mat
 
 import (
-	"github.com/xiejw/mlvm/vm/base/errors"
+	"fmt"
+
 	"github.com/xiejw/mlvm/vm/mach/tensorarray"
 )
 
@@ -23,11 +24,10 @@ const (
 // 3. For the rest case, one real_size must be divisible by another. We basically do an inner+outer
 //    loop. The inner loop iteratson on the smaller real_size, and the outer loop keeps this
 //    pattern.
-func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (
-	*tensorarray.TensorArray, *errors.DError) {
+func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (*tensorarray.TensorArray, error) {
 
 	if !areUIntSliceEq(o1.Dims, o2.Dims) {
-		return nil, errors.New("dims in shape mismatch. this is not allowed.")
+		return nil, fmt.Errorf("dims in shape mismatch. this is not allowed.")
 	}
 
 	var buf []float32
@@ -54,7 +54,7 @@ func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (
 				buf[i] = buf1[i] * buf2[i]
 			}
 		default:
-			err := errors.New("unsupported binary op type %v", op_type)
+			err := fmt.Errorf("unsupported binary op type %v", op_type)
 			return nil, err
 		}
 
@@ -79,7 +79,7 @@ func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (
 				buf[i] = v * buf2[i]
 			}
 		default:
-			err := errors.New("unsupported binary op type %v", op_type)
+			err := fmt.Errorf("unsupported binary op type %v", op_type)
 			return nil, err
 		}
 
@@ -104,7 +104,7 @@ func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (
 				buf[i] = buf1[i] * v
 			}
 		default:
-			err := errors.New("unsupported binary op type %v", op_type)
+			err := fmt.Errorf("unsupported binary op type %v", op_type)
 			return nil, err
 		}
 
@@ -124,7 +124,7 @@ func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (
 		}
 
 		if max_size%min_size != 0 {
-			return nil, errors.New(
+			return nil, fmt.Errorf(
 				"real size of operands are invalid. they should be multiple of each other: got: %v and %v",
 				real_size_1, real_size_2)
 		}
@@ -150,7 +150,7 @@ func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (
 					buf[i+j] = buf1[lhs+j] * buf2[rhs+j]
 				}
 			default:
-				err := errors.New("unsupported binary op type %v", op_type)
+				err := fmt.Errorf("unsupported binary op type %v", op_type)
 				return nil, err
 			}
 

@@ -11,7 +11,7 @@ type Queue struct {
 	end   *qNode
 }
 
-func (q *Queue) Dequeue() (Item, *errors.DError) {
+func (q *Queue) Dequeue() (Item, error) {
 	n := q.front
 	if n == nil {
 		return nil, errors.New("queue is empty; cannot dequeue.")
@@ -26,7 +26,7 @@ func (q *Queue) Dequeue() (Item, *errors.DError) {
 	return n.V, nil
 }
 
-func (q *Queue) Enqueue(item Item) *errors.DError {
+func (q *Queue) Enqueue(item Item) error {
 	if q.end == nil {
 		n := &qNode{
 			V: item,

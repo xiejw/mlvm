@@ -4,7 +4,6 @@ import (
 	"math"
 	"testing"
 
-	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/code"
 	"github.com/xiejw/mlvm/vm/object"
 )
@@ -220,7 +219,7 @@ func TestRunWithOpTensorMinus(t *testing.T) {
 // Helper Methods.
 ///////////////////////////////////////////////////////////////////////////////
 
-func assertNoErr(t *testing.T, err *errors.DError) {
+func assertNoErr(t *testing.T, err error) {
 	t.Helper()
 
 	if err != nil {
@@ -255,7 +254,7 @@ func assertAllClose(t *testing.T, expected, got []float32, tol float64) {
 	}
 }
 
-func assertSingleOutput(t *testing.T, outputs Outputs, err *errors.DError) object.Object {
+func assertSingleOutput(t *testing.T, outputs Outputs, err error) object.Object {
 	t.Helper()
 	assertNoErr(t, err)
 	if len(outputs) != 1 {

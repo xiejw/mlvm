@@ -40,7 +40,7 @@ type Instruction interface {
 	GetResult() Value
 	GetResults() []Value
 	String() string
-	Check() *errors.DError
+	Check() error
 }
 
 // See instructions.go for all implementations.
@@ -117,19 +117,19 @@ func NewBuilder() *Builder {
 	}
 }
 
-func (b *Builder) NewFn(fn_name string) (*Fn, *errors.DError) {
+func (b *Builder) NewFn(fn_name string) (*Fn, error) {
 	if _, existed := b.f_map[fn_name]; existed {
 		return nil, errors.New("fn name already existed in module: %v", fn_name)
 	}
 	return &Fn{b: b, name: fn_name}, nil
 }
 
-func (b *Builder) Done() (*Module, *errors.DError) {
+func (b *Builder) Done() (*Module, error) {
 	for _, fn := range b.fns {
 		for _, ins := range fn.insts {
 			err := ins.Check()
 			if err != nil {
-				return nil, err.EmitNote(
+				return nil, errors.From(err).EmitNote(
 					"Failed to check Instrunction: %v", ins,
 				).EmitNote(
 					"Failed to check the fn (`%v`):\n\n%v", fn.Name(), fn,

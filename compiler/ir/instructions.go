@@ -84,9 +84,9 @@ func (f *Fn) RngTensor(src Value, s Value) *RngTensor {
 // Check (Propagate shape dims, validate types, etc )
 // -----------------------------------------------------------------------------
 
-func (lit *IntLiteral) Check() *errors.DError { return nil }
+func (lit *IntLiteral) Check() error { return nil }
 
-func (lit *ShapeLiteral) Check() *errors.DError {
+func (lit *ShapeLiteral) Check() error {
 	for _, d := range lit.Dims {
 		if d <= 0 {
 			return errors.New("All Dims of ShapeLiteral must be positive, but got: %v", lit.Dims)
@@ -95,7 +95,7 @@ func (lit *ShapeLiteral) Check() *errors.DError {
 	return nil
 }
 
-func (rng *RngSource) Check() *errors.DError {
+func (rng *RngSource) Check() error {
 	if !rng.Input.Type().IsInt() {
 		return errors.New(
 			"RngSource expects int as seed input, but got type: %v", rng.Input.Type())
@@ -103,7 +103,7 @@ func (rng *RngSource) Check() *errors.DError {
 	return nil
 }
 
-func (rng *RngTensor) Check() *errors.DError {
+func (rng *RngTensor) Check() error {
 	if rng.Source.Type().Kind != KRng {
 		return errors.New(
 			"RngTensor expects RngSource as the first operand, but got type: %v", rng.Source.Type())
@@ -117,7 +117,7 @@ func (rng *RngTensor) Check() *errors.DError {
 	return nil
 }
 
-func (r *Return) Check() *errors.DError { return nil }
+func (r *Return) Check() error { return nil }
 
 // -----------------------------------------------------------------------------
 // String

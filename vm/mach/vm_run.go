@@ -35,7 +35,7 @@ type Outputs []object.Object
 //
 // During any run, if any error raised, the system's state becomes unknown. Creating a new VM is
 // recommended.
-func (vm *VM) Run() (Outputs, *errors.DError) {
+func (vm *VM) Run() (Outputs, error) {
 	end := len(vm.instructions)
 
 	for ip := 0; ip < end; ip++ {
@@ -58,7 +58,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 			c = normalizeObject(c)
 			err := vm.stack.Push(c)
 			if err != nil {
-				return nil, err.EmitNote("failed to push const to stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to push const to stack.").EmitNote(vmErr, op)
 			}
 
 		case code.OpSTORE:
@@ -67,11 +67,11 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			o, err := vm.pop()
 			if err != nil {
-				return nil, err.EmitNote("failed to get object from stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to get object from stack.").EmitNote(vmErr, op)
 			}
 			err = vm.globalMem.Set(mIndex, o)
 			if err != nil {
-				return nil, err.EmitNote("failed to store obj to mem @%v.", mIndex).EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to store obj to mem @%v.", mIndex).EmitNote(vmErr, op)
 			}
 
 		case code.OpLOAD:
@@ -80,12 +80,12 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			o, err := vm.globalMem.Get(mIndex)
 			if err != nil {
-				return nil, err.EmitNote("failed to load obj from mem @%v.", mIndex).EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to load obj from mem @%v.", mIndex).EmitNote(vmErr, op)
 			}
 
 			err = vm.stack.Push(o)
 			if err != nil {
-				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 		case code.OpMOVE:
@@ -94,12 +94,12 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			o, err := vm.globalMem.Drop(mIndex)
 			if err != nil {
-				return nil, err.EmitNote("failed to obtain obj from mem @%v.", mIndex).EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to obtain obj from mem @%v.", mIndex).EmitNote(vmErr, op)
 			}
 
 			err = vm.stack.Push(o)
 			if err != nil {
-				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 		////////////////////////////////////////////////////////////////////////////
@@ -109,18 +109,18 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 		case code.OpLOADS:
 			key, err := vm.popString()
 			if err != nil {
-				return nil, err.EmitNote("failed to get key from stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to get key from stack.").EmitNote(vmErr, op)
 			}
 
 			keyStr := key.Value
 			tensor, err := vm.store.Load(keyStr)
 			if err != nil {
-				return nil, err.EmitNote("failed to load obj (k:\"%s\") from store.", keyStr).EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to load obj (k:\"%s\") from store.", keyStr).EmitNote(vmErr, op)
 			}
 
 			err = vm.stack.Push(normalizeObject(tensor))
 			if err != nil {
-				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 		case code.OpIOR:
@@ -134,7 +134,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 				o = normalizeObject(o)
 				err := vm.stack.Push(o)
 				if err != nil {
-					return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+					return nil, errors.From(err).EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 				}
 			}
 
@@ -147,13 +147,13 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 		case code.OpRNG:
 			seed, err := vm.popInteger()
 			if err != nil {
-				return nil, err.EmitNote("failed to get rng seed from stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to get rng seed from stack.").EmitNote(vmErr, op)
 			}
 			src := prng64.NewPrng64(uint64(seed.Value))
 			prng := &object.Rng{src.Seed, src.Gamma, src.NextGammaSeed}
 			err = vm.stack.Push(prng)
 			if err != nil {
-				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 		case code.OpRNGT:
@@ -162,7 +162,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			o, err := vm.pop()
 			if err != nil {
-				return nil, err.EmitNote("failed to get rng from stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to get rng from stack.").EmitNote(vmErr, op)
 			}
 			rng, ok := o.(*object.Rng)
 			if !ok {
@@ -171,7 +171,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			shape, err := vm.popShape()
 			if err != nil {
-				return nil, err.EmitNote("failed to get hape from stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to get hape from stack.").EmitNote(vmErr, op)
 			}
 
 			size := shape.Size()
@@ -187,7 +187,7 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			err = vm.stack.Push(tensorarray.FromRaw(shape.Dims, value))
 			if err != nil {
-				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 		////////////////////////////////////////////////////////////////////////////
@@ -208,19 +208,19 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 			tensor := tensorarray.FromRaw(shape.Dims, array.Value)
 			err = vm.stack.Push(tensor)
 			if err != nil {
-				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 		case code.OpTSHAPE:
 			ta, err := vm.popTensor()
 			if err != nil {
-				return nil, err.EmitNote("failed to pop tensor from stack").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to pop tensor from stack").EmitNote(vmErr, op)
 			}
 
 			shape := object.NewShape(ta.Dims)
 			err = vm.stack.Push(shape)
 			if err != nil {
-				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 		case code.OpTADD:
@@ -232,17 +232,17 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			lhs, rhs, err := vm.popTwoTensorsInSeq()
 			if err != nil {
-				return nil, err.EmitNote(vmErr, op)
+				return nil, errors.EmitNote(err, vmErr, op)
 			}
 
 			tensor, err := mat.BinaryOp(lhs, rhs, op_type)
 			if err != nil {
-				return nil, err.EmitNote("unexpected error for binary op").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("unexpected error for binary op").EmitNote(vmErr, op)
 			}
 
 			err = vm.stack.Push(tensor)
 			if err != nil {
-				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 		case code.OpTREDUCE:
@@ -256,12 +256,12 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 
 			r, err := mat.Reduce(ta, merge_type)
 			if err != nil {
-				return nil, err.EmitNote("unexpected error for reduce").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("unexpected error for reduce").EmitNote(vmErr, op)
 			}
 
 			err = vm.stack.Push(r)
 			if err != nil {
-				return nil, err.EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+				return nil, errors.From(err).EmitNote("failed to push to stack.").EmitNote(vmErr, op)
 			}
 
 		default:
@@ -280,24 +280,21 @@ func (vm *VM) Run() (Outputs, *errors.DError) {
 // Helper Methods.
 ///////////////////////////////////////////////////////////////////////////////
 
-func (vm *VM) popTwoTensorsInSeq() (
-	lhs *tensorarray.TensorArray, rhs *tensorarray.TensorArray, err *errors.DError) {
+func (vm *VM) popTwoTensorsInSeq() (*tensorarray.TensorArray, *tensorarray.TensorArray, error) {
 
-	rhs, err = vm.popTensor()
+	rhs, err := vm.popTensor()
 	if err != nil {
-		err.EmitNote("failed to the right hand side operand.")
-		return
+		return nil, nil, errors.EmitNote(err, "failed to the right hand side operand.")
 	}
-	lhs, err = vm.popTensor()
+	lhs, err := vm.popTensor()
 	if err != nil {
-		err.EmitNote("failed to the left hand side operand.")
+		return nil, nil, errors.EmitNote(err, "failed to the left hand side operand.")
 	}
-	return
-
+	return lhs, rhs, nil
 }
 
 // Clears the stack and moves items (in reverse order) as outputs.
-func (vm *VM) popOutputs() (Outputs, *errors.DError) {
+func (vm *VM) popOutputs() (Outputs, error) {
 	var outputs Outputs
 	stack := vm.stack
 

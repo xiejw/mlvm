@@ -1,11 +1,12 @@
 ## TODO
 
-- add simple type to ir
-- change error in vm
-- lower the 1 + 1
+- change all errors.
+- immutable rng
+- simplify the codege (value not result)
 
 ## changelog
 
+2020-11    add simple type to ir
 2020-11-11 used dedicated vm and compiler folders to separate stuff.
 2020-09-10 used internal representation for vm.
 2020-08-30 made object immutable and serializable.

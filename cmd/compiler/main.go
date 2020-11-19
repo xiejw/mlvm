@@ -5,7 +5,6 @@ import (
 
 	"github.com/xiejw/mlvm/compiler/codegen"
 	"github.com/xiejw/mlvm/compiler/ir"
-	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/mach"
 )
 
@@ -52,7 +51,7 @@ func main() {
 //------------------------------------------------------------------------------
 // Helper methods.
 //------------------------------------------------------------------------------
-func assertNoErr(err *errors.DError) {
+func assertNoErr(err error) {
 	if err != nil {
 		log.Fatalf("did not expect error: %v", err)
 	}

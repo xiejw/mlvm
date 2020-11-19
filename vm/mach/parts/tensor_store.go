@@ -11,8 +11,8 @@ var (
 
 // TensorStore is a key-Tensor store.
 type TensorStore interface {
-	Load(key string) (*object.Tensor, *errors.DError)
-	Store(key string, value *object.Tensor) *errors.DError
+	Load(key string) (*object.Tensor, error)
+	Store(key string, value *object.Tensor) error
 }
 
 type storeImpl struct {
@@ -25,7 +25,7 @@ func NewTensorStore() TensorStore {
 	}
 }
 
-func (st *storeImpl) Load(key string) (*object.Tensor, *errors.DError) {
+func (st *storeImpl) Load(key string) (*object.Tensor, error) {
 	tensor, ok := st.db[key]
 	if !ok {
 		return nil, ErrTSTensorNotFound
@@ -33,7 +33,7 @@ func (st *storeImpl) Load(key string) (*object.Tensor, *errors.DError) {
 	return tensor, nil
 }
 
-func (st *storeImpl) Store(key string, value *object.Tensor) *errors.DError {
+func (st *storeImpl) Store(key string, value *object.Tensor) error {
 	st.db[key] = value
 	return nil
 }

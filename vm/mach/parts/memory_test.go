@@ -52,7 +52,7 @@ func checkMemoryNilValue(t *testing.T, memory *Memory, index int) {
 	if err == nil {
 		t.Errorf("Should fail due to empty slot.")
 	}
-	if !strings.Contains(err.String(), "empty") {
+	if !strings.Contains(err.Error(), "empty") {
 		t.Errorf("should see empty error.")
 	}
 }
@@ -63,7 +63,7 @@ func checkMemoryNilValueViaDrop(t *testing.T, memory *Memory, index int) {
 	if err == nil {
 		t.Errorf("Should fail due to empty slot.")
 	}
-	if !strings.Contains(err.String(), "empty") {
+	if !strings.Contains(err.Error(), "empty") {
 		t.Errorf("should see empty error.")
 	}
 }

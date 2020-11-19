@@ -4,7 +4,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/xiejw/mlvm/compiler/base/errors"
 	"github.com/xiejw/mlvm/compiler/ir"
 	"github.com/xiejw/mlvm/vm/code"
 )
@@ -94,7 +93,7 @@ func assertProgram(t *testing.T, expectedStr string, p *code.Program) {
 	}
 }
 
-func assertNoErr(t *testing.T, err *errors.DError) {
+func assertNoErr(t *testing.T, err error) {
 	t.Helper()
 
 	if err != nil {

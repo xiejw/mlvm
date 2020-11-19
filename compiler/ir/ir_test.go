@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"strings"
 	"testing"
-
-	"github.com/xiejw/mlvm/compiler/base/errors"
 )
 
 func TestModule(t *testing.T) {
@@ -110,7 +108,7 @@ func assertModule(t *testing.T, expectedStr string, m *Module) {
 	}
 }
 
-func assertNoErr(t *testing.T, err *errors.DError) {
+func assertNoErr(t *testing.T, err error) {
 	t.Helper()
 
 	if err != nil {
