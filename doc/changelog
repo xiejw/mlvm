@@ -1,11 +1,11 @@
 ## TODO
 
-- change all errors.
 - immutable rng
 - simplify the codege (value not result)
 
 ## changelog
 
+2020-11-18 used error for method signatures.
 2020-11    add simple type to ir
 2020-11-11 used dedicated vm and compiler folders to separate stuff.
 2020-09-10 used internal representation for vm.

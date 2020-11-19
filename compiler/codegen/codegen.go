@@ -3,8 +3,8 @@ package codegen
 import (
 	"fmt"
 
-	"github.com/xiejw/mlvm/compiler/base/errors"
 	"github.com/xiejw/mlvm/compiler/ir"
+	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/code"
 	"github.com/xiejw/mlvm/vm/object"
 )

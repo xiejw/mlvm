@@ -9,7 +9,7 @@ import (
 func (vm *VM) pop() (object.Object, error) {
 	o, err := vm.stack.Pop()
 	if err != nil {
-		return nil, errors.EmitNote(err, "failed to pop object from stack.")
+		return nil, errors.WrapNote(err, "failed to pop object from stack.")
 	}
 	return o, nil
 }
@@ -17,7 +17,7 @@ func (vm *VM) pop() (object.Object, error) {
 func (vm *VM) popInteger() (*object.Integer, error) {
 	o, err := vm.stack.Pop()
 	if err != nil {
-		return nil, errors.EmitNote(err, "failed to pop integer from stack.")
+		return nil, errors.WrapNote(err, "failed to pop integer from stack.")
 	}
 	v, ok := o.(*object.Integer)
 	if !ok {
@@ -29,7 +29,7 @@ func (vm *VM) popInteger() (*object.Integer, error) {
 func (vm *VM) popString() (*object.String, error) {
 	o, err := vm.stack.Pop()
 	if err != nil {
-		return nil, errors.EmitNote(err, "failed to pop string from stack.")
+		return nil, errors.WrapNote(err, "failed to pop string from stack.")
 	}
 	v, ok := o.(*object.String)
 	if !ok {
@@ -41,7 +41,7 @@ func (vm *VM) popString() (*object.String, error) {
 func (vm *VM) popArray() (*object.Array, error) {
 	arrayObject, err := vm.stack.Pop()
 	if err != nil {
-		return nil, errors.EmitNote(err, "failed to pop array from stack.")
+		return nil, errors.WrapNote(err, "failed to pop array from stack.")
 	}
 	array, ok := arrayObject.(*object.Array)
 	if !ok {
@@ -53,7 +53,7 @@ func (vm *VM) popArray() (*object.Array, error) {
 func (vm *VM) popShape() (*object.Shape, error) {
 	shapeObject, err := vm.stack.Pop()
 	if err != nil {
-		return nil, errors.EmitNote(err, "failed to pop shape from stack.")
+		return nil, errors.WrapNote(err, "failed to pop shape from stack.")
 	}
 	shape, ok := shapeObject.(*object.Shape)
 	if !ok {
@@ -65,7 +65,7 @@ func (vm *VM) popShape() (*object.Shape, error) {
 func (vm *VM) popTensor() (*tensorarray.TensorArray, error) {
 	tensorObject, err := vm.stack.Pop()
 	if err != nil {
-		return nil, errors.EmitNote(err, "failed to pop tensor from stack.")
+		return nil, errors.WrapNote(err, "failed to pop tensor from stack.")
 	}
 	ta, ok := tensorObject.(*tensorarray.TensorArray)
 	if !ok {

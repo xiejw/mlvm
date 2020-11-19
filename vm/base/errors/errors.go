@@ -12,8 +12,10 @@ type DError struct {
 	rootCause error
 }
 
-// Emit one more note to the error and return as error interface.
-func EmitNote(err error, sfmt string, args ...interface{}) error {
+// Wraps a note to the error and return as error interface.
+//
+// This is same as From(error).EmitNote(...)
+func WrapNote(err error, sfmt string, args ...interface{}) error {
 	if de, ok := err.(*DError); ok {
 		note := fmt.Sprintf(sfmt, args...)
 		de.notes = append(de.notes, note)

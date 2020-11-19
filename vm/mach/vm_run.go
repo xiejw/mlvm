@@ -232,7 +232,7 @@ func (vm *VM) Run() (Outputs, error) {
 
 			lhs, rhs, err := vm.popTwoTensorsInSeq()
 			if err != nil {
-				return nil, errors.EmitNote(err, vmErr, op)
+				return nil, errors.WrapNote(err, vmErr, op)
 			}
 
 			tensor, err := mat.BinaryOp(lhs, rhs, op_type)
@@ -284,11 +284,11 @@ func (vm *VM) popTwoTensorsInSeq() (*tensorarray.TensorArray, *tensorarray.Tenso
 
 	rhs, err := vm.popTensor()
 	if err != nil {
-		return nil, nil, errors.EmitNote(err, "failed to the right hand side operand.")
+		return nil, nil, errors.WrapNote(err, "failed to the right hand side operand.")
 	}
 	lhs, err := vm.popTensor()
 	if err != nil {
-		return nil, nil, errors.EmitNote(err, "failed to the left hand side operand.")
+		return nil, nil, errors.WrapNote(err, "failed to the left hand side operand.")
 	}
 	return lhs, rhs, nil
 }
