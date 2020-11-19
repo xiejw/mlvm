@@ -85,15 +85,13 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 
 		case *ir.RngSource:
 			//-- Load int seed
-			int_seed := v.Input
-			ins, err := value_loader[int_seed]()
+			err := loadValueToInsts(&insts, v.Input, value_loader)
 			if err != nil {
 				return nil, err
 			}
-			insts = append(insts, ins...)
 
 			//-- Create rng seed
-			ins, err = code.MakeOp(code.OpRNG)
+			ins, err := code.MakeOp(code.OpRNG)
 			if err != nil {
 				return nil, err
 			}
@@ -108,17 +106,10 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 			insts = append(insts, ins...)
 
 		case *ir.Return:
-			operand := v.GetOperand()
-			loader, existed := value_loader[operand]
-			if !existed {
-				panic(fmt.Sprintf("value loader for result (%v) does not exist.", operand))
-			}
-
-			ins, err := loader()
+			err := loadValueToInsts(&insts, v.GetOperand(), value_loader)
 			if err != nil {
 				return nil, err
 			}
-			insts = append(insts, ins...)
 
 		default:
 			panic(fmt.Sprintf("unsupported ins type for codegen: %v", v)) // internal bug.
@@ -126,4 +117,22 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 	}
 
 	return &code.Program{insts, consts}, nil
+}
+
+// -----------------------------------------------------------------------------
+// Helper methods
+// -----------------------------------------------------------------------------
+
+func loadValueToInsts(insts *[]byte, v ir.Value, value_loader map[ir.Value]LoaderFn) error {
+	loader, existed := value_loader[v]
+	if !existed {
+		panic(fmt.Sprintf("value loader for result (%v) does not exist.", v))
+	}
+
+	ins, err := loader()
+	if err != nil {
+		return err
+	}
+	*insts = append(*insts, ins...)
+	return nil
 }
