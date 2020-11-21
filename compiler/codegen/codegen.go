@@ -64,7 +64,7 @@ func storeToMem(m_index *int) ([]byte, error) {
 	return ins, nil
 }
 
-// Code gens the `fn`.
+// Generates the code for `fn`.
 func codeGen(fn *ir.Fn) (*code.Program, error) {
 	insts := make([]byte, 0)
 	consts := make([]object.Object, 0)
@@ -88,58 +88,32 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 			value_loader[v.GetResult()] = constLoaderFn(index)
 
 		case *ir.RngSource:
-			//-- Load int seed
-			err := loadValueToInsts(&insts, v.Input, value_loader)
-			if err != nil {
-				return nil, err
-			}
-
-			//-- Create rng seed
-			ins, err := code.MakeOp(code.OpRNG)
-			if err != nil {
-				return nil, err
-			}
-			insts = append(insts, ins...)
+			loadValueToInsts(&insts, v.Input, value_loader)
+			appendOpcode(&insts, code.OpRNG)
 
 			//-- Push to memory
 			value_loader[v.Result] = memLoaderFn(mem_slot_i)
-			ins, err = storeToMem(&mem_slot_i)
+			ins, err := storeToMem(&mem_slot_i)
 			if err != nil {
 				return nil, err
 			}
 			insts = append(insts, ins...)
 
 		case *ir.RngTensor:
-			err := loadValueToInsts(&insts, v.Shape, value_loader)
-			if err != nil {
-				return nil, err
-			}
-
-			err = loadValueToInsts(&insts, v.Source, value_loader)
-			if err != nil {
-				return nil, err
-			}
-
-			//-- Create Tensor
-			ins, err := code.MakeOp(code.OpRNGT, 0)
-			if err != nil {
-				return nil, err
-			}
-			insts = append(insts, ins...)
+			loadValueToInsts(&insts, v.Shape, value_loader)
+			loadValueToInsts(&insts, v.Source, value_loader)
+			appendOpcode(&insts, code.OpRNGT, 0)
 
 			//-- Push to memory
 			value_loader[v.Result] = memLoaderFn(mem_slot_i)
-			ins, err = storeToMem(&mem_slot_i)
+			ins, err := storeToMem(&mem_slot_i)
 			if err != nil {
 				return nil, err
 			}
 			insts = append(insts, ins...)
 
 		case *ir.Return:
-			err := loadValueToInsts(&insts, v.GetOperand(), value_loader)
-			if err != nil {
-				return nil, err
-			}
+			loadValueToInsts(&insts, v.GetOperand(), value_loader)
 
 		default:
 			panic(fmt.Sprintf("unsupported ins type for codegen: %v", v)) // internal bug.
@@ -153,7 +127,7 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 // Helper methods
 // -----------------------------------------------------------------------------
 
-func loadValueToInsts(insts *[]byte, v ir.Value, value_loader map[ir.Value]LoaderFn) error {
+func loadValueToInsts(insts *[]byte, v ir.Value, value_loader map[ir.Value]LoaderFn) {
 	loader, existed := value_loader[v]
 	if !existed {
 		panic(fmt.Sprintf("value loader for result (%v) does not exist.", v))
@@ -161,13 +135,12 @@ func loadValueToInsts(insts *[]byte, v ir.Value, value_loader map[ir.Value]Loade
 
 	ins, err := loader()
 	if err != nil {
-		return err
+		panic(err)
 	}
 	*insts = append(*insts, ins...)
-	return nil
 }
 
-func appendOpCode(insts *[]byte, c code.Opcode, args ...int) {
+func appendOpcode(insts *[]byte, c code.Opcode, args ...int) {
 	ins, err := code.MakeOp(c, args...)
 	if err != nil {
 		panic(err)
