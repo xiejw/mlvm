@@ -55,15 +55,6 @@ func memLoaderFn(m_index int) LoaderFn {
 	}
 }
 
-func storeToMem(m_index *int) ([]byte, error) {
-	ins, err := code.MakeOp(code.OpSTORE, *m_index)
-	if err != nil {
-		return nil, err
-	}
-	*m_index++
-	return ins, nil
-}
-
 // Generates the code for `fn`.
 func codeGen(fn *ir.Fn) (*code.Program, error) {
 	insts := make([]byte, 0)
@@ -90,27 +81,15 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 		case *ir.RngSource:
 			loadValueToInsts(&insts, v.Input, value_loader)
 			appendOpcode(&insts, code.OpRNG)
-
-			//-- Push to memory
 			value_loader[v.Result] = memLoaderFn(mem_slot_i)
-			ins, err := storeToMem(&mem_slot_i)
-			if err != nil {
-				return nil, err
-			}
-			insts = append(insts, ins...)
+			pushToMemoryAndIncrIndex(&insts, &mem_slot_i)
 
 		case *ir.RngTensor:
 			loadValueToInsts(&insts, v.Shape, value_loader)
 			loadValueToInsts(&insts, v.Source, value_loader)
 			appendOpcode(&insts, code.OpRNGT, 0)
-
-			//-- Push to memory
 			value_loader[v.Result] = memLoaderFn(mem_slot_i)
-			ins, err := storeToMem(&mem_slot_i)
-			if err != nil {
-				return nil, err
-			}
-			insts = append(insts, ins...)
+			pushToMemoryAndIncrIndex(&insts, &mem_slot_i)
 
 		case *ir.Return:
 			loadValueToInsts(&insts, v.GetOperand(), value_loader)
@@ -145,5 +124,14 @@ func appendOpcode(insts *[]byte, c code.Opcode, args ...int) {
 	if err != nil {
 		panic(err)
 	}
+	*insts = append(*insts, ins...)
+}
+
+func pushToMemoryAndIncrIndex(insts *[]byte, m_index *int) {
+	ins, err := code.MakeOp(code.OpSTORE, *m_index)
+	if err != nil {
+		panic(err)
+	}
+	*m_index++
 	*insts = append(*insts, ins...)
 }
