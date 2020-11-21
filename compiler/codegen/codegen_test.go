@@ -74,6 +74,47 @@ func TestRngSeed(t *testing.T) {
 	assertProgram(t, expected, got)
 }
 
+func TestRngTensor(t *testing.T) {
+	//--- ir
+	b := ir.NewBuilder()
+	f, err := b.NewFn("main")
+	assertNoErr(t, err)
+
+	v := f.IntLiteral(12).GetResult()
+	s := f.ShapeLiteral([]int{2, 3}).GetResult()
+	src := f.RngSource(v)
+	r := f.RngTensor(src.GetResult(), s)
+	f.SetOutputAndDone(r.GetResult())
+
+	m, err := b.Done()
+	assertNoErr(t, err)
+
+	//--- compile
+	got, err := Compile(m)
+	assertNoErr(t, err)
+
+	expected := `
+-> Constants:
+
+[
+    0: Integer(12)
+    1: Shape(<2, 3>)
+]
+
+-> Instruction:
+
+000000 OpCONST    0
+000003 OpRNG
+000004 OpSTORE    0
+000007 OpCONST    1
+000010 OpLOAD     0
+000013 OpRNGT     0
+000016 OpSTORE    1
+000019 OpLOAD     1
+`
+	assertProgram(t, expected, got)
+}
+
 //-----------------------------------------------------------------------------
 // Helper Methods.
 //-----------------------------------------------------------------------------

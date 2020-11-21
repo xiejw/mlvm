@@ -30,7 +30,7 @@ func Compile(m *ir.Module) (*code.Program, error) {
 }
 
 //-----------------------------------------------------------------------------
-// Helper Methods
+// Loader.
 //-----------------------------------------------------------------------------
 
 type LoaderFn func() ([]byte, error)
@@ -55,17 +55,21 @@ func memLoaderFn(m_index int) LoaderFn {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Codegen.
+//-----------------------------------------------------------------------------
+
 // Generates the code for `fn`.
 func codeGen(fn *ir.Fn) (*code.Program, error) {
+	mem_slot_i := 0                             // points to next available index.
+	value_loader := make(map[ir.Value]LoaderFn) // ir.Value to loader mapping.
+
 	insts := make([]byte, 0)
 	consts := make([]object.Object, 0)
-	mem_slot_i := 0
-
-	value_loader := make(map[ir.Value]LoaderFn)
 
 	for _, ins := range fn.Instructions() {
-		switch v := ins.(type) {
 
+		switch v := ins.(type) {
 		case *ir.IntLiteral:
 			c := &object.Integer{Value: v.Value}
 			index := len(consts)
