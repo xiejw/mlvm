@@ -166,3 +166,11 @@ func loadValueToInsts(insts *[]byte, v ir.Value, value_loader map[ir.Value]Loade
 	*insts = append(*insts, ins...)
 	return nil
 }
+
+func appendOpCode(insts *[]byte, c code.Opcode, args ...int) {
+	ins, err := code.MakeOp(c, args...)
+	if err != nil {
+		panic(err)
+	}
+	*insts = append(*insts, ins...)
+}
