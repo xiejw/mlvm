@@ -22,7 +22,11 @@ func Compile(m *ir.Module) (*code.Program, error) {
 	if fn.Name() != "main" {
 		return nil, errors.New("Compile requires at least one fn called `main` as entry point.")
 	}
-	return codeGen(fn)
+	p, err := codeGen(fn)
+	if err != nil {
+		return nil, errors.From(err).EmitNote("fn:\n\n%v", fn).EmitNote("compile program error")
+	}
+	return p, nil
 }
 
 //-----------------------------------------------------------------------------
@@ -92,6 +96,32 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 
 			//-- Create rng seed
 			ins, err := code.MakeOp(code.OpRNG)
+			if err != nil {
+				return nil, err
+			}
+			insts = append(insts, ins...)
+
+			//-- Push to memory
+			value_loader[v.Result] = memLoaderFn(mem_slot_i)
+			ins, err = storeToMem(&mem_slot_i)
+			if err != nil {
+				return nil, err
+			}
+			insts = append(insts, ins...)
+
+		case *ir.RngTensor:
+			err := loadValueToInsts(&insts, v.Shape, value_loader)
+			if err != nil {
+				return nil, err
+			}
+
+			err = loadValueToInsts(&insts, v.Source, value_loader)
+			if err != nil {
+				return nil, err
+			}
+
+			//-- Create Tensor
+			ins, err := code.MakeOp(code.OpRNGT, 0)
 			if err != nil {
 				return nil, err
 			}

@@ -197,7 +197,7 @@ func MakeOp(op Opcode, operands ...int) ([]byte, error) {
 	instruction[0] = byte(op)
 
 	if len(def.OperandWidths) != len(operands) {
-		return nil, fmt.Errorf("Operand `%v` counts mismatch: expected %v, got %v",
+		return nil, fmt.Errorf("MakeOp: operand counts for `%v` mismatch: expected %v, got %v",
 			op, len(def.OperandWidths), len(operands))
 	}
 
