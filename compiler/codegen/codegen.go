@@ -70,6 +70,10 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 	for _, ins := range fn.Instructions() {
 
 		switch v := ins.(type) {
+
+		// -------------------------------------------------------------------------
+		// Literals.
+		// -------------------------------------------------------------------------
 		case *ir.IntLiteral:
 			c := &object.Integer{Value: v.Value}
 			index := len(consts)
@@ -88,23 +92,32 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 			consts = append(consts, s)
 			value_loader[v.GetResult()] = constLoaderFn(index)
 
+		// -------------------------------------------------------------------------
+		// Tensors.
+		// -------------------------------------------------------------------------
 		case *ir.NewTensor:
 			loadValueToStack(&insts, v.Shape, value_loader)
 			loadValueToStack(&insts, v.Array, value_loader)
 			pushOpcodeToStack(&insts, code.OpT)
-			pushToMemAndIncrIndex(&insts, v.Result, &mem_slot_i, &value_loader)
+			popToMemAndIncrIndex(&insts, v.Result, &mem_slot_i, &value_loader)
 
+		// -------------------------------------------------------------------------
+		// RNG.
+		// -------------------------------------------------------------------------
 		case *ir.RngSource:
 			loadValueToStack(&insts, v.Seed, value_loader)
 			pushOpcodeToStack(&insts, code.OpRNG)
-			pushToMemAndIncrIndex(&insts, v.Result, &mem_slot_i, &value_loader)
+			popToMemAndIncrIndex(&insts, v.Result, &mem_slot_i, &value_loader)
 
 		case *ir.RngFill:
 			loadValueToStack(&insts, v.Shape, value_loader)
 			loadValueToStack(&insts, v.Source, value_loader)
 			pushOpcodeToStack(&insts, code.OpRNGT, 0)
-			pushToMemAndIncrIndex(&insts, v.Result, &mem_slot_i, &value_loader)
+			popToMemAndIncrIndex(&insts, v.Result, &mem_slot_i, &value_loader)
 
+		// -------------------------------------------------------------------------
+		// Return.
+		// -------------------------------------------------------------------------
 		case *ir.Return:
 			loadValueToStack(&insts, v.GetOperand(), value_loader)
 
@@ -141,7 +154,7 @@ func pushOpcodeToStack(insts *[]byte, c code.Opcode, args ...int) {
 	*insts = append(*insts, ins...)
 }
 
-func pushToMemAndIncrIndex(insts *[]byte, v ir.Value, m_index *int, value_loader *map[ir.Value]LoaderFn) {
+func popToMemAndIncrIndex(insts *[]byte, v ir.Value, m_index *int, value_loader *map[ir.Value]LoaderFn) {
 	(*value_loader)[v] = memLoaderFn(*m_index)
 	ins, err := code.MakeOp(code.OpSTORE, *m_index)
 	if err != nil {
