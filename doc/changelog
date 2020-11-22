@@ -3,7 +3,6 @@
 - check
   - valid shape?
 	- valid array?
-	- input -> seed
 
 - passes
   - unused constants

@@ -85,7 +85,7 @@ func TestRngTensor(t *testing.T) {
 	v := f.IntLiteral(12).GetResult()
 	s := f.ShapeLiteral([]int{2, 3}).GetResult()
 	src := f.RngSource(v)
-	r := f.RngTensor(s, src.GetResult())
+	r := f.RngFill(s, src.GetResult())
 	f.SetOutputAndDone(r.GetResult())
 
 	m, err := b.Done()
