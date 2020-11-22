@@ -152,7 +152,7 @@ func (lit *IntLiteral) String() string {
 func (lit *ShapeLiteral) String() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "%v = ShapeLit(", lit.Result)
-	object.NewShape(lit.Dims).ToHumanReadableString(&buf)
+	object.NewShape(lit.Dims).DebugString(&buf)
 	fmt.Fprintf(&buf, ")")
 	return buf.String()
 }
@@ -160,7 +160,7 @@ func (lit *ShapeLiteral) String() string {
 func (lit *ArrayLiteral) String() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "%v = ArrayLit(", lit.Result)
-	(&object.Array{lit.Value}).ToHumanReadableString(&buf, 9)
+	(&object.Array{lit.Value}).DebugString(&buf, 9)
 	fmt.Fprintf(&buf, ")")
 	return buf.String()
 }

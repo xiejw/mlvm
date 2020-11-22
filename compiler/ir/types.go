@@ -41,7 +41,7 @@ func (t *Type) String() string {
 	case KTensor:
 		var buf bytes.Buffer
 		fmt.Fprintf(&buf, "Tensor(")
-		object.NewShape(t.Dims).ToHumanReadableString(&buf)
+		object.NewShape(t.Dims).DebugString(&buf)
 		fmt.Fprintf(&buf, ")")
 		return buf.String()
 	default:

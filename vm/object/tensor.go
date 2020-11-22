@@ -74,13 +74,13 @@ const defaultMaxNumberToPrintForArray = 9
 func (array *Array) String() string {
 	var buf bytes.Buffer
 	buf.WriteString("Array(")
-	array.ToHumanReadableString(&buf, defaultMaxNumberToPrintForArray)
+	array.DebugString(&buf, defaultMaxNumberToPrintForArray)
 	buf.WriteString(")")
 	return buf.String()
 }
 
 // Formats as `[  1.000,  2.000]`
-func (array *Array) ToHumanReadableString(w io.Writer, maxElementCountToPrint int) {
+func (array *Array) DebugString(w io.Writer, maxElementCountToPrint int) {
 	size := len(array.Value)
 
 	fmt.Fprintf(w, "[ ")
@@ -103,9 +103,9 @@ func (array *Array) ToHumanReadableString(w io.Writer, maxElementCountToPrint in
 func (t *Tensor) String() string {
 	var buf bytes.Buffer
 	buf.WriteString("Tensor(")
-	t.Shape.ToHumanReadableString(&buf)
+	t.Shape.DebugString(&buf)
 	buf.WriteString(" ")
-	t.Array.ToHumanReadableString(&buf, defaultMaxNumberToPrintForArray)
+	t.Array.DebugString(&buf, defaultMaxNumberToPrintForArray)
 	buf.WriteString(")")
 	return buf.String()
 }
@@ -114,13 +114,13 @@ func (t *Tensor) String() string {
 func (shape *Shape) String() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "Shape(")
-	shape.ToHumanReadableString(&buf)
+	shape.DebugString(&buf)
 	fmt.Fprintf(&buf, ")")
 	return buf.String()
 }
 
 // Formats as `<2, 3>`.
-func (shape *Shape) ToHumanReadableString(w io.Writer) {
+func (shape *Shape) DebugString(w io.Writer) {
 	rank := shape.Rank
 	finalIndex := int(rank - 1)
 	fmt.Fprintf(w, "<")
