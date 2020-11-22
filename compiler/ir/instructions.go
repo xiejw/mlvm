@@ -35,8 +35,8 @@ type RngSource struct {
 }
 
 type RngTensor struct {
-	Source Value
 	Shape  Value
+	Source Value
 	Result *Result
 	// Support more dist type
 }
@@ -100,10 +100,10 @@ func (f *Fn) RngSource(v Value) *RngSource {
 	return ins
 }
 
-func (f *Fn) RngTensor(src Value, s Value) *RngTensor {
+func (f *Fn) RngTensor(s Value, src Value) *RngTensor {
 	ins := &RngTensor{
-		Source: src,
 		Shape:  s,
+		Source: src,
 		Result: nil,
 	}
 	dims := s.Type().Dims // could be nil
@@ -171,13 +171,13 @@ func (rng *RngSource) Check() error {
 }
 
 func (rng *RngTensor) Check() error {
-	if rng.Source.Type().Kind != KRng {
-		return errors.New(
-			"RngTensor expects RngSource as the first operand, but got type: %v", rng.Source.Type())
-	}
 	if rng.Shape.Type().Kind != KShape {
 		return errors.New(
 			"RngTensor expects Shape as the second operand, but got type: %v", rng.Shape.Type())
+	}
+	if rng.Source.Type().Kind != KRng {
+		return errors.New(
+			"RngTensor expects RngSource as the first operand, but got type: %v", rng.Source.Type())
 	}
 	// forwards the shape
 	rng.Result.Type().Dims = rng.Shape.Type().Dims
@@ -223,7 +223,7 @@ func (rng *RngSource) String() string {
 }
 
 func (rng *RngTensor) String() string {
-	return fmt.Sprintf("%v = RngTensor(%v, %v)", rng.Result, rng.Source, rng.Shape)
+	return fmt.Sprintf("%v = RngTensor(%v, %v)", rng.Result, rng.Shape, rng.Source)
 }
 
 func (r *Return) String() string { return fmt.Sprintf("return %v", r.Value) }
@@ -264,7 +264,7 @@ func (rng *RngSource) GetResults() []Value  { return []Value{rng.Result} }
 
 // -- RngTensor
 func (rng *RngTensor) GetOperand() Value    { panic("invalid with multiple operands.") }
-func (rng *RngTensor) GetOperands() []Value { return []Value{rng.Source, rng.Shape} }
+func (rng *RngTensor) GetOperands() []Value { return []Value{rng.Shape, rng.Source} }
 func (rng *RngTensor) GetResult() Value     { return rng.Result }
 func (rng *RngTensor) GetResults() []Value  { return []Value{rng.Result} }
 
