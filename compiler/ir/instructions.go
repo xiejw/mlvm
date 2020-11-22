@@ -18,6 +18,11 @@ type ShapeLiteral struct {
 	Result *Result
 }
 
+type ArrayLiteral struct {
+	Value  []float32
+	Result *Result
+}
+
 type RngSource struct {
 	Input  Value // Must KInt as Type
 	Result *Result
@@ -58,6 +63,16 @@ func (f *Fn) ShapeLiteral(dims []int) *ShapeLiteral {
 	return ins
 }
 
+func (f *Fn) ArrayLiteral(v []float32) *ArrayLiteral {
+	ins := &ArrayLiteral{
+		Value:  v,
+		Result: nil,
+	}
+	ins.Result = f.nextResult(ins, 0, &Type{Kind: KArray, Dims: []int{len(v)}})
+	f.insts = append(f.insts, ins)
+	return ins
+}
+
 func (f *Fn) RngSource(v Value) *RngSource {
 	ins := &RngSource{
 		Input:  v,
@@ -91,6 +106,13 @@ func (lit *ShapeLiteral) Check() error {
 		if d <= 0 {
 			return errors.New("All Dims of ShapeLiteral must be positive, but got: %v", lit.Dims)
 		}
+	}
+	return nil
+}
+
+func (lit *ArrayLiteral) Check() error {
+	if len(lit.Value) == 0 {
+		return errors.New("ArrayLiteral cannot be empty")
 	}
 	return nil
 }
@@ -135,6 +157,14 @@ func (lit *ShapeLiteral) String() string {
 	return buf.String()
 }
 
+func (lit *ArrayLiteral) String() string {
+	var buf bytes.Buffer
+	fmt.Fprintf(&buf, "%v = ArrayLit(", lit.Result)
+	(&object.Array{lit.Value}).ToHumanReadableString(&buf, 9)
+	fmt.Fprintf(&buf, ")")
+	return buf.String()
+}
+
 func (rng *RngSource) String() string {
 	return fmt.Sprintf("%v = RngSource(%v)", rng.Result, rng.Input)
 }
@@ -160,6 +190,12 @@ func (lit *ShapeLiteral) GetOperand() Value    { return nil }
 func (lit *ShapeLiteral) GetOperands() []Value { return nil }
 func (lit *ShapeLiteral) GetResult() Value     { return lit.Result }
 func (lit *ShapeLiteral) GetResults() []Value  { return []Value{lit.Result} }
+
+// -- ArrayLiteral
+func (lit *ArrayLiteral) GetOperand() Value    { return nil }
+func (lit *ArrayLiteral) GetOperands() []Value { return nil }
+func (lit *ArrayLiteral) GetResult() Value     { return lit.Result }
+func (lit *ArrayLiteral) GetResults() []Value  { return []Value{lit.Result} }
 
 // -- RngSource
 func (rng *RngSource) GetOperand() Value    { return rng.Input }

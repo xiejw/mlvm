@@ -11,13 +11,14 @@ type TypeKind int
 
 type Type struct {
 	Kind TypeKind
-	Dims []int // KShape, KTensor
+	Dims []int // KShape, KTensor, 1-D for KArray
 }
 
 const (
 	KInt TypeKind = iota
 	KRng
 	KShape
+	KArray
 	KTensor
 )
 
@@ -35,6 +36,8 @@ func (t *Type) String() string {
 		return "Rng"
 	case KShape:
 		return object.NewShape(t.Dims).String()
+	case KArray:
+		return fmt.Sprintf("Array(<%v>)", t.Dims[0])
 	case KTensor:
 		var buf bytes.Buffer
 		fmt.Fprintf(&buf, "Tensor(")

@@ -58,6 +58,27 @@ fn main() {
 	assertModule(t, expected, got)
 }
 
+func TestArrayLit(t *testing.T) {
+	f, b := newMainFn(t)
+
+	v := f.ArrayLiteral([]float32{1, 2})
+	f.SetOutputAndDone(v.GetResult())
+
+	got, err := b.Done()
+	assertNoErr(t, err)
+
+	expected := `
+module {
+
+fn main() {
+  %0 = ArrayLit([  1.000,  2.000])
+  return %0
+}
+
+}`
+	assertModule(t, expected, got)
+}
+
 func TestRndSeed(t *testing.T) {
 	f, b := newMainFn(t)
 
