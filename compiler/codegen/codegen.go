@@ -89,27 +89,24 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 			value_loader[v.GetResult()] = constLoaderFn(index)
 
 		case *ir.NewTensor:
-			loadValueToInsts(&insts, v.Shape, value_loader)
-			loadValueToInsts(&insts, v.Array, value_loader)
-			appendOpcode(&insts, code.OpT)
-			value_loader[v.Result] = memLoaderFn(mem_slot_i)
-			pushToMemoryAndIncrIndex(&insts, &mem_slot_i)
+			loadValueToStack(&insts, v.Shape, value_loader)
+			loadValueToStack(&insts, v.Array, value_loader)
+			pushOpcodeToStack(&insts, code.OpT)
+			pushToMemAndIncrIndex(&insts, v.Result, &mem_slot_i, &value_loader)
 
 		case *ir.RngSource:
-			loadValueToInsts(&insts, v.Seed, value_loader)
-			appendOpcode(&insts, code.OpRNG)
-			value_loader[v.Result] = memLoaderFn(mem_slot_i)
-			pushToMemoryAndIncrIndex(&insts, &mem_slot_i)
+			loadValueToStack(&insts, v.Seed, value_loader)
+			pushOpcodeToStack(&insts, code.OpRNG)
+			pushToMemAndIncrIndex(&insts, v.Result, &mem_slot_i, &value_loader)
 
 		case *ir.RngFill:
-			loadValueToInsts(&insts, v.Shape, value_loader)
-			loadValueToInsts(&insts, v.Source, value_loader)
-			appendOpcode(&insts, code.OpRNGT, 0)
-			value_loader[v.Result] = memLoaderFn(mem_slot_i)
-			pushToMemoryAndIncrIndex(&insts, &mem_slot_i)
+			loadValueToStack(&insts, v.Shape, value_loader)
+			loadValueToStack(&insts, v.Source, value_loader)
+			pushOpcodeToStack(&insts, code.OpRNGT, 0)
+			pushToMemAndIncrIndex(&insts, v.Result, &mem_slot_i, &value_loader)
 
 		case *ir.Return:
-			loadValueToInsts(&insts, v.GetOperand(), value_loader)
+			loadValueToStack(&insts, v.GetOperand(), value_loader)
 
 		default:
 			panic(fmt.Sprintf("codegen: unsupported instruction type: %v", v)) // internal bug.
@@ -123,7 +120,7 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 // Helper methods
 // -----------------------------------------------------------------------------
 
-func loadValueToInsts(insts *[]byte, v ir.Value, value_loader map[ir.Value]LoaderFn) {
+func loadValueToStack(insts *[]byte, v ir.Value, value_loader map[ir.Value]LoaderFn) {
 	loader, existed := value_loader[v]
 	if !existed {
 		panic(fmt.Sprintf("value loader for result (%v) does not exist.", v))
@@ -136,7 +133,7 @@ func loadValueToInsts(insts *[]byte, v ir.Value, value_loader map[ir.Value]Loade
 	*insts = append(*insts, ins...)
 }
 
-func appendOpcode(insts *[]byte, c code.Opcode, args ...int) {
+func pushOpcodeToStack(insts *[]byte, c code.Opcode, args ...int) {
 	ins, err := code.MakeOp(c, args...)
 	if err != nil {
 		panic(err)
@@ -144,7 +141,8 @@ func appendOpcode(insts *[]byte, c code.Opcode, args ...int) {
 	*insts = append(*insts, ins...)
 }
 
-func pushToMemoryAndIncrIndex(insts *[]byte, m_index *int) {
+func pushToMemAndIncrIndex(insts *[]byte, v ir.Value, m_index *int, value_loader *map[ir.Value]LoaderFn) {
+	(*value_loader)[v] = memLoaderFn(*m_index)
 	ins, err := code.MakeOp(code.OpSTORE, *m_index)
 	if err != nil {
 		panic(err)
