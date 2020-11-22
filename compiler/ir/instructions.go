@@ -23,6 +23,12 @@ type ArrayLiteral struct {
 	Result *Result
 }
 
+type Tensor struct {
+	Shape  Value
+	Array  Value
+	Result *Result
+}
+
 type RngSource struct {
 	Input  Value // Must KInt as Type
 	Result *Result
@@ -73,6 +79,17 @@ func (f *Fn) ArrayLiteral(v []float32) *ArrayLiteral {
 	return ins
 }
 
+func (f *Fn) Tensor(s Value, arr Value) *Tensor {
+	ins := &Tensor{
+		Shape:  s,
+		Array:  arr,
+		Result: nil,
+	}
+	ins.Result = f.nextResult(ins, 0, &Type{Kind: KTensor, Dims: s.Type().Dims})
+	f.insts = append(f.insts, ins)
+	return ins
+}
+
 func (f *Fn) RngSource(v Value) *RngSource {
 	ins := &RngSource{
 		Input:  v,
@@ -102,6 +119,9 @@ func (f *Fn) RngTensor(src Value, s Value) *RngTensor {
 func (lit *IntLiteral) Check() error { return nil }
 
 func (lit *ShapeLiteral) Check() error {
+	if len(lit.Dims) == 0 {
+		return errors.New("ShapeLiteral.Dims cannot be empty")
+	}
 	for _, d := range lit.Dims {
 		if d <= 0 {
 			return errors.New("All Dims of ShapeLiteral must be positive, but got: %v", lit.Dims)
@@ -114,6 +134,31 @@ func (lit *ArrayLiteral) Check() error {
 	if len(lit.Value) == 0 {
 		return errors.New("ArrayLiteral cannot be empty")
 	}
+	return nil
+}
+
+func (t *Tensor) Check() error {
+	if t.Shape.Type().Kind != KShape {
+		return errors.New(
+			"Tensor expects Shape as the first operand, but got type: %v", t.Shape.Type())
+	}
+	if t.Array.Type().Kind != KArray {
+		return errors.New(
+			"Tensor expects Array as the second operand, but got type: %v", t.Array.Type())
+	}
+	dims := t.Shape.Type().Dims
+	count := 1
+	for _, d := range dims {
+		count *= d
+	}
+	if count != t.Array.Type().Dims[0] {
+		return errors.New(
+			"Tensor.Shape should match Array.size: shape elements: %v, array len: %v", count,
+			t.Array.Type().Dims[0])
+	}
+
+	// forwards the shape
+	t.Result.Type().Dims = dims
 	return nil
 }
 
@@ -165,6 +210,14 @@ func (lit *ArrayLiteral) String() string {
 	return buf.String()
 }
 
+func (t *Tensor) String() string {
+	var buf bytes.Buffer
+	fmt.Fprintf(&buf, "%v = Tensor(", t.Result)
+	object.NewShape(t.Result.Type().Dims).DebugString(&buf)
+	fmt.Fprintf(&buf, ")")
+	return buf.String()
+}
+
 func (rng *RngSource) String() string {
 	return fmt.Sprintf("%v = RngSource(%v)", rng.Result, rng.Input)
 }
@@ -196,6 +249,12 @@ func (lit *ArrayLiteral) GetOperand() Value    { return nil }
 func (lit *ArrayLiteral) GetOperands() []Value { return nil }
 func (lit *ArrayLiteral) GetResult() Value     { return lit.Result }
 func (lit *ArrayLiteral) GetResults() []Value  { return []Value{lit.Result} }
+
+// -- Tensor
+func (t *Tensor) GetOperand() Value    { panic("invalid with multiple operands.") }
+func (t *Tensor) GetOperands() []Value { return []Value{t.Shape, t.Array} }
+func (t *Tensor) GetResult() Value     { return t.Result }
+func (t *Tensor) GetResults() []Value  { return []Value{t.Result} }
 
 // -- RngSource
 func (rng *RngSource) GetOperand() Value    { return rng.Input }
