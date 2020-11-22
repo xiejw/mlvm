@@ -82,6 +82,12 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 			consts = append(consts, s)
 			value_loader[v.GetResult()] = constLoaderFn(index)
 
+		case *ir.ArrayLiteral:
+			s := &object.Array{v.Value}
+			index := len(consts)
+			consts = append(consts, s)
+			value_loader[v.GetResult()] = constLoaderFn(index)
+
 		case *ir.RngSource:
 			loadValueToInsts(&insts, v.Input, value_loader)
 			appendOpcode(&insts, code.OpRNG)
@@ -99,7 +105,7 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 			loadValueToInsts(&insts, v.GetOperand(), value_loader)
 
 		default:
-			panic(fmt.Sprintf("unsupported ins type for codegen: %v", v)) // internal bug.
+			panic(fmt.Sprintf("codegen: unsupported instruction type: %v", v)) // internal bug.
 		}
 	}
 

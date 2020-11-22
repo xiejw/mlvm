@@ -16,6 +16,7 @@ func TestConst(t *testing.T) {
 
 	v := f.IntLiteral(12)
 	_ = f.ShapeLiteral([]int{1, 2})
+	_ = f.ArrayLiteral([]float32{2})
 	f.SetOutputAndDone(v.GetResult())
 
 	m, err := b.Done()
@@ -31,6 +32,7 @@ func TestConst(t *testing.T) {
 [
     0: Integer(12)
     1: Shape(<1, 2>)
+    2: Array([  2.000])
 ]
 
 -> Instruction:

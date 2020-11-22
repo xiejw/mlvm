@@ -23,6 +23,7 @@ func main() {
 	s := f.ShapeLiteral([]int{2, 3}).GetResult()
 	src := f.RngSource(v)
 	r := f.RngTensor(src.GetResult(), s)
+	_ = f.ArrayLiteral([]float32{1, 2})
 	f.SetOutputAndDone(r.GetResult())
 
 	m, err := b.Done()
