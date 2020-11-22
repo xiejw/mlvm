@@ -24,7 +24,7 @@ func main() {
 	src := f.RngSource(v)
 	r := f.RngFill(s, src.GetResult())
 
-	a := f.ArrayLiteral([]float32{1, 2}).GetResult()
+	a := f.ArrayLiteral([]float32{1, 2, 3, 4, 5, 6}).GetResult()
 	_ = f.NewTensor(s, a)
 	f.SetOutputAndDone(r.GetResult())
 

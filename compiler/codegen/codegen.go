@@ -88,6 +88,13 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 			consts = append(consts, s)
 			value_loader[v.GetResult()] = constLoaderFn(index)
 
+		case *ir.NewTensor:
+			loadValueToInsts(&insts, v.Shape, value_loader)
+			loadValueToInsts(&insts, v.Array, value_loader)
+			appendOpcode(&insts, code.OpT)
+			value_loader[v.Result] = memLoaderFn(mem_slot_i)
+			pushToMemoryAndIncrIndex(&insts, &mem_slot_i)
+
 		case *ir.RngSource:
 			loadValueToInsts(&insts, v.Seed, value_loader)
 			appendOpcode(&insts, code.OpRNG)

@@ -42,6 +42,43 @@ func TestConst(t *testing.T) {
 	assertProgram(t, expected, got)
 }
 
+func TestNewTensor(t *testing.T) {
+	//--- ir
+	b := ir.NewBuilder()
+	f, err := b.NewFn("main")
+	assertNoErr(t, err)
+
+	s := f.ShapeLiteral([]int{1, 2}).GetResult()
+	a := f.ArrayLiteral([]float32{2, 3}).GetResult()
+	te := f.NewTensor(s, a)
+	f.SetOutputAndDone(te.GetResult())
+
+	m, err := b.Done()
+	assertNoErr(t, err)
+
+	//--- compile
+	got, err := Compile(m)
+	assertNoErr(t, err)
+
+	expected := `
+-> Constants:
+
+[
+    0: Shape(<1, 2>)
+    1: Array([  2.000,  3.000])
+]
+
+-> Instruction:
+
+000000 OpCONST    0
+000003 OpCONST    1
+000006 OpT
+000007 OpSTORE    0
+000010 OpLOAD     0
+`
+	assertProgram(t, expected, got)
+}
+
 func TestRngSeed(t *testing.T) {
 	//--- ir
 	b := ir.NewBuilder()

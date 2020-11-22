@@ -79,6 +79,31 @@ fn main() {
 	assertModule(t, expected, got)
 }
 
+func TestNewTensor(t *testing.T) {
+	f, b := newMainFn(t)
+
+	s := f.ShapeLiteral([]int{1, 2}).GetResult()
+	a := f.ArrayLiteral([]float32{1, 2}).GetResult()
+	te := f.NewTensor(s, a)
+	f.SetOutputAndDone(te.GetResult())
+
+	got, err := b.Done()
+	assertNoErr(t, err)
+
+	expected := `
+module {
+
+fn main() {
+  %0 = ShapeLit(<1, 2>)
+  %1 = ArrayLit([  1.000,  2.000])
+  %2 = NewTensor(<1, 2>)
+  return %2
+}
+
+}`
+	assertModule(t, expected, got)
+}
+
 func TestRndSeed(t *testing.T) {
 	f, b := newMainFn(t)
 
