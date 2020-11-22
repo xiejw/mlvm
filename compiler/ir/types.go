@@ -27,7 +27,9 @@ var (
 	RngType = &Type{Kind: KRng}
 )
 
-func (t *Type) IsInt() bool { return t.Kind == KInt }
+func (t *Type) IsInt() bool   { return t.Kind == KInt }
+func (t *Type) IsShape() bool { return t.Kind == KShape }
+
 func (t *Type) String() string {
 	switch t.Kind {
 	case KInt:
@@ -47,4 +49,32 @@ func (t *Type) String() string {
 	default:
 		panic("unknown type string.")
 	}
+}
+
+func (t *Type) ValidateShape() error {
+	if t.Kind != KShape {
+		return fmt.Errorf("Type.Kind is not KShape: %v", t.Kind)
+	}
+	if len(t.Dims) == 0 {
+		return fmt.Errorf("Type.Dims cannot be empty for kShape")
+	}
+	for _, d := range t.Dims {
+		if d <= 0 {
+			return fmt.Errorf("All dims of Type.Dims must be positive, but got: %v", t.Dims)
+		}
+	}
+	return nil
+}
+
+func (t *Type) ValidateArray() error {
+	if t.Kind != KArray {
+		return fmt.Errorf("Type.Kind is not KArray: %v", t.Kind)
+	}
+	if len(t.Dims) != 1 {
+		return fmt.Errorf("Type.Dims must be rank 1 for KArray, got: %v", t.Dims)
+	}
+	if t.Dims[0] <= 0 {
+		return fmt.Errorf("Dims[0] of Type.Dims must be positive, but got: %v", t.Dims)
+	}
+	return nil
 }

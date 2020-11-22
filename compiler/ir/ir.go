@@ -40,7 +40,7 @@ type Instruction interface {
 	GetResult() Value
 	GetResults() []Value
 	String() string
-	Check() error
+	Check() error // Check should assume operands passing `Check`.
 }
 
 // See instructions.go for all implementations.

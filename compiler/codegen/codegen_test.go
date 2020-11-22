@@ -76,7 +76,7 @@ func TestRngSeed(t *testing.T) {
 	assertProgram(t, expected, got)
 }
 
-func TestRngTensor(t *testing.T) {
+func TestRngFill(t *testing.T) {
 	//--- ir
 	b := ir.NewBuilder()
 	f, err := b.NewFn("main")

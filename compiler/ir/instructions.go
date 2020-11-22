@@ -119,26 +119,18 @@ func (f *Fn) RngFill(s Value, src Value) *RngFill {
 func (lit *IntLiteral) Check() error { return nil }
 
 func (lit *ShapeLiteral) Check() error {
-	if len(lit.Dims) == 0 {
-		return errors.New("ShapeLiteral.Dims cannot be empty")
-	}
-	for _, d := range lit.Dims {
-		if d <= 0 {
-			return errors.New("All Dims of ShapeLiteral must be positive, but got: %v", lit.Dims)
-		}
-	}
-	return nil
+	return lit.Result.Type().ValidateShape()
 }
 
 func (lit *ArrayLiteral) Check() error {
 	if len(lit.Value) == 0 {
 		return errors.New("ArrayLiteral cannot be empty")
 	}
-	return nil
+	return lit.Result.Type().ValidateArray()
 }
 
 func (t *NewTensor) Check() error {
-	if t.Shape.Type().Kind != KShape {
+	if !t.Shape.Type().IsShape() {
 		return errors.New(
 			"NewTensor expects Shape as the first operand, but got type: %v", t.Shape.Type())
 	}
@@ -146,6 +138,8 @@ func (t *NewTensor) Check() error {
 		return errors.New(
 			"NewTensor expects Array as the second operand, but got type: %v", t.Array.Type())
 	}
+
+	// Check the elements in Array matching Shape.
 	dims := t.Shape.Type().Dims
 	count := 1
 	for _, d := range dims {
@@ -171,7 +165,7 @@ func (rng *RngSource) Check() error {
 }
 
 func (rng *RngFill) Check() error {
-	if rng.Shape.Type().Kind != KShape {
+	if !rng.Shape.Type().IsShape() {
 		return errors.New(
 			"RngFill expects Shape as the second operand, but got type: %v", rng.Shape.Type())
 	}
