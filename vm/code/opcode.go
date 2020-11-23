@@ -38,6 +38,10 @@ type Definition struct {
 }
 
 var definitions = map[Opcode]*Definition{
+	// ---------------------------------------------------------------------------
+	// Consts, Memory, and Store.
+	// ---------------------------------------------------------------------------
+
 	// Loads constant object from Program into stack.
 	//
 	// Operand: (uint16) object index.
@@ -81,23 +85,31 @@ var definitions = map[Opcode]*Definition{
 	//          pops the second item and uses it as (String) key.
 	OpSTORES: {"OpSTORES", []int{}},
 
+	// ---------------------------------------------------------------------------
+	// I/O.
+	// ---------------------------------------------------------------------------
+
 	// Reads objects from infeed channel.
 	//
 	// Operand: (uint16) num of objects to read.
 	// Stack  : reads N objects from infeed channel and pushes to stack one by one in seq.
 	OpIOR: {"OpIOR", []int{2}},
 
+	// ---------------------------------------------------------------------------
+	// RNG.
+	// ---------------------------------------------------------------------------
+
 	// Creates a new rng source.
 	//
 	// Operand: no.
-	// Stack  : pops the top item and uses it as (Integer) seed.
-	//          stores the rng source into the stack.
+	// Stack  : pops the top item and uses it as (int type) seed.
+	//          stores the RNG source into the stack.
 	OpRNG: {"OpRNG", []int{}},
 
 	// Creates a Tensor with selectd distribution.
 	//
 	// Operand: (uint16) distribution type index.
-	// Stack  : pops the top item and uses it as rng source.
+	// Stack  : pops the top item and uses it as RNG source.
 	//          pops the second item and uses it as (Shape).
 	//          stores the Tensor into the stack.
 	OpRNGT: {"OpRNGT", []int{2}},
@@ -105,10 +117,14 @@ var definitions = map[Opcode]*Definition{
 	// Splits the rng source.
 	//
 	// Operand: no
-	// Stack  : pops the top item and uses it as rng source.
-	//          stores the first item of the result into the stack.
-	//          then stores the second item of the result into the stack.
+	// Stack  : pops the top item and uses it as RNG source.
+	//          stores the first item of the split result into the stack.
+	//          then stores the second item of the split result into the stack.
 	OpRNGS: {"OpRNGS", []int{}},
+
+	// ---------------------------------------------------------------------------
+	// Tensor.
+	// ---------------------------------------------------------------------------
 
 	// Creates a new Tensor.
 	//
@@ -128,8 +144,8 @@ var definitions = map[Opcode]*Definition{
 	// Does addition two tensors.
 	//
 	// Operand: no.
-	// Stack  : pops the top item and uses it as second operand.
-	//          then pops the top item and uses it as first operand.
+	// Stack  : pops the top item and uses it as the second operand.
+	//          then pops the top item and uses it as the first operand.
 	//          stores the result into the stack.
 	// Shape  : both operands must have same shapes.
 	OpTADD: {"OpTADD", []int{}},
@@ -137,8 +153,8 @@ var definitions = map[Opcode]*Definition{
 	// Does minus for two tensors.
 	//
 	// Operand: no.
-	// Stack  : pops the top item and uses it as second operand.
-	//          then pops the top item and uses it as first operand.
+	// Stack  : pops the top item and uses it as the second operand.
+	//          then pops the top item and uses it as the first operand.
 	//          stores the result into the stack.
 	// Shape  : both operands must have same shapes.
 	OpTMINUS: {"OpTMINUS", []int{}},
@@ -146,25 +162,29 @@ var definitions = map[Opcode]*Definition{
 	// Does (element-wise) multiplication for two tensors.
 	//
 	// Operand: no.
-	// Stack  : pops the top item and uses it as second operand.
-	//          then pops the top item and uses it as first operand.
+	// Stack  : pops the top item and uses it as the second operand.
+	//          then pops the top item and uses it as the first operand.
 	//          stores the result into the stack.
 	// Shape  : both operands must have same shapes.
 	OpTMUL: {"OpTMUL", []int{}},
 
 	// Broadcasts the shape of the tensor operand to a new shape.
 	//
-	// Operand: no.
-	// Stack  : pops the top item and uses it as new shape.
-	//          then pops the top item and uses it as tensor operand.
-	//          stores the new result into the stack.
+	// Operand: (uint8) num of objects to read.
+	// Stack  : pops the top item and uses it as tensor operand.
+	//          then pops the top item and uses it as new Shape.
+	//          stores the new result (Tensor) into the stack.
 	// Shape  : the new shape is the left extension of the old shape.
 	OpTBROAD: {"OpTBROAD", []int{}},
+
+	// ---------------------------------------------------------------------------
+	// Return.
+	// ---------------------------------------------------------------------------
 
 	// Reduce the tensor.
 	//
 	// Operand: (uint16) reduce merge Op index (see MergeType)
-	// Stack  : pops the top item and uses it as tensor operan.
+	// Stack  : pops the top item and uses it as tensor operand.
 	//          stores the new result into the stack.
 	OpTREDUCE: {"OpTREDUCE", []int{2}},
 }
