@@ -1,4 +1,4 @@
-package prng64
+package rng
 
 const truncatedBound float32 = 2.0
 

@@ -6,7 +6,7 @@ import (
 	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/code"
 	"github.com/xiejw/mlvm/vm/mach/mat"
-	"github.com/xiejw/mlvm/vm/mach/prng64"
+	"github.com/xiejw/mlvm/vm/mach/rng"
 	"github.com/xiejw/mlvm/vm/mach/tensorarray"
 	"github.com/xiejw/mlvm/vm/object"
 )
@@ -149,7 +149,7 @@ func (vm *VM) Run() (Outputs, error) {
 			if err != nil {
 				return nil, errors.From(err).EmitNote("failed to get rng seed from stack.").EmitNote(vmErr, op)
 			}
-			src := prng64.NewPrng64(uint64(seed.Value))
+			src := rng.NewPrng64(uint64(seed.Value))
 			prng := &object.Rng{src.Seed, src.Gamma, src.NextGammaSeed}
 			err = vm.stack.Push(prng)
 			if err != nil {
@@ -164,7 +164,7 @@ func (vm *VM) Run() (Outputs, error) {
 			if err != nil {
 				return nil, errors.From(err).EmitNote("failed to get rng from stack.").EmitNote(vmErr, op)
 			}
-			rng, ok := o.(*object.Rng)
+			o_rng, ok := o.(*object.Rng)
 			if !ok {
 				return nil, errors.New("failed to cast obj to rng.").EmitNote(vmErr, op)
 			}
@@ -177,13 +177,13 @@ func (vm *VM) Run() (Outputs, error) {
 			size := shape.Size()
 
 			value := make([]float32, size)
-			prng := prng64.Prng64{
-				Seed:          rng.Seed,
-				Gamma:         rng.Gamma,
-				NextGammaSeed: rng.NextGammaSeed,
+			prng := rng.Prng64{
+				Seed:          o_rng.Seed,
+				Gamma:         o_rng.Gamma,
+				NextGammaSeed: o_rng.NextGammaSeed,
 			}
 
-			prng64.FillDist(&prng, prng64.DistType(distType), value)
+			rng.FillDist(&prng, rng.DistType(distType), value)
 
 			err = vm.stack.Push(tensorarray.FromRaw(shape.Dims, value))
 			if err != nil {

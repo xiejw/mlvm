@@ -112,7 +112,7 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 		case *ir.RngFill:
 			loadValueToStack(&insts, v.Shape, value_loader)
 			loadValueToStack(&insts, v.Source, value_loader)
-			pushOpcodeToStack(&insts, code.OpRNGT, int(v.DistType - ir.F_DIST_TYPE_BEGIN) - 1)
+			pushOpcodeToStack(&insts, code.OpRNGT, int(v.DistType-ir.F_DIST_TYPE_BEGIN)-1)
 			popToMemAndIncrIndex(&insts, v.Result, &mem_slot_i, &value_loader)
 
 		// -------------------------------------------------------------------------

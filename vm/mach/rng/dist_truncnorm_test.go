@@ -1,4 +1,4 @@
-package prng64
+package rng
 
 import (
 	"testing"

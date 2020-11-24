@@ -1,5 +1,5 @@
-// Package prng64 provides implementation of prng.
-package prng64
+// Package rng provides implementation of prng.
+package rng
 
 const (
 	gammaPrime uint64  = (1 << 56) - 5      // Percy.
