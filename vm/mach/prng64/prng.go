@@ -1,8 +1,6 @@
 // Package prng64 provides implementation of prng.
 package prng64
 
-import "fmt"
-
 const (
 	gammaPrime uint64  = (1 << 56) - 5      // Percy.
 	gammaGamma uint64  = 0x00281E2DBA6606F3 // The coefficient to randomize gamma.
@@ -51,29 +49,4 @@ func (prng *Prng64) NextInt64() uint64 {
 
 func (prng *Prng64) NextFloat32() float32 {
 	return float32(prng.NextInt64()>>11) * doubleUlp
-}
-
-// Move
-///////////////////////////////////////////////////////////////////////////////
-// Defines APIs for distributions.
-///////////////////////////////////////////////////////////////////////////////
-
-type DistType uint16
-
-const (
-	DistNorm DistType = iota
-	DistTruncNorm
-)
-
-func FillDist(src *Prng64, distType DistType, value []float32) {
-	switch distType {
-	case DistNorm:
-		src.Norm(value)
-		return
-	case DistTruncNorm:
-		src.TruncNorm(value)
-		return
-	default:
-		panic(fmt.Sprintf("unknown distribution type: %v", distType))
-	}
 }

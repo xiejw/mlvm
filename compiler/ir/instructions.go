@@ -8,6 +8,15 @@ import (
 	"github.com/xiejw/mlvm/vm/object"
 )
 
+type Flag int
+
+const (
+	F_DIST_TYPE_BEGIN Flag = iota
+	F_DIST_TYPE_NORM
+	F_DIST_TYPE_TRUNC_NORM
+	F_DIST_TYPE_END // unused
+)
+
 type IntLiteral struct {
 	Value  int64
 	Result *Result
@@ -35,10 +44,10 @@ type RngSource struct {
 }
 
 type RngFill struct {
-	Shape  Value
-	Source Value
-	Result *Result
-	// Support more dist type
+	Shape    Value
+	Source   Value
+	Result   *Result
+	DistType Flag
 }
 
 type Return struct {
@@ -100,11 +109,12 @@ func (f *Fn) RngSource(v Value) *RngSource {
 	return ins
 }
 
-func (f *Fn) RngFill(s Value, src Value) *RngFill {
+func (f *Fn) RngFill(s Value, src Value, dist_type Flag) *RngFill {
 	ins := &RngFill{
-		Shape:  s,
-		Source: src,
-		Result: nil,
+		Shape:    s,
+		Source:   src,
+		Result:   nil,
+		DistType: dist_type,
 	}
 	dims := s.Type().Dims // could be nil
 	ins.Result = f.nextResult(ins, 0, &Type{Kind: KTensor, Dims: dims})
@@ -165,6 +175,10 @@ func (rng *RngSource) Check() error {
 }
 
 func (rng *RngFill) Check() error {
+	if rng.DistType <= F_DIST_TYPE_BEGIN || rng.DistType >= F_DIST_TYPE_END {
+		return errors.New(
+			"RngFill.DistType is not in the valid range: %v", rng.DistType)
+	}
 	if !rng.Shape.Type().IsShape() {
 		return errors.New(
 			"RngFill expects Shape as the second operand, but got type: %v", rng.Shape.Type())
