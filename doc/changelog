@@ -10,6 +10,7 @@
 
 ## changelog
 
+2020-11-24 supported uint8 operand.
 2020-11-18 used error for method signatures.
 2020-11    add simple type to ir
 2020-11-11 used dedicated vm and compiler folders to separate stuff.

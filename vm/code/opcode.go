@@ -183,10 +183,10 @@ var definitions = map[Opcode]*Definition{
 
 	// Reduce the tensor.
 	//
-	// Operand: (uint16) reduce merge Op index (see MergeType)
+	// Operand: (uint8) reduce merge Op index (see MergeType)
 	// Stack  : pops the top item and uses it as tensor operand.
 	//          stores the new result into the stack.
-	OpTREDUCE: {"OpTREDUCE", []int{2}},
+	OpTREDUCE: {"OpTREDUCE", []int{1}},
 }
 
 // Looks up the Definition of the op code.
@@ -225,8 +225,12 @@ func MakeOp(op Opcode, operands ...int) ([]byte, error) {
 	for i, o := range operands {
 		w := def.OperandWidths[i]
 		switch w {
+		case 1:
+			instruction[offset] = byte(o)
+			offset += 1
 		case 2:
 			binary.BigEndian.PutUint16(instruction[offset:], uint16(o))
+			offset += 2
 		default:
 			panic(fmt.Sprintf("unsupported width (%v) for op: %v", w, op))
 		}

@@ -246,8 +246,8 @@ func (vm *VM) Run() (Outputs, error) {
 			}
 
 		case code.OpTREDUCE:
-			merge_type := mat.MergeType(code.ReadUint16(vm.instructions[ip+1:]))
-			ip += 2
+			merge_type := mat.MergeType(vm.instructions[ip+1])
+			ip += 1
 
 			ta, err := vm.popTensor()
 			if err != nil {

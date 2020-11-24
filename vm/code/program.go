@@ -108,6 +108,8 @@ func readOperands(def *Definition, ins Instructions) ([]int, int) {
 
 	for i, w := range def.OperandWidths {
 		switch w {
+		case 1:
+			operands[i] = int(ins[offset])
 		case 2:
 			operands[i] = int(ReadUint16(ins[offset:]))
 		default:
