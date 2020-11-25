@@ -168,7 +168,42 @@ var definitions = map[Opcode]*Definition{
 	// Shape  : both operands must have same shapes.
 	OpTMUL: {"OpTMUL", []int{}},
 
-	// Broadcasts the shape of the tensor operand to a new shape.
+	// Broadcasts the tensor of from its original shape to a tensor with new shape.
+	//
+	// OpTBROAD supports one simple form of broadcasting, on top of the normal Tensor representation.
+	// The basic idea is: The underlying data can be repeated to represent the broadcasted shape.
+	//
+	// To be specific, for any shape [a1, a2, a3] with a1 * a2 * a3 elements for a tensor, it is
+	// called non-compressed tensor array, as all elements have been filled in value buffer.
+	//
+	// - If a1 is not 1, the only valid broadcasting case is [b1, b2, ..., bm, a1, a2, a3], i.e.,
+	//   major dimension extension, where m >= 1.  For example, all of the following cases are
+	//   supported
+	//
+	//     - yes [2, 3] -> [3, 2, 3]
+	//     - yes [2, 3] -> [5, 4, 3, 2, 3]
+	//     - yes [2, 1] -> [4, 3, 2, 1]
+	//
+	//     - no [2, 3] -> [4, 3, 2, 1]   the final dim can only be 3, but got 1.
+	//     - no [2, 3] -> [3, 4, 3]      the second from last dim can only be 2, but got 4.
+	//     - no [2, 1] -> [3, 2, 3]      the final dim can only be 1, but got 3. numpy allows this.
+	//
+	// - If a1, a2, ..., ak is 1, where k<=3, then valid broadcasting case is
+	//
+	//     [b1, b2, ..., bm, a'1, a'2, ..., a'k, a{k+1}, ..., a3]
+	//
+	//   i.e,
+	//
+	//     - yes [1, 3] -> [3, 2, 3]
+	//     - yes [1, 3] -> [5, 3, 1, 3]
+	//
+	// - As a special but super useful use case, shape [1] is allowed to be broadcasted to all other
+	//   shapes, i.e.,
+	//
+	//   - yes [1] -> [3, 2, 1]
+	//   - yes [1] -> [4, 3, 2, 3]
+	//
+	//   where is a natual extention of the rule 2.
 	//
 	// Operand: (uint8) num of objects to read.
 	// Stack  : pops the top item and uses it as tensor operand.
