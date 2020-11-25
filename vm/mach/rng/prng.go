@@ -7,6 +7,8 @@ const (
 	doubleUlp  float32 = 1.0 / (1 << 53)
 )
 
+// To persist the Png64, two uint64 is enough. as the gamma can be calculated from NextGammaSeed.
+// However, to trade for performance, 3 uint64 could be better.
 type Prng64 struct {
 	Seed          uint64
 	Gamma         uint64
