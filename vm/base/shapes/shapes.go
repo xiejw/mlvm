@@ -29,3 +29,6 @@ func IsBroadcastable(src, dest []int) bool {
 	}
 	return true
 }
+
+func IsScalar(s []int) bool { return len(s) == 1 && s[0] ==1 }
+func IsValid(s []int) bool { return len(s) > 0 && s[0] ==1 }
