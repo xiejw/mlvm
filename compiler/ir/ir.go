@@ -56,13 +56,8 @@ type Fn struct {
 	insts     []Instruction // Instructions
 }
 
-func (f *Fn) Name() string {
-	return f.name
-}
-
-func (f *Fn) Instructions() []Instruction {
-	return f.insts
-}
+func (f *Fn) Name() string                { return f.name }
+func (f *Fn) Instructions() []Instruction { return f.insts }
 
 // -- Output
 
@@ -84,10 +79,7 @@ func (f *Fn) nextResult(src Instruction, outputIndex int, t *Type) *Result {
 	}
 }
 
-func (f *Fn) Done() {
-	f.b.fns = append(f.b.fns, f)
-	f.b.f_map[f.name] = f
-}
+func (f *Fn) Done() { f.b.finishFn(f.name) }
 
 // -----------------------------------------------------------------------------
 // Module
@@ -106,14 +98,16 @@ func (m *Module) Fns() []*Fn {
 // -----------------------------------------------------------------------------
 
 type Builder struct {
-	fns   []*Fn
-	f_map map[string]*Fn
+	fns       []*Fn
+	f_map     map[string]*Fn
+	f_workset map[string]*Fn
 }
 
 func NewBuilder() *Builder {
 	return &Builder{
-		fns:   nil,
-		f_map: make(map[string]*Fn),
+		fns:       nil,
+		f_map:     make(map[string]*Fn),
+		f_workset: make(map[string]*Fn),
 	}
 }
 
@@ -121,10 +115,33 @@ func (b *Builder) NewFn(fn_name string) (*Fn, error) {
 	if _, existed := b.f_map[fn_name]; existed {
 		return nil, errors.New("fn name already existed in module: %v", fn_name)
 	}
-	return &Fn{b: b, name: fn_name}, nil
+	if _, existed := b.f_workset[fn_name]; existed {
+		return nil, errors.New("fn name already existed in module's workset: %v", fn_name)
+	}
+	fn := &Fn{b: b, name: fn_name}
+	b.f_workset[fn_name] = fn
+	b.fns = append(b.fns, fn)
+	return fn, nil
+}
+
+func (b *Builder) finishFn(name string) {
+	fn := b.f_workset[name]
+	delete(b.f_workset, name)
+	b.f_map[name] = fn
 }
 
 func (b *Builder) Done() (*Module, error) {
+	// checks empty workset.
+	if len(b.f_workset) != 0 {
+		err := errors.New(
+			"there is unfinished Fn(s) under construction (call `Done` or related methods).")
+		for name, _ := range b.f_workset {
+			err.EmitNote("found unfinished Fn: `%v`", name)
+		}
+		return nil, err
+	}
+
+	// validates all Fns.
 	for _, fn := range b.fns {
 		for _, ins := range fn.insts {
 			err := ins.Check()
