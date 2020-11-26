@@ -61,11 +61,8 @@ func FromTensor(t *object.Tensor) *TensorArray {
 }
 
 func (ta *TensorArray) ToTensor() *object.Tensor {
-	if ta.IsCompressed() {
-		panic("Converting compressed TensorArray to Tensor is not impl'ed.")
-	}
-
-	return object.NewTensor(ta.Dims, ta.Value)
+	new_ta := ta.ToFullArray()
+	return object.NewTensor(new_ta.Dims, new_ta.Value)
 }
 
 // Converts the compressed tensor array to full array, i.e., `!IsCompressed()`.

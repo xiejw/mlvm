@@ -12,16 +12,19 @@ import (
 func main() {
 	seed := &object.Integer{456}
 	shape := object.NewShape([]int{4})
+	new_shape := object.NewShape([]int{2, 4})
 
 	var ins code.Instructions
+	ins = append(ins, makeOpHelper(code.OpCONST, 2)...)
 	ins = append(ins, makeOpHelper(code.OpCONST, 1)...)
 	ins = append(ins, makeOpHelper(code.OpCONST, 0)...)
 	ins = append(ins, makeOpHelper(code.OpRNG)...)
 	ins = append(ins, makeOpHelper(code.OpRNGT, 0)...)
+	ins = append(ins, makeOpHelper(code.OpTBROAD, 0)...)
 
 	vm := mach.NewVM(&code.Program{
 		Instructions: ins,
-		Constants:    []object.Object{seed, shape},
+		Constants:    []object.Object{seed, shape, new_shape},
 	})
 
 	outputs, err := vm.Run()

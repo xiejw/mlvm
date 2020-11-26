@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/xiejw/mlvm/vm/base/errors"
+	"github.com/xiejw/mlvm/vm/base/shapes"
 	"github.com/xiejw/mlvm/vm/code"
 	"github.com/xiejw/mlvm/vm/mach/mat"
 	"github.com/xiejw/mlvm/vm/mach/rng"
@@ -265,7 +266,41 @@ func (vm *VM) Run() (Outputs, error) {
 			}
 
 		case code.OpTBROAD:
-			panic("unimplemented.")
+			broad_type := int(vm.instructions[ip+1])
+			ip += 1
+
+			if broad_type != 0 && broad_type != 1 {
+				return nil, errors.New(
+					"unsupported broadcast type: %v. only 0/1 are allowed.", broad_type,
+				).EmitNote(vmErr, op)
+			}
+
+			ta, err := vm.popTensor()
+			if err != nil {
+				return nil, err
+			}
+
+			tgt_shape, err := vm.popShape()
+			if err != nil {
+				return nil, err
+			}
+
+			if !shapes.IsBroadcastable(ta.Dims, tgt_shape.Dims) {
+				return nil, errors.New(
+					"shape cannot be broadcasted from %v to %v", ta.Dims, tgt_shape.Dims,
+				).EmitNote(vmErr, op)
+			}
+
+			tgt_ta := tensorarray.FromRaw(tgt_shape.Dims, ta.Value)
+
+			if broad_type == 1 {
+				tgt_ta = tgt_ta.ToFullArray()
+			}
+
+			err = vm.stack.Push(tgt_ta)
+			if err != nil {
+				return nil, errors.From(err).EmitNote("failed to push to stack.").EmitNote(vmErr, op)
+			}
 
 		default:
 			startIndex := ip
