@@ -25,7 +25,7 @@ func NewShape(dims []int) *Shape {
 }
 
 type Array struct {
-	Value []float32
+	Value []float32 // Cannot be empty.
 }
 
 func (shape *Shape) Size() int {
