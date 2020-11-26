@@ -34,6 +34,12 @@ func TestTA(t *testing.T) {
 	}
 }
 
+func TestTAPanic(t *testing.T) {
+	defer func() { recover() }()
+	_ = FromRaw([]int{2, 3}, []float32{1.0, 2.0, 3.0, 4.0, 5.0})
+	t.FailNow()
+}
+
 func TestCompressedTA(t *testing.T) {
 	ta := FromRaw([]int{2, 3}, []float32{1.2})
 	if !ta.IsCompressed() {

@@ -7,7 +7,7 @@ import (
 	"unsafe"
 )
 
-var (
+const (
 	sizeInt     int = int(unsafe.Sizeof(int(1)))
 	sizeFloat32 int = int(unsafe.Sizeof(float32(1.0)))
 )
@@ -48,25 +48,25 @@ func NewTensor(dims []int, value []float32) *Tensor {
 // Shortcut for t.Array.Value.
 func (t *Tensor) ArrayValue() []float32 { return t.Array.Value }
 
-///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
 // Mem Size Related.
-///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
 
 func (a *Array) MemSize() int  { return len(a.Value) * sizeFloat32 }
 func (s *Shape) MemSize() int  { return s.Rank * sizeInt }
 func (t *Tensor) MemSize() int { return t.Shape.MemSize() + t.Array.MemSize() }
 
-///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
 // Type Related.
-///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
 
 func (a *Array) Type() ObjectType  { return ArrayType }
 func (s *Shape) Type() ObjectType  { return ShapeType }
 func (t *Tensor) Type() ObjectType { return TensorType }
 
-///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
 // String Related.
-///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
 
 const defaultMaxNumberToPrintForArray = 9
 

@@ -5,7 +5,7 @@ import (
 	"unsafe"
 )
 
-var (
+const (
 	sizeInt64  int = int(unsafe.Sizeof(int64(1)))
 	sizeUint64 int = int(unsafe.Sizeof(uint64(1)))
 	sizeByte   int = int(unsafe.Sizeof(byte(1)))

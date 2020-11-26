@@ -2,12 +2,13 @@
 package tensorarray
 
 import (
+	"fmt"
 	"unsafe"
 
 	"github.com/xiejw/mlvm/vm/object"
 )
 
-var (
+const (
 	sizeInt     int = int(unsafe.Sizeof(int(1)))
 	sizeFloat32 int = int(unsafe.Sizeof(float32(1.0)))
 )
@@ -31,11 +32,18 @@ func FromRaw(dims []int, value []float32) *TensorArray {
 		size *= dim
 	}
 
+	realSize := len(value)
+
+	if size%realSize != 0 {
+		panic(fmt.Sprintf(
+			"Tensor.FromRaw: size (%v) is not multiple of real size (%v).", size, realSize))
+	}
+
 	return &TensorArray{
 		Dims:     dims,
 		Rank:     rank,
 		Size:     size,
-		RealSize: len(value),
+		RealSize: realSize,
 		Value:    value,
 	}
 }
