@@ -168,7 +168,7 @@ var definitions = map[Opcode]*Definition{
 	// Shape  : both operands must have same shapes.
 	OpTMUL: {"OpTMUL", []int{}},
 
-	// Broadcasts the tensor of from its original shape to a tensor with new shape.
+	// Broadcasts a tensor of from its original shape to a tensor with new shape.
 	//
 	// OpTBROAD supports one simple form of broadcasting, on top of the normal Tensor representation.
 	// The basic idea is: The underlying data can be repeated to represent the broadcasted shape.
@@ -188,7 +188,7 @@ var definitions = map[Opcode]*Definition{
 	//     - no [2, 3] -> [3, 4, 3]      the second from last dim can only be 2, but got 4.
 	//     - no [2, 1] -> [3, 2, 3]      the final dim can only be 1, but got 3. numpy allows this.
 	//
-	// - If a1, a2, ..., ak is 1, where k<=3, then valid broadcasting case is
+	// - If a1, a2, ..., ak is 1, where k<=3 as in the example, then valid broadcasting case is
 	//
 	//     [b1, b2, ..., bm, a'1, a'2, ..., a'k, a{k+1}, ..., a3]
 	//
@@ -196,6 +196,7 @@ var definitions = map[Opcode]*Definition{
 	//
 	//     - yes [1, 3] -> [3, 2, 3]
 	//     - yes [1, 3] -> [5, 3, 1, 3]
+	//     - yes [1, 1] -> [5, 3, 2, 3]
 	//
 	// - As a special but super useful use case, shape [1] is allowed to be broadcasted to all other
 	//   shapes, i.e.,
@@ -205,12 +206,15 @@ var definitions = map[Opcode]*Definition{
 	//
 	//   where is a natual extention of the rule 2.
 	//
-	// Operand: (uint8) num of objects to read.
+	// Operand: (uint8) flag.
+	//          - 0: Lazy broadcast.
+	//          - 1: Materialize broadcast, i.e., by creating the non-compressions tensors
+	//
 	// Stack  : pops the top item and uses it as tensor operand.
 	//          then pops the top item and uses it as new Shape.
 	//          stores the new result (Tensor) into the stack.
 	// Shape  : the new shape is the left extension of the old shape.
-	OpTBROAD: {"OpTBROAD", []int{}},
+	OpTBROAD: {"OpTBROAD", []int{1}},
 
 	// ---------------------------------------------------------------------------
 	// Return.

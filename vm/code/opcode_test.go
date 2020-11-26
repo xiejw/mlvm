@@ -83,7 +83,7 @@ func TestInstructionDisassembly(t *testing.T) {
 		{"\n000000 OpTADD\n", OpTADD, []int{}},
 		{"\n000000 OpTMINUS\n", OpTMINUS, []int{}},
 		{"\n000000 OpTMUL\n", OpTMUL, []int{}},
-		{"\n000000 OpTBROAD\n", OpTBROAD, []int{}},
+		{"\n000000 OpTBROAD   0\n", OpTBROAD, []int{0}},
 		{"\n000000 OpTREDUCE  1\n", OpTREDUCE, []int{1}},
 	}
 
