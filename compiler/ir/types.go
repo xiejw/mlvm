@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
+	"github.com/xiejw/mlvm/vm/base/shapes"
 	"github.com/xiejw/mlvm/vm/object"
 )
 
@@ -55,15 +56,7 @@ func (t *Type) ValidateShape() error {
 	if t.Kind != KShape {
 		return fmt.Errorf("Type.Kind is not KShape: %v", t.Kind)
 	}
-	if len(t.Dims) == 0 {
-		return fmt.Errorf("Type.Dims cannot be empty for kShape")
-	}
-	for _, d := range t.Dims {
-		if d <= 0 {
-			return fmt.Errorf("All dims of Type.Dims must be positive, but got: %v", t.Dims)
-		}
-	}
-	return nil
+	return shapes.IsValid(t.Dims)
 }
 
 func (t *Type) ValidateArray() error {

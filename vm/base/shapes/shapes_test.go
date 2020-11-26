@@ -39,6 +39,24 @@ func TestBroadcastableCompatibleDest(t *testing.T) {
 	assertTrue(t, IsBroadcastable([]int{1}, []int{2, 1}))
 }
 
+func TestIsValid(t *testing.T) {
+	assertNoErr(t, IsValid([]int{1, 2}))
+	assertNoErr(t, IsValid([]int{1}))
+
+	assertErr(t, IsValid([]int{}))
+	assertErr(t, IsValid([]int{-1}))
+	assertErr(t, IsValid([]int{1, -1}))
+	assertErr(t, IsValid([]int{1, 0}))
+	assertErr(t, IsValid([]int{0}))
+}
+
+func TestIsScalar(t *testing.T) {
+	assertTrue(t, IsScalar([]int{1}))
+
+	assertFalse(t, IsScalar([]int{1, 1}))
+	assertFalse(t, IsScalar([]int{2, 3}))
+}
+
 // -----------------------------------------------------------------------------
 // Helper methods.
 // -----------------------------------------------------------------------------
@@ -54,5 +72,19 @@ func assertFalse(t *testing.T, r bool) {
 	t.Helper()
 	if r {
 		t.Errorf("unexpected result.")
+	}
+}
+
+func assertNoErr(t *testing.T, err error) {
+	t.Helper()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+}
+
+func assertErr(t *testing.T, err error) {
+	t.Helper()
+	if err == nil {
+		t.Errorf("expected error, but got nil")
 	}
 }

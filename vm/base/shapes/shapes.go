@@ -1,5 +1,7 @@
 package shapes
 
+import "fmt"
+
 // Check OpTBROAD for definition.
 func IsBroadcastable(src, dest []int) bool {
 	rankSrc := len(src)
@@ -30,5 +32,18 @@ func IsBroadcastable(src, dest []int) bool {
 	return true
 }
 
-func IsScalar(s []int) bool { return len(s) == 1 && s[0] ==1 }
-func IsValid(s []int) bool { return len(s) > 0 && s[0] ==1 }
+// The only valid definition of scalar.
+func IsScalar(s []int) bool { return len(s) == 1 && s[0] == 1 }
+
+// Dims must be non-empty positive array.
+func IsValid(dims []int) error {
+	if len(dims) == 0 {
+		return fmt.Errorf("dims cannot be empty for shape.")
+	}
+	for _, d := range dims {
+		if d <= 0 {
+			return fmt.Errorf("all dims must be positive, but got: %v", dims)
+		}
+	}
+	return nil
+}
