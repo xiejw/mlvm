@@ -101,6 +101,32 @@ func TestRunWithOpTensor(t *testing.T) {
 	}
 }
 
+func TestRunWithOpTBROAD(t *testing.T) {
+	var ins code.Instructions
+	ins = append(ins, makeOpHelper(t, code.OpCONST, 2)...)
+	ins = append(ins, makeOpHelper(t, code.OpCONST, 0)...)
+	ins = append(ins, makeOpHelper(t, code.OpCONST, 1)...)
+	ins = append(ins, makeOpHelper(t, code.OpT)...)
+	ins = append(ins, makeOpHelper(t, code.OpTBROAD, 0)...)
+
+	shape := object.NewShape([]int{2})
+	array := &object.Array{[]float32{1.0, 2.0}}
+	new_shape := object.NewShape([]int{1, 2})
+
+	program := &code.Program{
+		Instructions: ins,
+		Constants:    []object.Object{shape, array, new_shape},
+	}
+
+	vm := NewVM(program)
+	outputs, err := vm.Run()
+	o := assertSingleOutput(t, outputs, err)
+
+	if o.(*object.Tensor).String() != "Tensor(<1, 2> [  1.000,  2.000])" {
+		t.Errorf("value mismatch: got `%v`", o.(*object.Tensor).String())
+	}
+}
+
 func TestRunWithOpRng(t *testing.T) {
 	seed := &object.Integer{456}
 	shape := object.NewShape([]int{4})
