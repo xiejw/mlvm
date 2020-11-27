@@ -27,13 +27,7 @@ func IsBroadcastable(src, dest []int) bool {
 		return false
 	}
 
-	realRankForSrc := rankSrc
-	for i := 0; i < rankSrc; i++ {
-		if src[i] != 1 {
-			break
-		}
-		realRankForSrc--
-	}
+	realRankForSrc := effectiveRank(src)
 
 	if realRankForSrc == 0 {
 		return true // all 1s.
@@ -51,13 +45,13 @@ func IsBroadcastable(src, dest []int) bool {
 // Finds the output shape based on the binary operands, l and r.
 //
 // Examples include:
-//   [1, 1]        [1]       -> [1, 1]
-//   [1]           [1, 1]    -> [1, 1]
-//   [2]           [3, 2]    -> [3, 2]
-//   [2, 1]        [3, 2, 1] -> [3, 2, 1]
-//   [1, 2, 1]     [3, 2, 1] -> [3, 2, 1]
-//   [1, 1 2, 1]   [3, 2, 1] -> [1, 3, 2, 1]
-func OutputShapeForBinaryop(l, r []int) ([]int, error) {
+//   [1, 1]         [1]       -> [1, 1]
+//   [1]            [1, 1]    -> [1, 1]
+//   [2]            [3, 2]    -> [3, 2]
+//   [2, 1]         [3, 2, 1] -> [3, 2, 1]
+//   [1, 2, 1]      [3, 2, 1] -> [3, 2, 1]
+//   [1, 1, 2, 1]   [3, 2, 1] -> [1, 3, 2, 1]
+func OutputShapeForBinaryBroadcastingOp(l, r []int) ([]int, error) {
 	// The algorithrm is simple.
 	//
 	// 1. [find effective rank]: For both operands, start from the first not-1 dim on the left, and
@@ -66,5 +60,60 @@ func OutputShapeForBinaryop(l, r []int) ([]int, error) {
 	//    both dimes are same, fill it. otherwise, reports an error.
 	// 3. [fill the rest of dims]: fills the dims from the one with larger effective rank.
 	// 4. [fill ones]: fills ones until the max of the original rank is reached.
-	return nil, nil
+	rankL := len(l)
+	rankR := len(r)
+	maxRank := rankL
+	if maxRank < rankR {
+		maxRank = rankR
+	}
+
+	efRankL := effectiveRank(l)
+	efRankR := effectiveRank(r)
+	efMaxRank := efRankL
+	efMinRank := efRankR
+	efMaxRankOperand := l
+	efMaxRankOperandRank := rankL
+	if efMaxRank < efRankR {
+		efMaxRank = efRankR
+		efMinRank = efRankL
+		efMaxRankOperand = r
+		efMaxRankOperandRank = rankR
+	}
+
+	dims := make([]int, maxRank)
+	i := 0
+	for i < efMinRank {
+		dl := l[rankL-1-i]
+		dr := r[rankR-1-i]
+		if dl != dr {
+			return nil, fmt.Errorf(
+				"shapes are not compatible for binary op supporting broadcasting: lhs: %v, rhs %v", l, r)
+		}
+		dims[maxRank-1-i] = dl
+		i++
+	}
+	for i < efMaxRank {
+		dims[maxRank-1-i] = efMaxRankOperand[efMaxRankOperandRank-1-i]
+		i++
+	}
+	for i < maxRank {
+		dims[maxRank-1-i] = 1
+		i++
+	}
+	return dims, nil
+}
+
+// -----------------------------------------------------------------------------
+// helper methods.
+// -----------------------------------------------------------------------------
+func effectiveRank(dims []int) int {
+	rank := len(dims)
+	realRank := rank
+	for i := 0; i < rank; i++ {
+		if dims[i] != 1 {
+			break
+		}
+		realRank--
+	}
+	return realRank
 }
