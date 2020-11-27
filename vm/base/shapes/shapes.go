@@ -2,6 +2,22 @@ package shapes
 
 import "fmt"
 
+// The only valid definition of scalar.
+func IsScalar(s []int) bool { return len(s) == 1 && s[0] == 1 }
+
+// Dims must be non-empty positive array.
+func IsValid(dims []int) error {
+	if len(dims) == 0 {
+		return fmt.Errorf("dims cannot be empty for shape.")
+	}
+	for _, d := range dims {
+		if d <= 0 {
+			return fmt.Errorf("all dims must be positive, but got: %v", dims)
+		}
+	}
+	return nil
+}
+
 // Check OpTBROAD for definition.
 func IsBroadcastable(src, dest []int) bool {
 	rankSrc := len(src)
@@ -32,18 +48,11 @@ func IsBroadcastable(src, dest []int) bool {
 	return true
 }
 
-// The only valid definition of scalar.
-func IsScalar(s []int) bool { return len(s) == 1 && s[0] == 1 }
-
-// Dims must be non-empty positive array.
-func IsValid(dims []int) error {
-	if len(dims) == 0 {
-		return fmt.Errorf("dims cannot be empty for shape.")
-	}
-	for _, d := range dims {
-		if d <= 0 {
-			return fmt.Errorf("all dims must be positive, but got: %v", dims)
-		}
-	}
-	return nil
+// Finds the output shape based on the binary operands, l and r.
+//
+// [1, 1]   [1]    -> [1, 1]
+// [1]      [1, 1] -> [1, 1]
+// [2]      [3, 2] -> [3, 2]
+func OutputShapeForBinaryop(l, r []int) ([]int, error) {
+	return nil, nil
 }
