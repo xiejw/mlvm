@@ -50,9 +50,21 @@ func IsBroadcastable(src, dest []int) bool {
 
 // Finds the output shape based on the binary operands, l and r.
 //
-// [1, 1]   [1]    -> [1, 1]
-// [1]      [1, 1] -> [1, 1]
-// [2]      [3, 2] -> [3, 2]
+// Examples include:
+//   [1, 1]        [1]       -> [1, 1]
+//   [1]           [1, 1]    -> [1, 1]
+//   [2]           [3, 2]    -> [3, 2]
+//   [2, 1]        [3, 2, 1] -> [3, 2, 1]
+//   [1, 2, 1]     [3, 2, 1] -> [3, 2, 1]
+//   [1, 1 2, 1]   [3, 2, 1] -> [1, 3, 2, 1]
 func OutputShapeForBinaryop(l, r []int) ([]int, error) {
+	// The algorithrm is simple.
+	//
+	// 1. [find effective rank]: For both operands, start from the first not-1 dim on the left, and
+	//    count the dimes on the right to it, including itself.
+	// 2. [righ alignment]: right aligning both operands. up to the minmal of the effective ranks, if
+	//    both dimes are same, fill it. otherwise, reports an error.
+	// 3. [fill the rest of dims]: fills the dims from the one with larger effective rank.
+	// 4. [fill ones]: fills ones until the max of the original rank is reached.
 	return nil, nil
 }
