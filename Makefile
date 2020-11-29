@@ -40,6 +40,10 @@ fmt:
 test:
 	go test $(TEST_FLAGS) ${LIBS}
 
+.PHONY: tags
+tags:
+	ctags -R ${LIBS_DIR}
+
 clean:
 	@echo "clean 'go.mod'" && go mod tidy
 	@echo "clean '"${BUILD_DIR}"'" && rm -rf ${BUILD_DIR}
