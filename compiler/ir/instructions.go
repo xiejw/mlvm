@@ -5,13 +5,18 @@ import (
 	"fmt"
 
 	"github.com/xiejw/mlvm/vm/base/errors"
+	"github.com/xiejw/mlvm/vm/base/shapes"
 	"github.com/xiejw/mlvm/vm/object"
 )
 
 type Flag int
 
 const (
-	F_DIST_TYPE_BEGIN Flag = iota
+	F_TENSOR_ADD Flag = iota
+	F_TENSOR_MINUS
+	F_TENSOR_MUL
+	F_TENSOR_DIV
+	F_DIST_TYPE_BEGIN
 	F_DIST_TYPE_NORM
 	F_DIST_TYPE_TRUNC_NORM
 	F_DIST_TYPE_END // unused
@@ -36,6 +41,13 @@ type TensorNew struct {
 	Shape  Value
 	Array  Value
 	Result *Result
+}
+
+type TensorBinaryOp struct {
+	Kind     Flag
+	LOperand Value
+	ROperand Value
+	Result   *Result
 }
 
 type RngSource struct {
@@ -99,6 +111,54 @@ func (f *Fn) TensorNew(s Value, arr Value) *TensorNew {
 	return ins
 }
 
+func (f *Fn) TensorAdd(l, r Value) *TensorBinaryOp {
+	ins := &TensorBinaryOp{
+		Kind:     F_TENSOR_ADD,
+		LOperand: l,
+		ROperand: r,
+		Result:   nil,
+	}
+	ins.Result = f.nextResult(ins, 0, &Type{Kind: KTensor, Dims: nil})
+	f.insts = append(f.insts, ins)
+	return ins
+}
+
+func (f *Fn) TensorMinus(l, r Value) *TensorBinaryOp {
+	ins := &TensorBinaryOp{
+		Kind:     F_TENSOR_MINUS,
+		LOperand: l,
+		ROperand: r,
+		Result:   nil,
+	}
+	ins.Result = f.nextResult(ins, 0, &Type{Kind: KTensor, Dims: nil})
+	f.insts = append(f.insts, ins)
+	return ins
+}
+
+func (f *Fn) TensorMul(l, r Value) *TensorBinaryOp {
+	ins := &TensorBinaryOp{
+		Kind:     F_TENSOR_MUL,
+		LOperand: l,
+		ROperand: r,
+		Result:   nil,
+	}
+	ins.Result = f.nextResult(ins, 0, &Type{Kind: KTensor, Dims: nil})
+	f.insts = append(f.insts, ins)
+	return ins
+}
+
+func (f *Fn) TensorDiv(l, r Value) *TensorBinaryOp {
+	ins := &TensorBinaryOp{
+		Kind:     F_TENSOR_DIV,
+		LOperand: l,
+		ROperand: r,
+		Result:   nil,
+	}
+	ins.Result = f.nextResult(ins, 0, &Type{Kind: KTensor, Dims: nil})
+	f.insts = append(f.insts, ins)
+	return ins
+}
+
 func (f *Fn) RngSource(v Value) *RngSource {
 	ins := &RngSource{
 		Seed:   v,
@@ -151,6 +211,8 @@ func (t *TensorNew) Check() error {
 
 	// Check the elements in Array matching Shape.
 	dims := t.Shape.Type().Dims
+
+	// TODO: Use shapes
 	count := 1
 	for _, d := range dims {
 		count *= d
@@ -162,6 +224,28 @@ func (t *TensorNew) Check() error {
 	}
 
 	// forwards the shape
+	t.Result.Type().Dims = dims
+	return nil
+}
+
+func (t *TensorBinaryOp) Check() error {
+	if !t.LOperand.Type().IsTensor() {
+		return errors.New(
+			"Binary Op (%v) expects lhs as Tensor, but got type: %v", t.Kind, t.LOperand.Type())
+	}
+	if !t.ROperand.Type().IsTensor() {
+		return errors.New(
+			"Binary Op (%v) expects rhs as Tensor, but got type: %v", t.Kind, t.ROperand.Type())
+	}
+
+	dims, err := shapes.OutputShapeForBinaryBroadcastingOp(
+		t.LOperand.Type().Dims, t.ROperand.Type().Dims)
+
+	if err != nil {
+		return errors.WrapNote(err,
+			"lhs and rhs shapes for Binary Op (%v) are not compatible", t.Kind)
+	}
+
 	t.Result.Type().Dims = dims
 	return nil
 }
@@ -220,9 +304,25 @@ func (lit *ArrayLiteral) String() string {
 
 func (t *TensorNew) String() string {
 	var buf bytes.Buffer
-	fmt.Fprintf(&buf, "%v = TensorNew(", t.Result)
-	object.NewShape(t.Result.Type().Dims).DebugString(&buf)
-	fmt.Fprintf(&buf, ")")
+	fmt.Fprintf(&buf, "%v = TensorNew(%v, %v)", t.Result, t.Shape, t.Array)
+	return buf.String()
+}
+
+func (t *TensorBinaryOp) String() string {
+	var buf bytes.Buffer
+	switch t.Kind {
+	case F_TENSOR_ADD:
+		fmt.Fprintf(&buf, "%v = TensorAdd(", t.Result)
+	case F_TENSOR_MINUS:
+		fmt.Fprintf(&buf, "%v = TensorMinus(", t.Result)
+	case F_TENSOR_MUL:
+		fmt.Fprintf(&buf, "%v = TensorMul(", t.Result)
+	case F_TENSOR_DIV:
+		fmt.Fprintf(&buf, "%v = TensorDiv(", t.Result)
+	default:
+		panic("unknown TensorBinaryOp kind.")
+	}
+	fmt.Fprintf(&buf, "%v, %v)", t.LOperand, t.ROperand)
 	return buf.String()
 }
 
@@ -263,6 +363,12 @@ func (t *TensorNew) GetOperand() Value    { panic("invalid with multiple operand
 func (t *TensorNew) GetOperands() []Value { return []Value{t.Shape, t.Array} }
 func (t *TensorNew) GetResult() Value     { return t.Result }
 func (t *TensorNew) GetResults() []Value  { return []Value{t.Result} }
+
+// -- TensorBinaryOp
+func (t *TensorBinaryOp) GetOperand() Value    { panic("invalid with multiple operands.") }
+func (t *TensorBinaryOp) GetOperands() []Value { return []Value{t.LOperand, t.ROperand} }
+func (t *TensorBinaryOp) GetResult() Value     { return t.Result }
+func (t *TensorBinaryOp) GetResults() []Value  { return []Value{t.Result} }
 
 // -- RngSource
 func (rng *RngSource) GetOperand() Value    { return rng.Seed }

@@ -28,8 +28,9 @@ var (
 	RngType = &Type{Kind: KRng}
 )
 
-func (t *Type) IsInt() bool   { return t.Kind == KInt }
-func (t *Type) IsShape() bool { return t.Kind == KShape }
+func (t *Type) IsInt() bool    { return t.Kind == KInt }
+func (t *Type) IsShape() bool  { return t.Kind == KShape }
+func (t *Type) IsTensor() bool { return t.Kind == KTensor }
 
 func (t *Type) String() string {
 	switch t.Kind {

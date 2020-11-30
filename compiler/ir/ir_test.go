@@ -96,7 +96,7 @@ module {
 fn main() {
   %0 = ShapeLit(<1, 2>)
   %1 = ArrayLit([  1.000,  2.000])
-  %2 = TensorNew(<1, 2>)
+  %2 = TensorNew(%0, %1)
   return %2
 }
 

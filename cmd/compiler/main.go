@@ -22,10 +22,12 @@ func main() {
 	v := f.IntLiteral(12).GetResult()
 	s := f.ShapeLiteral([]int{2, 3}).GetResult()
 	src := f.RngSource(v)
-	r := f.RngFill(s, src.GetResult(), ir.F_DIST_TYPE_NORM)
+	t1 := f.RngFill(s, src.GetResult(), ir.F_DIST_TYPE_NORM).GetResult()
 
 	a := f.ArrayLiteral([]float32{1, 2, 3, 4, 5, 6}).GetResult()
-	_ = f.TensorNew(s, a)
+	t2 := f.TensorNew(s, a).GetResult()
+
+	r := f.TensorAdd(t1, t2)
 	f.SetOutputAndDone(r.GetResult())
 
 	m, err := b.Done()
