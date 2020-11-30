@@ -8,9 +8,9 @@ import (
 	"github.com/xiejw/mlvm/vm/mach/tensorarray"
 )
 
-///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
 // Basic Operations.
-///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
 
 func TestBinaryAdd(t *testing.T) {
 	tensor := tensorarray.FromRaw([]int{2}, []float32{1.0, 2.0})
@@ -46,9 +46,20 @@ func TestBinaryMul(t *testing.T) {
 	assertAllClose(t, []float32{2., 6.0}, o.Value, 1e-6)
 }
 
-///////////////////////////////////////////////////////////////////////////////
+func TestBinaryDiv(t *testing.T) {
+	lhs := tensorarray.FromRaw([]int{2}, []float32{6.0, 9.0})
+	rhs := tensorarray.FromRaw([]int{2}, []float32{2.0, 3.0})
+
+	o, err := BinaryOp(lhs, rhs, BinaryDiv)
+	assertNoErr(t, err)
+
+	assertShape(t, []int{2}, o.Dims)
+	assertAllClose(t, []float32{3., 3.0}, o.Value, 1e-6)
+}
+
+// ----------------------------------------------------------------------------
 // Broadcasting.
-///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
 
 func TestBinaryOpWithSingleElementInRHS(t *testing.T) {
 	lhs := tensorarray.FromRaw([]int{3, 2}, []float32{1.0, 2.0})
@@ -100,9 +111,9 @@ func TestBinaryOpWithBroadcastOperandtInLHS(t *testing.T) {
 	assertAllClose(t, []float32{2.0, 0.0, 0.0, -2.0, -2.0, -4.0}, o.Value, 1e-6)
 }
 
-///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
 // Helper Method.
-///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
 func assertNoErr(t *testing.T, err error) {
 	t.Helper()
 

@@ -269,6 +269,68 @@ func TestRunWithOpTensorMinus(t *testing.T) {
 	}
 }
 
+func TestRunWithOpTensorMul(t *testing.T) {
+	shape := object.NewShape([]int{2})
+	array := &object.Array{[]float32{1.0, 2.0}}
+
+	var constants []object.Object
+	constants = append(constants, shape)
+	constants = append(constants, array)
+
+	var ins code.Instructions
+	addIns(t, &ins, code.OpCONST, 0)
+	addIns(t, &ins, code.OpCONST, 1)
+	addIns(t, &ins, code.OpT) // operand 1
+	addIns(t, &ins, code.OpCONST, 0)
+	addIns(t, &ins, code.OpCONST, 1)
+	addIns(t, &ins, code.OpT) // operand 2
+	ins = append(ins, makeOpHelper(t, code.OpTMUL)...)
+
+	program := &code.Program{
+		Instructions: ins,
+		Constants:    constants,
+	}
+
+	vm := NewVM(program)
+	outputs, err := vm.Run()
+	o := assertSingleOutput(t, outputs, err)
+
+	if o.(*object.Tensor).String() != "Tensor(<2> [  1.000,  4.000])" {
+		t.Errorf("value mismatch: got `%v`", o.(*object.Tensor).String())
+	}
+}
+
+func TestRunWithOpTensorDiv(t *testing.T) {
+	shape := object.NewShape([]int{2})
+	array := &object.Array{[]float32{1.0, 2.0}}
+
+	var constants []object.Object
+	constants = append(constants, shape)
+	constants = append(constants, array)
+
+	var ins code.Instructions
+	addIns(t, &ins, code.OpCONST, 0)
+	addIns(t, &ins, code.OpCONST, 1)
+	addIns(t, &ins, code.OpT) // operand 1
+	addIns(t, &ins, code.OpCONST, 0)
+	addIns(t, &ins, code.OpCONST, 1)
+	addIns(t, &ins, code.OpT) // operand 2
+	ins = append(ins, makeOpHelper(t, code.OpTDIV)...)
+
+	program := &code.Program{
+		Instructions: ins,
+		Constants:    constants,
+	}
+
+	vm := NewVM(program)
+	outputs, err := vm.Run()
+	o := assertSingleOutput(t, outputs, err)
+
+	if o.(*object.Tensor).String() != "Tensor(<2> [  1.000,  1.000])" {
+		t.Errorf("value mismatch: got `%v`", o.(*object.Tensor).String())
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Helper Methods.
 ///////////////////////////////////////////////////////////////////////////////
