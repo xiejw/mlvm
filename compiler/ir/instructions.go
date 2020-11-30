@@ -211,8 +211,6 @@ func (t *TensorNew) Check() error {
 
 	// Check the elements in Array matching Shape.
 	dims := t.Shape.Type().Dims
-
-	// TODO: Use shapes
 	count := 1
 	for _, d := range dims {
 		count *= d

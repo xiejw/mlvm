@@ -79,7 +79,7 @@ fn main() {
 	assertModule(t, expected, got)
 }
 
-func TestNewTensor(t *testing.T) {
+func TestTensorNew(t *testing.T) {
 	f, b := newMainFn(t)
 
 	s := f.ShapeLiteral([]int{1, 2}).GetResult()
@@ -98,6 +98,130 @@ fn main() {
   %1 = ArrayLit([  1.000,  2.000])
   %2 = TensorNew(%0, %1)
   return %2
+}
+
+}`
+	assertModule(t, expected, got)
+}
+
+func TestTensorAdd(t *testing.T) {
+	f, b := newMainFn(t)
+
+	s1 := f.ShapeLiteral([]int{1, 2}).GetResult()
+	s2 := f.ShapeLiteral([]int{2}).GetResult()
+	a := f.ArrayLiteral([]float32{1, 2}).GetResult()
+	t1 := f.TensorNew(s1, a).GetResult()
+	t2 := f.TensorNew(s2, a).GetResult()
+	r := f.TensorAdd(t1, t2)
+	f.SetOutputAndDone(r.GetResult())
+
+	got, err := b.Done()
+	assertNoErr(t, err)
+
+	expected := `
+module {
+
+fn main() {
+  %0 = ShapeLit(<1, 2>)
+  %1 = ShapeLit(<2>)
+  %2 = ArrayLit([  1.000,  2.000])
+  %3 = TensorNew(%0, %2)
+  %4 = TensorNew(%1, %2)
+  %5 = TensorAdd(%3, %4)
+  return %5
+}
+
+}`
+	assertModule(t, expected, got)
+}
+
+func TestTensorMinus(t *testing.T) {
+	f, b := newMainFn(t)
+
+	s1 := f.ShapeLiteral([]int{1, 2}).GetResult()
+	s2 := f.ShapeLiteral([]int{2}).GetResult()
+	a := f.ArrayLiteral([]float32{1, 2}).GetResult()
+	t1 := f.TensorNew(s1, a).GetResult()
+	t2 := f.TensorNew(s2, a).GetResult()
+	r := f.TensorMinus(t1, t2)
+	f.SetOutputAndDone(r.GetResult())
+
+	got, err := b.Done()
+	assertNoErr(t, err)
+
+	expected := `
+module {
+
+fn main() {
+  %0 = ShapeLit(<1, 2>)
+  %1 = ShapeLit(<2>)
+  %2 = ArrayLit([  1.000,  2.000])
+  %3 = TensorNew(%0, %2)
+  %4 = TensorNew(%1, %2)
+  %5 = TensorMinus(%3, %4)
+  return %5
+}
+
+}`
+	assertModule(t, expected, got)
+}
+
+func TestTensorMul(t *testing.T) {
+	f, b := newMainFn(t)
+
+	s1 := f.ShapeLiteral([]int{1, 2}).GetResult()
+	s2 := f.ShapeLiteral([]int{2}).GetResult()
+	a := f.ArrayLiteral([]float32{1, 2}).GetResult()
+	t1 := f.TensorNew(s1, a).GetResult()
+	t2 := f.TensorNew(s2, a).GetResult()
+	r := f.TensorMul(t1, t2)
+	f.SetOutputAndDone(r.GetResult())
+
+	got, err := b.Done()
+	assertNoErr(t, err)
+
+	expected := `
+module {
+
+fn main() {
+  %0 = ShapeLit(<1, 2>)
+  %1 = ShapeLit(<2>)
+  %2 = ArrayLit([  1.000,  2.000])
+  %3 = TensorNew(%0, %2)
+  %4 = TensorNew(%1, %2)
+  %5 = TensorMul(%3, %4)
+  return %5
+}
+
+}`
+	assertModule(t, expected, got)
+}
+
+func TestTensorDiv(t *testing.T) {
+	f, b := newMainFn(t)
+
+	s1 := f.ShapeLiteral([]int{1, 2}).GetResult()
+	s2 := f.ShapeLiteral([]int{2}).GetResult()
+	a := f.ArrayLiteral([]float32{1, 2}).GetResult()
+	t1 := f.TensorNew(s1, a).GetResult()
+	t2 := f.TensorNew(s2, a).GetResult()
+	r := f.TensorDiv(t1, t2)
+	f.SetOutputAndDone(r.GetResult())
+
+	got, err := b.Done()
+	assertNoErr(t, err)
+
+	expected := `
+module {
+
+fn main() {
+  %0 = ShapeLit(<1, 2>)
+  %1 = ShapeLit(<2>)
+  %2 = ArrayLit([  1.000,  2.000])
+  %3 = TensorNew(%0, %2)
+  %4 = TensorNew(%1, %2)
+  %5 = TensorDiv(%3, %4)
+  return %5
 }
 
 }`
