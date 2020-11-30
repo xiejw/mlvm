@@ -12,6 +12,7 @@ const (
 	BinaryAdd BinaryOpType = iota
 	BinaryMinus
 	BinaryMul
+	BinaryDiv
 )
 
 // Algorithrm for the binary Ops.
@@ -53,6 +54,10 @@ func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (*tensorarr
 			for i := 0; i < size; i++ {
 				buf[i] = buf1[i] * buf2[i]
 			}
+		case BinaryDiv:
+			for i := 0; i < size; i++ {
+				buf[i] = buf1[i] / buf2[i]
+			}
 		default:
 			err := fmt.Errorf("unsupported binary op type %v", op_type)
 			return nil, err
@@ -78,6 +83,10 @@ func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (*tensorarr
 			for i := 0; i < real_size_2; i++ {
 				buf[i] = v * buf2[i]
 			}
+		case BinaryDiv:
+			for i := 0; i < real_size_2; i++ {
+				buf[i] = v / buf2[i]
+			}
 		default:
 			err := fmt.Errorf("unsupported binary op type %v", op_type)
 			return nil, err
@@ -102,6 +111,10 @@ func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (*tensorarr
 		case BinaryMul:
 			for i := 0; i < real_size_1; i++ {
 				buf[i] = buf1[i] * v
+			}
+		case BinaryDiv:
+			for i := 0; i < real_size_1; i++ {
+				buf[i] = buf1[i] / v
 			}
 		default:
 			err := fmt.Errorf("unsupported binary op type %v", op_type)
@@ -148,6 +161,10 @@ func BinaryOp(o1, o2 *tensorarray.TensorArray, op_type BinaryOpType) (*tensorarr
 			case BinaryMul:
 				for j := 0; j < min_size; j++ {
 					buf[i+j] = buf1[lhs+j] * buf2[rhs+j]
+				}
+			case BinaryDiv:
+				for j := 0; j < min_size; j++ {
+					buf[i+j] = buf1[lhs+j] / buf2[rhs+j]
 				}
 			default:
 				err := fmt.Errorf("unsupported binary op type %v", op_type)

@@ -101,6 +101,24 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 			pushOpcodeToStack(&insts, code.OpT)
 			popToMemAndIncrIndex(&insts, v.Result, &mem_slot_i, &value_loader)
 
+		case *ir.TensorBinaryOp:
+			loadValueToStack(&insts, v.LOperand, value_loader)
+			loadValueToStack(&insts, v.ROperand, value_loader)
+
+			switch v.Kind {
+			case ir.F_TENSOR_ADD:
+				pushOpcodeToStack(&insts, code.OpTADD)
+			case ir.F_TENSOR_MINUS:
+				pushOpcodeToStack(&insts, code.OpTMINUS)
+			case ir.F_TENSOR_MUL:
+				pushOpcodeToStack(&insts, code.OpTMUL)
+			case ir.F_TENSOR_DIV:
+				pushOpcodeToStack(&insts, code.OpTDIV)
+			default:
+				panic("unknown TensorBinaryOp kind.")
+			}
+			popToMemAndIncrIndex(&insts, v.Result, &mem_slot_i, &value_loader)
+
 		// -------------------------------------------------------------------------
 		// RNG.
 		// -------------------------------------------------------------------------

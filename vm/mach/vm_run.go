@@ -229,6 +229,8 @@ func (vm *VM) Run() (Outputs, error) {
 		case code.OpTMINUS:
 			fallthrough
 		case code.OpTMUL:
+			fallthrough
+		case code.OpTDIV:
 			op_type := mat.BinaryOpType(int(op) - int(code.OpTADD) + int(mat.BinaryAdd))
 
 			lhs, rhs, err := vm.popTwoTensorsInSeq()

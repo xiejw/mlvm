@@ -27,6 +27,7 @@ const (
 	OpTADD
 	OpTMINUS
 	OpTMUL
+	OpTDIV
 	OpTBROAD
 	OpTREDUCE
 )
@@ -167,6 +168,15 @@ var definitions = map[Opcode]*Definition{
 	//          stores the result into the stack.
 	// Shape  : both operands must have same shapes.
 	OpTMUL: {"OpTMUL", []int{}},
+
+	// Does (element-wise) division for two tensors.
+	//
+	// Operand: no.
+	// Stack  : pops the top item and uses it as the second operand.
+	//          then pops the top item and uses it as the first operand.
+	//          stores the result into the stack.
+	// Shape  : both operands must have same shapes.
+	OpTDIV: {"OpTDIV", []int{}},
 
 	// Broadcasts a tensor of from its original shape to a tensor with new shape.
 	//

@@ -44,6 +44,7 @@ func TestOpcodes(t *testing.T) {
 		{OpTADD, "OpTADD"},
 		{OpTMINUS, "OpTMINUS"},
 		{OpTMUL, "OpTMUL"},
+		{OpTDIV, "OpTDIV"},
 		{OpTBROAD, "OpTBROAD"},
 		{OpTREDUCE, "OpTREDUCE"},
 	}
@@ -83,6 +84,7 @@ func TestInstructionDisassembly(t *testing.T) {
 		{"\n000000 OpTADD\n", OpTADD, []int{}},
 		{"\n000000 OpTMINUS\n", OpTMINUS, []int{}},
 		{"\n000000 OpTMUL\n", OpTMUL, []int{}},
+		{"\n000000 OpTDIV\n", OpTDIV, []int{}},
 		{"\n000000 OpTBROAD   0\n", OpTBROAD, []int{0}},
 		{"\n000000 OpTREDUCE  1\n", OpTREDUCE, []int{1}},
 	}
