@@ -2,6 +2,9 @@
 
 - instructions
   - add (need broadcast to help)
+	- matmul
+	- func
+	- autograd
 
 - passes
   - unused constants
