@@ -50,7 +50,7 @@ func TestNewTensor(t *testing.T) {
 
 	s := f.ShapeLiteral([]int{1, 2}).GetResult()
 	a := f.ArrayLiteral([]float32{2, 3}).GetResult()
-	te := f.NewTensor(s, a)
+	te := f.TensorNew(s, a)
 	f.SetOutputAndDone(te.GetResult())
 
 	m, err := b.Done()

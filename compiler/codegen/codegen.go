@@ -95,7 +95,7 @@ func codeGen(fn *ir.Fn) (*code.Program, error) {
 		// -------------------------------------------------------------------------
 		// Tensors.
 		// -------------------------------------------------------------------------
-		case *ir.NewTensor:
+		case *ir.TensorNew:
 			loadValueToStack(&insts, v.Shape, value_loader)
 			loadValueToStack(&insts, v.Array, value_loader)
 			pushOpcodeToStack(&insts, code.OpT)

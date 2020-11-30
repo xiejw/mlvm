@@ -84,7 +84,7 @@ func TestNewTensor(t *testing.T) {
 
 	s := f.ShapeLiteral([]int{1, 2}).GetResult()
 	a := f.ArrayLiteral([]float32{1, 2}).GetResult()
-	te := f.NewTensor(s, a)
+	te := f.TensorNew(s, a)
 	f.SetOutputAndDone(te.GetResult())
 
 	got, err := b.Done()
@@ -96,7 +96,7 @@ module {
 fn main() {
   %0 = ShapeLit(<1, 2>)
   %1 = ArrayLit([  1.000,  2.000])
-  %2 = NewTensor(<1, 2>)
+  %2 = TensorNew(<1, 2>)
   return %2
 }
 
