@@ -1,0 +1,12 @@
+# c outputs
+.build
+.build_*
+
+# Vim
+*.swo
+*.swp
+
+# TeX
+*.log
+doc/*.pdf
+
