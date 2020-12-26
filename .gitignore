@@ -1,9 +1,0 @@
-# vim
-*.swo
-*.swp
-
-# binary output
-.build
-
-# tags
-tags
