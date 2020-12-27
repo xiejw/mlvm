@@ -1,8 +1,8 @@
 #ifndef OPCODE_H_
 #define OPCODE_H_
 
-#include "mlvm.h"
-#include "vec.h"
+#include "adt/vec.h"
+#include "base/defs.h"
 
 #define OPCODE_MAX_NUM_OPERANDS 1
 
@@ -19,21 +19,21 @@ typedef enum {
   // OP_RNGS,
 
   OP_END  // unused
-} opcodet;
+} opcode_t;
 
 typedef struct {
   char* name;
   int   num_operands;
   int   widths[OPCODE_MAX_NUM_OPERANDS];
-} opdeft;
+} opdef_t;
 
-typedef char codet;
+typedef char code_t;
 
 // -----------------------------------------------------------------------------
-// Prototypes.
+// prototypes.
 // -----------------------------------------------------------------------------
 
-errort opLookup(opcodet c, _mut_ opdeft** def);
-errort opMake(opcodet c, _mut_ vect(codet) * code, ...);
+extern error_t opLookup(opcode_t c, _mut_ opdef_t** def);
+extern error_t opMake(opcode_t c, _mut_ vec_t(code_t) * code, ...);
 
 #endif

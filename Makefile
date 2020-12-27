@@ -64,7 +64,9 @@ FMT = docker run --rm -ti \
 # libs.
 # ------------------------------------------------------------------------------
 
-ALL_LIBS =
+VM_LIBS = ${BUILD}/vm_opcode.o
+
+ALL_LIBS = ${VM_LIBS}
 
 # ------------------------------------------------------------------------------
 # tests.
@@ -82,7 +84,7 @@ compile: ${BUILD} ${ALL_LIBS}
 ${BUILD}:
 	@mkdir -p ${BUILD}
 
-${BUILD}/base_%.o: ${SRC}/base/%.c
+${BUILD}/vm_%.o: ${SRC}/vm/%.c
 	${EVA_CC} -o $@ -c $<
 
 clean:

@@ -1,15 +1,15 @@
-#include "opcode.h"
+#include "vm/opcode.h"
 
 #include <stdarg.h>
-#include <stdio.h>  //del
 
 // clang-format off
 #define _NO_OPERAND 0, { 0 }
 #define _ONE_UINT16 1, { 2 }
 // clang-format on
 
-static opdeft opDefs[OP_END] = {
-    // clang-format off
+// clang-format off
+static opdef_t opDefs[OP_END] = {
+
     // Loads constant object from Program into stack.
     //
     // Operand: (uint16) object index.
@@ -21,7 +21,6 @@ static opdeft opDefs[OP_END] = {
     // Operand: no.
     // Stack  : pop the object from the top.
     {"OP_POP", _NO_OPERAND},
-    // clang-format on
 
     // OP_LOAD,
     // OP_MOVE,
@@ -31,6 +30,7 @@ static opdeft opDefs[OP_END] = {
     // OP_RNGT,
     // OP_RNGS,
 };
+// clang-format on
 
 #define _BIGENDIAN_PUT_UINT16(code, x)     \
   do {                                     \
@@ -38,19 +38,19 @@ static opdeft opDefs[OP_END] = {
     vecPushBack((code), (char)(x));        \
   } while (0)
 
-errort opLookup(opcodet c, opdeft** def) {
+error_t opLookup(opcode_t c, opdef_t** def) {
   if (c >= 0 && c < OP_END) {
     *def = &opDefs[c];
     return OK;
   }
-  return ENOT_FOUND;
+  return errNewWithNote(ENOTEXIST, "opcode does not exist: %d", c);
 }
 
-errort opMake(opcodet c, vect(codet) * code, ...) {
+error_t opMake(opcode_t c, vec_t(code_t) * code, ...) {
   if (c >= 0 && c < OP_END) {
-    opdeft* def      = &opDefs[c];
-    int     num_args = def->num_operands;
-    vecPushBack(*code, (codet)c);
+    opdef_t* def      = &opDefs[c];
+    int      num_args = def->num_operands;
+    vecPushBack(*code, (code_t)c);
 
     // Handles the operands.
     if (num_args > 0) {
@@ -64,8 +64,8 @@ errort opMake(opcodet c, vect(codet) * code, ...) {
             _BIGENDIAN_PUT_UINT16(*code, operand);
             break;
           default:
-            printf("unsupported width.\n");  // error message.
-            return EUNSPECIFIED;
+            return errNewWithNote(ENOTIMPL, "unsupported width for code: %d",
+                                  def->widths[i]);
         }
       }
 
@@ -74,5 +74,5 @@ errort opMake(opcodet c, vect(codet) * code, ...) {
     return OK;
   }
 
-  return ENOT_FOUND;
+  return errNewWithNote(ENOTEXIST, "opcode does not exist: %d", c);
 }
