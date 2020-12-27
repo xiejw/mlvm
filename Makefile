@@ -38,6 +38,8 @@ ifdef RELEASE
 compile: check_release_folder
 endif
 
+FMT = clang-format -i --style=file
+
 # compact print with some colors.
 EVA_CC    = ${QUIET_CC}${CC} ${CFLAGS}
 EVA_LD    = ${QUIET_LD}${CC} ${LDFLAGS} ${CFLAGS}
@@ -62,10 +64,6 @@ QUIET_EX  = @printf '    %b %b\n' $(LINKCOLOR)EX$(ENDCOLOR) \
 				  $(BINCOLOR)$@$(ENDCOLOR) 1>&2;
 endif
 
-FMT = docker run --rm -ti \
-    --user `id -u ${USER}`:`id -g ${USER}` \
-    -v `pwd`:/workdir xiejw/clang-format \
-    /clang-format.sh
 
 # ------------------------------------------------------------------------------
 # libs.
@@ -101,8 +99,7 @@ clean:
 	rm -rf ${BUILD_BASE}*
 
 fmt:
-	${FMT} ${SRC}
-	${FMT} ${CMD}
+	find ${SRC} ${CMD} -iname *.h -o -iname *.c | xargs ${FMT}
 
 check_release_folder:
 ifneq (${BUILD}, ${BUILD_RELEASE})
