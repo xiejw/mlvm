@@ -13,10 +13,15 @@ EVA_LIB       = ../eva/.build_release/libeva.a
 CFLAGS        := -std=c99 -Wall -Werror -pedantic -Wno-c11-extensions ${CFLAGS}
 CFLAGS        := ${CFLAGS} -I${SRC} -I../eva/src
 LDFLAGS       := -lm ${LDFLAGS} ${EVA_LIB}
+MK            := make
 
 # enable POSIX
 ifeq ($(UNAME), Linux)
 CFLAGS := ${CFLAGS} -D_POSIX_C_SOURCE=201410L
+endif
+
+ifeq ($(UNAME), FreeBSD)
+MK := gmake
 endif
 
 # enable asan by `make ASAN=1`
@@ -81,7 +86,10 @@ ALL_TESTS      = ${VM_TEST}
 # ------------------------------------------------------------------------------
 # actions.
 # ------------------------------------------------------------------------------
-compile: ${BUILD} ${ALL_LIBS}
+compile: ${BUILD} ${ALL_LIBS} ${EVA_LIB}
+
+${EVA_LIB}:
+	${MK} -C ../eva RELEASE=1 libeva
 
 ${BUILD}:
 	@mkdir -p ${BUILD}
