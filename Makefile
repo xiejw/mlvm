@@ -8,9 +8,11 @@ BUILD         = ${BUILD_BASE}
 BUILD_RELEASE = ${BUILD_BASE}_release
 UNAME         = $(shell uname)
 
+EVA_LIB       = ../eva/.build_release/libeva.a
+
 CFLAGS        := -std=c99 -Wall -Werror -pedantic -Wno-c11-extensions ${CFLAGS}
 CFLAGS        := ${CFLAGS} -I${SRC} -I../eva/src
-LDFLAGS       := -lm ${LDFLAGS}
+LDFLAGS       := -lm ${LDFLAGS} ${EVA_LIB}
 
 # enable POSIX
 ifeq ($(UNAME), Linux)
@@ -63,18 +65,18 @@ FMT = docker run --rm -ti \
 # ------------------------------------------------------------------------------
 # libs.
 # ------------------------------------------------------------------------------
+VM_LIB = ${BUILD}/vm_opcode.o
 
-VM_LIBS = ${BUILD}/vm_opcode.o
-
-ALL_LIBS = ${VM_LIBS}
+ALL_LIBS = ${VM_LIB}
 
 # ------------------------------------------------------------------------------
 # tests.
 # ------------------------------------------------------------------------------
-ADT_TEST_SUITE  = ${BUILD}/adt_vec_test.o ${BUILD}/adt_sds_test.o \
-							    ${BUILD}/adt_map_test.o
-ADT_TEST_DEP    = ${ADT_LIB} ${BASE_LIB}
-ADT_TEST        = ${ADT_TEST_SUITE} ${ADT_TEST_DEP}
+VM_TEST_SUITE  = ${BUILD}/vm_opcode_test.o
+VM_TEST_DEP    = ${VM_LIB}
+VM_TEST        = ${VM_TEST_SUITE} ${VM_TEST_DEP}
+
+ALL_TESTS      = ${VM_TEST}
 
 # ------------------------------------------------------------------------------
 # actions.
@@ -107,12 +109,11 @@ endif
 mlvm: compile ${BUILD}/mlvm
 	${EVA_EX} ${BUILD}/mlvm
 
-${BUILD}/mlvm: cmd/mlvm/main.c ../eva/.build_release/libeva.a
+${BUILD}/mlvm: cmd/mlvm/main.c
 	${EVA_LD} -o $@ $^
 
 test: compile ${BUILD}/test
 	${EVA_EX} ${BUILD}/test
 
-${BUILD}/test: cmd/test/main.c ${ADT_TEST} ${CRON_TEST} ${RNG_TEST} \
-	             ${ALGORITHMS_TEST}
+${BUILD}/test: cmd/test/main.c ${ALL_TESTS}
 	${EVA_LD} -o $@ $^
