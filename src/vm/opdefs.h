@@ -1,3 +1,4 @@
+// internal only.
 #ifndef OPDEFS_H_
 #define OPDEFS_H_
 

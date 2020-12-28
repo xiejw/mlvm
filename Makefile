@@ -15,6 +15,9 @@ CFLAGS        := ${CFLAGS} -I${SRC} -I../eva/src
 LDFLAGS       := -lm ${LDFLAGS} ${EVA_LIB}
 MK            := make
 
+FMT           = clang-format -i --style=file
+FMT_FOLDERS   = ${SRC} ${CMD}
+
 # enable POSIX
 ifeq ($(UNAME), Linux)
 CFLAGS := ${CFLAGS} -D_POSIX_C_SOURCE=201410L
@@ -38,13 +41,14 @@ ifdef RELEASE
 compile: check_release_folder
 endif
 
-FMT = clang-format -i --style=file
-
-# compact print with some colors.
+# ------------------------------------------------------------------------------
+# color printing.
+# ------------------------------------------------------------------------------
 EVA_CC    = ${QUIET_CC}${CC} ${CFLAGS}
 EVA_LD    = ${QUIET_LD}${CC} ${LDFLAGS} ${CFLAGS}
 EVA_AR    = ${QUIET_AR}ar -cr
 EVA_EX    = ${QUIET_EX}
+EVA_FM    = ${QUIET_FM}
 
 CCCOLOR   = "\033[34m"
 LINKCOLOR = "\033[34;1m"
@@ -62,20 +66,21 @@ QUIET_AR  = @printf '    %b %b\n' $(LINKCOLOR)AR$(ENDCOLOR) \
 				  $(BINCOLOR)`basename $@`$(ENDCOLOR) 1>&2;
 QUIET_EX  = @printf '    %b %b\n' $(LINKCOLOR)EX$(ENDCOLOR) \
 				  $(BINCOLOR)$@$(ENDCOLOR) 1>&2;
+QUIET_FM  = @printf '    %b %b\n' $(LINKCOLOR)FM$(ENDCOLOR) \
+				  $(BINCOLOR)"$(FMT_FOLDERS)"$(ENDCOLOR) 1>&2;
 endif
-
 
 # ------------------------------------------------------------------------------
 # libs.
 # ------------------------------------------------------------------------------
-VM_LIB = ${BUILD}/vm_opcode.o
+VM_LIB = ${BUILD}/vm_opcode.o ${BUILD}/vm_object.o
 
 ALL_LIBS = ${VM_LIB}
 
 # ------------------------------------------------------------------------------
 # tests.
 # ------------------------------------------------------------------------------
-VM_TEST_SUITE  = ${BUILD}/vm_opcode_test.o
+VM_TEST_SUITE  = ${BUILD}/vm_opcode_test.o ${BUILD}/vm_object_test.o
 VM_TEST_DEP    = ${VM_LIB}
 VM_TEST        = ${VM_TEST_SUITE} ${VM_TEST_DEP}
 
@@ -99,7 +104,7 @@ clean:
 	rm -rf ${BUILD_BASE}*
 
 fmt:
-	find ${SRC} ${CMD} -iname *.h -o -iname *.c | xargs ${FMT}
+	${EVA_FM} find ${FMT_FOLDERS} -iname *.h -o -iname *.c | xargs ${FMT}
 
 check_release_folder:
 ifneq (${BUILD}, ${BUILD_RELEASE})

@@ -24,7 +24,7 @@ static char* test_opcode_strs() {
 
 char* test_make_op() {
   vec_t(code_t) v = vecNew();
-  size_t offset   = 0;
+  size_t  offset  = 0;
   error_t err;
 
   err = opMake(OP_POP, &v);
