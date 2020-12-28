@@ -15,7 +15,9 @@ CFLAGS        := ${CFLAGS} -I${SRC} -I../eva/src
 LDFLAGS       := -lm ${LDFLAGS} ${EVA_LIB}
 MK            := make
 
-FMT           = clang-format -i --style=file
+CLANG_EXTS    = -iname *.h -o -iname *.c
+CLANG_FMT     = clang-format -i --style=file
+FMT           = sh -c 'find "$$@" ${CLANG_EXTS} | xargs ${CLANG_FMT}' sh
 FMT_FOLDERS   = ${SRC} ${CMD}
 
 # enable POSIX
@@ -48,7 +50,7 @@ EVA_CC    = ${QUIET_CC}${CC} ${CFLAGS}
 EVA_LD    = ${QUIET_LD}${CC} ${LDFLAGS} ${CFLAGS}
 EVA_AR    = ${QUIET_AR}ar -cr
 EVA_EX    = ${QUIET_EX}
-EVA_FM    = ${QUIET_FM}
+EVA_FM    = ${QUIET_FM}${FMT}
 
 CCCOLOR   = "\033[34m"
 LINKCOLOR = "\033[34;1m"
@@ -104,7 +106,7 @@ clean:
 	rm -rf ${BUILD_BASE}*
 
 fmt:
-	${EVA_FM} find ${FMT_FOLDERS} -iname *.h -o -iname *.c | xargs ${FMT}
+	${EVA_FM} ${FMT_FOLDERS}
 
 check_release_folder:
 ifneq (${BUILD}, ${BUILD_RELEASE})
