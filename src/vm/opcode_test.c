@@ -2,6 +2,8 @@
 
 #include "opcode.h"
 
+#include <string.h>
+
 static char* test_opcode_count() {
   ASSERT_TRUE("max count for opcode", OP_END <= 255);
   return NULL;
@@ -10,9 +12,9 @@ static char* test_opcode_count() {
 static char* test_opcode_strs() {
   opdef_t* def;
 
-#define ASSERT_OPCODE_STR_AND_OPERAND_COUNT(opcode, num)        \
-  ASSERT_TRUE("OpCode def for " #opcode " mismatches",          \
-              (opLookup(opcode, &def), def->name) == #opcode && \
+#define ASSERT_OPCODE_STR_AND_OPERAND_COUNT(opcode, num)                   \
+  ASSERT_TRUE("OpCode def for " #opcode " mismatches",                     \
+              0 == strcmp((opLookup(opcode, &def), def->name), #opcode) && \
                   def->num_operands == num);
 
   ASSERT_OPCODE_STR_AND_OPERAND_COUNT(OP_CONST, 1);
