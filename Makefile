@@ -20,9 +20,10 @@ CLANG_FMT     = clang-format -i --style=file
 FMT           = sh -c 'find "$$@" ${CLANG_EXTS} | xargs ${CLANG_FMT}' sh
 FMT_FOLDERS   = ${SRC} ${CMD}
 
-# enable POSIX
+# enable POSIX and LLD
 ifeq ($(UNAME), Linux)
-CFLAGS := ${CFLAGS} -D_POSIX_C_SOURCE=201410L
+CFLAGS  := ${CFLAGS} -D_POSIX_C_SOURCE=201410L
+LDFLAGS := ${LDFLAGS} -fuse-ld=lld
 endif
 
 ifeq ($(UNAME), FreeBSD)
