@@ -25,7 +25,7 @@ obj_t* objNewShape(int rank, int dims[]) {
   obj_t* o = malloc(sizeof(obj_t) + sizeof(obj_shape_t) + sizeof(int) * rank);
   obj_shape_t* buf = (obj_shape_t*)(o + 1);
 
-  o->kind      = OBJ_INT;
+  o->kind      = OBJ_SHAPE;
   o->ref_count = 1;
   o->ptr       = buf;
 
@@ -34,16 +34,32 @@ obj_t* objNewShape(int rank, int dims[]) {
   return o;
 }
 
+// // embeded array.
+// obj_t* objNewArray(int rank, int dims[]) {
+//   assert(rank > 0);
+//   obj_t* o = malloc(sizeof(obj_t) + sizeof(obj_shape_t) + sizeof(int) *
+//   rank); obj_shape_t* buf = (obj_shape_t*)(o + 1);
+//
+//   o->kind      = OBJ_SHAPE;
+//   o->ref_count = 1;
+//   o->ptr       = buf;
+//
+//   buf->rank = rank;
+//   memcpy(buf->dims, dims, rank * sizeof(int));
+//   return o;
+// }
+
 void objDecrRefCount(obj_t* o) {
   if (o == NULL) return;
 
   if (!--(o->ref_count)) {
     switch (o->kind) {
       case OBJ_INT:
+      case OBJ_SHAPE:
         free(o);
         break;
       default:
-        errFatalAndExit("unknown object kind: %d", o->kind);
+        errFatalAndExit("objDecrRefCount unknown object kind: %d\n", o->kind);
     }
   }
 }

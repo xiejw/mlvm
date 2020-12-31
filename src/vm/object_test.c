@@ -14,6 +14,9 @@ static char* test_obj_shape() {
   int    dims[] = {1, 2, 3};
   obj_t* o      = objNewShape(3, dims);
   ASSERT_TRUE("rank", 3 == objShapeRank(o));
+  ASSERT_TRUE("dim0", 1 == objShapeDims(o)[0]);
+  ASSERT_TRUE("dim1", 2 == objShapeDims(o)[1]);
+  ASSERT_TRUE("dim2", 3 == objShapeDims(o)[2]);
   objDecrRefCount(o);
   return NULL;
 }
