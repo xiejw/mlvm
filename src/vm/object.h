@@ -22,15 +22,15 @@ typedef struct {
 } obj_shape_t;
 
 typedef struct {
-  float value[];
+  size_t size;
+  float  value[];
 } obj_array_t;
 
 extern obj_t* objNewInt64(int64_t v);
 extern obj_t* objNewShape(int rank, int dims[]);
 extern void   objDecrRefCount(obj_t* o);
 
-#define objInt64Value(o) (*(int64_t*)(((o) + 1)))
-#define objShapeRank(o)  (((obj_shape_t*)((o) + 1))->rank)
-#define objShapeDims(o)  (((obj_shape_t*)((o) + 1))->dims)
+#define objInt64V(o) (*(int64_t*)(((o) + 1)))
+#define objShape(o)  (((obj_shape_t*)((o) + 1)))
 
 #endif

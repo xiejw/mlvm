@@ -5,18 +5,17 @@
 
 static char* test_obj_int64() {
   obj_t* o = objNewInt64(123);
-  ASSERT_TRUE("value", 123 == objInt64Value(o));
+  ASSERT_TRUE("value", 123 == objInt64V(o));
   objDecrRefCount(o);
   return NULL;
 }
 
 static char* test_obj_shape() {
-  int    dims[] = {1, 2, 3};
-  obj_t* o      = objNewShape(3, dims);
-  ASSERT_TRUE("rank", 3 == objShapeRank(o));
-  ASSERT_TRUE("dim0", 1 == objShapeDims(o)[0]);
-  ASSERT_TRUE("dim1", 2 == objShapeDims(o)[1]);
-  ASSERT_TRUE("dim2", 3 == objShapeDims(o)[2]);
+  obj_t* o = objNewShape(3, (int[]){1, 2, 3});
+  ASSERT_TRUE("rank", 3 == objShape(o)->rank);
+  ASSERT_TRUE("dim0", 1 == objShape(o)->dims[0]);
+  ASSERT_TRUE("dim1", 2 == objShape(o)->dims[1]);
+  ASSERT_TRUE("dim2", 3 == objShape(o)->dims[2]);
   objDecrRefCount(o);
   return NULL;
 }
