@@ -7,6 +7,8 @@
 #include "adt/vec.h"
 #include "base/error.h"
 
+#define OBJ_EMBEDDING_ARRAY_SIZE 16
+
 // embeded int.
 obj_t* objNewInt(int64_t v) {
   obj_t*   o   = malloc(sizeof(obj_t) + sizeof(int64_t));
@@ -51,6 +53,7 @@ static inline obj_t* objNewEmbeddingArray(size_t size, obj_float_t value[]) {
 }
 
 obj_t* objNewArray(size_t size, obj_float_t value[]) {
+  assert(size <= OBJ_EMBEDDING_ARRAY_SIZE);
   return objNewEmbeddingArray(size, value);
 }
 
