@@ -48,6 +48,7 @@ int objTensorGabageCollector() {
 obj_tensor_t* objTensorNew(int rank, int dims[]) {
   obj_tensor_t* o = malloc(sizeof(obj_tensor_t) + rank * sizeof(int));
   o->rank         = rank;
+  o->owned        = 0;
   o->mark         = 0;
   o->buffer       = 0;
   memcpy(o->dims, dims, rank * sizeof(int));

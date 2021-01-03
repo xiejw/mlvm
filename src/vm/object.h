@@ -13,11 +13,11 @@ typedef enum {
 } obj_kind_t;
 
 typedef struct {
-  int          rank : 6;  // length of dims
-  int          mark : 1;
-  int          owned : 1;
-  obj_float_t *buffer;  // NULL for OBJ_SHAPE.
-  int          dims[];  // size of rank.
+  int          rank : 6;   // length of dims
+  int          owned : 1;  // if 1, own the buffer.
+  int          mark : 1;   // gabage collector.
+  obj_float_t *buffer;     // NULL for OBJ_SHAPE.
+  int          dims[];     // size of rank.
 } obj_tensor_t;
 
 typedef union {
@@ -27,7 +27,7 @@ typedef union {
 
 typedef struct {
   obj_kind_t  kind : 7;
-  int         marked : 1;
+  int         marked : 1;  // gabage collector.
   obj_value_t value;
 } obj_t;
 

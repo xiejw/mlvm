@@ -27,13 +27,17 @@ static char* test_gabage_collector_single_item() {
 static char* test_gabage_collector_multiple_items() {
   int           collected;
   obj_tensor_t* t;
+  obj_float_t   buf[] = {2.0, 3.0};
 
+  // no buffer.
   objTensorNew(2, (int[]){1, 2});
+  // owned buffer.
   t         = objTensorNew(2, (int[]){1, 2});
   t->mark   = 1;
   t->owned  = 1;
   t->buffer = malloc(sizeof(obj_float_t) * 2);
-  objTensorNew(2, (int[]){1, 2});
+  // not owned.
+  objTensorNew(2, (int[]){1, 2})->buffer = buf;
 
   collected = objTensorGabageCollector();
   ASSERT_TRUE("pool", NULL != obj_tensor_pool);
