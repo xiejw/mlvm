@@ -13,8 +13,9 @@ typedef enum {
 } obj_kind_t;
 
 typedef struct {
-  int          rank : 7;  // length of dims
+  int          rank : 6;  // length of dims
   int          mark : 1;
+  int          owned : 1;
   obj_float_t *buffer;  // NULL for OBJ_SHAPE.
   int          dims[];  // size of rank.
 } obj_tensor_t;

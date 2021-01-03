@@ -31,6 +31,7 @@ static char* test_gabage_collector_multiple_items() {
   objTensorNew(2, (int[]){1, 2});
   t         = objTensorNew(2, (int[]){1, 2});
   t->mark   = 1;
+  t->owned  = 1;
   t->buffer = malloc(sizeof(obj_float_t) * 2);
   objTensorNew(2, (int[]){1, 2});
 

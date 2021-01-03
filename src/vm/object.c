@@ -62,7 +62,8 @@ obj_tensor_t* objTensorNew(int rank, int dims[]) {
 
 void objTensorFree(obj_tensor_t* t) {
   if (t == NULL) return;
-  free(t->buffer);
+  if (t->owned) free(t->buffer);
+  free(t);
 }
 
 // #define OBJ_EMBEDDING_ARRAY_SIZE 16
