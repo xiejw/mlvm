@@ -13,13 +13,14 @@ typedef struct obj_tensor_item_t {
   struct obj_tensor_item_t* next;
 } obj_tensor_item_t;
 
-static obj_tensor_item_t* tensor_pool = NULL;
+void* obj_tensor_pool = NULL;
 
-void objGabageCollector() {
-  if (tensor_pool == NULL) return;
+int objTensorGabageCollector() {
+  if (obj_tensor_pool == NULL) return 0;
 
-  obj_tensor_item_t* p    = tensor_pool;
-  obj_tensor_item_t* prev = NULL;
+  int                count = 0;
+  obj_tensor_item_t* p     = obj_tensor_pool;
+  obj_tensor_item_t* prev  = NULL;
   while (p != NULL) {
     obj_tensor_t* item = p->item;
     if (item->mark) {
@@ -28,17 +29,20 @@ void objGabageCollector() {
       p          = p->next;
     } else {
       if (prev == NULL) {
-        tensor_pool = p->next;
+        obj_tensor_pool = p->next;
       } else {
         prev->next = p->next;
       }
       objTensorFree(item);
 
-      obj_tensor_item_t* old_p = p;
-      p                        = p->next;
+      obj_tensor_item_t* old_p;
+      old_p = p;
+      p     = p->next;
       free(old_p);
+      count++;
     }
   }
+  return count;
 }
 
 obj_tensor_t* objTensorNew(int rank, int dims[]) {
@@ -50,8 +54,8 @@ obj_tensor_t* objTensorNew(int rank, int dims[]) {
 
   obj_tensor_item_t* p = malloc(sizeof(obj_tensor_item_t));
   p->item              = o;
-  p->next              = tensor_pool;
-  tensor_pool          = p;
+  p->next              = obj_tensor_pool;
+  obj_tensor_pool      = p;
 
   return o;
 }
