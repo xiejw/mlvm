@@ -9,38 +9,43 @@ typedef float obj_float_t;
 typedef enum {
   OBJ_INT,
   OBJ_SHAPE,
-  OBJ_ARRAY,
   OBJ_TENSOR,
 } obj_kind_t;
 
 typedef struct {
-  obj_kind_t kind;
-  int        ref_count;
-  void*      ptr;
+  int          rank : 7;  // length of dims
+  int          mark : 1;
+  obj_float_t *buffer;  // NULL for OBJ_SHAPE.
+  int          dims[];  // size of rank.
+} obj_tensor_t;
+
+typedef union {
+  int64_t       i;
+  obj_tensor_t *tensor;
+} obj_value_t;
+
+typedef struct {
+  obj_kind_t  kind : 7;
+  int         marked : 1;
+  obj_value_t value;
 } obj_t;
 
-typedef struct {
-  int rank;
-  int dims[];
-} obj_shape_t;
+extern obj_tensor_t *objTensorNew(int rank, int dims[]);
+extern void          objTensorFree(obj_tensor_t *t);
+extern void          objTensorGabageCollector();
 
-typedef struct {
-  size_t      size;
-  obj_float_t value[];
-} obj_array_t;
-
-extern obj_t* objNewInt(int64_t v);
-extern obj_t* objNewShape(int rank, int dims[]);
-extern obj_t* objNewArray(size_t size, obj_float_t dims[]);
-
-extern void objDecrRefCount(obj_t* o);
-
-#define objInt(o)   (*(int64_t*)(((o) + 1)))
-#define objShape(o) (((obj_shape_t*)((o) + 1)))
-#define objArray(o) (((obj_array_t*)((o)->ptr)))
-
-#define objIsInt(o)   ((o)->kind == OBJ_INT)
-#define objIsShape(o) ((o)->kind == OBJ_SHAPE)
-#define objIsArray(o) ((o)->kind == OBJ_ARRAY)
+// extern obj_t* objNewInt(int64_t v);
+// extern obj_t* objNewShape(int rank, int dims[]);
+// extern obj_t* objNewArray(size_t size, obj_float_t dims[]);
+//
+// extern void objDecrRefCount(obj_t* o);
+//
+// #define objInt(o)   (*(int64_t*)(((o) + 1)))
+// #define objShape(o) (((obj_shape_t*)((o) + 1)))
+// #define objArray(o) (((obj_array_t*)((o)->ptr)))
+//
+// #define objIsInt(o)   ((o)->kind == OBJ_INT)
+// #define objIsShape(o) ((o)->kind == OBJ_SHAPE)
+// #define objIsArray(o) ((o)->kind == OBJ_ARRAY)
 
 #endif
