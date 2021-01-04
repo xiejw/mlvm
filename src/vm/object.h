@@ -34,8 +34,9 @@ typedef struct {
 extern void *obj_tensor_pool;
 
 extern obj_tensor_t *objTensorNew(int rank, int dims[]);
+extern obj_tensor_t *objShapeNew(int rank, int dims[]);
 extern void          objTensorFree(obj_tensor_t *t);
-extern int           objTensorGabageCollector();
+extern int           objGC();
 
 // extern obj_t* objNewInt(int64_t v);
 // extern obj_t* objNewShape(int rank, int dims[]);

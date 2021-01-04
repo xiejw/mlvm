@@ -3,28 +3,28 @@
 
 #include "object.h"
 
-static char* test_gabage_collector_default() {
+static char* test_gc() {
   int collected;
   ASSERT_TRUE("pool", NULL == obj_tensor_pool);
 
-  collected = objTensorGabageCollector();
+  collected = objGC();
   ASSERT_TRUE("pool", NULL == obj_tensor_pool);
   ASSERT_TRUE("count", 0 == collected);
   return NULL;
 }
 
-static char* test_gabage_collector_single_item() {
+static char* test_gc_single_item() {
   int           collected;
   obj_tensor_t* t1 = objTensorNew(2, (int[]){1, 2});
   t1->mark         = 0;
 
-  collected = objTensorGabageCollector();
+  collected = objGC();
   ASSERT_TRUE("pool", NULL == obj_tensor_pool);
   ASSERT_TRUE("count", 1 == collected);
   return NULL;
 }
 
-static char* test_gabage_collector_multiple_items() {
+static char* test_gc_multiple_items() {
   int           collected;
   obj_tensor_t* t;
   obj_float_t   buf[] = {2.0, 3.0};
@@ -39,18 +39,18 @@ static char* test_gabage_collector_multiple_items() {
   // not owned.
   objTensorNew(2, (int[]){1, 2})->buffer = buf;
 
-  collected = objTensorGabageCollector();
+  collected = objGC();
   ASSERT_TRUE("pool", NULL != obj_tensor_pool);
   ASSERT_TRUE("count", 2 == collected);
 
   // the second item is marked as 0 in last sweep.
   t->mark   = 1;
-  collected = objTensorGabageCollector();
+  collected = objGC();
   ASSERT_TRUE("pool", NULL != obj_tensor_pool);
   ASSERT_TRUE("count", 0 == collected);
 
   // the second item is marked as 0 in last sweep.
-  collected = objTensorGabageCollector();
+  collected = objGC();
   ASSERT_TRUE("pool", NULL == obj_tensor_pool);
   ASSERT_TRUE("count", 1 == collected);
   return NULL;
@@ -86,8 +86,8 @@ static char* test_gabage_collector_multiple_items() {
 // }
 
 char* run_vm_object_suite() {
-  RUN_TEST(test_gabage_collector_default);
-  RUN_TEST(test_gabage_collector_single_item);
-  RUN_TEST(test_gabage_collector_multiple_items);
+  RUN_TEST(test_gc);
+  RUN_TEST(test_gc_single_item);
+  RUN_TEST(test_gc_multiple_items);
   return NULL;
 }
