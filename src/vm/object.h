@@ -8,6 +8,7 @@ typedef float obj_float_t;
 
 typedef enum {
   OBJ_INT,
+  OBJ_FLOAT,
   OBJ_SHAPE,
   OBJ_TENSOR,
 } obj_kind_t;
@@ -22,12 +23,12 @@ typedef struct {
 
 typedef union {
   int64_t       i;
-  obj_tensor_t *tensor;
+  obj_float_t   f;
+  obj_tensor_t *t;
 } obj_value_t;
 
 typedef struct {
-  obj_kind_t  kind : 7;
-  int         marked : 1;  // gabage collector.
+  obj_kind_t  kind;
   obj_value_t value;
 } obj_t;
 

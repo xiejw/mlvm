@@ -76,7 +76,7 @@ endif
 # ------------------------------------------------------------------------------
 # libs.
 # ------------------------------------------------------------------------------
-VM_LIB = ${BUILD}/vm_opcode.o ${BUILD}/vm_object.o
+VM_LIB = ${BUILD}/vm_opcode.o ${BUILD}/vm_object.o ${BUILD}/vm_stack.o
 
 ALL_LIBS = ${VM_LIB}
 
