@@ -119,10 +119,12 @@ endif
 # cmds.
 # ------------------------------------------------------------------------------
 
+m: mlvm
+
 mlvm: compile ${BUILD}/mlvm
 	${EVA_EX} ${BUILD}/mlvm
 
-${BUILD}/mlvm: cmd/mlvm/main.c
+${BUILD}/mlvm: cmd/mlvm/main.c ${VM_LIB}
 	${EVA_LD} -o $@ $^
 
 test: compile ${BUILD}/test

@@ -7,6 +7,7 @@
 #define OPCODE_MAX_NUM_OPERANDS 1
 
 typedef enum {
+  OP_HALT,
   OP_CONST,
   OP_POP,
 
