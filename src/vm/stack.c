@@ -25,11 +25,13 @@ error_t vmExec(vec_t(opcode_t) code) {
   opcode_t op;
   pc = code;
 
-  switch (op = *pc++) {
-    case OP_HALT:
-      printf("halt\n");
-      return OK;
-    default:
-      return errFatalAndExit("unsupported opcode: %d", op);
+  while (1) {
+    switch (op = *pc++) {
+      case OP_HALT:
+        printf("halt\n");
+        return OK;
+      default:
+        return errFatalAndExit("unsupported opcode: %d", op);
+    }
   }
 }
