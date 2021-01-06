@@ -4,10 +4,15 @@
 
 #include "opdefs.h"
 
-#define _BIGENDIAN_PUT_UINT16(code, x)                 \
-        do {                                           \
-                vecPushBack((code), (char)((x) >> 8)); \
-                vecPushBack((code), (char)(x));        \
+#define _BIGENDIAN_PUT_UINT8(code, x)             \
+        do {                                      \
+                vecPushBack((code), (code_t)(x)); \
+        } while (0)
+
+#define _BIGENDIAN_PUT_UINT16(code, x)                   \
+        do {                                             \
+                vecPushBack((code), (code_t)((x) >> 8)); \
+                vecPushBack((code), (code_t)(x));        \
         } while (0)
 
 error_t opLookup(enum opcode_t c, struct opdef_t** def)
@@ -16,10 +21,12 @@ error_t opLookup(enum opcode_t c, struct opdef_t** def)
                 *def = &opDefs[c];
                 return OK;
         }
-        return errNewWithNote(ENOTEXIST, "opcode does not exist: %d", c);
+        return errNewWithNote(ENOTEXIST,
+                              "opcode (%d) does not exist. total count %d", c,
+                              opCount);
 }
 
-error_t opMake(enum opcode_t c, vec_t(code_t) * code, ...)
+error_t opMake(vec_t(code_t) * code, enum opcode_t c, ...)
 {
         if (c >= 0 && c < opCount) {
                 struct opdef_t* def      = &opDefs[c];
@@ -29,11 +36,15 @@ error_t opMake(enum opcode_t c, vec_t(code_t) * code, ...)
                 // Handles the operands.
                 if (num_args > 0) {
                         va_list ap;
-                        va_start(ap, code);
+                        va_start(ap, c);
 
                         for (int i = 0; i < num_args; i++) {
                                 int operand = va_arg(ap, int);
                                 switch (def->widths[i]) {
+                                        case 1:
+                                                _BIGENDIAN_PUT_UINT8(*code,
+                                                                     operand);
+                                                break;
                                         case 2:
                                                 _BIGENDIAN_PUT_UINT16(*code,
                                                                       operand);
