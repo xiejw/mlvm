@@ -7,29 +7,29 @@
 typedef float obj_float_t;
 
 typedef enum {
-  OBJ_INT,
-  OBJ_FLOAT,
-  OBJ_SHAPE,
-  OBJ_TENSOR,
+        OBJ_INT,
+        OBJ_FLOAT,
+        OBJ_SHAPE,
+        OBJ_TENSOR,
 } obj_kind_t;
 
 typedef struct {
-  int          rank : 6;   // length of dims
-  int          owned : 1;  // if 1, own the buffer.
-  int          mark : 1;   // gabage collector.
-  obj_float_t *buffer;     // NULL for OBJ_SHAPE.
-  int          dims[];     // size of rank.
+        int          rank : 6;   // length of dims
+        int          owned : 1;  // if 1, own the buffer.
+        int          mark : 1;   // gabage collector.
+        obj_float_t *buffer;     // NULL for OBJ_SHAPE.
+        int          dims[];     // size of rank.
 } obj_tensor_t;
 
 typedef union {
-  int64_t       i;
-  obj_float_t   f;
-  obj_tensor_t *t;
+        int64_t       i;
+        obj_float_t   f;
+        obj_tensor_t *t;
 } obj_value_t;
 
 typedef struct {
-  obj_kind_t  kind;
-  obj_value_t value;
+        obj_kind_t  kind;
+        obj_value_t value;
 } obj_t;
 
 extern void *obj_tensor_pool;

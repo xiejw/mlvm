@@ -7,25 +7,25 @@
 #define OPCODE_MAX_NUM_OPERANDS 1
 
 typedef enum {
-  OP_HALT,
-  OP_CONST,
-  OP_POP,
+        OP_HALT,
+        OP_CONST,
+        OP_POP,
 
-  // OP_LOAD,
-  // OP_MOVE,
-  // OP_STORE,
+        // OP_LOAD,
+        // OP_MOVE,
+        // OP_STORE,
 
-  // OP_RNG,
-  // OP_RNGT,
-  // OP_RNGS,
+        // OP_RNG,
+        // OP_RNGT,
+        // OP_RNGS,
 
-  OP_END  // unused
+        OP_END  // unused
 } opcode_t;
 
 typedef struct {
-  char* name;
-  int   num_operands;
-  int   widths[OPCODE_MAX_NUM_OPERANDS];
+        char* name;
+        int   num_operands;
+        int   widths[OPCODE_MAX_NUM_OPERANDS];
 } opdef_t;
 
 typedef char code_t;

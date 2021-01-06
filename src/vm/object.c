@@ -13,8 +13,8 @@
 // -----------------------------------------------------------------------------
 
 typedef struct obj_tensor_item_t {
-  obj_tensor_t*             item;
-  struct obj_tensor_item_t* next;
+        obj_tensor_t*             item;
+        struct obj_tensor_item_t* next;
 } obj_tensor_item_t;
 
 void* obj_tensor_pool = NULL;
@@ -23,80 +23,85 @@ void* obj_tensor_pool = NULL;
 // implementation.
 // -----------------------------------------------------------------------------
 
-int objGC() {
-  if (obj_tensor_pool == NULL) return 0;
+int objGC()
+{
+        if (obj_tensor_pool == NULL) return 0;
 
-  int                count = 0;
-  obj_tensor_item_t* p     = obj_tensor_pool;
-  obj_tensor_item_t* prev  = NULL;
-  while (p != NULL) {
-    obj_tensor_t* item = p->item;
-    if (item->mark) {
-      item->mark = 0;
-      prev       = p;
-      p          = p->next;
-    } else {
-      if (prev == NULL) {
-        obj_tensor_pool = p->next;
-      } else {
-        prev->next = p->next;
-      }
-      objTensorFree(item);
+        int                count = 0;
+        obj_tensor_item_t* p     = obj_tensor_pool;
+        obj_tensor_item_t* prev  = NULL;
+        while (p != NULL) {
+                obj_tensor_t* item = p->item;
+                if (item->mark) {
+                        item->mark = 0;
+                        prev       = p;
+                        p          = p->next;
+                } else {
+                        if (prev == NULL) {
+                                obj_tensor_pool = p->next;
+                        } else {
+                                prev->next = p->next;
+                        }
+                        objTensorFree(item);
 
-      obj_tensor_item_t* old_p;
-      old_p = p;
-      p     = p->next;
-      free(old_p);
-      count++;
-    }
-  }
-  return count;
+                        obj_tensor_item_t* old_p;
+                        old_p = p;
+                        p     = p->next;
+                        free(old_p);
+                        count++;
+                }
+        }
+        return count;
 }
 
 // consider to do some optimization to do lookup.
-obj_tensor_t* objShapeNew(int rank, int dims[]) {
-  obj_tensor_t* o = malloc(sizeof(obj_tensor_t) + rank * sizeof(int));
-  o->rank         = rank;
-  o->owned        = 0;
-  o->mark         = 0;
-  o->buffer       = 0;
-  memcpy(o->dims, dims, rank * sizeof(int));
+obj_tensor_t* objShapeNew(int rank, int dims[])
+{
+        obj_tensor_t* o = malloc(sizeof(obj_tensor_t) + rank * sizeof(int));
+        o->rank         = rank;
+        o->owned        = 0;
+        o->mark         = 0;
+        o->buffer       = 0;
+        memcpy(o->dims, dims, rank * sizeof(int));
 
-  obj_tensor_item_t* p = malloc(sizeof(obj_tensor_item_t));
-  p->item              = o;
-  p->next              = obj_tensor_pool;
-  obj_tensor_pool      = p;
+        obj_tensor_item_t* p = malloc(sizeof(obj_tensor_item_t));
+        p->item              = o;
+        p->next              = obj_tensor_pool;
+        obj_tensor_pool      = p;
 
-  return o;
+        return o;
 }
 
-void objShapeFree(obj_tensor_t* t) {
-  if (t == NULL) return;
-  assert(!t->owned);
-  assert(t->buffer == NULL);
-  free(t);
+void objShapeFree(obj_tensor_t* t)
+{
+        if (t == NULL) return;
+        assert(!t->owned);
+        assert(t->buffer == NULL);
+        free(t);
 }
 
-obj_tensor_t* objTensorNew(int rank, int dims[]) {
-  obj_tensor_t* o = malloc(sizeof(obj_tensor_t) + rank * sizeof(int));
-  o->rank         = rank;
-  o->owned        = 0;
-  o->mark         = 0;
-  o->buffer       = 0;
-  memcpy(o->dims, dims, rank * sizeof(int));
+obj_tensor_t* objTensorNew(int rank, int dims[])
+{
+        obj_tensor_t* o = malloc(sizeof(obj_tensor_t) + rank * sizeof(int));
+        o->rank         = rank;
+        o->owned        = 0;
+        o->mark         = 0;
+        o->buffer       = 0;
+        memcpy(o->dims, dims, rank * sizeof(int));
 
-  obj_tensor_item_t* p = malloc(sizeof(obj_tensor_item_t));
-  p->item              = o;
-  p->next              = obj_tensor_pool;
-  obj_tensor_pool      = p;
+        obj_tensor_item_t* p = malloc(sizeof(obj_tensor_item_t));
+        p->item              = o;
+        p->next              = obj_tensor_pool;
+        obj_tensor_pool      = p;
 
-  return o;
+        return o;
 }
 
-void objTensorFree(obj_tensor_t* t) {
-  if (t == NULL) return;
-  if (t->owned) free(t->buffer);
-  free(t);
+void objTensorFree(obj_tensor_t* t)
+{
+        if (t == NULL) return;
+        if (t->owned) free(t->buffer);
+        free(t);
 }
 
 // #define OBJ_EMBEDDING_ARRAY_SIZE 16
