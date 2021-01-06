@@ -5,8 +5,8 @@
 #include "base/error.h"
 #include "opcode.h"
 
-void vmInit();
-void vmFree();
+void    vmInit();
+void    vmFree();
 error_t vmExec(vec_t(code_t));
 
 #endif

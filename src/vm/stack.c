@@ -27,7 +27,8 @@ void vmInit()
         top   = stack;
 }
 
-void vmFree() {
+void vmFree()
+{
         if (stack != NULL) {
                 free(stack);
                 stack = NULL;
@@ -56,11 +57,11 @@ error_t vmExec(vec_t(code_t) code)
 error_t handleOpCode(enum opcode_t op)
 {
         switch (op) {
-                case OP_PUSHBYTE:
-                        (top++)->value.i = *pc++;
-                        break;
-                default:
-                        return errNew("unsupported opcode: %d", op);
+        case OP_PUSHBYTE:
+                (top++)->value.i = *pc++;
+                break;
+        default:
+                return errNew("unsupported opcode: %d", op);
         }
 
         return OK;
