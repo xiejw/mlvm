@@ -7,7 +7,8 @@
 
 static char* test_opcode_count()
 {
-        ASSERT_TRUE("max count for opcode", opCount <= 255);
+        ASSERT_TRUE("max count for opcode. must less than byte (code_t)",
+                    opCount <= 255);
         return NULL;
 }
 
