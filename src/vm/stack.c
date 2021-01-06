@@ -12,7 +12,7 @@ static obj_t *base  = NULL;
 static obj_t *top   = NULL;
 static obj_t *stack = NULL;
 
-static opcode_t *pc = NULL;
+static enum opcode_t *pc = NULL;
 
 void stackInit()
 {
@@ -22,9 +22,9 @@ void stackInit()
         top   = stack;
 }
 
-error_t vmExec(vec_t(opcode_t) code)
+error_t vmExec(vec_t(enum opcode_t) code)
 {
-        opcode_t op;
+        enum opcode_t op;
         pc = code;
 
         while (1) {

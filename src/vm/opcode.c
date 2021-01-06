@@ -10,20 +10,20 @@
                 vecPushBack((code), (char)(x));        \
         } while (0)
 
-error_t opLookup(opcode_t c, opdef_t** def)
+error_t opLookup(enum opcode_t c, struct opdef_t** def)
 {
-        if (c >= 0 && c < OP_END) {
+        if (c >= 0 && c < opCount) {
                 *def = &opDefs[c];
                 return OK;
         }
         return errNewWithNote(ENOTEXIST, "opcode does not exist: %d", c);
 }
 
-error_t opMake(opcode_t c, vec_t(code_t) * code, ...)
+error_t opMake(enum opcode_t c, vec_t(code_t) * code, ...)
 {
-        if (c >= 0 && c < OP_END) {
-                opdef_t* def      = &opDefs[c];
-                int      num_args = def->num_operands;
+        if (c >= 0 && c < opCount) {
+                struct opdef_t* def      = &opDefs[c];
+                int             num_args = def->num_operands;
                 vecPushBack(*code, (code_t)c);
 
                 // Handles the operands.
