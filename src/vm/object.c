@@ -13,7 +13,7 @@
 // -----------------------------------------------------------------------------
 
 typedef struct obj_tensor_item_t {
-        obj_tensor_t*             item;
+        struct obj_tensor_t*      item;
         struct obj_tensor_item_t* next;
 } obj_tensor_item_t;
 
@@ -31,7 +31,7 @@ int objGC()
         obj_tensor_item_t* p     = obj_tensor_pool;
         obj_tensor_item_t* prev  = NULL;
         while (p != NULL) {
-                obj_tensor_t* item = p->item;
+                struct obj_tensor_t* item = p->item;
                 if (item->mark) {
                         item->mark = 0;
                         prev       = p;
@@ -55,13 +55,14 @@ int objGC()
 }
 
 // consider to do some optimization to do lookup.
-obj_tensor_t* objShapeNew(int rank, int dims[])
+struct obj_tensor_t* objShapeNew(int rank, int dims[])
 {
-        obj_tensor_t* o = malloc(sizeof(obj_tensor_t) + rank * sizeof(int));
-        o->rank         = rank;
-        o->owned        = 0;
-        o->mark         = 0;
-        o->buffer       = 0;
+        struct obj_tensor_t* o =
+            malloc(sizeof(struct obj_tensor_t) + rank * sizeof(int));
+        o->rank   = rank;
+        o->owned  = 0;
+        o->mark   = 0;
+        o->buffer = 0;
         memcpy(o->dims, dims, rank * sizeof(int));
 
         obj_tensor_item_t* p = malloc(sizeof(obj_tensor_item_t));
@@ -72,7 +73,7 @@ obj_tensor_t* objShapeNew(int rank, int dims[])
         return o;
 }
 
-void objShapeFree(obj_tensor_t* t)
+void objShapeFree(struct obj_tensor_t* t)
 {
         if (t == NULL) return;
         assert(!t->owned);
@@ -80,13 +81,14 @@ void objShapeFree(obj_tensor_t* t)
         free(t);
 }
 
-obj_tensor_t* objTensorNew(int rank, int dims[])
+struct obj_tensor_t* objTensorNew(int rank, int dims[])
 {
-        obj_tensor_t* o = malloc(sizeof(obj_tensor_t) + rank * sizeof(int));
-        o->rank         = rank;
-        o->owned        = 0;
-        o->mark         = 0;
-        o->buffer       = 0;
+        struct obj_tensor_t* o =
+            malloc(sizeof(struct obj_tensor_t) + rank * sizeof(int));
+        o->rank   = rank;
+        o->owned  = 0;
+        o->mark   = 0;
+        o->buffer = 0;
         memcpy(o->dims, dims, rank * sizeof(int));
 
         obj_tensor_item_t* p = malloc(sizeof(obj_tensor_item_t));
@@ -97,7 +99,7 @@ obj_tensor_t* objTensorNew(int rank, int dims[])
         return o;
 }
 
-void objTensorFree(obj_tensor_t* t)
+void objTensorFree(struct obj_tensor_t* t)
 {
         if (t == NULL) return;
         if (t->owned) free(t->buffer);

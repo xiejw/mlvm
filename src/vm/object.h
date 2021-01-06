@@ -6,38 +6,38 @@
 
 typedef float obj_float_t;
 
-typedef enum {
+enum obj_kind_t {
         OBJ_INT,
         OBJ_FLOAT,
         OBJ_SHAPE,
         OBJ_TENSOR,
-} obj_kind_t;
+};
 
-typedef struct {
+struct obj_tensor_t {
         int          rank : 6;   // length of dims
         int          owned : 1;  // if 1, own the buffer.
         int          mark : 1;   // gabage collector.
         obj_float_t *buffer;     // NULL for OBJ_SHAPE.
         int          dims[];     // size of rank.
-} obj_tensor_t;
+};
 
-typedef union {
-        int64_t       i;
-        obj_float_t   f;
-        obj_tensor_t *t;
-} obj_value_t;
+union obj_value_t {
+        int64_t              i;
+        obj_float_t          f;
+        struct obj_tensor_t *t;
+};
 
-typedef struct {
-        obj_kind_t  kind;
-        obj_value_t value;
-} obj_t;
+struct obj_t {
+        enum obj_kind_t   kind;
+        union obj_value_t value;
+};
 
 extern void *obj_tensor_pool;
 
-extern obj_tensor_t *objTensorNew(int rank, int dims[]);
-extern obj_tensor_t *objShapeNew(int rank, int dims[]);
-extern void          objTensorFree(obj_tensor_t *t);
-extern int           objGC();
+extern struct obj_tensor_t *objTensorNew(int rank, int dims[]);
+extern struct obj_tensor_t *objShapeNew(int rank, int dims[]);
+extern void                 objTensorFree(struct obj_tensor_t *t);
+extern int                  objGC();
 
 // extern obj_t* objNewInt(int64_t v);
 // extern obj_t* objNewShape(int rank, int dims[]);

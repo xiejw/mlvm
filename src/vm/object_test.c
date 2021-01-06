@@ -16,9 +16,9 @@ static char* test_gc()
 
 static char* test_gc_single_item()
 {
-        int           collected;
-        obj_tensor_t* t1 = objTensorNew(2, (int[]){1, 2});
-        t1->mark         = 0;
+        int                  collected;
+        struct obj_tensor_t* t1 = objTensorNew(2, (int[]){1, 2});
+        t1->mark                = 0;
 
         collected = objGC();
         ASSERT_TRUE("pool", NULL == obj_tensor_pool);
@@ -28,9 +28,9 @@ static char* test_gc_single_item()
 
 static char* test_gc_multiple_items()
 {
-        int           collected;
-        obj_tensor_t* t;
-        obj_float_t   buf[] = {2.0, 3.0};
+        int                  collected;
+        struct obj_tensor_t* t;
+        obj_float_t          buf[] = {2.0, 3.0};
 
         // no buffer.
         objTensorNew(2, (int[]){1, 2});

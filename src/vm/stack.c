@@ -8,16 +8,17 @@
 #include "opcode.h"
 
 #define STACK_INIT_SIZE 256
-static obj_t *base  = NULL;
-static obj_t *top   = NULL;
-static obj_t *stack = NULL;
+
+static struct obj_t *base  = NULL;
+static struct obj_t *top   = NULL;
+static struct obj_t *stack = NULL;
 
 static enum opcode_t *pc = NULL;
 
 void stackInit()
 {
         if (stack != NULL) free(stack);
-        stack = malloc(STACK_INIT_SIZE * sizeof(obj_t));
+        stack = malloc(STACK_INIT_SIZE * sizeof(struct obj_t));
         base  = stack;
         top   = stack;
 }
