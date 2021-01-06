@@ -13,7 +13,7 @@ static struct obj_t *base  = NULL;
 static struct obj_t *top   = NULL;
 static struct obj_t *stack = NULL;
 
-static enum opcode_t *pc = NULL;
+static code_t *pc = NULL;
 
 void stackInit()
 {
@@ -23,13 +23,13 @@ void stackInit()
         top   = stack;
 }
 
-error_t vmExec(vec_t(enum opcode_t) code)
+error_t vmExec(vec_t(code_t) code)
 {
         enum opcode_t op;
         pc = code;
 
         while (1) {
-                switch (op = *pc++) {
+                switch (op = (enum opcode_t) * pc++) {
                         case OP_HALT:
                                 printf("halt\n");
                                 return OK;

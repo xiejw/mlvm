@@ -4,7 +4,7 @@
 
 int main()
 {
-        vec_t(enum opcode_t) code = vecNew();
+        vec_t(code_t) code = vecNew();
         vecPushBack(code, OP_HALT);
         if (vmExec(code)) {
                 errDump("vm execution error:");

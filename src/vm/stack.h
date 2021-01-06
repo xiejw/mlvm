@@ -5,6 +5,6 @@
 #include "base/error.h"
 #include "opcode.h"
 
-error_t vmExec(vec_t(enum opcode_t));
+error_t vmExec(vec_t(code_t));
 
 #endif
