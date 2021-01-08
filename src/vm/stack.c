@@ -19,6 +19,10 @@ static code_t *pc = NULL;
 
 error_t handleOpCode(enum opcode_t op);
 
+// -----------------------------------------------------------------------------
+// implementation.
+// -----------------------------------------------------------------------------
+
 void vmInit()
 {
         if (stack != NULL) free(stack);

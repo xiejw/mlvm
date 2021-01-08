@@ -3,29 +3,26 @@
 #include "vm/opcode.h"
 #include "vm/stack.h"
 
-#define ADD_OP(x)                                                  \
+#define CHECK(x, msg)                                              \
         do {                                                       \
                 if (x) {                                           \
-                        errDump("program op error");               \
+                        errDump(msg);                              \
+                        errFree();                                 \
                         return errFatalAndExit("unexpected err."); \
                 }                                                  \
         } while (0)
 
 int main()
 {
-        vec_t(code_t) code = vecNew();
-        ADD_OP(opMake(&code, OP_PUSHBYTE, 1));
-        ADD_OP(opMake(&code, OP_HALT));
-
         vmInit();
+        vec_t(code_t) code = vecNew();
 
-        if (vmExec(code)) {
-                errDump("vm execution error");
-                return errFatalAndExit("unexpected err.");
-        }
+        CHECK(opMake(&code, OP_PUSHBYTE, 1), "program op error");
+        CHECK(opMake(&code, OP_HALT), "program op error");
+
+        CHECK(vmExec(code), "vm execution error");
 
         vmFree();
-
         vecFree(code);
         return 0;
 }

@@ -15,15 +15,19 @@
                 vecPushBack((code), (code_t)(x));        \
         } while (0)
 
+// -----------------------------------------------------------------------------
+// implementation.
+// -----------------------------------------------------------------------------
+
 error_t opLookup(enum opcode_t c, struct opdef_t** def)
 {
-        if (c >= 0 && c < opCount) {
-                *def = &opDefs[c];
-                return OK;
-        }
-        return errNewWithNote(ENOTEXIST,
-                              "opcode (%d) does not exist. total count %d", c,
-                              opCount);
+        if (c < 0 || c >= opCount)
+                return errNewWithNote(
+                    ENOTEXIST, "opcode (%d) does not exist. total count %d", c,
+                    opCount);
+
+        *def = &opDefs[c];
+        return OK;
 }
 
 error_t opMake(vec_t(code_t) * code, enum opcode_t c, ...)
@@ -57,7 +61,6 @@ error_t opMake(vec_t(code_t) * code, enum opcode_t c, ...)
                                               def->widths[i]);
                 }
         }
-
         va_end(ap);
 
 done:
