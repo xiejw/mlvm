@@ -1,0 +1,56 @@
+From bottom-up view for the design
+
+VM
+
+  vm is the runtime of the system. It could be local or remote.
+
+  vm has only one type. Tensor.
+
+  VM is responsible for one device type only (CPU/GPU). It handles it well and
+  efficiently. All tensors are "local" to this device type. Cross device type
+  communication should be explicit.
+
+  all VM's APIs should behave like rpc APIs. So, the values, espcially large
+  tensor values, are "copy" sematics, even it is local mode. This simplifies the
+  user's mental model. If future optimization is needed, special APis must be
+  provided to make this crystal clear about the cost.
+
+  vm's memory consists of two parts. stack and free stores. This is similar to
+  lua's design. Each execution is expected to finish the stack value--remaining
+  values are outputs. Free store is subject to gabage collected. Go's runtime.GC
+  can force gabage collection. The design space covers whether the free store is
+  available cross runs. Currently it is.
+
+  vm should provide estimated cost for the memory so far.
+
+  concurrency: Launch must be insequence. Next one will blocked. All other
+  methods are call site's responsibility. Inproper sync might lead to race
+  conditions.
+
+Draft API for vm
+
+  type TsrShape []int
+  type TsrHandle int
+  type TsrType int // int, float32, float64, etc.
+
+  type Buffer struct {
+    Size  int
+    DType TsrType
+    Ptr   interface{}
+  }
+
+  type Tensor struct {
+    Shape TsrShape
+    Rank  int
+    Buffer Buffer
+  }
+
+  type VM interface {
+    AllocateTensor(TsrShape, TsrType) (TsrHandle, error);
+    DeallocateTensor(TsrHandle) error;
+    Read(TsrHandle, *Buffer ) error;
+    Write(TsrHandle, *Buffer) error;
+    Launch(Program) ([]*Tensor,  error)    // block until last Launch finished.
+    ConsumedSizeInMB() float32
+  }
+
