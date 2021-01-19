@@ -16,6 +16,6 @@ static struct opdef_t opDefs[] = {
 };
 // clang-format on
 
-static int opCount = sizeof(opDefs) / sizeof(struct opdef_t);
+static int opTotalCount = sizeof(opDefs) / sizeof(struct opdef_t);
 
 #endif

@@ -22,12 +22,12 @@ FMT_FOLDERS   = ${SRC} ${CMD}
 
 # enable POSIX and LLD
 ifeq ($(UNAME), Linux)
-CFLAGS  := ${CFLAGS} -D_POSIX_C_SOURCE=201410L
-LDFLAGS := ${LDFLAGS} -fuse-ld=lld
+        CFLAGS  := ${CFLAGS} -D_POSIX_C_SOURCE=201410L
+        LDFLAGS := ${LDFLAGS} -fuse-ld=lld
 endif
 
 ifeq ($(UNAME), FreeBSD)
-MK := gmake
+        MK := gmake
 endif
 
 # enable asan by `make ASAN=1`
@@ -38,8 +38,8 @@ endif
 
 # enable release by `make RELEASE=1`
 ifdef RELEASE
-  CFLAGS := ${CFLAGS} -DNDEBUG -O2
-  BUILD  := ${BUILD}_release
+        CFLAGS := ${CFLAGS} -DNDEBUG -O2
+        BUILD  := ${BUILD}_release
 
 compile: check_release_folder
 endif
@@ -76,7 +76,8 @@ endif
 # ------------------------------------------------------------------------------
 # libs.
 # ------------------------------------------------------------------------------
-VM_LIB = ${BUILD}/vm_opcode.o ${BUILD}/vm_object.o ${BUILD}/vm_stack.o
+VM_LIB = ${BUILD}/vm_opcode.o ${BUILD}/vm_object.o ${BUILD}/vm_stack.o \
+	 ${BUILD}/vm_vm.o
 
 ALL_LIBS = ${VM_LIB}
 
