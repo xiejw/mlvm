@@ -21,10 +21,10 @@
 
 error_t opLookup(enum opcode_t c, struct opdef_t** def)
 {
-        if (c < 0 || c >= opCount)
+        if (c < 0 || c >= opTotalCount)
                 return errNewWithNote(
                     ENOTEXIST, "opcode (%d) does not exist. total count %d", c,
-                    opCount);
+                    opTotalCount);
 
         *def = &opDefs[c];
         return OK;
@@ -32,7 +32,7 @@ error_t opLookup(enum opcode_t c, struct opdef_t** def)
 
 error_t opMake(vec_t(code_t) * code, enum opcode_t c, ...)
 {
-        if (c < 0 || c >= opCount)
+        if (c < 0 || c >= opTotalCount)
                 return errNewWithNote(ENOTEXIST, "opcode does not exist: %d",
                                       c);
 
