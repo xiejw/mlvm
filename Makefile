@@ -18,7 +18,7 @@ LDFLAGS         += ${EVA_LIB}
 # libs.
 # ------------------------------------------------------------------------------
 VM_LIB          = ${BUILD}/vm_opcode.o ${BUILD}/vm_object.o \
-		  ${BUILD}/vm_stack.o ${BUILD}/vm_vm.o
+		  ${BUILD}/vm_vm.o
 
 ALL_LIBS        = ${VM_LIB}
 
