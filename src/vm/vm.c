@@ -58,7 +58,13 @@ float vmComsumedSizeInMB(struct vm_t* vm)
         return (float)(((double)vm->size_used) / 1024 / 1024);
 }
 
-// internal
+vm_handle_t vmAllocateTensor(int rank, int dims[]) {
+        obj_tensor_t * t = objTensorNew(rank, dims);
+}
+
+// -----------------------------------------------------------------------------
+// internal.
+// -----------------------------------------------------------------------------
 error_t handleOpCode(struct vm_t* vm, code_t** pc, enum opcode_t op)
 {
         switch (op) {

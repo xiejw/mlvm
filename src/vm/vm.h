@@ -20,8 +20,8 @@ struct vm_t {
 extern struct vm_t* vmNew(void);
 extern void         vmFree(struct vm_t* vm);
 
-extern vm_handle_t vmAllocateTensor(int rank, int dims[]);
-extern error_t     vmDeallocateTensor(vm_handle_t);
+extern vm_handle_t vmAllocateTensor(struct vm_t*vm, int rank, int dims[]);
+extern error_t     vmDeallocateTensor(struct vm_t*vm, vm_handle_t);
 
 extern error_t vmLaunch(struct vm_t* vm, vec_t(code_t));
 extern float   vmComsumedSizeInMB(struct vm_t* vm);
