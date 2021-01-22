@@ -17,8 +17,9 @@ struct obj_tensor_t {
         int          rank : 6;   // length of dims
         int          owned : 1;  // if 1, own the buffer.
         int          mark : 1;   // gabage collector.
-        obj_float_t *buffer;     // NULL for OBJ_SHAPE.
-        int          dims[];     // size of rank.
+        size_t       size;       // count of elements.
+        obj_float_t *buffer;     // point to internal buf for OBJ_SHAPE.
+        int          dims[];     // dimenions.
 };
 
 union obj_value_t {

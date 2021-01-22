@@ -19,6 +19,9 @@ typedef struct obj_tensor_item_t {
 
 void* obj_tensor_pool = NULL;
 
+// used to detect whether a tensor is a shape.
+static obj_float_t shape_indicator[1];
+
 // -----------------------------------------------------------------------------
 // implementation.
 // -----------------------------------------------------------------------------
@@ -62,7 +65,7 @@ struct obj_tensor_t* objShapeNew(int rank, int dims[])
         o->rank   = rank;
         o->owned  = 0;
         o->mark   = 0;
-        o->buffer = 0;
+        o->buffer = shape_indicator;
         memcpy(o->dims, dims, rank * sizeof(int));
 
         obj_tensor_item_t* p = malloc(sizeof(obj_tensor_item_t));
@@ -77,7 +80,7 @@ void objShapeFree(struct obj_tensor_t* t)
 {
         if (t == NULL) return;
         assert(!t->owned);
-        assert(t->buffer == NULL);
+        assert(t->buffer == shape_indicator);
         free(t);
 }
 
@@ -88,7 +91,7 @@ struct obj_tensor_t* objTensorNew(int rank, int dims[])
         o->rank   = rank;
         o->owned  = 0;
         o->mark   = 0;
-        o->buffer = 0;
+        o->buffer = NULL;
         memcpy(o->dims, dims, rank * sizeof(int));
 
         obj_tensor_item_t* p = malloc(sizeof(obj_tensor_item_t));
