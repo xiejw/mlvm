@@ -33,11 +33,17 @@ struct obj_t {
         union obj_value_t value;
 };
 
+// TODO(xiejw): remove this.
 extern void *obj_tensor_pool;
 
-extern struct obj_tensor_t *objTensorNew(int rank, int dims[]);
 extern struct obj_tensor_t *objShapeNew(int rank, int dims[]);
+extern void                 objShapeFree(struct obj_tensor_t *);
+
+extern struct obj_tensor_t *objTensorNew(int rank, int dims[]);
 extern void                 objTensorFree(struct obj_tensor_t *t);
-extern int                  objGC();
+
+extern void objTensorAllocateAndCopy(struct obj_tensor_t *, obj_float_t *);
+
+extern int objGC();
 
 #endif

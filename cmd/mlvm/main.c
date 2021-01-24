@@ -28,6 +28,9 @@ int main()
 
         CHECK(vmLaunch(vm, code, &outputs), "vm execution error");
 
+        for (int i = 0; i < vecSize(outputs); i++) {
+                objTensorFree(outputs[i]);
+        }
         vmFree(vm);
         vecFree(code);
         return 0;

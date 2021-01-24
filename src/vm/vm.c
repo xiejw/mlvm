@@ -5,6 +5,10 @@
 
 #include "opcode.h"
 
+// -----------------------------------------------------------------------------
+// internal prototypes.
+// -----------------------------------------------------------------------------
+
 #define STACK_INIT_SIZE 256
 #define MAX_NUM_HANDLES 128
 
@@ -62,8 +66,7 @@ vm_handle_t vmAllocateTensor(struct vm_t* vm, int rank, int dims[])
         struct obj_tensor_t* t    = objTensorNew(rank, dims);
         size_t               size = t->size * sizeof(obj_float_t);
 
-        t->owned                 = 1;
-        t->buffer                = malloc(size);
+        objTensorAllocateAndCopy(t, /*buf=*/NULL);
         vm->handles[next_handle] = t;
         vm->size_used += size;
         return next_handle;
@@ -98,15 +101,18 @@ error_t vmWrite(struct vm_t* vm, vm_handle_t i, obj_float_t* src)
 error_t vmLaunch(struct vm_t* vm, vec_t(code_t) code,
                  vec_t(struct obj_tensor_t*) * outputs)
 {
+        error_t       err = OK;
         enum opcode_t op;
         code_t*       pc = code;
 
         while (1) {
                 op = (enum opcode_t) * pc++;
                 if (op != OP_HALT) {
-                        if (handleOpCode(vm, &pc, op))
-                                return errEmitNote(
+                        if (handleOpCode(vm, &pc, op)) {
+                                err = errEmitNote(
                                     "unexpected op handing error in vm.");
+                                goto reset;
+                        }
                 } else {
                         DEBUG_PRINT("vm halt\n");
                         goto handle_outputs;
@@ -115,9 +121,10 @@ error_t vmLaunch(struct vm_t* vm, vec_t(code_t) code,
 
 handle_outputs:
 
-        // check invariance.
+        // check invariance. we can loose this in future.
         if (vm->base != vm->stack) {
-                return errNew("illegal program. gabage left after execution.");
+                err = errNew("illegal program. gabage left after execution.");
+                goto reset;
         }
 
         // prepare the outputs;
@@ -127,11 +134,35 @@ handle_outputs:
                 goto reset;
         }
 
-        printf("(%d) items as outputs.", count);
+        // pass 1: check all left objs are tensors to avoid memory leak.
+        for (struct obj_t* o = vm->base; o != vm->top; o++) {
+                if (o->kind != OBJ_TENSOR) {
+                        err = errNew(
+                            "illegal program. return values must be all "
+                            "tensors.");
+                        goto reset;
+                }
+        }
+
+        // pass 2: copy all tensors..
+        int current_size = vecSize(*outputs);
+        vecReserve(*outputs, current_size + count);
+        vecSetSize(*outputs, current_size + count);
+
+        for (int i = count - 1; i >= 0; i--) {
+                int                  index = current_size + i;
+                struct obj_t*        top   = --(vm->top);
+                struct obj_tensor_t* t     = top->value.t;
+                struct obj_tensor_t* dst   = objTensorNew(t->rank, t->dims);
+
+                objTensorAllocateAndCopy(dst, /*buf=*/t->buffer);
+                (*outputs)[index] = dst;
+        }
 
 reset:
-        vm->top = vm->stack;
-        return OK;
+        vm->top  = vm->stack;
+        vm->base = vm->stack;
+        return err;
 }
 
 // -----------------------------------------------------------------------------
@@ -145,8 +176,11 @@ error_t handleOpCode(struct vm_t* vm, code_t** pc, enum opcode_t op)
 
         switch (op) {
         case OP_PUSHBYTE:
-                (vm->top++)->value.i = *((*pc)++);
+                top          = vm->top++;
+                top->value.i = *((*pc)++);
+                top->kind    = OBJ_INT;
                 break;
+
         case OP_LOADGLOBAL:
                 top    = vm->top - 1;
                 handle = top->value.i;
@@ -159,6 +193,7 @@ error_t handleOpCode(struct vm_t* vm, code_t** pc, enum opcode_t op)
                             handle);
                 }
                 top->value.t = t;
+                top->kind    = OBJ_TENSOR;
                 break;
 
         default:

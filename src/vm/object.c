@@ -109,6 +109,17 @@ struct obj_tensor_t* objTensorNew(int rank, int dims[])
         return o;
 }
 
+// If buf is NULL, copy will not happen.
+void objTensorAllocateAndCopy(struct obj_tensor_t* t, obj_float_t* buf)
+{
+        assert(t->owned != 1);
+        assert(t->buffer == NULL);
+        size_t size = t->size * sizeof(obj_float_t);
+        t->owned    = 1;
+        t->buffer   = malloc(size);
+        if (buf != NULL) memcpy(t->buffer, buf, size);
+}
+
 void objTensorFree(struct obj_tensor_t* t)
 {
         if (t == NULL) return;
