@@ -85,9 +85,35 @@ vm_handle_t vmAllocateTensor(struct vm_t* vm, int rank, int dims[])
         return next_handle;
 }
 
+error_t vmDeallocateTensor(struct vm_t* vm, vm_handle_t i)
+{
+        struct obj_tensor_t* t = vm->handles[i];
+        if (t == NULL) return errNew("VM does not have tensor handle %d", i);
+        objTensorFree(t);
+        vm->handles[i] = NULL;
+        return OK;
+}
+
+error_t vmRead(struct vm_t* vm, vm_handle_t i, obj_float_t* dst)
+{
+        struct obj_tensor_t* t = vm->handles[i];
+        if (t == NULL) return errNew("VM does not have tensor handle %d", i);
+        memcpy(dst, t->buffer, t->size * sizeof(obj_float_t));
+        return OK;
+}
+
+error_t vmWrite(struct vm_t* vm, vm_handle_t i, obj_float_t* src)
+{
+        struct obj_tensor_t* t = vm->handles[i];
+        if (t == NULL) return errNew("VM does not have tensor handle %d", i);
+        memcpy(t->buffer, src, t->size * sizeof(obj_float_t));
+        return OK;
+}
+
 // -----------------------------------------------------------------------------
 // internal.
 // -----------------------------------------------------------------------------
+
 error_t handleOpCode(struct vm_t* vm, code_t** pc, enum opcode_t op)
 {
         switch (op) {

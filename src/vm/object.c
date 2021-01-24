@@ -22,14 +22,10 @@ void* obj_tensor_pool = NULL;
 // used to detect whether a tensor is a shape.
 static obj_float_t shape_indicator[1];
 
-size_t eleEize(int rank, int dims[])
-{
-        size_t count = 1;
-        for (int i = 0; i < rank; i++) {
-                count *= dims[i];
-        }
-        return count;
-}
+// -----------------------------------------------------------------------------
+// internal prototype.
+// -----------------------------------------------------------------------------
+size_t eleEize(int rank, int dims[]);
 
 // -----------------------------------------------------------------------------
 // implementation.
@@ -118,6 +114,19 @@ void objTensorFree(struct obj_tensor_t* t)
         if (t == NULL) return;
         if (t->owned) free(t->buffer);
         free(t);
+}
+
+// -----------------------------------------------------------------------------
+// helper method implementation.
+// -----------------------------------------------------------------------------
+
+size_t eleEize(int rank, int dims[])
+{
+        size_t count = 1;
+        for (int i = 0; i < rank; i++) {
+                count *= dims[i];
+        }
+        return count;
 }
 
 // #define OBJ_EMBEDDING_ARRAY_SIZE 16
