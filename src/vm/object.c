@@ -22,6 +22,15 @@ void* obj_tensor_pool = NULL;
 // used to detect whether a tensor is a shape.
 static obj_float_t shape_indicator[1];
 
+size_t eleEize(int rank, int dims[])
+{
+        size_t count = 1;
+        for (int i = 0; i < rank; i++) {
+                count *= dims[i];
+        }
+        return count;
+}
+
 // -----------------------------------------------------------------------------
 // implementation.
 // -----------------------------------------------------------------------------
@@ -65,6 +74,7 @@ struct obj_tensor_t* objShapeNew(int rank, int dims[])
         o->rank   = rank;
         o->owned  = 0;
         o->mark   = 0;
+        o->size   = eleEize(rank, dims);
         o->buffer = shape_indicator;
         memcpy(o->dims, dims, rank * sizeof(int));
 
@@ -92,7 +102,7 @@ struct obj_tensor_t* objTensorNew(int rank, int dims[])
         o->owned  = 0;
         o->mark   = 0;
         o->buffer = NULL;
-        o->size = eleEize(rank, dims);
+        o->size   = eleEize(rank, dims);
         memcpy(o->dims, dims, rank * sizeof(int));
 
         obj_tensor_item_t* p = malloc(sizeof(obj_tensor_item_t));
@@ -101,9 +111,6 @@ struct obj_tensor_t* objTensorNew(int rank, int dims[])
         obj_tensor_pool      = p;
 
         return o;
-}
-
-size_t eleEize(rank, dims) {
 }
 
 void objTensorFree(struct obj_tensor_t* t)

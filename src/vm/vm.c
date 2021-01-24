@@ -1,10 +1,12 @@
 #include "vm.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #include "opcode.h"
 
 #define STACK_INIT_SIZE 256
+#define MAX_NUM_HANDLES 128
 
 #define DEBUG_PRINT(x) printf(x)
 
@@ -22,6 +24,8 @@ struct vm_t* vmNew(void)
         vm->stack           = stack;
         vm->base            = stack;
         vm->top             = stack;
+        vm->handles = malloc(MAX_NUM_HANDLES * sizeof(struct obj_tensor_t*));
+        memset(vm->handles, 0, MAX_NUM_HANDLES * sizeof(struct obj_tensor_t*));
         return vm;
 }
 
@@ -29,7 +33,12 @@ void vmFree(struct vm_t* vm)
 {
         if (vm == NULL) return;
 
+        for (int i = 0; i < MAX_NUM_HANDLES; i++) {
+                objTensorFree(vm->handles[i]);
+        }
+
         free(vm->stack);
+        free(vm->handles);
         free(vm);
         // objGC();
 }
@@ -58,8 +67,22 @@ float vmComsumedSizeInMB(struct vm_t* vm)
         return (float)(((double)vm->size_used) / 1024 / 1024);
 }
 
-vm_handle_t vmAllocateTensor(int rank, int dims[]) {
-        obj_tensor_t * t = objTensorNew(rank, dims);
+vm_handle_t vmAllocateTensor(struct vm_t* vm, int rank, int dims[])
+{
+        int next_handle = -1;
+        for (int i = 0; i < MAX_NUM_HANDLES; i++) {
+                if (vm->handles[i] != NULL) {
+                        next_handle = i;
+                        break;
+                }
+        }
+
+        if (next_handle == -1) return next_handle;
+        struct obj_tensor_t* t   = objTensorNew(rank, dims);
+        t->owned                 = 1;
+        t->buffer                = malloc(t->size * sizeof(obj_float_t));
+        vm->handles[next_handle] = t;
+        return next_handle;
 }
 
 // -----------------------------------------------------------------------------

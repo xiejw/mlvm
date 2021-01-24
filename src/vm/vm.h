@@ -8,20 +8,21 @@
 #include "object.h"
 #include "opcode.h"
 
-typedef vm_handle_t int;  // zero means OOM.
+typedef int vm_handle_t;  // zero means OOM.
 
 struct vm_t {
-        size_t        size_used;
-        struct obj_t* base;
-        struct obj_t* top;
-        struct obj_t* stack;
+        size_t                size_used;
+        struct obj_t*         base;
+        struct obj_t*         top;
+        struct obj_t*         stack;
+        struct obj_tensor_t** handles;
 };
 
 extern struct vm_t* vmNew(void);
 extern void         vmFree(struct vm_t* vm);
 
-extern vm_handle_t vmAllocateTensor(struct vm_t*vm, int rank, int dims[]);
-extern error_t     vmDeallocateTensor(struct vm_t*vm, vm_handle_t);
+extern vm_handle_t vmAllocateTensor(struct vm_t* vm, int rank, int dims[]);
+extern error_t     vmDeallocateTensor(struct vm_t* vm, vm_handle_t);
 
 extern error_t vmLaunch(struct vm_t* vm, vec_t(code_t));
 extern float   vmComsumedSizeInMB(struct vm_t* vm);
