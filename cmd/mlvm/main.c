@@ -29,7 +29,10 @@ int main()
         CHECK(vmLaunch(vm, code, &outputs), "vm execution error");
 
         for (int i = 0; i < vecSize(outputs); i++) {
-                objTensorFree(outputs[i]);
+                struct obj_tensor_t* t = outputs[i];
+                printf("output %d has rank %d\n", i, t->rank);
+
+                objTensorFree(t);
         }
         vmFree(vm);
         vecFree(code);
