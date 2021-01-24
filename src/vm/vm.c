@@ -57,13 +57,14 @@ vm_handle_t vmAllocateTensor(struct vm_t* vm, int rank, int dims[])
                         break;
                 }
         }
-
         if (next_handle == -1) return next_handle;
+
         struct obj_tensor_t* t    = objTensorNew(rank, dims);
         size_t               size = t->size * sizeof(obj_float_t);
-        t->owned                  = 1;
-        t->buffer                 = malloc(size);
-        vm->handles[next_handle]  = t;
+
+        t->owned                 = 1;
+        t->buffer                = malloc(size);
+        vm->handles[next_handle] = t;
         vm->size_used += size;
         return next_handle;
 }
@@ -114,6 +115,22 @@ error_t vmLaunch(struct vm_t* vm, vec_t(code_t) code,
 
 handle_outputs:
 
+        // check invariance.
+        if (vm->base != vm->stack) {
+                return errNew("illegal program. gabage left after execution.");
+        }
+
+        // prepare the outputs;
+        int count = vm->top - vm->base;
+        assert(count >= 0);
+        if (count == 0 || outputs == NULL) {
+                goto reset;
+        }
+
+        printf("(%d) items as outputs.", count);
+
+reset:
+        vm->top = vm->stack;
         return OK;
 }
 
@@ -141,9 +158,6 @@ error_t handleOpCode(struct vm_t* vm, code_t** pc, enum opcode_t op)
                             "op OP_LOADGLOBAL: load a non-existed handle: %d",
                             handle);
                 }
-
-                printf("handle %d\n", handle);
-
                 top->value.t = t;
                 break;
 

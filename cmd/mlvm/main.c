@@ -1,5 +1,6 @@
 #include "stdio.h"
 
+#include "vm/object.h"
 #include "vm/opcode.h"
 #include "vm/vm.h"
 
@@ -14,8 +15,9 @@
 
 int main()
 {
-        struct vm_t* vm    = vmNew();
-        vec_t(code_t) code = vecNew();
+        struct vm_t* vm                     = vmNew();
+        vec_t(code_t) code                  = vecNew();
+        vec_t(struct obj_tensor_t*) outputs = vecNew();
 
         vm_handle_t handle = vmAllocateTensor(vm, 1, (int[]){1});
         assert(handle >= 0);
@@ -24,7 +26,7 @@ int main()
         CHECK(opMake(&code, OP_LOADGLOBAL), "program op error");
         CHECK(opMake(&code, OP_HALT), "program op error");
 
-        CHECK(vmLaunch(vm, code, NULL), "vm execution error");
+        CHECK(vmLaunch(vm, code, &outputs), "vm execution error");
 
         vmFree(vm);
         vecFree(code);
