@@ -17,10 +17,14 @@ int main()
         struct vm_t* vm    = vmNew();
         vec_t(code_t) code = vecNew();
 
-        CHECK(opMake(&code, OP_PUSHBYTE, 1), "program op error");
+        vm_handle_t handle = vmAllocateTensor(vm, 1, (int[]){1});
+        assert(handle >= 0);
+
+        CHECK(opMake(&code, OP_PUSHBYTE, handle), "program op error");
+        CHECK(opMake(&code, OP_LOADGLOBAL), "program op error");
         CHECK(opMake(&code, OP_HALT), "program op error");
 
-        CHECK(vmLaunch(vm, code), "vm execution error");
+        CHECK(vmLaunch(vm, code, NULL), "vm execution error");
 
         vmFree(vm);
         vecFree(code);

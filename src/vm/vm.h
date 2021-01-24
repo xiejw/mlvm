@@ -13,7 +13,7 @@ typedef int vm_handle_t;  // zero means OOM.
 struct vm_t {
         size_t                size_used;
         struct obj_t*         base;
-        struct obj_t*         top;
+        struct obj_t*         top;  // point to next value to use.
         struct obj_t*         stack;
         struct obj_tensor_t** handles;
 };

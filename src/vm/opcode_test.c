@@ -1,9 +1,13 @@
 #include "testing/testing.h"
 
+#include <string.h>
+
 #include "opcode.h"
 #include "opdefs.h"
 
-#include <string.h>
+// -----------------------------------------------------------------------------
+// macros.
+// -----------------------------------------------------------------------------
 
 #define ASSERT_OPCODE_STR_AND_OPERAND_COUNT(opcode, num)                     \
         do {                                                                 \
@@ -15,9 +19,13 @@
                 count++;                                                     \
         } while (0)
 
+// -----------------------------------------------------------------------------
+// unit tests.
+// -----------------------------------------------------------------------------
+
 static char* test_opcode_count()
 {
-        ASSERT_TRUE("max count for opcode. must less than byte (code_t)",
+        ASSERT_TRUE("total count for opcode. must <= byte (code_t)",
                     opTotalCount <= 255);
         return NULL;
 }

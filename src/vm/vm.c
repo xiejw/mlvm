@@ -43,29 +43,6 @@ void vmFree(struct vm_t* vm)
         // objGC();
 }
 
-error_t vmLaunch(struct vm_t* vm, vec_t(code_t) code,
-                 vec_t(struct obj_tensor_t*) * outputs)
-{
-        enum opcode_t op;
-        code_t*       pc = code;
-
-        while (1) {
-                op = (enum opcode_t) * pc++;
-                if (op != OP_HALT) {
-                        if (handleOpCode(vm, &pc, op))
-                                return errEmitNote(
-                                    "unexpected op handing error in vm.");
-                } else {
-                        DEBUG_PRINT("vm halt\n");
-                        goto handle_outputs;
-                }
-        }
-
-handle_outputs:
-
-        return OK;
-}
-
 float vmComsumedSizeInMB(struct vm_t* vm)
 {
         return (float)(((double)vm->size_used) / 1024 / 1024);
@@ -75,7 +52,7 @@ vm_handle_t vmAllocateTensor(struct vm_t* vm, int rank, int dims[])
 {
         int next_handle = -1;
         for (int i = 0; i < MAX_NUM_HANDLES; i++) {
-                if (vm->handles[i] != NULL) {
+                if (vm->handles[i] == NULL) {
                         next_handle = i;
                         break;
                 }
@@ -114,16 +91,59 @@ error_t vmWrite(struct vm_t* vm, vm_handle_t i, obj_float_t* src)
         return OK;
 }
 
+error_t vmLaunch(struct vm_t* vm, vec_t(code_t) code,
+                 vec_t(struct obj_tensor_t*) * outputs)
+{
+        enum opcode_t op;
+        code_t*       pc = code;
+
+        while (1) {
+                op = (enum opcode_t) * pc++;
+                if (op != OP_HALT) {
+                        if (handleOpCode(vm, &pc, op))
+                                return errEmitNote(
+                                    "unexpected op handing error in vm.");
+                } else {
+                        DEBUG_PRINT("vm halt\n");
+                        goto handle_outputs;
+                }
+        }
+
+handle_outputs:
+
+        return OK;
+}
+
 // -----------------------------------------------------------------------------
 // internal.
 // -----------------------------------------------------------------------------
 
 error_t handleOpCode(struct vm_t* vm, code_t** pc, enum opcode_t op)
 {
+        vm_handle_t   handle;
+        struct obj_t* top;
+
         switch (op) {
         case OP_PUSHBYTE:
-                (vm->top++)->value.i = *(*pc)++;
+                (vm->top++)->value.i = *((*pc)++);
                 break;
+        case OP_LOADGLOBAL:
+                top    = vm->top - 1;
+                handle = top->value.i;
+                assert(handle >= 0 && handle < MAX_NUM_HANDLES);
+
+                struct obj_tensor_t* t = vm->handles[handle];
+                if (t == NULL) {
+                        return errNew(
+                            "op OP_LOADGLOBAL: load a non-existed handle: %d",
+                            handle);
+                }
+
+                printf("handle %d\n", handle);
+
+                top->value.t = t;
+                break;
+
         default:
                 return errNew("unsupported opcode: %d", op);
         }
