@@ -11,8 +11,8 @@
 #define _ONE_UINT8  1, { 1 }
 
 static struct opdef_t opDefs[] = {
-    {"OP_HALT",      _NO_OPERAND}, // halt the execution.
-    {"OP_PUSHBYTE",  _ONE_UINT8},  // push a byte to stack top.
+    {"OP_HALT",      _NO_OPERAND},
+    {"OP_PUSHBYTE",  _ONE_UINT8},
 };
 // clang-format on
 

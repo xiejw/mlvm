@@ -11,8 +11,10 @@
 // -----------------------------------------------------------------------------
 
 enum opcode_t {
-        OP_HALT,
-        OP_PUSHBYTE,
+        OP_HALT,        // Halt machine.
+        OP_PUSHBYTE,    // Push byte to stack. Code byte in next pc.
+        OP_LOADGLOBAL,  // Get index from stack.
+        OP_RETURN,      // Move values to base. Code count in next pc.
 };
 
 struct opdef_t {

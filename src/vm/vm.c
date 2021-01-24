@@ -43,7 +43,8 @@ void vmFree(struct vm_t* vm)
         // objGC();
 }
 
-error_t vmLaunch(struct vm_t* vm, vec_t(code_t) code)
+error_t vmLaunch(struct vm_t* vm, vec_t(code_t) code,
+                 vec_t(struct obj_tensor_t*) * outputs)
 {
         enum opcode_t op;
         code_t*       pc = code;
@@ -56,9 +57,12 @@ error_t vmLaunch(struct vm_t* vm, vec_t(code_t) code)
                                     "unexpected op handing error in vm.");
                 } else {
                         DEBUG_PRINT("vm halt\n");
-                        return OK;
+                        goto handle_outputs;
                 }
         }
+
+handle_outputs:
+
         return OK;
 }
 

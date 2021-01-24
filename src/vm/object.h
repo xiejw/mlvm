@@ -40,18 +40,4 @@ extern struct obj_tensor_t *objShapeNew(int rank, int dims[]);
 extern void                 objTensorFree(struct obj_tensor_t *t);
 extern int                  objGC();
 
-// extern obj_t* objNewInt(int64_t v);
-// extern obj_t* objNewShape(int rank, int dims[]);
-// extern obj_t* objNewArray(size_t size, obj_float_t dims[]);
-//
-// extern void objDecrRefCount(obj_t* o);
-//
-// #define objInt(o)   (*(int64_t*)(((o) + 1)))
-// #define objShape(o) (((obj_shape_t*)((o) + 1)))
-// #define objArray(o) (((obj_array_t*)((o)->ptr)))
-//
-// #define objIsInt(o)   ((o)->kind == OBJ_INT)
-// #define objIsShape(o) ((o)->kind == OBJ_SHAPE)
-// #define objIsArray(o) ((o)->kind == OBJ_ARRAY)
-
 #endif
