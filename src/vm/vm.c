@@ -43,7 +43,7 @@ void vmFree(struct vm_t* vm)
         // objGC();
 }
 
-float vmComsumedSizeInMB(struct vm_t* vm)
+float vmComsumedSizeInMiB(struct vm_t* vm)
 {
         return (float)(((double)vm->size_used) / 1024 / 1024);
 }
@@ -59,10 +59,12 @@ vm_handle_t vmAllocateTensor(struct vm_t* vm, int rank, int dims[])
         }
 
         if (next_handle == -1) return next_handle;
-        struct obj_tensor_t* t   = objTensorNew(rank, dims);
-        t->owned                 = 1;
-        t->buffer                = malloc(t->size * sizeof(obj_float_t));
-        vm->handles[next_handle] = t;
+        struct obj_tensor_t* t    = objTensorNew(rank, dims);
+        size_t               size = t->size * sizeof(obj_float_t);
+        t->owned                  = 1;
+        t->buffer                 = malloc(size);
+        vm->handles[next_handle]  = t;
+        vm->size_used += size;
         return next_handle;
 }
 
@@ -70,6 +72,7 @@ error_t vmDeallocateTensor(struct vm_t* vm, vm_handle_t i)
 {
         struct obj_tensor_t* t = vm->handles[i];
         if (t == NULL) return errNew("VM does not have tensor handle %d", i);
+        vm->size_used -= t->size * sizeof(obj_float_t);
         objTensorFree(t);
         vm->handles[i] = NULL;
         return OK;
