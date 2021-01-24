@@ -11,8 +11,10 @@
 #define _ONE_UINT8  1, { 1 }
 
 static struct opdef_t opDefs[] = {
-    {"OP_HALT",      _NO_OPERAND},
-    {"OP_PUSHBYTE",  _ONE_UINT8},
+    {"OP_HALT",         _NO_OPERAND},
+    {"OP_PUSHBYTE",     _ONE_UINT8},
+    {"OP_LOADGLOBAL",   _NO_OPERAND},
+    {"OP_RETURN",       _ONE_UINT8},
 };
 // clang-format on
 
