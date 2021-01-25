@@ -20,7 +20,7 @@ int main()
         vec_t(code_t) code                  = vecNew();
         vec_t(struct obj_tensor_t*) outputs = vecNew();
 
-        vm_handle_t handle = vmAllocateTensor(vm, 1, (int[]){1});
+        vm_handle_t handle = vmAllocTensor(vm, 1, (int[]){1});
         assert(handle >= 0);
 
         CHECK(opMake(&code, OP_PUSHBYTE, handle), "program op error");

@@ -21,8 +21,8 @@ struct vm_t {
 extern struct vm_t* vmNew(void);
 extern void         vmFree(struct vm_t* vm);
 
-extern vm_handle_t vmAllocateTensor(struct vm_t* vm, int rank, int dims[]);
-extern error_t     vmDeallocateTensor(struct vm_t* vm, vm_handle_t);
+extern vm_handle_t vmAllocTensor(struct vm_t* vm, int rank, int dims[]);
+extern error_t     vmDeallocTensor(struct vm_t* vm, vm_handle_t);
 extern error_t     vmRead(struct vm_t* vm, vm_handle_t, obj_float_t* dst);
 extern error_t     vmWrite(struct vm_t* vm, vm_handle_t, obj_float_t* src);
 extern error_t     vmLaunch(struct vm_t* vm, vec_t(code_t),

@@ -59,7 +59,7 @@ float vmComsumedSizeInMiB(struct vm_t* vm)
         return (float)(((double)vm->size_used) / 1024 / 1024);
 }
 
-vm_handle_t vmAllocateTensor(struct vm_t* vm, int rank, int dims[])
+vm_handle_t vmAllocTensor(struct vm_t* vm, int rank, int dims[])
 {
         int next_handle = -1;
         for (int i = 0; i < MAX_NUM_HANDLES; i++) {
@@ -73,13 +73,13 @@ vm_handle_t vmAllocateTensor(struct vm_t* vm, int rank, int dims[])
         struct obj_tensor_t* t    = objTensorNew(rank, dims);
         size_t               size = t->size * sizeof(obj_float_t);
 
-        objTensorAllocateAndCopy(t, /*buf=*/NULL);
+        objTensorAllocAndCopy(t, /*buf=*/NULL);
         vm->handles[next_handle] = t;
         vm->size_used += size;
         return next_handle;
 }
 
-error_t vmDeallocateTensor(struct vm_t* vm, vm_handle_t i)
+error_t vmDeallocTensor(struct vm_t* vm, vm_handle_t i)
 {
         struct obj_tensor_t* t = vm->handles[i];
         if (t == NULL) return errNew("VM does not have tensor handle %d", i);
@@ -162,7 +162,7 @@ handle_outputs:
                 struct obj_tensor_t* t     = top->value.t;
                 struct obj_tensor_t* dst   = objTensorNew(t->rank, t->dims);
 
-                objTensorAllocateAndCopy(dst, /*buf=*/t->buffer);
+                objTensorAllocAndCopy(dst, /*buf=*/t->buffer);
                 (*outputs)[index] = dst;
         }
 

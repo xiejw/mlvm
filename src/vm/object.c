@@ -68,7 +68,7 @@ void objTensorFree(struct obj_tensor_t* t)
 }
 
 // If buf is NULL, copy will not happen.
-void objTensorAllocateAndCopy(struct obj_tensor_t* t, obj_float_t* buf)
+void objTensorAllocAndCopy(struct obj_tensor_t* t, obj_float_t* buf)
 {
         assert(t->owned != 1);
         assert(t->buffer == NULL);
