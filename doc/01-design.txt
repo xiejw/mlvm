@@ -2,55 +2,73 @@ From bottom-up view for the design
 
 VM
 
-  vm is the runtime of the system. It could be local or remote.
+        design
 
-  vm has only one type. Tensor.
+                vm is the runtime of the system. It could be local or remote.
 
-  VM is responsible for one device type only (CPU/GPU). It handles it well and
-  efficiently. All tensors are "local" to this device type. Cross device type
-  communication should be explicit.
+                vm has only one type for i/o. Tensor.
 
-  all VM's APIs should behave like rpc APIs. So, the values, espcially large
-  tensor values, are "copy" sematics, even it is local mode. This simplifies the
-  user's mental model. If future optimization is needed, special APis must be
-  provided to make this crystal clear about the cost.
+                VM is responsible for one device type only (CPU/GPU). It handles
+                it well and efficiently. All tensors are "local" to this device
+                type. Cross device type communication should be explicit.
 
-  vm's memory consists of two parts. stack and free stores. This is similar to
-  lua's design. Each execution is expected to finish the stack value--remaining
-  values are outputs. Free store is subject to gabage collected. Go's runtime.GC
-  can force gabage collection. The design space covers whether the free store is
-  available cross runs. Currently it is.
+                All VM's APIs should behave like rpc APIs. So, the values,
+                espcially large tensor values, are "copy" sematics, even it is
+                local mode. This simplifies the user's mental model. If future
+                optimization is needed, special APis must be provided to make
+                this crystal clear about the cost.
 
-  vm should provide estimated cost for the memory so far.
+                vm's memory consists of two parts. stack and free stores. This
+                is similar to lua's design. Each execution is expected to finish
+                the stack value--remaining values are outputs. Free store is
+                subject to gabage collected.  The design space covers whether
+                the free store is available across runs. Currently it is.
 
-  concurrency: Launch must be insequence. Next one will blocked. All other
-  methods are call site's responsibility. Inproper sync might lead to race
-  conditions.
+                vm should provide estimated cost for the memory so far.
 
-Draft API for vm
+                concurrency: Launch must be in sequence. Next one will blocked.
+                All other methods are call site's responsibility. Inproper sync
+                might lead to race conditions.
 
-  type TsrShape []int
-  type TsrHandle int
-  type TsrType int // int, float32, float64, etc.
+      draft API for vm
 
-  type Buffer struct {
-    Size  int
-    DType TsrType
-    Ptr   interface{}
-  }
+                type TensorShape  []int
+                type TensorHandle int
+                type TensorType   int // int, float32, float64, etc.
 
-  type Tensor struct {
-    Shape TsrShape
-    Rank  int
-    Buffer Buffer
-  }
+                type Buffer struct {
+                        Size  int
+                        DType TensorType
+                        Ptr   interface{}
+                }
 
-  type VM interface {
-    AllocateTensor(TsrShape, TsrType) (TsrHandle, error);
-    DeallocateTensor(TsrHandle) error;
-    Read(TsrHandle, *Buffer ) error;
-    Write(TsrHandle, *Buffer) error;
-    Launch(Program) ([]*Tensor,  error)    // block until last Launch finished.
-    ConsumedSizeInMB() float32
-  }
+                type Tensor struct {
+                        Shape  TensorShape
+                        Rank   int
+                        Buffer Buffer
+                }
+
+                type VM interface {
+                        AllocTensor(TensorShape, TensorType) (TensorHandle, error);
+                        DeallocTensor(TensorHandle) error;
+                        Read(TensorHandle, *Buffer) error;
+                        Write(TensorHandle, *Buffer) error;
+                        Launch(Program) ([]*Tensor,  error)
+                        ConsumedSizeInMiB() float32
+                }
+
+        C func call
+
+                Name. C func name is picked up stack. Str type.  It is registed
+                in vm lookup table.
+
+                vm's base is adjusted temporarily, and vm will remembers how
+                many params, called nparams, to pass to C func. So the base-1 is
+                the last param; while base-nparams is the first param.
+
+                Func call return count is code after OP_CFUNC. every thing left
+                between base and top is return values. they are moved to
+                base-nparams. can return count is adjusted.
+
+                base and nparams is adjusted back afte call.
 

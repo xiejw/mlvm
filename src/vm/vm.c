@@ -105,6 +105,13 @@ error_t vmWrite(struct vm_t* vm, vm_handle_t i, obj_float_t* src)
         return OK;
 }
 
+// protocol
+//
+// - OP_HALT is the final one to halt vm.
+// - Upon hatl, base must be reset to stack after execution.
+//   - OP_RETURN could help.
+// - all values after base must be tensors and will be copied as outputs.
+// - all other tensors will be gc'ed.
 error_t vmLaunch(struct vm_t* vm, vec_t(code_t) code,
                  vec_t(struct obj_tensor_t*) * outputs)
 {

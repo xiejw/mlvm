@@ -15,6 +15,8 @@ enum opcode_t {
         OP_PUSHBYTE,    // Push byte to stack. Code byte in next pc.
         OP_LOADGLOBAL,  // Get index from stack.
         OP_RETURN,      // Move values to base. Code count in next pc.
+        OP_CFUNC,  // Call c func. Get func name from stack. Code return count
+                   // in next pc.
 };
 
 struct opdef_t {
