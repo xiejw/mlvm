@@ -2,7 +2,7 @@
 #define OBJECT_H_
 
 #include <inttypes.h>  // int64_t
-#include <stdlib.h>    // sizt_t
+#include <stdlib.h>    // siz222
 
 #include "adt/sds.h"
 
@@ -35,9 +35,6 @@ struct obj_t {
         union obj_value_t value;
 };
 
-// TODO(xiejw): remove this.
-extern void *obj_tensor_pool;
-
 extern struct obj_tensor_t *objShapeNew(int rank, int dims[]);
 extern void                 objShapeFree(struct obj_tensor_t *);
 
@@ -46,7 +43,5 @@ extern void                 objTensorFree(struct obj_tensor_t *t);
 
 extern void objTensorAllocateAndCopy(struct obj_tensor_t *, obj_float_t *);
 extern void objTensorDump(struct obj_tensor_t *, sds_t *);
-
-extern int objGC();
 
 #endif

@@ -14,6 +14,13 @@
 
 #define DEBUG_PRINT(x) printf(x)
 
+typedef struct obj_tensor_item_t {
+        struct obj_tensor_t*      item;
+        struct obj_tensor_item_t* next;
+} obj_tensor_item_t;
+
+void* obj_tensor_pool = NULL;
+
 error_t handleOpCode(struct vm_t* vm, code_t** pc, enum opcode_t op);
 
 // -----------------------------------------------------------------------------
@@ -202,3 +209,35 @@ error_t handleOpCode(struct vm_t* vm, code_t** pc, enum opcode_t op)
 
         return OK;
 }
+
+// int objGC()
+// {
+//         if (obj_tensor_pool == NULL) return 0;
+//
+//         int                count = 0;
+//         obj_tensor_item_t* p     = obj_tensor_pool;
+//         obj_tensor_item_t* prev  = NULL;
+//         while (p != NULL) {
+//                 struct obj_tensor_t* item = p->item;
+//                 if (item->mark) {
+//                         item->mark = 0;
+//                         prev       = p;
+//                         p          = p->next;
+//                 } else {
+//                         if (prev == NULL) {
+//                                 obj_tensor_pool = p->next;
+//                         } else {
+//                                 prev->next = p->next;
+//                         }
+//                         objTensorFree(item);
+//
+//                         obj_tensor_item_t* old_p;
+//                         old_p = p;
+//                         p     = p->next;
+//                         free(old_p);
+//                         count++;
+//                 }
+//         }
+//         return count;
+// }
+//
