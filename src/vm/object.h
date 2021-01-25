@@ -4,6 +4,8 @@
 #include <inttypes.h>  // int64_t
 #include <stdlib.h>    // sizt_t
 
+#include "adt/sds.h"
+
 typedef float obj_float_t;
 
 enum obj_kind_t {
@@ -43,6 +45,7 @@ extern struct obj_tensor_t *objTensorNew(int rank, int dims[]);
 extern void                 objTensorFree(struct obj_tensor_t *t);
 
 extern void objTensorAllocateAndCopy(struct obj_tensor_t *, obj_float_t *);
+extern void objTensorDump(struct obj_tensor_t *, sds_t *);
 
 extern int objGC();
 

@@ -109,6 +109,13 @@ struct obj_tensor_t* objTensorNew(int rank, int dims[])
         return o;
 }
 
+void objTensorFree(struct obj_tensor_t* t)
+{
+        if (t == NULL) return;
+        if (t->owned) free(t->buffer);
+        free(t);
+}
+
 // If buf is NULL, copy will not happen.
 void objTensorAllocateAndCopy(struct obj_tensor_t* t, obj_float_t* buf)
 {
@@ -120,11 +127,17 @@ void objTensorAllocateAndCopy(struct obj_tensor_t* t, obj_float_t* buf)
         if (buf != NULL) memcpy(t->buffer, buf, size);
 }
 
-void objTensorFree(struct obj_tensor_t* t)
+void objTensorDump(struct obj_tensor_t* t, sds_t* s)
 {
-        if (t == NULL) return;
-        if (t->owned) free(t->buffer);
-        free(t);
+        assert(t->buffer != shape_indicator);  // use helper method.
+        assert(t->buffer != NULL);
+        sdsCatPrintf(s, "[ ");
+        int size_to_print = t->size;
+        if (size_to_print > 10) size_to_print = 10;
+        for (int i = 0; i < size_to_print; i++) {
+                sdsCatPrintf(s, " %f,", t->buffer[i]);
+        }
+        sdsCatPrintf(s, "]");
 }
 
 // -----------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 #include "stdio.h"
 
+#include "adt/sds.h"
 #include "vm/object.h"
 #include "vm/opcode.h"
 #include "vm/vm.h"
@@ -28,12 +29,15 @@ int main()
 
         CHECK(vmLaunch(vm, code, &outputs), "vm execution error");
 
+        sds_t s = sdsEmpty();
         for (int i = 0; i < vecSize(outputs); i++) {
                 struct obj_tensor_t* t = outputs[i];
-                printf("output %d has rank %d\n", i, t->rank);
+                objTensorDump(t, &s);
+                printf("output %d has rank %d and value: %s\n", i, t->rank, s);
 
                 objTensorFree(t);
         }
+        sdsFree(s);
         vmFree(vm);
         vecFree(code);
         return 0;
