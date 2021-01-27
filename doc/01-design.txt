@@ -72,3 +72,39 @@ VM
 
                 base and nparams is adjusted back afte call.
 
+
+        draft api for C func
+
+                void (*c_func)(vm_ctx_t* c) {
+                            obj_t* a = c->getParam(0);
+                            obj_t* b = c->getParam(1);
+
+                            if (a == NULL) {
+                              c->errWithNote("missing arg at %d", 0);
+                              return;
+                            }
+                            if (a->kind != OBJ_TENSOR) {
+                              c->errWithNote("expect tensor at arg %d", 0);
+                              return;
+                            }
+                            if (b == NULL) {
+                              c->errWithNote("missing arg at %d", 1);
+                              return;
+                            }
+                            if (b->kind != OBJ_TENSOR) {
+                              c->errWithNote("expect tensor at arg %d", 1);
+                              return;
+                            }
+
+                            int rank = a->value.t->rank;
+                            int[] dims = a->value.t->dims;
+
+                            // alloc the buf but uninit. owned by vm.
+                            obj_tensor_t* t = c->newTensor(rank, dims);
+                            // fills new value
+                            c->pushToStack(t)
+                            return;
+                }
+
+                what happened under the hood
+
