@@ -108,3 +108,14 @@ VM
 
                 what happened under the hood
 
+                1. vm will record the base and nparams.
+                2. vm will calculate the new nparams, i.e., top-base.
+                3. vm will adjust the base to the slot after the final params.
+
+                calling the function
+
+                4. move all return values, between base to top, to the slots
+                after old base
+
+                5. vm will recover the base and nparams.
+
