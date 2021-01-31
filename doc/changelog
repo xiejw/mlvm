@@ -1,7 +1,13 @@
 ## todo
 
-- c func call
 - disassemble
+
+- c func call
+  - str and lookup
+	- nil
+	- register new func
+	- c func call
+
 
 ## changelog
 
