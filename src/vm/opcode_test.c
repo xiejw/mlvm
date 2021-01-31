@@ -14,6 +14,8 @@
                 ASSERT_TRUE("OpCode def for " #opcode " mismatches",         \
                             0 == strcmp((opLookup(opcode, &def), def->name), \
                                         #opcode));                           \
+                ASSERT_TRUE("OpCode def for " #opcode " too long",           \
+                            opMaxCountOfChar >= strlen(def->name));          \
                 ASSERT_TRUE("OpCode num for " #opcode " mismatches",         \
                             def->num_operands == num);                       \
                 count++;                                                     \

@@ -74,6 +74,7 @@ error_t opDump(sds_t* buf, code_t* code, int size, char* prefix)
         code_t          c;
         struct opdef_t* def;
         int             num_args;
+
         for (int i = 0; i < size; i++) {
                 // lookup the code and print the op name.
                 c = *(code + i);
@@ -81,7 +82,7 @@ error_t opDump(sds_t* buf, code_t* code, int size, char* prefix)
                         return errEmitNote(
                             "failed to parse the opcode %c at %d", c, i);
                 }
-                sdsCatPrintf(buf, "%s%-10s\n", p, def->name);
+                sdsCatPrintf(buf, "%s%-15s\n", p, def->name);
 
                 // adjust the count i.
                 num_args = def->num_operands;
