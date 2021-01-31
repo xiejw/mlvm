@@ -19,17 +19,24 @@ int main()
         struct vm_t* vm                     = vmNew();
         vec_t(code_t) code                  = vecNew();
         vec_t(struct obj_tensor_t*) outputs = vecNew();
+        sds_t s                             = sdsEmpty();
 
         vm_handle_t handle = vmAllocTensor(vm, 1, (int[]){1});
         assert(handle >= 0);
 
+        // ---------------------------------------------------------------------
+        // assemble and print the code.
         CHECK(opMake(&code, OP_PUSHBYTE, handle), "program op error");
         CHECK(opMake(&code, OP_LOADGLOBAL), "program op error");
         CHECK(opMake(&code, OP_HALT), "program op error");
 
-        CHECK(vmLaunch(vm, code, &outputs), "vm execution error");
+        opDump(&s, code, vecSize(code), /*prefix=*/"--> ");
+        printf("begin code:\n%send code\n", s);
 
-        sds_t s = sdsEmpty();
+        // ---------------------------------------------------------------------
+        // execute.
+        sdsClear(s);
+        CHECK(vmLaunch(vm, code, &outputs), "vm execution error");
         for (int i = 0; i < vecSize(outputs); i++) {
                 struct obj_tensor_t* t = outputs[i];
                 objTensorDump(t, &s);
@@ -37,6 +44,9 @@ int main()
 
                 objTensorFree(t);
         }
+
+        // ---------------------------------------------------------------------
+        // clean up.
         sdsFree(s);
         vmFree(vm);
         vecFree(code);
