@@ -4,15 +4,29 @@
 
 #include "opdefs.h"
 
+// -----------------------------------------------------------------------------
+// helper macros.
+// -----------------------------------------------------------------------------
+
 #define _BIGENDIAN_PUT_UINT8(code, x)             \
         do {                                      \
                 vecPushBack((code), (code_t)(x)); \
+        } while (0)
+
+#define _BIGENDIAN_GET_UINT8(code, x) \
+        do {                          \
+                (x) = *(code);        \
         } while (0)
 
 #define _BIGENDIAN_PUT_UINT16(code, x)                   \
         do {                                             \
                 vecPushBack((code), (code_t)((x) >> 8)); \
                 vecPushBack((code), (code_t)(x));        \
+        } while (0)
+
+#define _BIGENDIAN_GET_UINT16(code, x)                            \
+        do {                                                      \
+                (x) = (code_t)((*(code)) << 8) + (*((code) + 1)); \
         } while (0)
 
 // -----------------------------------------------------------------------------
@@ -74,6 +88,7 @@ error_t opDump(sds_t* buf, code_t* code, int size, char* prefix)
         code_t          c;
         struct opdef_t* def;
         int             num_args;
+        unsigned int    arg;
 
         for (int i = 0; i < size; i++) {
                 // lookup the code and print the op name.
@@ -82,16 +97,20 @@ error_t opDump(sds_t* buf, code_t* code, int size, char* prefix)
                         return errEmitNote(
                             "failed to parse the opcode %c at %d", c, i);
                 }
-                sdsCatPrintf(buf, "%s%-15s\n", p, def->name);
+                sdsCatPrintf(buf, "%s%-15s", p, def->name);
 
                 // adjust the count i.
                 num_args = def->num_operands;
                 for (int j = 0; j < num_args; j++) {
                         switch (def->widths[i]) {
                         case 1:
+                                _BIGENDIAN_GET_UINT8(code + 1, arg);
+                                sdsCatPrintf(buf, "\t%d", arg);
                                 i += 1;
                                 break;
                         case 2:
+                                _BIGENDIAN_GET_UINT16(code + 1, arg);
+                                sdsCatPrintf(buf, "\t%d", arg);
                                 i += 2;
                                 break;
                         default:
@@ -101,6 +120,7 @@ error_t opDump(sds_t* buf, code_t* code, int size, char* prefix)
                                                       def->widths[i]);
                         }
                 }
+                sdsCatPrintf(buf, "\n");
         }
         return OK;
 }
