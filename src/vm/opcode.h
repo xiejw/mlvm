@@ -34,6 +34,6 @@ typedef char code_t;
 
 extern error_t opLookup(enum opcode_t c, _mut_ struct opdef_t** def);
 extern error_t opMake(_mut_ vec_t(code_t) * code, enum opcode_t c, ...);
-extern error_t opDump(sds_t* buf, code_t* code, int size, char* prefix);
+extern error_t opDump(_mut_ sds_t* buf, code_t* code, int size, char* prefix);
 
 #endif

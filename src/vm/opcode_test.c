@@ -68,10 +68,35 @@ static char* test_make_op()
         return NULL;
 }
 
+static char* test_op_dump()
+{
+        error_t err;
+        vec_t(code_t) v = vecNew();
+        sds_t s         = sdsEmpty();
+
+        err = opMake(&v, OP_PUSHBYTE, 123);
+        ASSERT_TRUE("no error", err == OK);
+
+        err = opMake(&v, OP_HALT);
+        ASSERT_TRUE("no error", err == OK);
+
+        err = opDump(&s, v, vecSize(v), /*prefix=*/"->");
+        ASSERT_TRUE("no error", err == OK);
+
+        char* expected_str = "->OP_PUSHBYTE    	123\n->OP_HALT        \n";
+        ASSERT_TRUE("dump match", 0 == strcmp(s, expected_str) ||
+                                      (printf("\n\ndump:\n%s\n", s), 0));
+
+        sdsFree(s);
+        vecFree(v);
+        return NULL;
+}
+
 char* run_vm_opcode_suite()
 {
         RUN_TEST(test_opcode_count);
         RUN_TEST(test_opcode_strs);
         RUN_TEST(test_make_op);
+        RUN_TEST(test_op_dump);
         return NULL;
 }

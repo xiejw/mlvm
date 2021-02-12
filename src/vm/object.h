@@ -42,6 +42,6 @@ extern struct obj_tensor_t *objTensorNew(int rank, int dims[]);
 extern void                 objTensorFree(struct obj_tensor_t *t);
 
 extern void objTensorAllocAndCopy(struct obj_tensor_t *, obj_float_t *);
-extern void objTensorDump(struct obj_tensor_t *, sds_t *);
+extern void objTensorDump(struct obj_tensor_t *, _mut_ sds_t *);
 
 #endif
