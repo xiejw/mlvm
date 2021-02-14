@@ -9,11 +9,11 @@
 typedef float obj_float_t;
 
 enum obj_kind_t {
-        OBJ_INT,
-        OBJ_FLOAT,
         OBJ_SHAPE,
         OBJ_TENSOR,
 };
+
+// add dtype
 
 struct obj_tensor_t {
         int          rank : 6;   // length of dims
