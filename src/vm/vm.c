@@ -8,9 +8,13 @@
 // -----------------------------------------------------------------------------
 // internal prototypes.
 // -----------------------------------------------------------------------------
-
 // #define STACK_INIT_SIZE 256
 #define MAX_NUM_HANDLES 128
+
+struct obj_tensor_bookmask_t {
+        struct obj_tensor_t* tensor;
+        int                  required_grad;
+};
 
 #define DEBUG_PRINT(x) printf(x)
 
@@ -31,13 +35,11 @@ struct vm_t* vmNew(void)
 {
         struct vm_t* vm = malloc(sizeof(struct vm_t));
         vm->size_used   = 0;
-        // struct obj_t* stack = malloc(STACK_INIT_SIZE * sizeof(struct obj_t));
-        // vm->stack           = stack;
-        // vm->base            = stack;
-        // vm->top             = stack;
-        // vm->handles = malloc(MAX_NUM_HANDLES * sizeof(struct obj_tensor_t*));
-        // memset(vm->handles, 0, MAX_NUM_HANDLES * sizeof(struct
-        // obj_tensor_t*));
+
+        vm->handles =
+            malloc(MAX_NUM_HANDLES * sizeof(struct obj_tensor_bookmask_t));
+        memset(vm->handles, 0,
+               MAX_NUM_HANDLES * sizeof(struct obj_tensor_bookmask_t));
         return vm;
 }
 
@@ -45,14 +47,25 @@ void vmFree(struct vm_t* vm)
 {
         if (vm == NULL) return;
 
-        // for (int i = 0; i < MAX_NUM_HANDLES; i++) {
-        //         objTensorFree(vm->handles[i]);
-        // }
+        // TODO(async_wait)
+        struct obj_tensor_bookmask_t* handles = vm->handles;
+        for (int i = 0; i < MAX_NUM_HANDLES; i++) {
+                objTensorFree(handles[i].tensor);
+        }
 
-        // free(vm->stack);
-        // free(vm->handles);
-        // free(vm);
-        // objGC();
+        free(vm->handles);
+        free(vm);
+}
+
+void vmReset(struct vm_t* vm)
+{
+        // TODO(async_wait)
+        struct obj_tensor_bookmask_t* handles = vm->handles;
+        for (int i = 0; i < MAX_NUM_HANDLES; i++) {
+                objTensorFree(handles[i].tensor);
+        }
+        memset(vm->handles, 0,
+               MAX_NUM_HANDLES * sizeof(struct obj_tensor_bookmask_t));
 }
 
 float vmComsumedSizeInMiB(struct vm_t* vm)

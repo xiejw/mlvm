@@ -16,13 +16,18 @@
 
 int main()
 {
-        //        struct vm_t* vm                     = vmNew();
+        struct vm_t* vm = vmNew();
         //        vec_t(code_t) code                  = vecNew();
         //        vec_t(struct obj_tensor_t*) outputs = vecNew();
-        //        sds_t s                             = sdsEmpty();
+        sds_t s = sdsEmpty();
         //
-        //        vm_handle_t handle = vmAllocTensor(vm, 1, (int[]){1});
-        //        assert(handle >= 0);
+        vm_handle_t handle = vmAllocTensor(vm, 3, (int[]){2, 3, 1});
+        assert(handle >= 0);
+
+        vmExecOp(vm, OP_FILL, handle, (struct vm_opt_fill_t){});
+        // print handle
+        vmReset();
+
         //
         //        //
         //        ---------------------------------------------------------------------
@@ -51,8 +56,8 @@ int main()
         //        //
         //        ---------------------------------------------------------------------
         //        // clean up.
-        //        sdsFree(s);
-        //        vmFree(vm);
+        sdsFree(s);
+        vmFree(vm);
         //        vecFree(code);
-        //        return 0;
+        return 0;
 }
