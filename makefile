@@ -39,8 +39,12 @@ ALL_TESTS       = ${VM_TEST}
 
 compile: ${BUILD} ${ALL_LIBS} ${EVA_LIB}
 
-# ${EVA_LIB}:
-# 	${MK} -C ${EVA_PATH} RELEASE=1 libeva
+${EVA_LIB}:
+	@test -s $@ || { echo "run 'make bootstrap' for libeva.a"; exit 1; }
+
+bootstrap:
+	${MK} -C ${EVA_PATH} RELEASE=1 libeva
+
 
 ${BUILD}/vm_%.o: ${SRC}/vm/%.c
 	${EVA_CC} -o $@ -c $<
