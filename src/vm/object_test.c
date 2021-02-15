@@ -5,7 +5,8 @@
 
 static char* test_tensor()
 {
-        struct obj_tensor_t* t = objTensorNew(2, (int[]){2, 3});
+        struct obj_tensor_t* t =
+            objTensorNew(OBJ_DTYPE_FLOAT32, 2, (int[]){2, 3});
         ASSERT_TRUE("no buf", t->buffer == NULL);
         ASSERT_TRUE("no owner", t->owned == 0);
         ASSERT_TRUE("rank", t->rank == 2);

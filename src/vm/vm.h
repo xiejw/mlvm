@@ -20,8 +20,13 @@ extern void         vmFree(struct vm_t* vm);
 
 extern vm_handle_t vmAllocTensor(struct vm_t* vm, int rank, int dims[]);
 extern error_t     vmDeallocTensor(struct vm_t* vm, vm_handle_t);
+extern void        vmReset(struct vm_t* vm);
 
-extern void vmReset(struct vm_t* vm);
+extern void vmWaitBarrier(struct vm_t* vm);
+
+extern void vmExecOp(struct vm_t*, code_t, int num_operands,
+                     vm_handle_t* operands, _mut_ vm_handle_t* output,
+                     void* option);
 
 // extern error_t     vmRead(struct vm_t* vm, vm_handle_t, obj_float_t* dst);
 // extern error_t     vmWrite(struct vm_t* vm, vm_handle_t, obj_float_t* src);

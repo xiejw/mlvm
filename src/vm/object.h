@@ -6,42 +6,29 @@
 
 #include "adt/sds.h"
 
-typedef float obj_float_t;
-
-enum obj_kind_t {
-        OBJ_SHAPE,
-        OBJ_TENSOR,
+enum obj_dtype_t {
+        OBJ_DTYPE_SHAPE,
+        OBJ_DTYPE_FLOAT32,
 };
-
-// add dtype
 
 struct obj_tensor_t {
-        int          rank : 6;   // length of dims
-        int          owned : 1;  // if 1, own the buffer.
-        int          mark : 1;   // gabage collector.
-        size_t       size;       // count of elements.
-        obj_float_t *buffer;     // point to internal buf for OBJ_SHAPE.
-        int          dims[];     // dimenions.
-};
-
-union obj_value_t {
-        int64_t              i;
-        obj_float_t          f;
-        struct obj_tensor_t *t;
-};
-
-struct obj_t {
-        enum obj_kind_t   kind;
-        union obj_value_t value;
+        int              rank : 6;   // length of dims
+        int              owned : 1;  // if 1, own the buffer.
+        int              mark : 1;   // gabage collector.
+        enum obj_dtype_t dtype : 3;  // data type.
+        size_t           size;       // count of elements.
+        void *           buffer;     // point to back data. NULL for shape.
+        int              dims[];     // dimenions.
 };
 
 extern struct obj_tensor_t *objShapeNew(int rank, int dims[]);
 extern void                 objShapeFree(struct obj_tensor_t *);
 
-extern struct obj_tensor_t *objTensorNew(int rank, int dims[]);
+extern struct obj_tensor_t *objTensorNew(enum obj_dtype_t dtype, int rank,
+                                         int dims[]);
 extern void                 objTensorFree(struct obj_tensor_t *t);
 
-extern void objTensorAllocAndCopy(struct obj_tensor_t *, obj_float_t *);
+extern void objTensorAllocAndCopy(struct obj_tensor_t *, void *);
 extern void objTensorDump(struct obj_tensor_t *, _mut_ sds_t *);
 
 #endif

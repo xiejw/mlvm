@@ -26,7 +26,7 @@ int main()
 
         vmExecOp(vm, OP_FILL, handle, (struct vm_opt_fill_t){});
         // print handle
-        vmReset();
+        vmReset(vm);
 
         //
         //        //

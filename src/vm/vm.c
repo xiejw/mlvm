@@ -47,7 +47,8 @@ void vmFree(struct vm_t* vm)
 {
         if (vm == NULL) return;
 
-        // TODO(async_wait)
+        vmWaitBarrier(vm);
+
         struct obj_tensor_bookmask_t* handles = vm->handles;
         for (int i = 0; i < MAX_NUM_HANDLES; i++) {
                 objTensorFree(handles[i].tensor);
@@ -59,7 +60,7 @@ void vmFree(struct vm_t* vm)
 
 void vmReset(struct vm_t* vm)
 {
-        // TODO(async_wait)
+        vmWaitBarrier(vm);
         struct obj_tensor_bookmask_t* handles = vm->handles;
         for (int i = 0; i < MAX_NUM_HANDLES; i++) {
                 objTensorFree(handles[i].tensor);
@@ -68,9 +69,16 @@ void vmReset(struct vm_t* vm)
                MAX_NUM_HANDLES * sizeof(struct obj_tensor_bookmask_t));
 }
 
+void vmWaitBarrier(struct vm_t* vm) {}
+
 float vmComsumedSizeInMiB(struct vm_t* vm)
 {
         return (float)(((double)vm->size_used) / 1024 / 1024);
+}
+
+void vmExecOp(struct vm_t* vm, code_t op, int num_operands,
+              vm_handle_t* operands, _mut_ vm_handle_t* output, void* option)
+{
 }
 
 // vm_handle_t vmAllocTensor(struct vm_t* vm, int rank, int dims[])
