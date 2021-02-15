@@ -28,7 +28,7 @@ static char* test_tensor()
         return NULL;
 }
 
-static char* test_tensor_dump_float()
+static char* test_tensor_dump_null()
 {
         sds_t                s = sdsEmpty();
         struct obj_tensor_t* t = objTensorNewFloat32(/*rank=2*/ 2, 2, 3);
@@ -41,9 +41,25 @@ static char* test_tensor_dump_float()
         return NULL;
 }
 
+static char* test_tensor_dump_float32()
+{
+        sds_t                s = sdsEmpty();
+        struct obj_tensor_t* t = objTensorNewFloat32(/*rank=*/1, 2);
+
+        objTensorAllocAndCopy(t, (float[]){1.2, 2.3});
+
+        objTensorDump(t, &s);
+        ASSERT_TRUE("dump", 0 == strcmp("[  1.200000, 2.300000,]", s));
+
+        sdsFree(s);
+        objTensorFree(t);
+        return NULL;
+}
+
 char* run_vm_object_suite()
 {
         RUN_TEST(test_tensor);
-        RUN_TEST(test_tensor_dump_float);
+        RUN_TEST(test_tensor_dump_null);
+        RUN_TEST(test_tensor_dump_float32);
         return NULL;
 }

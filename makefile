@@ -39,8 +39,8 @@ ALL_TESTS       = ${VM_TEST}
 
 compile: ${BUILD} ${ALL_LIBS} ${EVA_LIB}
 
-${EVA_LIB}:
-	${MK} -C ${EVA_PATH} RELEASE=1 libeva
+# ${EVA_LIB}:
+# 	${MK} -C ${EVA_PATH} RELEASE=1 libeva
 
 ${BUILD}/vm_%.o: ${SRC}/vm/%.c
 	${EVA_CC} -o $@ -c $<
