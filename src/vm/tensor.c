@@ -1,4 +1,4 @@
-#include "object.h"
+#include "tensor.h"
 
 #include <assert.h>
 #include <stdio.h>

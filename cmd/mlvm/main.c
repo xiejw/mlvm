@@ -1,8 +1,9 @@
 #include "stdio.h"
 
 #include "adt/sds.h"
-#include "vm/object.h"
+
 #include "vm/opcode.h"
+#include "vm/tensor.h"
 #include "vm/vm.h"
 
 #define CHECK(x, msg)                                              \

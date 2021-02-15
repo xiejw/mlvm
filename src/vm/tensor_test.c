@@ -4,7 +4,7 @@
 
 #include "adt/sds.h"
 
-#include "object.h"
+#include "tensor.h"
 
 static char* test_tensor()
 {

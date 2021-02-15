@@ -17,7 +17,7 @@ LDFLAGS         += ${EVA_LIB}
 # ------------------------------------------------------------------------------
 # libs.
 # ------------------------------------------------------------------------------
-VM_LIB          = ${BUILD}/vm_opcode.o ${BUILD}/vm_object.o \
+VM_LIB          = ${BUILD}/vm_opcode.o ${BUILD}/vm_tensor.o \
 		  ${BUILD}/vm_vm.o
 
 ALL_LIBS        = ${VM_LIB}
@@ -25,7 +25,7 @@ ALL_LIBS        = ${VM_LIB}
 # ------------------------------------------------------------------------------
 # tests.
 # ------------------------------------------------------------------------------
-VM_TEST_SUITE   = ${BUILD}/vm_opcode_test.o ${BUILD}/vm_object_test.o
+VM_TEST_SUITE   = ${BUILD}/vm_opcode_test.o ${BUILD}/vm_tensor_test.o
 VM_TEST_DEP     = ${VM_LIB}
 VM_TEST         = ${VM_TEST_SUITE} ${VM_TEST_DEP}
 

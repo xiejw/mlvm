@@ -5,8 +5,9 @@
 
 #include "adt/vec.h"
 #include "base/error.h"
-#include "object.h"
+
 #include "opcode.h"
+#include "tensor.h"
 
 typedef int vm_handle_t;  // zero means OOM.
 
