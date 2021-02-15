@@ -28,6 +28,9 @@ extern struct obj_tensor_t *objTensorNew(enum obj_dtype_t dtype, int rank,
                                          int dims[]);
 extern void                 objTensorFree(struct obj_tensor_t *t);
 
+#define objTensorNewFloat32(r, ...) \
+        objTensorNew(OBJ_DTYPE_FLOAT32, r, ((int[]){__VA_ARGS__}))
+
 extern void objTensorAllocAndCopy(struct obj_tensor_t *, void *);
 extern void objTensorDump(struct obj_tensor_t *, _mut_ sds_t *);
 

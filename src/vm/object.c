@@ -95,7 +95,11 @@ void objTensorAllocAndCopy(struct obj_tensor_t* t, void* buf)
 
 void objTensorDump(struct obj_tensor_t* t, sds_t* s)
 {
-        assert(t->buffer != NULL);
+        if (t->buffer == NULL) {  // fast path
+                sdsCatPrintf(s, "[ (NULL) ]");
+                return;
+        }
+
         sdsCatPrintf(s, "[ ");
         int size_to_print = t->size;
         if (size_to_print > 10) size_to_print = 10;
