@@ -34,7 +34,7 @@ int main()
         // Convenstion is for foo, a test suite fn run_foo_suite is called. For
         // customized case, use ADD_SUITE_NAME_AND_FN.
 
-        ADD_SUITE(vm_object);  // vm/object_test.c
+        ADD_SUITE(vm_tensor);  // vm/tensor_test.c
         ADD_SUITE(vm_opcode);  // vm/opcode_test.c
 
         // ---------------------------------------------------------------------------

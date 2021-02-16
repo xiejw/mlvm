@@ -6,7 +6,7 @@
 
 #include "tensor.h"
 
-static char* test_tensor()
+static char* test_new()
 {
         struct obj_tensor_t* t =
             objTensorNew(OBJ_DTYPE_FLOAT32, 2, (int[]){2, 3});
@@ -28,7 +28,7 @@ static char* test_tensor()
         return NULL;
 }
 
-static char* test_tensor_dump_null()
+static char* test_dump_null()
 {
         sds_t                s = sdsEmpty();
         struct obj_tensor_t* t = objTensorNewFloat32(/*rank=2*/ 2, 2, 3);
@@ -41,7 +41,7 @@ static char* test_tensor_dump_null()
         return NULL;
 }
 
-static char* test_tensor_dump_float32()
+static char* test_dump_float32()
 {
         sds_t                s = sdsEmpty();
         struct obj_tensor_t* t = objTensorNewFloat32(/*rank=*/1, 2);
@@ -56,10 +56,10 @@ static char* test_tensor_dump_float32()
         return NULL;
 }
 
-char* run_vm_object_suite()
+char* run_vm_tensor_suite()
 {
-        RUN_TEST(test_tensor);
-        RUN_TEST(test_tensor_dump_null);
-        RUN_TEST(test_tensor_dump_float32);
+        RUN_TEST(test_new);
+        RUN_TEST(test_dump_null);
+        RUN_TEST(test_dump_float32);
         return NULL;
 }
