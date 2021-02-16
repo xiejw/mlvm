@@ -84,6 +84,9 @@ void objTensorAllocAndCopy(struct obj_tensor_t* t, void* buf)
         case OBJ_DTYPE_FLOAT32:
                 size = t->size * sizeof(float);
                 break;
+        case OBJ_DTYPE_INT32:
+                size = t->size * sizeof(int32_t);
+                break;
         default:
                 errFatalAndExit("dtype %d is not supported yet.", t->dtype);
         }
@@ -100,7 +103,7 @@ void objTensorDump(struct obj_tensor_t* t, sds_t* s)
                 return;
         }
 
-        sdsCatPrintf(s, "[ ");
+        sdsCatPrintf(s, "[");
         int size_to_print = t->size;
         if (size_to_print > 10) size_to_print = 10;
 
@@ -109,6 +112,12 @@ void objTensorDump(struct obj_tensor_t* t, sds_t* s)
                 float* buf = t->buffer;
                 for (int i = 0; i < size_to_print; i++) {
                         sdsCatPrintf(s, " %f,", buf[i]);
+                }
+        } break;
+        case OBJ_DTYPE_INT32: {
+                int32_t* buf = t->buffer;
+                for (int i = 0; i < size_to_print; i++) {
+                        sdsCatPrintf(s, " %d,", buf[i]);
                 }
         } break;
         default:

@@ -9,6 +9,7 @@
 enum obj_dtype_t {
         OBJ_DTYPE_SHAPE,
         OBJ_DTYPE_FLOAT32,
+        OBJ_DTYPE_INT32,
 };
 
 struct obj_tensor_t {
@@ -33,5 +34,7 @@ extern void objTensorDump(struct obj_tensor_t *, _mut_ sds_t *);
 
 #define objTensorNewFloat32(r, ...) \
         objTensorNew(OBJ_DTYPE_FLOAT32, r, ((int[]){__VA_ARGS__}))
+#define objTensorNewInt32(r, ...) \
+        objTensorNew(OBJ_DTYPE_INT32, r, ((int[]){__VA_ARGS__}))
 
 #endif
