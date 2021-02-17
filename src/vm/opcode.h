@@ -1,7 +1,7 @@
 #ifndef OPCODE_H_
 #define OPCODE_H_
 
-#include "adt/sds.h"
+// #include "adt/sds.h"
 #include "adt/vec.h"
 #include "base/defs.h"
 
@@ -12,28 +12,36 @@
 // -----------------------------------------------------------------------------
 
 enum opcode_t {
-        OP_HALT,        // Halt machine.
-        OP_PUSHBYTE,    // Push byte to stack. Code byte in next pc.
-        OP_LOADGLOBAL,  // Get index from stack.
-        OP_RETURN,      // Move values to base. Code count in next pc.
-        OP_CFUNC,  // Call c func. Get func name from stack. Code return count
-                   // in next pc.
+        OP_FILL,
 };
 
 struct opdef_t {
         char* name;
+        int   allow_grad;  // if false, grad cannot flow.
         int   num_operands;
-        int   widths[OPCODE_MAX_NUM_OPERANDS];
+        int   num_outputs;
 };
 
-typedef char code_t;
+typedef int vm_handle_t;
+
+struct op_record_t {
+        enum opcode_t code;
+        vec_t(vm_handle_t) operands;
+        vec_t(vm_handle_t) outputs;
+        void* option;
+};
+
+struct op_tape_t {
+        vec_t(op_record_t*) records;
+};
 
 // -----------------------------------------------------------------------------
 // prototypes.
 // -----------------------------------------------------------------------------
 
-extern error_t opLookup(enum opcode_t c, _mut_ struct opdef_t** def);
-extern error_t opMake(_mut_ vec_t(code_t) * code, enum opcode_t c, ...);
-extern error_t opDump(_mut_ sds_t* buf, code_t* code, int size, char* prefix);
+// extern error_t opLookup(enum opcode_t c, _mut_ struct opdef_t** def);
+// extern error_t opMake(_mut_ vec_t(code_t) * code, enum opcode_t c, ...);
+// extern error_t opDump(_mut_ sds_t* buf, code_t* code, int size, char*
+// prefix);
 
 #endif

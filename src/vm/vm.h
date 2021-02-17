@@ -9,8 +9,6 @@
 #include "opcode.h"
 #include "tensor.h"
 
-typedef int vm_handle_t;  // zero means OOM.
-
 struct vm_t {
         size_t size_used;
         void*  handles;  // opaque.
