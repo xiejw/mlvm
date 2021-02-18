@@ -36,8 +36,8 @@ func NewShape(dims []int) *Shape {
 type DType int
 
 const (
-	Float32 DType = iota
-	Int32
+	F32 DType = iota
+	I32
 )
 
 // ----------------------------------------------------------------------------
@@ -50,20 +50,20 @@ type Tensor struct {
 	Data  interface{}
 }
 
-func NewTensorFloat32(dims []int, value []float32) *Tensor {
+func NewTensorF32(dims []int, value []float32) *Tensor {
 	shape := NewShape(dims)
 	if shape.Size != len(value) {
 		panic(fmt.Sprintf("dims have size %v but value has size %v", shape.Size, len(value)))
 	}
-	return &Tensor{shape, Float32, value}
+	return &Tensor{shape, F32, value}
 }
 
-func NewTensorInt32(dims []int, value []int32) *Tensor {
+func NewTensorI32(dims []int, value []int32) *Tensor {
 	shape := NewShape(dims)
 	if shape.Size != len(value) {
 		panic(fmt.Sprintf("dims have size %v but value has size %v", shape.Size, len(value)))
 	}
-	return &Tensor{shape, Int32, value}
+	return &Tensor{shape, I32, value}
 }
 
 // ----------------------------------------------------------------------------
@@ -101,12 +101,12 @@ func (t *Tensor) String() string {
 	buf.WriteString("Tensor(")
 	t.Shape.DebugString(&buf)
 	switch t.DType {
-	case Float32:
+	case F32:
 		buf.WriteString(" f32 ")
-		debugStringFloat32(&buf, t.Data.([]float32), defaultMaxNumberToPrintForArray)
-	case Int32:
+		debugStringF32(&buf, t.Data.([]float32), defaultMaxNumberToPrintForArray)
+	case I32:
 		buf.WriteString(" i32 ")
-		debugStringInt32(&buf, t.Data.([]int32), defaultMaxNumberToPrintForArray)
+		debugStringI32(&buf, t.Data.([]int32), defaultMaxNumberToPrintForArray)
 	default:
 		panic(fmt.Sprintf("unsupported dtype: %v", t.DType))
 	}
@@ -115,7 +115,7 @@ func (t *Tensor) String() string {
 }
 
 // formats as `[1.000, 2.000]`
-func debugStringFloat32(w io.Writer, array []float32, maxElementCountToPrint int) {
+func debugStringF32(w io.Writer, array []float32, maxElementCountToPrint int) {
 	size := len(array)
 
 	fmt.Fprintf(w, "[")
@@ -135,7 +135,7 @@ func debugStringFloat32(w io.Writer, array []float32, maxElementCountToPrint int
 }
 
 // formats as `[1, 2]`
-func debugStringInt32(w io.Writer, array []int32, maxElementCountToPrint int) {
+func debugStringI32(w io.Writer, array []int32, maxElementCountToPrint int) {
 	size := len(array)
 
 	fmt.Fprintf(w, "[")
