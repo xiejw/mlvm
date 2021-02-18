@@ -47,27 +47,22 @@ func TestTensorInt32(t *testing.T) {
 	}
 }
 
-func TestArrayStringFormatForMedium(t *testing.T) {
-	// Must be 10 elements.
-	te := NewTensorFloat32([]int{5,2}, []float32{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0})
-	assertTensorFmtEq(t, te, "Tensor(<5, 2> f32 [  1.000,  2.000,  3.000,  4.000,  5.000,  6.000,  7.000,  8.000,  9.000, 10.000])")
+func TestTensorI32Fmt(t *testing.T) {
+	te := NewTensorInt32([]int{2}, []int32{1, 2})
+	assertTensorFmtEq(t, te, "Tensor(<2> i32 [1, 2])")
 }
 
-// func TestArrayStringFormatForLong(t *testing.T) {
-// 	// Must be larger than 10 elements.
-// 	array := Array{[]float32{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0}}
-// 	asserArrayFmtEq(t, &array, "Array([  1.000,  2.000,  3.000,  4.000,  5.000,  6.000,  7.000,  8.000,  9.000, 10.000, ... ])")
-// }
-//
-// func TestArrayComformObjectInterface(t *testing.T) {
-// 	array := Array{[]float32{1.0, 2.0}}
-// 	var object Object
-// 	object = &array
-// 	_, ok := object.(*Array)
-// 	if !ok {
-// 		t.Errorf("cast should work.")
-// 	}
-// }
+func TestTensorF32FmtForMedium(t *testing.T) {
+	// Must be 10 elements.
+	te := NewTensorFloat32([]int{5, 2}, []float32{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0})
+	assertTensorFmtEq(t, te, "Tensor(<5, 2> f32 [1.000, 2.000, 3.000, 4.000, 5.000, 6.000, 7.000, 8.000, 9.000, 10.000])")
+}
+
+func TestTensorF32FmtForLong(t *testing.T) {
+	// Must be larger than 10 elements.
+	te := NewTensorFloat32([]int{6, 2}, []float32{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11, 12})
+	assertTensorFmtEq(t, te, "Tensor(<6, 2> f32 [1.000, 2.000, 3.000, 4.000, 5.000, 6.000, 7.000, 8.000, 9.000, 10.000, ... ])")
+}
 
 // -----------------------------------------------------------------------------
 // helper methods.
@@ -90,4 +85,3 @@ func assertTensorFmtEq(t *testing.T, te *Tensor, expected string) {
 		t.Fatalf("String Format mismatch. expected:\n`%v`\ngot:\n`%v`\n", expected, te.String())
 	}
 }
-

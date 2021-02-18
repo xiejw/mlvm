@@ -106,6 +106,7 @@ func (t *Tensor) String() string {
 		debugStringFloat32(&buf, t.Data.([]float32), defaultMaxNumberToPrintForArray)
 	case Int32:
 		buf.WriteString(" i32 ")
+		debugStringInt32(&buf, t.Data.([]int32), defaultMaxNumberToPrintForArray)
 	default:
 		panic(fmt.Sprintf("unsupported dtype: %v", t.DType))
 	}
@@ -113,13 +114,33 @@ func (t *Tensor) String() string {
 	return buf.String()
 }
 
-// formats as `[  1.000,  2.000]`
+// formats as `[1.000, 2.000]`
 func debugStringFloat32(w io.Writer, array []float32, maxElementCountToPrint int) {
 	size := len(array)
 
-	fmt.Fprintf(w, "[ ")
+	fmt.Fprintf(w, "[")
 	for i, v := range array {
-		fmt.Fprintf(w, "%6.3f", v)
+		fmt.Fprintf(w, "%.3f", v)
+
+		if i < size-1 {
+			fmt.Fprintf(w, ", ")
+		}
+
+		if i != size-1 && i >= maxElementCountToPrint {
+			fmt.Fprintf(w, "... ")
+			break
+		}
+	}
+	fmt.Fprintf(w, "]")
+}
+
+// formats as `[1, 2]`
+func debugStringInt32(w io.Writer, array []int32, maxElementCountToPrint int) {
+	size := len(array)
+
+	fmt.Fprintf(w, "[")
+	for i, v := range array {
+		fmt.Fprintf(w, "%v", v)
 
 		if i < size-1 {
 			fmt.Fprintf(w, ", ")
