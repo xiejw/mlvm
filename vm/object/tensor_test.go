@@ -5,18 +5,6 @@ import (
 	"testing"
 )
 
-// func assertRankEq(t *testing.T, shape *Shape, expectedRank int) {
-// 	if shape.Rank != expectedRank {
-// 		t.Fatalf("Rank mismatch.")
-// 	}
-// }
-//
-// func assertDimensionEq(t *testing.T, dim int, expectedSize int) {
-// 	if expectedSize != dim {
-// 		t.Fatalf("Size mismatch.")
-// 	}
-// }
-//
 // func asserArrayFmtEq(t *testing.T, array *Array, expected string) {
 // 	t.Helper()
 // 	if expected != array.String() {
@@ -24,24 +12,44 @@ import (
 // 	}
 // }
 
-func TestTensorFields(t *testing.T) {
+func TestShapeDimensions(t *testing.T) {
+	shape := NewShape([]int{2, 3})
+	assertRankEq(t, shape, 2)
+	assertDimensionEq(t, shape.Dims[0], 2)
+	assertDimensionEq(t, shape.Dims[1], 3)
+	if shape.Size != 6 {
+		t.Errorf("size mismatch.")
+	}
+}
+
+func TestTensorFloat32(t *testing.T) {
 	tensor := NewTensorFloat32([]int{2}, []float32{1.0, 2.0})
 
-	if !reflect.DeepEqual([]int{2}, tensor.Shape.Dims) {
+	if !reflect.DeepEqual(NewShape([]int{2}), tensor.Shape) {
 		t.Errorf("shape mismatch.")
 	}
 	if !reflect.DeepEqual([]float32{1.0, 2.0}, tensor.Data) {
 		t.Errorf("data mismatch.")
 	}
+	if Float32 != tensor.DType {
+		t.Errorf("dtype mismatch.")
+	}
 }
 
-// func TestShapeDimensions(t *testing.T) {
-// 	shape := NewShape([]int{2, 3})
-// 	assertRankEq(t, shape, 2)
-// 	assertDimensionEq(t, shape.Dims[0], 2)
-// 	assertDimensionEq(t, shape.Dims[1], 3)
-// }
-//
+func TestTensorInt32(t *testing.T) {
+	tensor := NewTensorInt32([]int{2}, []int32{1, 2})
+
+	if !reflect.DeepEqual(NewShape([]int{2}), tensor.Shape) {
+		t.Errorf("shape mismatch.")
+	}
+	if !reflect.DeepEqual([]int32{1, 2}, tensor.Data) {
+		t.Errorf("data mismatch.")
+	}
+	if Int32 != tensor.DType {
+		t.Errorf("dtype mismatch.")
+	}
+}
+
 // func TestArrayStringFormatForMedium(t *testing.T) {
 // 	// Must be 10 elements.
 // 	array := Array{[]float32{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0}}
@@ -63,3 +71,18 @@ func TestTensorFields(t *testing.T) {
 // 		t.Errorf("cast should work.")
 // 	}
 // }
+
+// -----------------------------------------------------------------------------
+// helper methods.
+// -----------------------------------------------------------------------------
+func assertRankEq(t *testing.T, shape *Shape, expectedRank int) {
+	if shape.Rank != expectedRank {
+		t.Fatalf("Rank mismatch.")
+	}
+}
+
+func assertDimensionEq(t *testing.T, dim int, expectedSize int) {
+	if expectedSize != dim {
+		t.Fatalf("Size mismatch.")
+	}
+}

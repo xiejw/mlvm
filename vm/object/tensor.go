@@ -28,8 +28,8 @@ func NewShape(dims []int) *Shape {
 type DType int
 
 const (
-	Int32 DType = iota
-	Float32
+	Float32 DType = iota
+	Int32
 )
 
 type Tensor struct {
