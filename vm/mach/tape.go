@@ -4,9 +4,6 @@ import (
 	"github.com/xiejw/mlvm/vm/ops"
 )
 
-type Handle struct {
-}
-
 type Record struct {
 	Op       ops.OpCode
 	Operands []*Handle

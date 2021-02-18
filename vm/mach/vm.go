@@ -5,7 +5,8 @@ import (
 )
 
 type VM struct {
-	Tape Tape
+	tape    Tape
+	handles []*Handle
 }
 
 func (vm *VM) ExecOp(op ops.OpCode, operands []*Handle, opt ops.Option) (*Handle, error) {
