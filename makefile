@@ -1,5 +1,5 @@
 REPO            = mlvm
-LIBS_DIR        = vm compiler
+LIBS_DIR        = vm
 CMD_DIR         = cmd
 BUILD_DIR       = .build
 
