@@ -50,15 +50,13 @@ func (de *DError) Error() string { return de.String() }
 func (de *DError) String() string {
 	var buf bytes.Buffer
 
-	fmt.Fprint(&buf, "Diagnosis Error:\n")
+	fmt.Fprint(&buf, "\nDiagnosis Error:\n")
 
-	indentLevel := ""
 	for index := len(de.notes) - 1; index >= 0; index-- {
-		fmt.Fprintf(&buf, "%v+-+ %v\n", indentLevel, de.notes[index])
-		indentLevel += "  "
+		fmt.Fprintf(&buf, "  > %v\n", de.notes[index])
 	}
 
-	fmt.Fprintf(&buf, "%v+-> %v\n", indentLevel, de.rootCause)
+	fmt.Fprintf(&buf, "  > %v\n", de.rootCause)
 	return buf.String()
 }
 
