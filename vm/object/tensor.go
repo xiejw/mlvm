@@ -1,10 +1,14 @@
 package object
 
 import (
-	//	"bytes"
+	"bytes"
 	"fmt"
-	//	"io"
+	"io"
 )
+
+// ----------------------------------------------------------------------------
+// shape.
+// ----------------------------------------------------------------------------
 
 type Shape struct {
 	Dims []int // Cannot have 0.
@@ -25,12 +29,20 @@ func NewShape(dims []int) *Shape {
 	}
 }
 
+// ----------------------------------------------------------------------------
+// dtype.
+// ----------------------------------------------------------------------------
+
 type DType int
 
 const (
 	Float32 DType = iota
 	Int32
 )
+
+// ----------------------------------------------------------------------------
+// tensor.
+// ----------------------------------------------------------------------------
 
 type Tensor struct {
 	Shape *Shape
@@ -55,70 +67,68 @@ func NewTensorInt32(dims []int, value []int32) *Tensor {
 }
 
 // ----------------------------------------------------------------------------
-// String Related.
+// string.
 // ----------------------------------------------------------------------------
 
-// const defaultMaxNumberToPrintForArray = 9
-//
-// // Formats as `Array([  1.000,  2.000])`
-// func (array *Array) String() string {
-// 	var buf bytes.Buffer
-// 	buf.WriteString("Array(")
-// 	array.DebugString(&buf, defaultMaxNumberToPrintForArray)
-// 	buf.WriteString(")")
-// 	return buf.String()
-// }
-//
-// // Formats as `[  1.000,  2.000]`
-// func (array *Array) DebugString(w io.Writer, maxElementCountToPrint int) {
-// 	size := len(array.Value)
-//
-// 	fmt.Fprintf(w, "[ ")
-// 	for i, v := range array.Value {
-// 		fmt.Fprintf(w, "%6.3f", v)
-//
-// 		if i < size-1 {
-// 			fmt.Fprintf(w, ", ")
-// 		}
-//
-// 		if i != size-1 && i >= maxElementCountToPrint {
-// 			fmt.Fprintf(w, "... ")
-// 			break
-// 		}
-// 	}
-// 	fmt.Fprintf(w, "]")
-// }
-//
-// // Formats as `Tensor(<@x(2), @y(3)> [  1.000,  2.000])`
-// func (t *Tensor) String() string {
-// 	var buf bytes.Buffer
-// 	buf.WriteString("Tensor(")
-// 	t.Shape.DebugString(&buf)
-// 	buf.WriteString(" ")
-// 	t.Array.DebugString(&buf, defaultMaxNumberToPrintForArray)
-// 	buf.WriteString(")")
-// 	return buf.String()
-// }
-//
-// // Formats as `Shape(<2, 3>)`.
-// func (shape *Shape) String() string {
-// 	var buf bytes.Buffer
-// 	fmt.Fprintf(&buf, "Shape(")
-// 	shape.DebugString(&buf)
-// 	fmt.Fprintf(&buf, ")")
-// 	return buf.String()
-// }
-//
-// // Formats as `<2, 3>`.
-// func (shape *Shape) DebugString(w io.Writer) {
-// 	rank := shape.Rank
-// 	finalIndex := int(rank - 1)
-// 	fmt.Fprintf(w, "<")
-// 	for i, dim := range shape.Dims {
-// 		fmt.Fprintf(w, "%v", dim)
-// 		if i != finalIndex {
-// 			fmt.Fprintf(w, ", ")
-// 		}
-// 	}
-// 	fmt.Fprintf(w, ">")
-// }
+// formats as `Shape(<2, 3>)`.
+func (shape *Shape) String() string {
+	var buf bytes.Buffer
+	fmt.Fprintf(&buf, "Shape(")
+	shape.DebugString(&buf)
+	fmt.Fprintf(&buf, ")")
+	return buf.String()
+}
+
+// formats as `<2, 3>`.
+func (shape *Shape) DebugString(w io.Writer) {
+	rank := shape.Rank
+	finalIndex := int(rank - 1)
+	fmt.Fprintf(w, "<")
+	for i, dim := range shape.Dims {
+		fmt.Fprintf(w, "%v", dim)
+		if i != finalIndex {
+			fmt.Fprintf(w, ", ")
+		}
+	}
+	fmt.Fprintf(w, ">")
+}
+
+const defaultMaxNumberToPrintForArray = 9
+
+// formats as `Tensor(<2, 3> f32 [  1.000,  2.000])`
+func (t *Tensor) String() string {
+	var buf bytes.Buffer
+	buf.WriteString("Tensor(")
+	t.Shape.DebugString(&buf)
+	switch t.DType {
+	case Float32:
+		buf.WriteString(" f32 ")
+		debugStringFloat32(&buf, t.Data.([]float32), defaultMaxNumberToPrintForArray)
+	case Int32:
+		buf.WriteString(" i32 ")
+	default:
+		panic(fmt.Sprintf("unsupported dtype: %v", t.DType))
+	}
+	buf.WriteString(")")
+	return buf.String()
+}
+
+// formats as `[  1.000,  2.000]`
+func debugStringFloat32(w io.Writer, array []float32, maxElementCountToPrint int) {
+	size := len(array)
+
+	fmt.Fprintf(w, "[ ")
+	for i, v := range array {
+		fmt.Fprintf(w, "%6.3f", v)
+
+		if i < size-1 {
+			fmt.Fprintf(w, ", ")
+		}
+
+		if i != size-1 && i >= maxElementCountToPrint {
+			fmt.Fprintf(w, "... ")
+			break
+		}
+	}
+	fmt.Fprintf(w, "]")
+}
