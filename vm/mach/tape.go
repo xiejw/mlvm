@@ -9,6 +9,7 @@ type Record struct {
 	Operands []*Handle
 	Outputs  []*Handle
 	Option   ops.Option
+	FLowGrad bool
 }
 
 type Tape struct {

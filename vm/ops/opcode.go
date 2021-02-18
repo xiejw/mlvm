@@ -3,7 +3,9 @@ package ops
 type OpCode int
 
 const (
-	OP_FILL OpCode = iota
+	OP_RNG OpCode = iota
+	OP_ADD
+	OP_REDUCE
 )
 
 type Option interface {
