@@ -1,4 +1,4 @@
-package rng
+package rngs
 
 const truncatedBound float32 = 2.0
 

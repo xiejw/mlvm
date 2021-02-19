@@ -1,4 +1,4 @@
-package rng
+package rngs
 
 type Rng interface {
 	Split() Rng

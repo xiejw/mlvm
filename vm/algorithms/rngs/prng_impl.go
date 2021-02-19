@@ -1,4 +1,4 @@
-package rng
+package rngs
 
 /*
  * The DotMix algorithrm.

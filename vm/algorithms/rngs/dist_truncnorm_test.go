@@ -1,4 +1,4 @@
-package rng
+package rngs
 
 import (
 	"testing"
