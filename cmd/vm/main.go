@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	// "log"
+
+	"github.com/xiejw/mlvm/vm/algorithms/rngs"
 	"github.com/xiejw/mlvm/vm/mach"
 	"github.com/xiejw/mlvm/vm/nn"
 	"github.com/xiejw/mlvm/vm/object"
@@ -10,10 +11,11 @@ import (
 
 func main() {
 	fmt.Printf("hello mlvm:\n")
+	rng := rngs.NewRng64(123)
 
 	vm := new(mach.VM)
 
-	w := nn.RngStdNormal(vm, object.F32, []int{2, 3})
+	w := nn.RngStdNormal(vm, rng, object.F32, []int{2, 3})
 	w.RequireGrad()
 
 	logits := nn.Mul(w, w)

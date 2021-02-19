@@ -1,12 +1,12 @@
 package nn
 
 import (
+	"github.com/xiejw/mlvm/vm/algorithms/rngs"
 	"github.com/xiejw/mlvm/vm/mach"
 	"github.com/xiejw/mlvm/vm/object"
-	_ "github.com/xiejw/mlvm/vm/ops"
 )
 
-func RngStdNormal(vm *mach.VM, dtype object.DType, dims []int) *mach.Handle {
+func RngStdNormal(vm *mach.VM, rng rngs.Rng, dtype object.DType, dims []int) *mach.Handle {
 	return nil
 }
 
