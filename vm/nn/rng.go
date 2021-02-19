@@ -22,11 +22,5 @@ func Sum(x *mach.Handle) *mach.Handle {
 	return nil
 }
 
-// func Zeros_(x *mach.Handle) {
-// }
-
-func ZerosGrad(x *mach.Handle) {
-}
-
 func Backward(x *mach.Handle) {
 }

@@ -16,6 +16,20 @@ func (h *Handle) RequireGrad() {
 	if h.requireGrad {
 		return
 	}
-	// alloc and add point
+
+	// TODO alloc and add point
 	h.requireGrad = true
+}
+
+func (h *Handle) ZerosGrad() {
+	// TODO fill . check requireGrad
+	return
+}
+
+func (h *Handle) Zeros() {
+	// TODO fill .
+}
+
+func (h *Handle) Grad() *object.Tensor {
+	return nil
 }
