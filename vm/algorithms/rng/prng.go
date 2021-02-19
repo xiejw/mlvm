@@ -9,23 +9,23 @@ const (
 
 // To persist the Png64, two uint64 is enough. as the gamma can be calculated from NextGammaSeed.
 // However, to trade for performance, 3 uint64 could be better.
-type Prng64 struct {
+type Rng64 struct {
 	Seed          uint64
 	Gamma         uint64
 	NextGammaSeed uint64
 }
 
-func NewPrng64(seed uint64) *Prng64 {
+func NewRng64(seed uint64) *Rng64 {
 	return newPrng64(seed, 0 /*gammaSeed*/)
 }
 
-func (prng *Prng64) Split() *Prng64 {
+func (prng *Rng64) Split() Rng {
 	seed := prng.advanceSeed()
 	gammaSeed := prng.NextGammaSeed
 	return newPrng64(seed, gammaSeed)
 }
 
-func newPrng64(seed uint64, gammaSeed uint64) *Prng64 {
+func newPrng64(seed uint64, gammaSeed uint64) *Rng64 {
 	if gammaSeed >= gammaPrime {
 		panic("gammaSeed passed to new prng is too large.")
 	}
@@ -36,7 +36,7 @@ func newPrng64(seed uint64, gammaSeed uint64) *Prng64 {
 		gammaSeed -= gammaPrime // Constrain the range for gamma seed.
 	}
 
-	prng := &Prng64{
+	prng := &Rng64{
 		Seed:          seed,
 		Gamma:         prngMix56(gammaSeed) + 13,
 		NextGammaSeed: gammaSeed,
@@ -45,10 +45,10 @@ func newPrng64(seed uint64, gammaSeed uint64) *Prng64 {
 
 }
 
-func (prng *Prng64) NextInt64() uint64 {
+func (prng *Rng64) NextUI64() uint64 {
 	return prngMix64(prng.advanceSeed())
 }
 
-func (prng *Prng64) NextFloat32() float32 {
-	return float32(prng.NextInt64()>>11) * doubleUlp
+func (prng *Rng64) NextF32() float32 {
+	return float32(prng.NextUI64()>>11) * doubleUlp
 }

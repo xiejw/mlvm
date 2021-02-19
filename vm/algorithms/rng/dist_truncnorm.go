@@ -2,12 +2,12 @@ package rng
 
 const truncatedBound float32 = 2.0
 
-func (prng *Prng64) TruncNorm(value []float32) {
+func TruncStdNorm(rng Rng, value []float32) {
 	size := len(value)
 
 	i := 0
 	for {
-		r1, r2 := prng.boxMullerTransform()
+		r1, r2 := BoxMullerTransform(rng)
 
 		if r1 <= truncatedBound && r1 >= -truncatedBound {
 			value[i] = r1

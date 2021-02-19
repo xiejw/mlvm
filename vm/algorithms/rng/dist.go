@@ -11,17 +11,17 @@ import (
 type DistType uint16
 
 const (
-	DistNorm DistType = iota
-	DistTruncNorm
+	DistStdNorm DistType = iota
+	DistTruncStdNorm
 )
 
-func FillDist(src *Prng64, distType DistType, value []float32) {
+func FillDist(rng Rng, distType DistType, value []float32) {
 	switch distType {
-	case DistNorm:
-		src.Norm(value)
+	case DistStdNorm:
+		StdNorm(rng, value)
 		return
-	case DistTruncNorm:
-		src.TruncNorm(value)
+	case DistTruncStdNorm:
+		TruncStdNorm(rng, value)
 		return
 	default:
 		panic(fmt.Sprintf("unknown distribution type: %v", distType))

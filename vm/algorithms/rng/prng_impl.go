@@ -69,7 +69,7 @@ func prngMix56(z uint64) uint64 {
 	return z ^ (z >> 33)
 }
 
-func (prng *Prng64) advanceSeed() uint64 {
+func (prng *Rng64) advanceSeed() uint64 {
 	// Advance one more coefficient at current level.
 	newSeed := prngUpdateSeed(prng.Seed, prng.Gamma)
 	prng.Seed = newSeed

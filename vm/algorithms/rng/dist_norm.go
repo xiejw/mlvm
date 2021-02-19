@@ -10,15 +10,13 @@ const (
 
 var eplisonFloat32 = math.Nextafter32(0, 1)
 
-/*
- * The implementation is based on Box–Muller transform.
- *
- * For each pair of [0, 1) uniform rn, a pair of independent, standard,
- * normally distributed rn are generated.
- */
-func (prng *Prng64) boxMullerTransform() (float32, float32) {
-	u1 := prng.NextFloat32()
-	u2 := prng.NextFloat32()
+// The implementation is based on Box–Muller transform.
+//
+// For each pair of [0, 1) uniform rn, a pair of independent, standard,
+// normally distributed rn are generated.
+func BoxMullerTransform(rng Rng) (float32, float32) {
+	u1 := rng.NextF32()
+	u2 := rng.NextF32()
 
 	if u1 < eplisonFloat32 {
 		u1 = eplisonFloat32
@@ -30,11 +28,11 @@ func (prng *Prng64) boxMullerTransform() (float32, float32) {
 	return float32(r * math.Cos(theta)), float32(r * math.Sin(theta))
 }
 
-func (prng *Prng64) Norm(value []float32) {
+func StdNorm(rng Rng, value []float32) {
 	size := len(value)
 
 	for i := 0; i < size; i += 2 {
-		r1, r2 := prng.boxMullerTransform()
+		r1, r2 := BoxMullerTransform(rng)
 
 		value[i] = r1
 		if i+1 < size {
