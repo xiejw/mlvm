@@ -1,4 +1,4 @@
-// Package rngs provides implementation of prng.
+// Package rngs provides implementation of rng.
 package rngs
 
 const (
@@ -7,7 +7,7 @@ const (
 	doubleUlp  float32 = 1.0 / (1 << 53)
 )
 
-// To persist the Png64, two uint64 is enough. as the gamma can be calculated from NextGammaSeed.
+// To persist the Rng64, two uint64 is enough. as the gamma can be calculated from NextGammaSeed.
 // However, to trade for performance, 3 uint64 could be better.
 type Rng64 struct {
 	Seed          uint64
@@ -16,16 +16,16 @@ type Rng64 struct {
 }
 
 func NewRng64(seed uint64) *Rng64 {
-	return newPrng64(seed, 0 /*gammaSeed*/)
+	return newRng64(seed, 0 /*gammaSeed*/)
 }
 
 func (prng *Rng64) Split() Rng {
 	seed := prng.advanceSeed()
 	gammaSeed := prng.NextGammaSeed
-	return newPrng64(seed, gammaSeed)
+	return newRng64(seed, gammaSeed)
 }
 
-func newPrng64(seed uint64, gammaSeed uint64) *Rng64 {
+func newRng64(seed uint64, gammaSeed uint64) *Rng64 {
 	if gammaSeed >= gammaPrime {
 		panic("gammaSeed passed to new prng is too large.")
 	}
@@ -38,17 +38,29 @@ func newPrng64(seed uint64, gammaSeed uint64) *Rng64 {
 
 	prng := &Rng64{
 		Seed:          seed,
-		Gamma:         prngMix56(gammaSeed) + 13,
+		Gamma:         rng64Mix56(gammaSeed) + 13,
 		NextGammaSeed: gammaSeed,
 	}
 	return prng
 
 }
 
+// -----------------------------------------------------------------------------
+// conform Rng interface.
+// -----------------------------------------------------------------------------
+
 func (prng *Rng64) NextUI64() uint64 {
-	return prngMix64(prng.advanceSeed())
+	return rng64Mix64(prng.advanceSeed())
 }
 
 func (prng *Rng64) NextF32() float32 {
 	return float32(prng.NextUI64()>>11) * doubleUlp
+}
+
+func (r *Rng64) Clone() Rng {
+	return &Rng64{
+		Seed:          r.Seed,
+		Gamma:         r.Gamma,
+		NextGammaSeed: r.NextGammaSeed,
+	}
 }

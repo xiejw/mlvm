@@ -30,7 +30,7 @@ type RngOption struct {
 
 func (o *RngOption) Clone() Option {
 	return &RngOption{
-		Rng:      o.Rng.CloneOnWrite(),
+		Rng:      o.Rng.Clone(),
 		DistType: o.DistType,
 	}
 }
