@@ -50,6 +50,29 @@ type Tensor struct {
 	Data  interface{}
 }
 
+func NewTensor(dtype DType, dims []int) *Tensor {
+	shape := NewShape(dims)
+	var te *Tensor
+
+	switch dtype {
+	case F32:
+		te = &Tensor{
+			Shape: shape,
+			DType: dtype,
+			Data:  make([]float32, shape.Size),
+		}
+	case I32:
+		te = &Tensor{
+			Shape: shape,
+			DType: dtype,
+			Data:  make([]int32, shape.Size),
+		}
+	default:
+		panic(fmt.Sprintf("unsupported dtype: %v", dtype))
+	}
+	return te
+}
+
 func NewTensorF32(dims []int, value []float32) *Tensor {
 	shape := NewShape(dims)
 	if shape.Size != len(value) {

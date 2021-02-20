@@ -1,5 +1,9 @@
 package ops
 
+import (
+	"github.com/xiejw/mlvm/vm/algorithms/rngs"
+)
+
 type OpCode int
 
 const (
@@ -9,5 +13,24 @@ const (
 )
 
 type Option interface {
-	option()
+	Clone() Option
+}
+
+type RngDistType int
+
+const (
+	RngDistStdNorm RngDistType = iota
+	RngDistTruncStdNorm
+)
+
+type RngOption struct {
+	Rng      rngs.Rng
+	DistType RngDistType
+}
+
+func (o *RngOption) Clone() Option {
+	return &RngOption{
+		Rng:      o.Rng.CloneOnWrite(),
+		DistType: o.DistType,
+	}
 }

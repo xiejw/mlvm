@@ -15,7 +15,7 @@ func main() {
 
 	vm := new(mach.VM)
 
-	w := nn.RngStdNormal(vm, rng, object.F32, []int{2, 3})
+	w := nn.RngStdNorm(vm, rng, object.F32, []int{2, 3})
 	w.RequireGrad()
 
 	logits := nn.Mul(w, w)
