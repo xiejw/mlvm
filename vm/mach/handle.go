@@ -1,6 +1,8 @@
 package mach
 
 import (
+	"fmt"
+
 	"github.com/xiejw/mlvm/vm/object"
 )
 
@@ -21,6 +23,10 @@ func (h *Handle) VM() *VM {
 func (h *Handle) RequireGrad() {
 	if h.requireGrad {
 		return
+	}
+
+	if !h.tensor.DType.AllowGrad() {
+		panic(fmt.Sprintf("dtype (%v) cannot have grad.", h.tensor.DType))
 	}
 
 	if h.record != nil {

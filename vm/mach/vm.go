@@ -150,6 +150,8 @@ func (vm *VM) validateFlowingGradient(op ops.OpCode, operands []*Handle) (bool, 
 		return false, nil
 	}
 
+	// TODO must F32 for flowGrad
+
 	switch op {
 	case ops.OP_RNG:
 		err := errors.New("op (%v) cannot flow grad.", op)
@@ -172,6 +174,7 @@ func (vm *VM) validateFlowingGradient(op ops.OpCode, operands []*Handle) (bool, 
 }
 
 func (vm *VM) validateSignature(op ops.OpCode, operands []*Handle, opt ops.Option) error {
+	// must be same F32
 	switch op {
 	case ops.OP_RNG:
 		if len(operands) != 1 {
@@ -185,3 +188,4 @@ func (vm *VM) validateSignature(op ops.OpCode, operands []*Handle, opt ops.Optio
 	}
 	return nil
 }
+
