@@ -72,4 +72,3 @@ func (prng *Rng64) NextUI64() uint64 {
 func (prng *Rng64) NextF32() float32 {
 	return float32(prng.NextUI64()>>11) * doubleUlp
 }
-
