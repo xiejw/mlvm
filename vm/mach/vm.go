@@ -1,6 +1,7 @@
 package mach
 
 import (
+	"github.com/xiejw/mlvm/vm/algorithms/rngs"
 	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/object"
 	"github.com/xiejw/mlvm/vm/ops"
@@ -55,12 +56,18 @@ func (vm *VM) WaitBarrier() {
 
 func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Handle, error) {
 	opt = opt.Clone() // make a copy
+
+	err := vm.validateSignature(op, operands, opt)
+	if err != nil {
+		return nil, errors.WrapNote(err, "failed to verify op signature during executing op.")
+	}
+
 	outputs, err := vm.allocateOutputs(op, operands, opt)
 	if err != nil {
 		return nil, errors.WrapNote(err, "failed to allocate outputs during executing op.")
 	}
 
-	err = vm.validateAndRecordOp(op, operands, outputs, opt)
+	err = vm.validateGradAndRecordOp(op, operands, outputs, opt)
 	if err != nil {
 		return nil, errors.WrapNote(err, "failed to validate and record during executing op.")
 	}
@@ -81,7 +88,7 @@ func (vm *VM) allocateOutputs(op ops.OpCode, operands []*Handle, opt ops.Option)
 	}
 }
 
-func (vm *VM) validateAndRecordOp(op ops.OpCode, operands []*Handle, outputs []*Handle, opt ops.Option) error {
+func (vm *VM) validateGradAndRecordOp(op ops.OpCode, operands []*Handle, outputs []*Handle, opt ops.Option) error {
 	flowGrad, err := vm.validateFlowingGradient(op, operands)
 	if err != nil {
 		return err
@@ -106,20 +113,23 @@ func (vm *VM) validateAndRecordOp(op ops.OpCode, operands []*Handle, outputs []*
 
 func (vm *VM) scheduleOp(op ops.OpCode, operands []*Handle, outputs []*Handle, opt ops.Option) error {
 	// TODO: use async
+
 	switch op {
-	//	case ops.OP_RNG:
-	//	func FillDist(rng Rng, distType DistType, value []float32) {
-	//		switch distType {
-	//		case DistStdNorm:
-	//			StdNorm(rng, value)
-	//			return
-	//		case DistTruncStdNorm:
-	//			TruncStdNorm(rng, value)
-	//			return
-	//		default:
-	//			panic(fmt.Sprintf("unknown distribution type: %v", distType))
-	//		}
-	//	}
+	case ops.OP_RNG:
+		// verified by validateSignature
+		value := operands[0].tensor.Data.([]float32)
+		rng_opt := opt.(*ops.RngOption)
+
+		switch rng_opt.DistType {
+		case ops.RngDistStdNorm:
+			rngs.StdNorm(rng_opt.Rng, value)
+			return nil
+		case ops.RngDistTruncStdNorm:
+			rngs.TruncStdNorm(rng_opt.Rng, value)
+			return nil
+		default:
+			return errors.New("unknown distribution type: %v", rng_opt.DistType)
+		}
 	default:
 		return errors.New("unsupported op (%v) for scheduling op", op)
 	}
@@ -157,4 +167,18 @@ func (vm *VM) validateFlowingGradient(op ops.OpCode, operands []*Handle) (bool, 
 	default:
 	}
 	return flowGrad, nil
+}
+
+func (vm *VM) validateSignature(op ops.OpCode, operands []*Handle, opt ops.Option) error {
+	switch op {
+	case ops.OP_RNG:
+		if len(operands) != 1 {
+			return errors.New("op (%v) expects only one operand; but got %v.", op, len(operands))
+		}
+		if operands[0].tensor.DType != object.F32 {
+			return errors.New("op (%v) expects F32; but got %v.", op, operands[0].tensor.DType)
+		}
+	default:
+	}
+	return nil
 }
