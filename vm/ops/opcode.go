@@ -16,6 +16,18 @@ const (
 	OP_REDUCE
 )
 
+func (o OpCode) String() string {
+	switch o {
+	case OP_RNG:
+		return "OP_RNG"
+	case OP_ADD:
+		return "OP_ADD"
+	case OP_REDUCE:
+		return "OP_REDUCE"
+	}
+	return "(unknown)"
+}
+
 // -----------------------------------------------------------------------------
 // option.
 // -----------------------------------------------------------------------------

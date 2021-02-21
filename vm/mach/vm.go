@@ -33,9 +33,9 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 		return nil, errors.WrapNote(err, "failed to allocate outputs during executing op.")
 	}
 
-	err = vm.recordOp(op, operands, outputs, opt)
+	err = vm.validateAndRecordOp(op, operands, outputs, opt)
 	if err != nil {
-		return nil, errors.WrapNote(err, "failed to record during executing op.")
+		return nil, errors.WrapNote(err, "failed to validate and record during executing op.")
 	}
 
 	err = vm.scheduleOp(op, operands, outputs, opt)
@@ -52,7 +52,9 @@ func (vm *VM) NewHandle(dtype object.DType, dims []int) (*Handle, error) {
 		tensor:      object.NewTensor(dtype, dims),
 		vm:          vm,
 		requireGrad: false,
+		flowGrad:    false,
 		gradHandle:  nil,
+		record:      nil,
 	}
 
 	vm.handles = append(vm.handles, handle)
@@ -68,19 +70,32 @@ func (vm *VM) allocateOutputs(op ops.OpCode, operands []*Handle, opt ops.Option)
 	}
 }
 
-func (vm *VM) recordOp(op ops.OpCode, operands []*Handle, outputs []*Handle, opt ops.Option) error {
-	// TODO flow grad.
-	vm.tape.Records = append(vm.tape.Records, &Record{
+func (vm *VM) validateAndRecordOp(op ops.OpCode, operands []*Handle, outputs []*Handle, opt ops.Option) error {
+
+	flowGrad, err := vm.validateFlowingGradient(op, operands)
+	if err != nil {
+		return err
+	}
+
+	r := &Record{
 		Op:       op,
 		Operands: operands,
 		Outputs:  outputs,
 		Option:   opt,
-		FLowGrad: false,
-	})
+		FLowGrad: flowGrad,
+	}
+
+	for _, o := range outputs {
+		o.record = r
+		o.flowGrad = flowGrad
+	}
+
+	vm.tape.Records = append(vm.tape.Records, r)
 	return nil
 }
 
 func (vm *VM) scheduleOp(op ops.OpCode, operands []*Handle, outputs []*Handle, opt ops.Option) error {
+	// TODO: use async
 	switch op {
 	//	case ops.OP_RNG:
 	//	func FillDist(rng Rng, distType DistType, value []float32) {
@@ -98,4 +113,38 @@ func (vm *VM) scheduleOp(op ops.OpCode, operands []*Handle, outputs []*Handle, o
 	default:
 		return errors.New("unsupported op (%v) for scheduling op", op)
 	}
+}
+
+func (vm *VM) validateFlowingGradient(op ops.OpCode, operands []*Handle) (bool, error) {
+	flowGrad := false
+	for _, opr := range operands {
+		if opr.flowGrad || opr.requireGrad {
+			flowGrad = true
+			break
+		}
+	}
+
+	if !flowGrad {
+		return false, nil
+	}
+
+	switch op {
+	case ops.OP_RNG:
+		err := errors.New("op (%v) cannot flow grad.", op)
+
+		// emits more info
+		for i, opr := range operands {
+			if opr.flowGrad {
+				err.EmitNote("the %v-th operand needs to flow grad.", i)
+				break
+			}
+			if opr.requireGrad {
+				err.EmitNote("the %v-th operand requires grad.", i)
+				break
+			}
+		}
+		return false, err
+	default:
+	}
+	return flowGrad, nil
 }
