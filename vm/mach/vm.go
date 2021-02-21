@@ -58,6 +58,11 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 		opt = opt.Clone() // make a copy
 	}
 
+	// ---------------------------------------------------------------------------
+	// deduce output dtypes and shapes.
+	//
+	// In addition, validation will be perfomed in op.OutputTypes
+	// ---------------------------------------------------------------------------
 	operand_tensors := make([]*object.Tensor, 0, len(operands))
 	for _, opr := range operands {
 		operand_tensors = append(operand_tensors, opr.tensor)
@@ -80,11 +85,16 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 		}
 	}
 
+	// ---------------------------------------------------------------------------
+	// deduce gradients.
+	// ---------------------------------------------------------------------------
 	err = vm.validateGradAndRecordOp(op, operands, outputs, opt)
 	if err != nil {
-		return nil, errors.WrapNote(err, "failed to validate and record during executing op.")
+		return nil, errors.WrapNote(err, "failed to validate grads and record op during executing op.")
 	}
 
+	// ---------------------------------------------------------------------------
+	// schedule op.
 	err = vm.scheduleOp(op, operands, outputs, opt)
 	if err != nil {
 		return nil, errors.WrapNote(err, "failed to schedule during executing op.")

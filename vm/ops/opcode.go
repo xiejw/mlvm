@@ -47,6 +47,10 @@ func (op OpCode) OutputTypes(operands []*object.Tensor, opt Option) (
 			err = errors.New("op (%v) expects F32; but got %v.", op, operands[0].DType)
 			return
 		}
+		if _, ok := opt.(*RngOption); !ok {
+			err = errors.New("op (%v) expects RngOption; but got %v.", op, opt)
+			return
+		}
 	default:
 		err = errors.New("unsupported op (%v) for signature validation.", op)
 	}
