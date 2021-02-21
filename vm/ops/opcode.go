@@ -1,6 +1,8 @@
 package ops
 
 import (
+	"reflect"
+
 	"github.com/xiejw/mlvm/vm/algorithms/rngs"
 	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/object"
@@ -51,6 +53,34 @@ func (op OpCode) OutputTypes(operands []*object.Tensor, opt Option) (
 			err = errors.New("op (%v) expects RngOption; but got %v.", op, opt)
 			return
 		}
+
+	case OP_MUL, OP_ADD:
+
+		if len(operands) != 2 {
+			err = errors.New("op (%v) expects two operands; but got %v.", op, len(operands))
+			return
+		}
+		if operands[0].DType != object.F32 {
+			err = errors.New("op (%v) expects F32 for operand; but got %v.", op, operands[0].DType)
+			return
+		}
+		if operands[1].DType != object.F32 {
+			err = errors.New("op (%v) expects F32 for operand; but got %v.", op, operands[1].DType)
+			return
+		}
+		if opt != nil {
+			err = errors.New("op (%v) expects nil Option; but got %v.", op, opt)
+			return
+		}
+
+		if !reflect.DeepEqual(operands[0].Shape, operands[1].Shape) {
+			err = errors.New("op (%v) operands' shape mismatch.")
+			return
+		}
+
+		output_dtypes = append(output_dtypes, object.F32)
+		output_shapes = append(output_shapes, operands[0].Shape.Dims)
+
 	default:
 		err = errors.New("unsupported op (%v) for signature validation.", op)
 	}
