@@ -2,6 +2,7 @@ package ops
 
 import (
 	"github.com/xiejw/mlvm/vm/algorithms/rngs"
+	"github.com/xiejw/mlvm/vm/object"
 )
 
 // -----------------------------------------------------------------------------
@@ -29,6 +30,10 @@ func (o OpCode) String() string {
 		return "OP_REDUCE"
 	}
 	return "(unknown)"
+}
+
+func (o OpCode) OutputTypes(operands []*object.Tensor) ([]object.DType, [][]int, error) {
+	return nil, nil, nil
 }
 
 // -----------------------------------------------------------------------------

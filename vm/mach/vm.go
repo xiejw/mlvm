@@ -188,4 +188,3 @@ func (vm *VM) validateSignature(op ops.OpCode, operands []*Handle, opt ops.Optio
 	}
 	return nil
 }
-
