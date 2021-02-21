@@ -55,7 +55,9 @@ func (vm *VM) WaitBarrier() {
 // -----------------------------------------------------------------------------
 
 func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Handle, error) {
-	opt = opt.Clone() // make a copy
+	if opt != nil {
+		opt = opt.Clone() // make a copy
+	}
 
 	err := vm.validateSignature(op, operands, opt)
 	if err != nil {
@@ -179,6 +181,7 @@ func (vm *VM) validateSignature(op ops.OpCode, operands []*Handle, opt ops.Optio
 			return errors.New("op (%v) expects F32; but got %v.", op, operands[0].tensor.DType)
 		}
 	default:
+		return errors.New("unsupported op (%v) for signature validation.", op)
 	}
 	return nil
 }

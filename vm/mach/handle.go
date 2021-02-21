@@ -14,6 +14,10 @@ type Handle struct {
 	record      *Record // record produces this handle.
 }
 
+func (h *Handle) VM() *VM {
+	return h.vm
+}
+
 func (h *Handle) RequireGrad() {
 	if h.requireGrad {
 		return

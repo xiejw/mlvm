@@ -34,7 +34,14 @@ func Add(lhs, rhs *mach.Handle) *mach.Handle {
 }
 
 func Mul(lhs, rhs *mach.Handle) *mach.Handle {
-	return nil
+	operands := []*mach.Handle{lhs, rhs}
+	vm := assertSameVM(operands)
+	handle, err := vm.ExecOp(ops.OP_MUL, operands, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	return handle
 }
 
 func Sum(x *mach.Handle) *mach.Handle {
@@ -42,4 +49,17 @@ func Sum(x *mach.Handle) *mach.Handle {
 }
 
 func Backward(x *mach.Handle) {
+}
+
+// --
+func assertSameVM(operands []*mach.Handle) *mach.VM {
+	switch len(operands) {
+	case 0:
+		panic("expected non-emtpy operands slice passed in.")
+	case 1:
+		return operands[0].VM()
+	default:
+		vm := operands[0].VM()
+		return vm
+	}
 }

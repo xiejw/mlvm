@@ -13,6 +13,7 @@ type OpCode int
 const (
 	OP_RNG OpCode = iota
 	OP_ADD
+	OP_MUL
 	OP_REDUCE
 )
 
@@ -22,6 +23,8 @@ func (o OpCode) String() string {
 		return "OP_RNG"
 	case OP_ADD:
 		return "OP_ADD"
+	case OP_MUL:
+		return "OP_MUL"
 	case OP_REDUCE:
 		return "OP_REDUCE"
 	}
