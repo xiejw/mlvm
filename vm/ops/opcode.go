@@ -2,6 +2,7 @@ package ops
 
 import (
 	"github.com/xiejw/mlvm/vm/algorithms/rngs"
+	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/object"
 )
 
@@ -32,8 +33,24 @@ func (o OpCode) String() string {
 	return "(unknown)"
 }
 
-func (o OpCode) OutputTypes(operands []*object.Tensor) ([]object.DType, [][]int, error) {
-	return nil, nil, nil
+func (op OpCode) OutputTypes(operands []*object.Tensor, opt Option) (
+	output_dtypes []object.DType, output_shapes [][]int, err error,
+) {
+
+	switch op {
+	case OP_RNG:
+		if len(operands) != 1 {
+			err = errors.New("op (%v) expects only one operand; but got %v.", op, len(operands))
+			return
+		}
+		if operands[0].DType != object.F32 {
+			err = errors.New("op (%v) expects F32; but got %v.", op, operands[0].DType)
+			return
+		}
+	default:
+		err = errors.New("unsupported op (%v) for signature validation.", op)
+	}
+	return
 }
 
 // -----------------------------------------------------------------------------

@@ -17,7 +17,6 @@ type VM struct {
 // -----------------------------------------------------------------------------
 
 func (vm *VM) NewHandle(dtype object.DType, dims []int) (*Handle, error) {
-
 	handle := &Handle{
 		id:          len(vm.handles),
 		tensor:      object.NewTensor(dtype, dims),
@@ -59,14 +58,26 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 		opt = opt.Clone() // make a copy
 	}
 
-	err := vm.validateSignature(op, operands, opt)
+	operand_tensors := make([]*object.Tensor, 0, len(operands))
+	for _, opr := range operands {
+		operand_tensors = append(operand_tensors, opr.tensor)
+	}
+
+	output_dtypes, output_shapes, err := op.OutputTypes(operand_tensors, opt)
 	if err != nil {
 		return nil, errors.WrapNote(err, "failed to verify op signature during executing op.")
 	}
 
-	outputs, err := vm.allocateOutputs(op, operands, opt)
-	if err != nil {
-		return nil, errors.WrapNote(err, "failed to allocate outputs during executing op.")
+	var outputs []*Handle
+	if len(output_dtypes) > 0 {
+		outputs = make([]*Handle, 0, len(output_dtypes))
+		for i := 0; i < len(output_dtypes); i++ {
+			o, err := vm.NewHandle(output_dtypes[i], output_shapes[i])
+			if err != nil {
+				return nil, errors.WrapNote(err, "failed to allocate output space during executing op.")
+			}
+			outputs = append(outputs, o)
+		}
 	}
 
 	err = vm.validateGradAndRecordOp(op, operands, outputs, opt)
@@ -79,15 +90,6 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 		return nil, errors.WrapNote(err, "failed to schedule during executing op.")
 	}
 	return outputs, nil
-}
-
-func (vm *VM) allocateOutputs(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Handle, error) {
-	switch op {
-	case ops.OP_RNG:
-		return nil, nil
-	default:
-		return nil, errors.New("unsupported op (%v) for allocating outputs", op)
-	}
 }
 
 func (vm *VM) validateGradAndRecordOp(op ops.OpCode, operands []*Handle, outputs []*Handle, opt ops.Option) error {
@@ -171,20 +173,4 @@ func (vm *VM) validateFlowingGradient(op ops.OpCode, operands []*Handle) (bool, 
 	default:
 	}
 	return flowGrad, nil
-}
-
-func (vm *VM) validateSignature(op ops.OpCode, operands []*Handle, opt ops.Option) error {
-	// must be same F32
-	switch op {
-	case ops.OP_RNG:
-		if len(operands) != 1 {
-			return errors.New("op (%v) expects only one operand; but got %v.", op, len(operands))
-		}
-		if operands[0].tensor.DType != object.F32 {
-			return errors.New("op (%v) expects F32; but got %v.", op, operands[0].tensor.DType)
-		}
-	default:
-		return errors.New("unsupported op (%v) for signature validation.", op)
-	}
-	return nil
 }
