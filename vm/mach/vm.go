@@ -11,6 +11,26 @@ type VM struct {
 	handles []*Handle
 }
 
+// -----------------------------------------------------------------------------
+// public apis.
+// -----------------------------------------------------------------------------
+
+func (vm *VM) NewHandle(dtype object.DType, dims []int) (*Handle, error) {
+
+	handle := &Handle{
+		id:          len(vm.handles),
+		tensor:      object.NewTensor(dtype, dims),
+		vm:          vm,
+		requireGrad: false,
+		flowGrad:    false,
+		gradHandle:  nil,
+		record:      nil,
+	}
+
+	vm.handles = append(vm.handles, handle)
+	return handle, nil
+}
+
 func (vm *VM) ExecOp(op ops.OpCode, operands []*Handle, opt ops.Option) (*Handle, error) {
 	outputs, err := vm.execOp(op, operands, opt)
 	if err != nil {
@@ -25,6 +45,13 @@ func (vm *VM) ExecOp(op ops.OpCode, operands []*Handle, opt ops.Option) (*Handle
 		return nil, errors.New("expect returning no more than one output for op (%v), but got: %v", op, len(outputs))
 	}
 }
+
+func (vm *VM) WaitBarrier() {
+}
+
+// -----------------------------------------------------------------------------
+// helper methods.
+// -----------------------------------------------------------------------------
 
 func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Handle, error) {
 	opt = opt.Clone() // make a copy
@@ -45,22 +72,6 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 	return outputs, nil
 }
 
-func (vm *VM) NewHandle(dtype object.DType, dims []int) (*Handle, error) {
-
-	handle := &Handle{
-		id:          len(vm.handles),
-		tensor:      object.NewTensor(dtype, dims),
-		vm:          vm,
-		requireGrad: false,
-		flowGrad:    false,
-		gradHandle:  nil,
-		record:      nil,
-	}
-
-	vm.handles = append(vm.handles, handle)
-	return handle, nil
-}
-
 func (vm *VM) allocateOutputs(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Handle, error) {
 	switch op {
 	case ops.OP_RNG:
@@ -71,7 +82,6 @@ func (vm *VM) allocateOutputs(op ops.OpCode, operands []*Handle, opt ops.Option)
 }
 
 func (vm *VM) validateAndRecordOp(op ops.OpCode, operands []*Handle, outputs []*Handle, opt ops.Option) error {
-
 	flowGrad, err := vm.validateFlowingGradient(op, operands)
 	if err != nil {
 		return err

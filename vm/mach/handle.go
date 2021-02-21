@@ -27,8 +27,13 @@ func (h *Handle) RequireGrad() {
 		panic("handle with flowGrad cannot have grad.")
 	}
 
-	// TODO alloc and add point
+	handle, err := h.vm.NewHandle(h.tensor.DType, h.tensor.Shape.Dims)
+	if err != nil {
+		panic("failed to alloc space for grad.")
+	}
+
 	h.requireGrad = true
+	h.gradHandle = handle
 }
 
 func (h *Handle) ZerosGrad() {
@@ -41,5 +46,9 @@ func (h *Handle) Zeros() {
 }
 
 func (h *Handle) Grad() *object.Tensor {
-	return nil
+	if !h.requireGrad {
+		panic("grad does not exist.")
+	}
+	h.vm.WaitBarrier()
+	return h.gradHandle.tensor
 }
