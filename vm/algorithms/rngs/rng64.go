@@ -15,6 +15,10 @@ type Rng64 struct {
 	NextGammaSeed uint64
 }
 
+// -----------------------------------------------------------------------------
+// constructor.
+// -----------------------------------------------------------------------------
+
 func NewRng64(seed uint64) *Rng64 {
 	return newRng64(seed, 0 /*gammaSeed*/)
 }
@@ -24,6 +28,18 @@ func (prng *Rng64) Split() Rng {
 	gammaSeed := prng.NextGammaSeed
 	return newRng64(seed, gammaSeed)
 }
+
+func (r *Rng64) Clone() Rng {
+	return &Rng64{
+		Seed:          r.Seed,
+		Gamma:         r.Gamma,
+		NextGammaSeed: r.NextGammaSeed,
+	}
+}
+
+// -----------------------------------------------------------------------------
+// internal constructor.
+// -----------------------------------------------------------------------------
 
 func newRng64(seed uint64, gammaSeed uint64) *Rng64 {
 	if gammaSeed >= gammaPrime {
@@ -57,10 +73,3 @@ func (prng *Rng64) NextF32() float32 {
 	return float32(prng.NextUI64()>>11) * doubleUlp
 }
 
-func (r *Rng64) Clone() Rng {
-	return &Rng64{
-		Seed:          r.Seed,
-		Gamma:         r.Gamma,
-		NextGammaSeed: r.NextGammaSeed,
-	}
-}

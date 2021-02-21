@@ -10,10 +10,15 @@ const (
 
 var eplisonFloat32 = math.Nextafter32(0, 1)
 
+// -----------------------------------------------------------------------------
+// design:
+//
 // The implementation is based on Box–Muller transform.
 //
 // For each pair of [0, 1) uniform rn, a pair of independent, standard,
 // normally distributed rn are generated.
+// -----------------------------------------------------------------------------
+
 func BoxMullerTransform(rng Rng) (float32, float32) {
 	u1 := rng.NextF32()
 	u2 := rng.NextF32()

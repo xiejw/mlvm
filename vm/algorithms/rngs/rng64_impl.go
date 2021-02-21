@@ -1,48 +1,48 @@
 package rngs
 
-/*
- * The DotMix algorithrm.
- * ----------------------
- *
- * 1. At each level in the pedigee, the coefficient `gamma` is used to advance
- *    the seed.
- *
- * 2. The addition-modulo, for the Dot in DotMix, is based on
- *
- *        George = 2^64 + 13L.
- *
- *    This is implemented as `rng64UpdateSeed`. In particular,
- *
- *   a. Any new seed, after modulo, falls in [0, 2^64) is accepted.
- *   b. For [2^64, 2^64+13L), will try again. To avoid a loop, `gamma`, the
- *      coefficient, is constructed to be larger than 13L,
- *
- * 3. The Mix in DotMix is implemented in `rng64Mix64`.
- *
- *
- * 2. To avoid a fixed-size coefficient table.
- * Use coefficient to generate prng for coefficient.
- *
- *
- * Generating random coefficient.
- * ------------------------------
- * By using PRNG to generate coefficient for different level, a fixed table can
- * be void avoided. The algorithrm is still based on DotMix, but with a
- * length-1 pedigee.
- *
- * 1. The `gamma` coefficient for generating `gamma` is `gammaGamma`.
- *
- * 2. To improve the speed of `rng64UpdateSeed`, a small Prime number (for
- *    modulo) is used for generating `gamma`, called Percy. It is the
- *    `gammaPrime` in the code below.
- *
- *    With that, the `rng64UpdateSeed` has high chance take the first branch.
- *
- * 3. This gamma seed is then mixed by `prngMix56` to be _truely_ random.
- *
- * 4. The generated `gamma` should be no smaller than 13L. See DotMix
- *    algorithrm.
- */
+// -----------------------------------------------------------------------------
+// The DotMix algorithrm.
+// ----------------------
+//
+// 1. At each level in the pedigee, the coefficient `gamma` is used to advance
+//    the seed.
+//
+// 2. The addition-modulo, for the Dot in DotMix, is based on
+//
+//        George = 2^64 + 13L.
+//
+//    This is implemented as `rng64UpdateSeed`. In particular,
+//
+//   a. Any new seed, after modulo, falls in [0, 2^64) is accepted.
+//   b. For [2^64, 2^64+13L), will try again. To avoid a loop, `gamma`, the
+//      coefficient, is constructed to be larger than 13L,
+//
+// 3. The Mix in DotMix is implemented in `rng64Mix64`.
+//
+//
+// 2. To avoid a fixed-size coefficient table.
+// Use coefficient to generate prng for coefficient.
+//
+//
+// Generating random coefficient.
+// ------------------------------
+// By using PRNG to generate coefficient for different level, a fixed table can
+// be void avoided. The algorithrm is still based on DotMix, but with a
+// length-1 pedigee.
+//
+// 1. The `gamma` coefficient for generating `gamma` is `gammaGamma`.
+//
+// 2. To improve the speed of `rng64UpdateSeed`, a small Prime number (for
+//    modulo) is used for generating `gamma`, called Percy. It is the
+//    `gammaPrime` in the code below.
+//
+//    With that, the `rng64UpdateSeed` has high chance take the first branch.
+//
+// 3. This gamma seed is then mixed by `prngMix56` to be _truely_ random.
+//
+// 4. The generated `gamma` should be no smaller than 13L. See DotMix
+//    algorithrm.
+// -----------------------------------------------------------------------------
 
 func rng64UpdateSeed(seed uint64, gamma uint64) uint64 {
 	p := seed + gamma
