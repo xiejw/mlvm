@@ -86,7 +86,7 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 	}
 
 	// ---------------------------------------------------------------------------
-	// deduce gradients.
+	// deduce allowing gradients.
 	// ---------------------------------------------------------------------------
 	flowGrad := vm.shouldFlowGrad(op, operands)
 
@@ -100,9 +100,9 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 	// ---------------------------------------------------------------------------
 	// recode op and gradent dag.
 	// ---------------------------------------------------------------------------
-	err = vm.recordOp(op, operands, outputs, opt, flowGrad)
+	err = vm.tape.RecordOpAndGradDAG(op, operands, outputs, opt, flowGrad)
 	if err != nil {
-		return nil, errors.WrapNote(err, "failed to record op during executing op.")
+		return nil, errors.WrapNote(err, "failed to record op and grad DAG during executing op.")
 	}
 
 	// ---------------------------------------------------------------------------
@@ -121,26 +121,6 @@ func (vm *VM) shouldFlowGrad(op ops.OpCode, operands []*Handle) bool {
 		}
 	}
 	return false
-}
-
-func (vm *VM) recordOp(
-	op ops.OpCode, operands []*Handle, outputs []*Handle, opt ops.Option, flowGrad bool,
-) error {
-	r := &Record{
-		Op:       op,
-		Operands: operands,
-		Outputs:  outputs,
-		Option:   opt,
-		FLowGrad: flowGrad,
-	}
-
-	for _, o := range outputs {
-		o.record = r
-		o.flowGrad = flowGrad
-	}
-
-	vm.tape.Records = append(vm.tape.Records, r)
-	return nil
 }
 
 func (vm *VM) scheduleOp(op ops.OpCode, operands []*Handle, outputs []*Handle, opt ops.Option) error {

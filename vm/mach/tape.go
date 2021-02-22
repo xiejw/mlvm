@@ -15,3 +15,23 @@ type Record struct {
 type Tape struct {
 	Records []*Record
 }
+
+func (t *Tape) RecordOpAndGradDAG(
+	op ops.OpCode, operands []*Handle, outputs []*Handle, opt ops.Option, flowGrad bool,
+) error {
+	r := &Record{
+		Op:       op,
+		Operands: operands,
+		Outputs:  outputs,
+		Option:   opt,
+		FLowGrad: flowGrad,
+	}
+
+	for _, o := range outputs {
+		o.record = r
+		o.flowGrad = flowGrad
+	}
+
+	t.Records = append(t.Records, r)
+	return nil
+}
