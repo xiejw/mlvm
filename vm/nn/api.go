@@ -30,7 +30,14 @@ func Ones(vm *mach.VM, dtype object.DType, dims []int) *mach.Handle {
 }
 
 func Add(lhs, rhs *mach.Handle) *mach.Handle {
-	return nil
+	operands := []*mach.Handle{lhs, rhs}
+	vm := assertSameVM(operands)
+	handle, err := vm.ExecOp(ops.OP_ADD, operands, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	return handle
 }
 
 func Mul(lhs, rhs *mach.Handle) *mach.Handle {
@@ -45,13 +52,22 @@ func Mul(lhs, rhs *mach.Handle) *mach.Handle {
 }
 
 func Sum(x *mach.Handle) *mach.Handle {
-	return nil
+	operands := []*mach.Handle{x}
+	vm := assertSameVM(operands)
+	handle, err := vm.ExecOp(ops.OP_SUM, operands, &ops.SumOption{x.Shape().Dims})
+	if err != nil {
+		panic(err)
+	}
+
+	return handle
 }
 
 func Backward(x *mach.Handle) {
 }
 
-// --
+// -----------------------------------------------------------------------------
+// helper methods.
+// -----------------------------------------------------------------------------
 func assertSameVM(operands []*mach.Handle) *mach.VM {
 	switch len(operands) {
 	case 0:

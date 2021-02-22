@@ -20,6 +20,14 @@ func (h *Handle) VM() *VM {
 	return h.vm
 }
 
+func (h *Handle) DType() object.DType {
+	return h.tensor.DType
+}
+
+func (h *Handle) Shape() *object.Shape {
+	return h.tensor.Shape
+}
+
 func (h *Handle) RequireGrad() {
 	if h.requireGrad {
 		return

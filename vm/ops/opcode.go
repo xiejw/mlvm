@@ -17,7 +17,7 @@ const (
 	OP_RNG OpCode = iota
 	OP_ADD
 	OP_MUL
-	OP_REDUCE
+	OP_SUM
 )
 
 func (o OpCode) String() string {
@@ -28,8 +28,8 @@ func (o OpCode) String() string {
 		return "OP_ADD"
 	case OP_MUL:
 		return "OP_MUL"
-	case OP_REDUCE:
-		return "OP_REDUCE"
+	case OP_SUM:
+		return "OP_SUM"
 	}
 	return "(unknown)"
 }
@@ -80,6 +80,28 @@ func (op OpCode) OutputTypes(operands []*object.Tensor, opt Option) (
 		output_dtypes = append(output_dtypes, object.F32)
 		output_shapes = append(output_shapes, operands[0].Shape.Dims)
 
+	case OP_SUM:
+		if len(operands) != 1 {
+			err = errors.New("op (%v) expects only one operand; but got %v.", op, len(operands))
+			return
+		}
+		if operands[0].DType != object.F32 {
+			err = errors.New("op (%v) expects F32; but got %v.", op, operands[0].DType)
+			return
+		}
+		if o, ok := opt.(*SumOption); !ok {
+			err = errors.New("op (%v) expects SumOption; but got %v.", op, opt)
+			return
+		} else if !reflect.DeepEqual(operands[0].Shape.Dims, o.Dims) {
+			err = errors.New(
+				"op (%v) expects reducing all dims; but got operand dims %v, reducing dims %v.", op,
+				operands[0].Shape.Dims, o.Dims)
+			return
+		}
+
+		output_dtypes = append(output_dtypes, object.F32)
+		output_shapes = append(output_shapes, []int{1})
+
 	default:
 		err = errors.New("unsupported op (%v) for signature validation.", op)
 	}
@@ -90,7 +112,7 @@ func (op OpCode) AllowGrad(operands []*object.Tensor, opt Option) error {
 	switch op {
 	case OP_RNG:
 		return errors.New("op (%v) is not allowed to flow grad.", op)
-	case OP_MUL, OP_ADD:
+	case OP_MUL, OP_ADD, OP_SUM:
 		if !operands[0].DType.AllowGrad() {
 			return errors.New("op (%v) is not allowed to flow grad for dtype %v.", op, operands[0].DType)
 		}

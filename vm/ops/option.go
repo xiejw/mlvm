@@ -34,3 +34,19 @@ func (o *RngOption) Clone() Option {
 		DistType: o.DistType,
 	}
 }
+
+// -----------------------------------------------------------------------------
+// sum option.
+// -----------------------------------------------------------------------------
+
+type SumOption struct {
+	Dims []int
+}
+
+func (o *SumOption) Clone() Option {
+	dims := make([]int, len(o.Dims))
+	copy(dims, o.Dims)
+	return &SumOption{
+		Dims: dims,
+	}
+}

@@ -164,6 +164,17 @@ func (vm *VM) scheduleOp(op ops.OpCode, operands []*Handle, outputs []*Handle, o
 		}
 		return nil
 
+	case ops.OP_SUM:
+		err := linalg.Sum(&linalg.Context{},
+			operands[0].tensor.Data.([]float32),
+			operands[0].tensor.Shape.Dims,
+			opt.(*ops.SumOption).Dims,
+			outputs[0].tensor.Data.([]float32))
+		if err != nil {
+			return errors.WrapNote(err, "failed to execute linalg.Mul.")
+		}
+		return nil
+
 	default:
 		return errors.New("unsupported op (%v) for scheduling op", op)
 	}
