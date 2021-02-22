@@ -88,9 +88,21 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 	// ---------------------------------------------------------------------------
 	// deduce gradients.
 	// ---------------------------------------------------------------------------
-	err = vm.validateGradAndRecordOp(op, operands, outputs, opt)
+	flowGrad := vm.shouldFlowGrad(op, operands)
+
+	if flowGrad {
+		err := op.AllowGrad(operand_tensors, opt)
+		if err != nil {
+			return nil, errors.WrapNote(err, "failed to flow grad during executing op.")
+		}
+	}
+
+	// ---------------------------------------------------------------------------
+	// recode op and gradent dag.
+	// ---------------------------------------------------------------------------
+	err = vm.recordOp(op, operands, outputs, opt, flowGrad)
 	if err != nil {
-		return nil, errors.WrapNote(err, "failed to validate grads and record op during executing op.")
+		return nil, errors.WrapNote(err, "failed to record op during executing op.")
 	}
 
 	// ---------------------------------------------------------------------------
@@ -102,12 +114,18 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 	return outputs, nil
 }
 
-func (vm *VM) validateGradAndRecordOp(op ops.OpCode, operands []*Handle, outputs []*Handle, opt ops.Option) error {
-	flowGrad, err := vm.validateFlowingGradient(op, operands)
-	if err != nil {
-		return err
+func (vm *VM) shouldFlowGrad(op ops.OpCode, operands []*Handle) bool {
+	for _, opr := range operands {
+		if opr.flowGrad || opr.requireGrad {
+			return true
+		}
 	}
+	return false
+}
 
+func (vm *VM) recordOp(
+	op ops.OpCode, operands []*Handle, outputs []*Handle, opt ops.Option, flowGrad bool,
+) error {
 	r := &Record{
 		Op:       op,
 		Operands: operands,
@@ -147,40 +165,4 @@ func (vm *VM) scheduleOp(op ops.OpCode, operands []*Handle, outputs []*Handle, o
 	default:
 		return errors.New("unsupported op (%v) for scheduling op", op)
 	}
-}
-
-func (vm *VM) validateFlowingGradient(op ops.OpCode, operands []*Handle) (bool, error) {
-	flowGrad := false
-	for _, opr := range operands {
-		if opr.flowGrad || opr.requireGrad {
-			flowGrad = true
-			break
-		}
-	}
-
-	if !flowGrad {
-		return false, nil
-	}
-
-	// TODO must F32 for flowGrad
-
-	switch op {
-	case ops.OP_RNG:
-		err := errors.New("op (%v) cannot flow grad.", op)
-
-		// emits more info
-		for i, opr := range operands {
-			if opr.flowGrad {
-				err.EmitNote("the %v-th operand needs to flow grad.", i)
-				break
-			}
-			if opr.requireGrad {
-				err.EmitNote("the %v-th operand requires grad.", i)
-				break
-			}
-		}
-		return false, err
-	default:
-	}
-	return flowGrad, nil
 }

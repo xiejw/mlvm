@@ -74,7 +74,7 @@ func (op OpCode) OutputTypes(operands []*object.Tensor, opt Option) (
 		}
 
 		if !reflect.DeepEqual(operands[0].Shape, operands[1].Shape) {
-			err = errors.New("op (%v) operands' shape mismatch.")
+			err = errors.New("op (%v) operands' shape mismatch.", op)
 			return
 		}
 
@@ -85,6 +85,20 @@ func (op OpCode) OutputTypes(operands []*object.Tensor, opt Option) (
 		err = errors.New("unsupported op (%v) for signature validation.", op)
 	}
 	return
+}
+
+func (op OpCode) AllowGrad(operands []*object.Tensor, opt Option) error {
+	switch op {
+	case OP_RNG:
+		return errors.New("op (%v) is not allowed to flow grad.", op)
+	case OP_MUL, OP_ADD:
+		if !operands[0].DType.AllowGrad() {
+			return errors.New("op (%v) is not allowed to flow grad for dtype %v.", op, operands[0].DType)
+		}
+		return nil
+	default:
+		return errors.New("unsupported op (%v) for allowing grad.", op)
+	}
 }
 
 // -----------------------------------------------------------------------------
