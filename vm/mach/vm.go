@@ -1,8 +1,6 @@
 package mach
 
 import (
-	"github.com/xiejw/mlvm/vm/algorithms/linalg"
-	"github.com/xiejw/mlvm/vm/algorithms/rngs"
 	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/object"
 	"github.com/xiejw/mlvm/vm/ops"
@@ -75,6 +73,7 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 	}
 
 	var outputs []*Handle
+	var output_tensors []*object.Tensor
 	if len(output_dtypes) > 0 {
 		outputs = make([]*Handle, 0, len(output_dtypes))
 		for i := 0; i < len(output_dtypes); i++ {
@@ -83,6 +82,7 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 				return nil, errors.WrapNote(err, "failed to allocate output space during executing op.")
 			}
 			outputs = append(outputs, o)
+			output_tensors = append(output_tensors, o.tensor)
 		}
 	}
 
@@ -108,7 +108,7 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 
 	// ---------------------------------------------------------------------------
 	// schedule op.
-	err = vm.scheduleOp(op, operands, outputs, opt)
+	err = vm.scheduleOp(op, operand_tensors, output_tensors, opt)
 	if err != nil {
 		return nil, errors.WrapNote(err, "failed to schedule during executing op.")
 	}
@@ -124,58 +124,7 @@ func (vm *VM) shouldFlowGrad(op ops.OpCode, operands []*Handle) bool {
 	return false
 }
 
-func (vm *VM) scheduleOp(op ops.OpCode, operands []*Handle, outputs []*Handle, opt ops.Option) error {
+func (vm *VM) scheduleOp(op ops.OpCode, operands []*object.Tensor, outputs []*object.Tensor, opt ops.Option) error {
 	// TODO: use async
-
-	switch op {
-	case ops.OP_RNG:
-		// verified by validateSignature
-		value := operands[0].tensor.Data.([]float32)
-		rng_opt := opt.(*ops.RngOption)
-
-		switch rng_opt.DistType {
-		case ops.RngDistStdNorm:
-			rngs.StdNorm(rng_opt.Rng, value)
-			return nil
-		case ops.RngDistTruncStdNorm:
-			rngs.TruncStdNorm(rng_opt.Rng, value)
-			return nil
-		default:
-			return errors.New("unknown distribution type: %v", rng_opt.DistType)
-		}
-
-	case ops.OP_ADD:
-		err := linalg.Add(&linalg.Context{},
-			operands[0].tensor.Data.([]float32),
-			operands[1].tensor.Data.([]float32),
-			outputs[0].tensor.Data.([]float32))
-		if err != nil {
-			return errors.WrapNote(err, "failed to execute linalg.Add.")
-		}
-		return nil
-
-	case ops.OP_MUL:
-		err := linalg.Mul(&linalg.Context{},
-			operands[0].tensor.Data.([]float32),
-			operands[1].tensor.Data.([]float32),
-			outputs[0].tensor.Data.([]float32))
-		if err != nil {
-			return errors.WrapNote(err, "failed to execute linalg.Mul.")
-		}
-		return nil
-
-	case ops.OP_SUM:
-		err := linalg.Sum(&linalg.Context{},
-			operands[0].tensor.Data.([]float32),
-			operands[0].tensor.Shape.Dims,
-			opt.(*ops.SumOption).Dims,
-			outputs[0].tensor.Data.([]float32))
-		if err != nil {
-			return errors.WrapNote(err, "failed to execute linalg.Mul.")
-		}
-		return nil
-
-	default:
-		return errors.New("unsupported op (%v) for scheduling op", op)
-	}
+	return op.Exec(operands, outputs, opt)
 }

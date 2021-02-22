@@ -3,6 +3,8 @@ package ops
 import (
 	"reflect"
 
+	"github.com/xiejw/mlvm/vm/algorithms/linalg"
+	"github.com/xiejw/mlvm/vm/algorithms/rngs"
 	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/object"
 )
@@ -32,6 +34,59 @@ func (o OpCode) String() string {
 		return "OP_SUM"
 	}
 	return "(unknown)"
+}
+
+func (op OpCode) Exec(operands []*object.Tensor, outputs []*object.Tensor, opt Option) error {
+	switch op {
+	case OP_RNG:
+		value := operands[0].Data.([]float32)
+		rng_opt := opt.(*RngOption)
+
+		switch rng_opt.DistType {
+		case RngDistStdNorm:
+			rngs.StdNorm(rng_opt.Rng, value)
+			return nil
+		case RngDistTruncStdNorm:
+			rngs.TruncStdNorm(rng_opt.Rng, value)
+			return nil
+		default:
+			return errors.New("failed to execute rng: unknown distribution type: %v", rng_opt.DistType)
+		}
+
+	case OP_ADD:
+		err := linalg.Add(&linalg.Context{},
+			operands[0].Data.([]float32),
+			operands[1].Data.([]float32),
+			outputs[0].Data.([]float32))
+		if err != nil {
+			return errors.WrapNote(err, "failed to execute linalg.Add.")
+		}
+		return nil
+
+	case OP_MUL:
+		err := linalg.Mul(&linalg.Context{},
+			operands[0].Data.([]float32),
+			operands[1].Data.([]float32),
+			outputs[0].Data.([]float32))
+		if err != nil {
+			return errors.WrapNote(err, "failed to execute linalg.Mul.")
+		}
+		return nil
+
+	case OP_SUM:
+		err := linalg.Sum(&linalg.Context{},
+			operands[0].Data.([]float32),
+			operands[0].Shape.Dims,
+			opt.(*SumOption).Dims,
+			outputs[0].Data.([]float32))
+		if err != nil {
+			return errors.WrapNote(err, "failed to execute linalg.Mul.")
+		}
+		return nil
+
+	default:
+		return errors.New("unsupported op (%v) for execution", op)
+	}
 }
 
 func (op OpCode) OutputTypes(operands []*object.Tensor, opt Option) (
