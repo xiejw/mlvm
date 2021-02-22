@@ -3,7 +3,6 @@ package ops
 import (
 	"reflect"
 
-	"github.com/xiejw/mlvm/vm/algorithms/rngs"
 	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/object"
 )
@@ -98,36 +97,5 @@ func (op OpCode) AllowGrad(operands []*object.Tensor, opt Option) error {
 		return nil
 	default:
 		return errors.New("unsupported op (%v) for allowing grad.", op)
-	}
-}
-
-// -----------------------------------------------------------------------------
-// option.
-// -----------------------------------------------------------------------------
-
-type Option interface {
-	Clone() Option
-}
-
-// -----------------------------------------------------------------------------
-// rng option.
-// -----------------------------------------------------------------------------
-
-type RngDistType int
-
-const (
-	RngDistStdNorm RngDistType = iota
-	RngDistTruncStdNorm
-)
-
-type RngOption struct {
-	Rng      rngs.Rng
-	DistType RngDistType
-}
-
-func (o *RngOption) Clone() Option {
-	return &RngOption{
-		Rng:      o.Rng.Clone(),
-		DistType: o.DistType,
 	}
 }
