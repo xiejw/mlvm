@@ -45,6 +45,10 @@ func (vm *VM) ExecOp(op ops.OpCode, operands []*Handle, opt ops.Option) (*Handle
 	}
 }
 
+func (vm *VM) Backward(x *Handle) error {
+	return vm.tape.BProp(x)
+}
+
 func (vm *VM) WaitBarrier() {
 }
 

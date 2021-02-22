@@ -63,6 +63,10 @@ func Sum(x *mach.Handle) *mach.Handle {
 }
 
 func Backward(x *mach.Handle) {
+	err := x.VM().Backward(x)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // -----------------------------------------------------------------------------

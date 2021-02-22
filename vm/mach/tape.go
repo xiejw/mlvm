@@ -1,6 +1,8 @@
 package mach
 
 import (
+	"fmt"
+
 	"github.com/xiejw/mlvm/vm/ops"
 )
 
@@ -33,5 +35,13 @@ func (t *Tape) RecordOpAndGradDAG(
 	}
 
 	t.Records = append(t.Records, r)
+	return nil
+}
+
+func (t *Tape) BProp(x *Handle) error {
+	fmt.Printf("tape: \n")
+	for _, r := range t.Records {
+		fmt.Printf("  %+v\n", r)
+	}
 	return nil
 }
