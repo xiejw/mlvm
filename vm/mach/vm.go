@@ -1,6 +1,7 @@
 package mach
 
 import (
+	"github.com/xiejw/mlvm/vm/algorithms/linalg"
 	"github.com/xiejw/mlvm/vm/algorithms/rngs"
 	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/object"
@@ -142,6 +143,27 @@ func (vm *VM) scheduleOp(op ops.OpCode, operands []*Handle, outputs []*Handle, o
 		default:
 			return errors.New("unknown distribution type: %v", rng_opt.DistType)
 		}
+
+	case ops.OP_ADD:
+		err := linalg.Add(&linalg.Context{},
+			operands[0].tensor.Data.([]float32),
+			operands[1].tensor.Data.([]float32),
+			outputs[0].tensor.Data.([]float32))
+		if err != nil {
+			return errors.WrapNote(err, "failed to execute linalg.Add.")
+		}
+		return nil
+
+	case ops.OP_MUL:
+		err := linalg.Mul(&linalg.Context{},
+			operands[0].tensor.Data.([]float32),
+			operands[1].tensor.Data.([]float32),
+			outputs[0].tensor.Data.([]float32))
+		if err != nil {
+			return errors.WrapNote(err, "failed to execute linalg.Mul.")
+		}
+		return nil
+
 	default:
 		return errors.New("unsupported op (%v) for scheduling op", op)
 	}
