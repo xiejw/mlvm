@@ -45,13 +45,24 @@ func (t DType) AllowGrad() bool {
 }
 
 // ----------------------------------------------------------------------------
+// tensor like.
+//
+// used for the case value is not ready (async schedule).
+// ----------------------------------------------------------------------------
+
+type TensorLike interface {
+	Shape() *Shape
+	DType() DType
+}
+
+// ----------------------------------------------------------------------------
 // tensor.
 // ----------------------------------------------------------------------------
 
 type Tensor struct {
-	Shape *Shape
-	DType DType
-	Data  interface{}
+	shape *Shape
+	dtype DType
+	data  interface{}
 }
 
 func NewTensor(dtype DType, dims []int) *Tensor {
@@ -61,15 +72,15 @@ func NewTensor(dtype DType, dims []int) *Tensor {
 	switch dtype {
 	case F32:
 		te = &Tensor{
-			Shape: shape,
-			DType: dtype,
-			Data:  make([]float32, shape.Size),
+			shape: shape,
+			dtype: dtype,
+			data:  make([]float32, shape.Size),
 		}
 	case I32:
 		te = &Tensor{
-			Shape: shape,
-			DType: dtype,
-			Data:  make([]int32, shape.Size),
+			shape: shape,
+			dtype: dtype,
+			data:  make([]int32, shape.Size),
 		}
 	default:
 		panic(fmt.Sprintf("unsupported dtype: %v", dtype))
@@ -93,8 +104,24 @@ func NewTensorI32(dims []int, value []int32) *Tensor {
 	return &Tensor{shape, I32, value}
 }
 
+func (t *Tensor) Data() interface{} {
+	return t.data
+}
+
 // ----------------------------------------------------------------------------
-// string.
+// conform TensorLike
+// ----------------------------------------------------------------------------
+
+func (t *Tensor) Shape() *Shape {
+	return t.shape
+}
+
+func (t *Tensor) DType() DType {
+	return t.dtype
+}
+
+// ----------------------------------------------------------------------------
+// conform String
 // ----------------------------------------------------------------------------
 
 // formats as `Shape(<2, 3>)`.
@@ -126,16 +153,16 @@ const defaultMaxNumberToPrintForArray = 9
 func (t *Tensor) String() string {
 	var buf bytes.Buffer
 	buf.WriteString("Tensor(")
-	t.Shape.DebugString(&buf)
-	switch t.DType {
+	t.Shape().DebugString(&buf)
+	switch t.DType() {
 	case F32:
 		buf.WriteString(" f32 ")
-		debugStringF32(&buf, t.Data.([]float32), defaultMaxNumberToPrintForArray)
+		debugStringF32(&buf, t.Data().([]float32), defaultMaxNumberToPrintForArray)
 	case I32:
 		buf.WriteString(" i32 ")
-		debugStringI32(&buf, t.Data.([]int32), defaultMaxNumberToPrintForArray)
+		debugStringI32(&buf, t.Data().([]int32), defaultMaxNumberToPrintForArray)
 	default:
-		panic(fmt.Sprintf("unsupported dtype: %v", t.DType))
+		panic(fmt.Sprintf("unsupported dtype: %v", t.DType()))
 	}
 	buf.WriteString(")")
 	return buf.String()

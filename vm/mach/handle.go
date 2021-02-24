@@ -21,11 +21,11 @@ func (h *Handle) VM() *VM {
 }
 
 func (h *Handle) DType() object.DType {
-	return h.tensor.DType
+	return h.tensor.DType()
 }
 
 func (h *Handle) Shape() *object.Shape {
-	return h.tensor.Shape
+	return h.tensor.Shape()
 }
 
 func (h *Handle) RequireGrad() {
@@ -33,8 +33,8 @@ func (h *Handle) RequireGrad() {
 		return
 	}
 
-	if !h.tensor.DType.AllowGrad() {
-		panic(fmt.Sprintf("dtype (%v) cannot have grad.", h.tensor.DType))
+	if !h.tensor.DType().AllowGrad() {
+		panic(fmt.Sprintf("dtype (%v) cannot have grad.", h.tensor.DType()))
 	}
 
 	if h.record != nil {
@@ -45,7 +45,7 @@ func (h *Handle) RequireGrad() {
 		panic("handle with flowGrad cannot have grad.")
 	}
 
-	handle, err := h.vm.NewHandle(h.tensor.DType, h.tensor.Shape.Dims)
+	handle, err := h.vm.NewHandle(h.tensor.DType(), h.tensor.Shape().Dims)
 	if err != nil {
 		panic("failed to alloc space for grad.")
 	}

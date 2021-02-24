@@ -39,7 +39,7 @@ func (o OpCode) String() string {
 func (op OpCode) Exec(operands []*object.Tensor, outputs []*object.Tensor, opt Option) error {
 	switch op {
 	case OP_RNG:
-		value := operands[0].Data.([]float32)
+		value := operands[0].Data().([]float32)
 		rng_opt := opt.(*RngOption)
 
 		switch rng_opt.DistType {
@@ -55,9 +55,9 @@ func (op OpCode) Exec(operands []*object.Tensor, outputs []*object.Tensor, opt O
 
 	case OP_ADD:
 		err := linalg.Add(&linalg.Context{},
-			operands[0].Data.([]float32),
-			operands[1].Data.([]float32),
-			outputs[0].Data.([]float32))
+			operands[0].Data().([]float32),
+			operands[1].Data().([]float32),
+			outputs[0].Data().([]float32))
 		if err != nil {
 			return errors.WrapNote(err, "failed to execute linalg.Add.")
 		}
@@ -65,9 +65,9 @@ func (op OpCode) Exec(operands []*object.Tensor, outputs []*object.Tensor, opt O
 
 	case OP_MUL:
 		err := linalg.Mul(&linalg.Context{},
-			operands[0].Data.([]float32),
-			operands[1].Data.([]float32),
-			outputs[0].Data.([]float32))
+			operands[0].Data().([]float32),
+			operands[1].Data().([]float32),
+			outputs[0].Data().([]float32))
 		if err != nil {
 			return errors.WrapNote(err, "failed to execute linalg.Mul.")
 		}
@@ -75,10 +75,10 @@ func (op OpCode) Exec(operands []*object.Tensor, outputs []*object.Tensor, opt O
 
 	case OP_SUM:
 		err := linalg.Sum(&linalg.Context{},
-			operands[0].Data.([]float32),
-			operands[0].Shape.Dims,
+			operands[0].Data().([]float32),
+			operands[0].Shape().Dims,
 			opt.(*SumOption).Dims,
-			outputs[0].Data.([]float32))
+			outputs[0].Data().([]float32))
 		if err != nil {
 			return errors.WrapNote(err, "failed to execute linalg.Mul.")
 		}
@@ -99,8 +99,8 @@ func (op OpCode) OutputTypes(operands []*object.Tensor, opt Option) (
 			err = errors.New("op (%v) expects only one operand; but got %v.", op, len(operands))
 			return
 		}
-		if operands[0].DType != object.F32 {
-			err = errors.New("op (%v) expects F32; but got %v.", op, operands[0].DType)
+		if operands[0].DType() != object.F32 {
+			err = errors.New("op (%v) expects F32; but got %v.", op, operands[0].DType())
 			return
 		}
 		if _, ok := opt.(*RngOption); !ok {
@@ -114,12 +114,12 @@ func (op OpCode) OutputTypes(operands []*object.Tensor, opt Option) (
 			err = errors.New("op (%v) expects two operands; but got %v.", op, len(operands))
 			return
 		}
-		if operands[0].DType != object.F32 {
-			err = errors.New("op (%v) expects F32 for operand; but got %v.", op, operands[0].DType)
+		if operands[0].DType() != object.F32 {
+			err = errors.New("op (%v) expects F32 for operand; but got %v.", op, operands[0].DType())
 			return
 		}
-		if operands[1].DType != object.F32 {
-			err = errors.New("op (%v) expects F32 for operand; but got %v.", op, operands[1].DType)
+		if operands[1].DType() != object.F32 {
+			err = errors.New("op (%v) expects F32 for operand; but got %v.", op, operands[1].DType())
 			return
 		}
 		if opt != nil {
@@ -127,30 +127,30 @@ func (op OpCode) OutputTypes(operands []*object.Tensor, opt Option) (
 			return
 		}
 
-		if !reflect.DeepEqual(operands[0].Shape, operands[1].Shape) {
+		if !reflect.DeepEqual(operands[0].Shape(), operands[1].Shape()) {
 			err = errors.New("op (%v) operands' shape mismatch.", op)
 			return
 		}
 
 		output_dtypes = append(output_dtypes, object.F32)
-		output_shapes = append(output_shapes, operands[0].Shape.Dims)
+		output_shapes = append(output_shapes, operands[0].Shape().Dims)
 
 	case OP_SUM:
 		if len(operands) != 1 {
 			err = errors.New("op (%v) expects only one operand; but got %v.", op, len(operands))
 			return
 		}
-		if operands[0].DType != object.F32 {
-			err = errors.New("op (%v) expects F32; but got %v.", op, operands[0].DType)
+		if operands[0].DType() != object.F32 {
+			err = errors.New("op (%v) expects F32; but got %v.", op, operands[0].DType())
 			return
 		}
 		if o, ok := opt.(*SumOption); !ok {
 			err = errors.New("op (%v) expects SumOption; but got %v.", op, opt)
 			return
-		} else if !reflect.DeepEqual(operands[0].Shape.Dims, o.Dims) {
+		} else if !reflect.DeepEqual(operands[0].Shape().Dims, o.Dims) {
 			err = errors.New(
 				"op (%v) expects reducing all dims; but got operand dims %v, reducing dims %v.", op,
-				operands[0].Shape.Dims, o.Dims)
+				operands[0].Shape().Dims, o.Dims)
 			return
 		}
 
@@ -168,8 +168,8 @@ func (op OpCode) AllowGrad(operands []*object.Tensor, opt Option) error {
 	case OP_RNG:
 		return errors.New("op (%v) is not allowed to flow grad.", op)
 	case OP_MUL, OP_ADD, OP_SUM:
-		if !operands[0].DType.AllowGrad() {
-			return errors.New("op (%v) is not allowed to flow grad for dtype %v.", op, operands[0].DType)
+		if !operands[0].DType().AllowGrad() {
+			return errors.New("op (%v) is not allowed to flow grad for dtype %v.", op, operands[0].DType())
 		}
 		return nil
 	default:
