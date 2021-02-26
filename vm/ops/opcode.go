@@ -36,6 +36,7 @@ func (o OpCode) String() string {
 	return "(unknown)"
 }
 
+// execs on allocated buffer, i.e., Tensor.
 func (op OpCode) Exec(operands []*object.Tensor, outputs []*object.Tensor, opt Option) error {
 	switch op {
 	case OP_RNG:
@@ -45,13 +46,12 @@ func (op OpCode) Exec(operands []*object.Tensor, outputs []*object.Tensor, opt O
 		switch rng_opt.DistType {
 		case RngDistStdNorm:
 			rngs.StdNorm(rng_opt.Rng, value)
-			return nil
 		case RngDistTruncStdNorm:
 			rngs.TruncStdNorm(rng_opt.Rng, value)
-			return nil
 		default:
 			return errors.New("failed to execute rng: unknown distribution type: %v", rng_opt.DistType)
 		}
+		return nil
 
 	case OP_ADD:
 		err := linalg.Add(&linalg.Context{},
@@ -163,7 +163,7 @@ func (op OpCode) OutputTypes(operands []*object.Tensor, opt Option) (
 	return
 }
 
-func (op OpCode) AllowGrad(operands []*object.Tensor, opt Option) error {
+func (op OpCode) AllowGrad(operands []object.TensorLike, opt Option) error {
 	switch op {
 	case OP_RNG:
 		return errors.New("op (%v) is not allowed to flow grad.", op)

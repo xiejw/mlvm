@@ -66,9 +66,11 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 	//
 	// In addition, validation will be perfomed in op.OutputTypes
 	// ---------------------------------------------------------------------------
+	operand_tensor_likes := make([]object.TensorLike, 0, len(operands))
 	operand_tensors := make([]*object.Tensor, 0, len(operands))
 	for _, opr := range operands {
 		operand_tensors = append(operand_tensors, opr.tensor)
+		operand_tensor_likes = append(operand_tensor_likes, opr.tensor)
 	}
 
 	output_dtypes, output_shapes, err := op.OutputTypes(operand_tensors, opt)
@@ -96,7 +98,7 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 	flowGrad := vm.shouldFlowGrad(op, operands)
 
 	if flowGrad {
-		err := op.AllowGrad(operand_tensors, opt)
+		err := op.AllowGrad(operand_tensor_likes, opt)
 		if err != nil {
 			return nil, errors.WrapNote(err, "failed to flow grad during executing op.")
 		}
