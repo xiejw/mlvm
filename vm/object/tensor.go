@@ -1,3 +1,4 @@
+// package object provides Tensor and TensorLike interface.
 package object
 
 import (
@@ -134,13 +135,13 @@ func (t *Tensor) Data() interface{} {
 func (shape *Shape) String() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "Shape(")
-	shape.DebugString(&buf)
+	shape.debugString(&buf)
 	fmt.Fprintf(&buf, ")")
 	return buf.String()
 }
 
 // formats as `<2, 3>`.
-func (shape *Shape) DebugString(w io.Writer) {
+func (shape *Shape) debugString(w io.Writer) {
 	rank := shape.Rank
 	finalIndex := int(rank - 1)
 	fmt.Fprintf(w, "<")
@@ -159,7 +160,7 @@ const defaultMaxNumberToPrintForArray = 9
 func (t *Tensor) String() string {
 	var buf bytes.Buffer
 	buf.WriteString("Tensor(")
-	t.Shape().DebugString(&buf)
+	t.Shape().debugString(&buf)
 	switch t.DType() {
 	case F32:
 		buf.WriteString(" f32 ")

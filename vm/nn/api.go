@@ -1,3 +1,4 @@
+// package nn provides helper methods for common machine learning.
 package nn
 
 import (
