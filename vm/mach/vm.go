@@ -73,7 +73,7 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 		operand_tensor_likes = append(operand_tensor_likes, opr.tensor)
 	}
 
-	output_tensor_likes, err := op.OutputTypes(operand_tensor_likes, opt)
+	output_tensor_likes, err := op.InferOutputs(operand_tensor_likes, opt)
 	if err != nil {
 		return nil, errors.WrapNote(err, "failed to verify op signature during executing op.")
 	}
