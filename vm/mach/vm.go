@@ -73,17 +73,17 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 		operand_tensor_likes = append(operand_tensor_likes, opr.tensor)
 	}
 
-	output_dtypes, output_shapes, err := op.OutputTypes(operand_tensors, opt)
+	output_tensor_likes, err := op.OutputTypes(operand_tensor_likes, opt)
 	if err != nil {
 		return nil, errors.WrapNote(err, "failed to verify op signature during executing op.")
 	}
 
 	var outputs []*Handle
 	var output_tensors []*object.Tensor
-	if len(output_dtypes) > 0 {
-		outputs = make([]*Handle, 0, len(output_dtypes))
-		for i := 0; i < len(output_dtypes); i++ {
-			o, err := vm.NewHandle(output_dtypes[i], output_shapes[i])
+	if len(output_tensor_likes) > 0 {
+		outputs = make([]*Handle, 0, len(output_tensor_likes))
+		for i := 0; i < len(output_tensor_likes); i++ {
+			o, err := vm.NewHandle(output_tensor_likes[i].DType(), output_tensor_likes[i].Shape().Dims)
 			if err != nil {
 				return nil, errors.WrapNote(err, "failed to allocate output space during executing op.")
 			}

@@ -89,8 +89,8 @@ func (op OpCode) Exec(operands []*object.Tensor, outputs []*object.Tensor, opt O
 	}
 }
 
-func (op OpCode) OutputTypes(operands []*object.Tensor, opt Option) (
-	output_dtypes []object.DType, output_shapes [][]int, err error,
+func (op OpCode) OutputTypes(operands []object.TensorLike, opt Option) (
+	outputs []object.TensorLike, err error,
 ) {
 
 	switch op {
@@ -132,8 +132,7 @@ func (op OpCode) OutputTypes(operands []*object.Tensor, opt Option) (
 			return
 		}
 
-		output_dtypes = append(output_dtypes, object.F32)
-		output_shapes = append(output_shapes, operands[0].Shape().Dims)
+		outputs = append(outputs, object.NewTensorLike(object.F32, operands[0].Shape().Dims))
 
 	case OP_SUM:
 		if len(operands) != 1 {
@@ -154,8 +153,7 @@ func (op OpCode) OutputTypes(operands []*object.Tensor, opt Option) (
 			return
 		}
 
-		output_dtypes = append(output_dtypes, object.F32)
-		output_shapes = append(output_shapes, []int{1})
+		outputs = append(outputs, object.NewTensorLike(object.F32, []int{1}))
 
 	default:
 		err = errors.New("unsupported op (%v) for signature validation.", op)

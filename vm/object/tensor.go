@@ -55,6 +55,27 @@ type TensorLike interface {
 	DType() DType
 }
 
+type tensorShell struct {
+	shape *Shape
+	dtype DType
+}
+
+func (te *tensorShell) Shape() *Shape {
+	return te.shape
+}
+
+func (t *tensorShell) DType() DType {
+	return t.dtype
+}
+
+func NewTensorLike(dtype DType, dims []int) TensorLike {
+	shape := NewShape(dims)
+	return &tensorShell{
+		shape: shape,
+		dtype: dtype,
+	}
+}
+
 // ----------------------------------------------------------------------------
 // tensor.
 // ----------------------------------------------------------------------------
