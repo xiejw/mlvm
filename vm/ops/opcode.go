@@ -37,7 +37,7 @@ func (o OpCode) String() string {
 }
 
 // -----------------------------------------------------------------------------
-// op execs on allocated buffer, i.e., Tensor.
+// op: execs on allocated buffer, i.e., Tensor.
 // -----------------------------------------------------------------------------
 
 func (op OpCode) Exec(operands []*object.Tensor, outputs []*object.Tensor, opt Option) error {
@@ -93,11 +93,11 @@ func (op OpCode) Exec(operands []*object.Tensor, outputs []*object.Tensor, opt O
 }
 
 // -----------------------------------------------------------------------------
-// op outputs dtype and shapes.
+// op: infer outputs signatures: dtype and shapes.
 // -----------------------------------------------------------------------------
 
-func (op OpCode) InferOutputs(operands []object.TensorLike, opt Option) (
-	outputs []object.TensorLike, err error,
+func (op OpCode) InferOutputs(
+	operands []object.TensorLike, opt Option) (outputs []object.TensorLike, err error,
 ) {
 
 	switch op {
@@ -169,7 +169,7 @@ func (op OpCode) InferOutputs(operands []object.TensorLike, opt Option) (
 }
 
 // -----------------------------------------------------------------------------
-// op allow grad.
+// op: check allowing grad.
 // -----------------------------------------------------------------------------
 
 func (op OpCode) AllowGrad(operands []object.TensorLike, opt Option) error {

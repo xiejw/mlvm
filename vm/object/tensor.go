@@ -55,6 +55,14 @@ type TensorLike interface {
 	DType() DType
 }
 
+func NewTensorLike(dtype DType, dims []int) TensorLike {
+	shape := NewShape(dims)
+	return &tensorShell{
+		shape: shape,
+		dtype: dtype,
+	}
+}
+
 type tensorShell struct {
 	shape *Shape
 	dtype DType
@@ -68,22 +76,13 @@ func (t *tensorShell) DType() DType {
 	return t.dtype
 }
 
-func NewTensorLike(dtype DType, dims []int) TensorLike {
-	shape := NewShape(dims)
-	return &tensorShell{
-		shape: shape,
-		dtype: dtype,
-	}
-}
-
 // ----------------------------------------------------------------------------
 // tensor.
 // ----------------------------------------------------------------------------
 
 type Tensor struct {
-	shape *Shape
-	dtype DType
-	data  interface{}
+	tensorShell
+	data interface{}
 }
 
 func NewTensor(dtype DType, dims []int) *Tensor {
@@ -93,15 +92,13 @@ func NewTensor(dtype DType, dims []int) *Tensor {
 	switch dtype {
 	case F32:
 		te = &Tensor{
-			shape: shape,
-			dtype: dtype,
-			data:  make([]float32, shape.Size),
+			tensorShell{shape: shape, dtype: dtype},
+			make([]float32, shape.Size),
 		}
 	case I32:
 		te = &Tensor{
-			shape: shape,
-			dtype: dtype,
-			data:  make([]int32, shape.Size),
+			tensorShell{shape: shape, dtype: dtype},
+			make([]int32, shape.Size),
 		}
 	default:
 		panic(fmt.Sprintf("unsupported dtype: %v", dtype))
@@ -114,7 +111,7 @@ func NewTensorF32(dims []int, value []float32) *Tensor {
 	if shape.Size != len(value) {
 		panic(fmt.Sprintf("dims have size %v but value has size %v", shape.Size, len(value)))
 	}
-	return &Tensor{shape, F32, value}
+	return &Tensor{tensorShell{shape, F32}, value}
 }
 
 func NewTensorI32(dims []int, value []int32) *Tensor {
@@ -122,23 +119,11 @@ func NewTensorI32(dims []int, value []int32) *Tensor {
 	if shape.Size != len(value) {
 		panic(fmt.Sprintf("dims have size %v but value has size %v", shape.Size, len(value)))
 	}
-	return &Tensor{shape, I32, value}
+	return &Tensor{tensorShell{shape, I32}, value}
 }
 
 func (t *Tensor) Data() interface{} {
 	return t.data
-}
-
-// ----------------------------------------------------------------------------
-// conform TensorLike
-// ----------------------------------------------------------------------------
-
-func (t *Tensor) Shape() *Shape {
-	return t.shape
-}
-
-func (t *Tensor) DType() DType {
-	return t.dtype
 }
 
 // ----------------------------------------------------------------------------

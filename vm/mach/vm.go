@@ -31,6 +31,10 @@ func (vm *VM) NewHandle(dtype object.DType, dims []int) (*Handle, error) {
 }
 
 func (vm *VM) ExecOp(op ops.OpCode, operands []*Handle, opt ops.Option) (*Handle, error) {
+	if opt != nil {
+		opt = opt.Clone() // make a copy
+	}
+
 	outputs, err := vm.execOp(op, operands, opt)
 	if err != nil {
 		return nil, err
@@ -57,49 +61,29 @@ func (vm *VM) WaitBarrier() {
 // -----------------------------------------------------------------------------
 
 func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Handle, error) {
-	if opt != nil {
-		opt = opt.Clone() // make a copy
-	}
 
 	// ---------------------------------------------------------------------------
-	// deduce output dtypes and shapes.
+	// deduce outputs signatures: dtypes and shapes.
 	//
-	// In addition, validation will be perfomed in op.OutputTypes
+	// In addition, validation will be perfomed in op.InferOutputs
 	// ---------------------------------------------------------------------------
-	operand_tensor_likes := make([]object.TensorLike, 0, len(operands))
-	operand_tensors := make([]*object.Tensor, 0, len(operands))
-	for _, opr := range operands {
-		operand_tensors = append(operand_tensors, opr.tensor)
-		operand_tensor_likes = append(operand_tensor_likes, opr.tensor)
-	}
-
-	output_tensor_likes, err := op.InferOutputs(operand_tensor_likes, opt)
+	operand_sigs := HandlesToTensorLikes(operands)
+	output_sigs, err := op.InferOutputs(operand_sigs, opt)
 	if err != nil {
 		return nil, errors.WrapNote(err, "failed to verify op signature during executing op.")
 	}
 
-	var outputs []*Handle
-	var output_tensors []*object.Tensor
-	if len(output_tensor_likes) > 0 {
-		outputs = make([]*Handle, 0, len(output_tensor_likes))
-		for i := 0; i < len(output_tensor_likes); i++ {
-			o, err := vm.NewHandle(output_tensor_likes[i].DType(), output_tensor_likes[i].Shape().Dims)
-			if err != nil {
-				return nil, errors.WrapNote(err, "failed to allocate output space during executing op.")
-			}
-			outputs = append(outputs, o)
-			output_tensors = append(output_tensors, o.tensor)
-		}
+	outputs, err := vm.allocateHandlesForOutputs(output_sigs)
+	if err != nil {
+		return nil, errors.WrapNote(err, "failed to allocate output space during executing op.")
 	}
 
 	// ---------------------------------------------------------------------------
 	// deduce allowing gradients.
 	// ---------------------------------------------------------------------------
 	flowGrad := vm.shouldFlowGrad(op, operands)
-
 	if flowGrad {
-		err := op.AllowGrad(operand_tensor_likes, opt)
-		if err != nil {
+		if err := op.AllowGrad(operand_sigs, opt); err != nil {
 			return nil, errors.WrapNote(err, "failed to flow grad during executing op.")
 		}
 	}
@@ -114,7 +98,7 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 
 	// ---------------------------------------------------------------------------
 	// schedule op.
-	err = vm.scheduleOp(op, operand_tensors, output_tensors, opt)
+	err = vm.scheduleOp(op, HandlesToTensors(operands), HandlesToTensors(outputs), opt)
 	if err != nil {
 		return nil, errors.WrapNote(err, "failed to schedule during executing op.")
 	}
@@ -133,4 +117,39 @@ func (vm *VM) shouldFlowGrad(op ops.OpCode, operands []*Handle) bool {
 func (vm *VM) scheduleOp(op ops.OpCode, operands []*object.Tensor, outputs []*object.Tensor, opt ops.Option) error {
 	// TODO: use async
 	return op.Exec(operands, outputs, opt)
+}
+
+func (vm *VM) allocateHandlesForOutputs(output_sigs []object.TensorLike) ([]*Handle, error) {
+	size := len(output_sigs)
+	if size == 0 {
+		return nil, nil
+	}
+
+	outputs := make([]*Handle, 0, size)
+	for i := 0; i < size; i++ {
+		o, err := vm.NewHandle(output_sigs[i].DType(), output_sigs[i].Shape().Dims)
+		if err != nil {
+			return nil, errors.WrapNote(err, "failed to create handle for %v-th output.", i)
+		}
+		outputs = append(outputs, o)
+	}
+	return outputs, nil
+}
+
+func HandlesToTensors(hs []*Handle) []*object.Tensor {
+	size := len(hs)
+	ts := make([]*object.Tensor, 0, size)
+	for _, h := range hs {
+		ts = append(ts, h.tensor)
+	}
+	return ts
+}
+
+func HandlesToTensorLikes(hs []*Handle) []object.TensorLike {
+	size := len(hs)
+	ts := make([]object.TensorLike, 0, size)
+	for _, h := range hs {
+		ts = append(ts, h.tensor)
+	}
+	return ts
 }
