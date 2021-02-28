@@ -1,6 +1,0 @@
-# Design
-
-* Simple
-* Readable
-* Coherent
-
