@@ -67,7 +67,7 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 	//
 	// In addition, validation will be perfomed in op.InferOutputs
 	// ---------------------------------------------------------------------------
-	operand_sigs := HandlesToTensorLikes(operands)
+	operand_sigs := handlesToTensorLikes(operands)
 	output_sigs, err := op.InferOutputs(operand_sigs, opt)
 	if err != nil {
 		return nil, errors.WrapNote(err, "failed to verify op signature during executing op.")
@@ -98,7 +98,7 @@ func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Hand
 
 	// ---------------------------------------------------------------------------
 	// schedule op.
-	err = vm.scheduleOp(op, HandlesToTensors(operands), HandlesToTensors(outputs), opt)
+	err = vm.scheduleOp(op, handlesToTensors(operands), handlesToTensors(outputs), opt)
 	if err != nil {
 		return nil, errors.WrapNote(err, "failed to schedule during executing op.")
 	}
@@ -136,7 +136,7 @@ func (vm *VM) allocateHandlesForOutputs(output_sigs []object.TensorLike) ([]*Han
 	return outputs, nil
 }
 
-func HandlesToTensors(hs []*Handle) []*object.Tensor {
+func handlesToTensors(hs []*Handle) []*object.Tensor {
 	size := len(hs)
 	ts := make([]*object.Tensor, 0, size)
 	for _, h := range hs {
@@ -145,7 +145,7 @@ func HandlesToTensors(hs []*Handle) []*object.Tensor {
 	return ts
 }
 
-func HandlesToTensorLikes(hs []*Handle) []object.TensorLike {
+func handlesToTensorLikes(hs []*Handle) []object.TensorLike {
 	size := len(hs)
 	ts := make([]object.TensorLike, 0, size)
 	for _, h := range hs {

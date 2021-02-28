@@ -28,6 +28,15 @@ func (h *Handle) Shape() *object.Shape {
 	return h.tensor.Shape()
 }
 
+func (h *Handle) String() string {
+	if h.requireGrad {
+		return fmt.Sprintf("h_%v_r", h.id)
+	} else if h.flowGrad {
+		return fmt.Sprintf("h_%v_f", h.id)
+	}
+	return fmt.Sprintf("h_%v", h.id)
+}
+
 func (h *Handle) RequireGrad() {
 	if h.requireGrad {
 		return
