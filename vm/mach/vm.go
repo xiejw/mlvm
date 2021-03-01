@@ -50,9 +50,6 @@ func (vm *VM) ExecOp(op ops.OpCode, operands []*Handle, opt ops.Option) (*Handle
 }
 
 func (vm *VM) Backward(x *Handle) error {
-	if !x.flowGrad  {
-		return errors.New("Handle (%v) has not grad flowing through it.", x)
-	}
 	return vm.tape.BProp(x)
 }
 
