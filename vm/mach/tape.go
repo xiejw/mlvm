@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xiejw/mlvm/vm/algorithms/autograd"
+	//	"github.com/xiejw/mlvm/vm/algorithms/autograd"
 	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/ops"
 )
@@ -76,11 +76,11 @@ func (t *Tape) BProp(x *Handle) error {
 
 	// print debug info if requested.
 	if debugGradTape {
-		fmt.Printf("tape: \n")
+		fmt.Printf("--> tape: \n")
 		for _, r := range t.Records {
 			fmt.Printf("  %+v\n", r)
 		}
-		fmt.Printf("dag: \n")
+		fmt.Printf("--> dag: \n")
 		for _, r := range t.GradDAG {
 			fmt.Printf("  %+v\n", r)
 		}
@@ -91,20 +91,38 @@ func (t *Tape) BProp(x *Handle) error {
 		return err
 	}
 
+	var debugGrads []*Handle
+
 	grads := make(map[*Handle]*Handle)
 	grads[x] = gradX
+	if debugGradTape {
+		debugGrads = append(debugGrads, x)
+	}
 
-	for _, r := range t.GradDAG {
-		_, err := autograd.Grad(
-			r.Op,
-			r.Option,
-			handlesToTensorLikes(r.Operands),
-			handlesToTensorLikes(r.Outputs),
-			nil)
-		if err != nil {
-			return err
+	// dagSize := len(t.GradDAG)
+
+	// for _, r := range t.GradDAG {
+	// 	_, err := autograd.Grad(
+	// 		r.Op,
+	// 		r.Option,
+	// 		handlesToTensorLikes(r.Operands),
+	// 		handlesToTensorLikes(r.Outputs),
+	// 		nil)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+
+	// }
+
+	// print debug info if requested.
+	if debugGradTape {
+		fmt.Printf("--> dag grads: \n")
+		for _, k := range debugGrads {
+			v := grads[k]
+			fmt.Printf("  handle/grad: %v / %v\n", k, v)
+			fmt.Printf("    value : %v\n", k.tensor)
+			fmt.Printf("    grad  : %v\n", v.tensor)
 		}
-
 	}
 	return nil
 }
