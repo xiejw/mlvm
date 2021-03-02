@@ -57,7 +57,31 @@ func (vm *VM) WaitBarrier() {
 }
 
 // -----------------------------------------------------------------------------
-// helper methods.
+// package helper methods.
+// -----------------------------------------------------------------------------
+
+// returns immutable ones. underlying buffer might be shared.
+func (vm *VM) ones(dtype object.DType, dims []int) (*Handle, error) {
+	handle, err := vm.NewHandle(dtype, dims)
+	if err != nil {
+		return nil, err
+	}
+
+	if dtype != object.F32 {
+		return nil, errors.New("vm.ones only support F32 now; got %v.", dtype)
+	}
+
+	// TODO(reuse value if possible)
+	size := handle.tensor.Shape().Size
+	buf := handle.tensor.Data().([]float32)
+	for i := 0; i < size; i++ {
+		buf[i] = 1
+	}
+	return handle, nil
+}
+
+// -----------------------------------------------------------------------------
+// file helper methods.
 // -----------------------------------------------------------------------------
 
 func (vm *VM) execOp(op ops.OpCode, operands []*Handle, opt ops.Option) ([]*Handle, error) {

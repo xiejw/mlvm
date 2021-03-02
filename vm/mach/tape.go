@@ -2,11 +2,19 @@ package mach
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/xiejw/mlvm/vm/algorithms/autograd"
 	"github.com/xiejw/mlvm/vm/base/errors"
 	"github.com/xiejw/mlvm/vm/ops"
 )
+
+// whether enable debug.
+var debugGradTape bool
+
+func init() {
+	debugGradTape = len(os.Getenv("MLVM_DEBUG_GRAD_TAPE")) != 0
+}
 
 // most are expected to be immutable. few exceptions are
 //
@@ -64,14 +72,27 @@ func (t *Tape) BProp(x *Handle) error {
 			"Handle (%v) has not grad flowing through it; so cannot be used for Backward", x)
 	}
 
-	fmt.Printf("tape: \n")
-	for _, r := range t.Records {
-		fmt.Printf("  %+v\n", r)
+	vm := x.VM()
+
+	// print debug info if requested.
+	if debugGradTape {
+		fmt.Printf("tape: \n")
+		for _, r := range t.Records {
+			fmt.Printf("  %+v\n", r)
+		}
+		fmt.Printf("dag: \n")
+		for _, r := range t.GradDAG {
+			fmt.Printf("  %+v\n", r)
+		}
 	}
-	fmt.Printf("dag: \n")
-	for _, r := range t.GradDAG {
-		fmt.Printf("  %+v\n", r)
+
+	gradX, err := vm.ones(x.DType(), x.Shape().Dims)
+	if err != nil {
+		return err
 	}
+
+	grads := make(map[*Handle]*Handle)
+	grads[x] = gradX
 
 	for _, r := range t.GradDAG {
 		_, err := autograd.Grad(
