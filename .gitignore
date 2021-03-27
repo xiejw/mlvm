@@ -1,5 +1,5 @@
 # outputs
-.build
+.build*
 
 # vim
 *.swo
