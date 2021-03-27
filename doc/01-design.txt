@@ -1,4 +1,0 @@
-From bottom-up view for the design
-
-VM
-
