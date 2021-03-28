@@ -1,4 +1,5 @@
 #include "vm.h"
+#include "vm_internal.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -53,6 +54,7 @@ error_t vmFreeT(struct vm_t* vm, int handle)
         return OK;
 }
 
+// dtype and shape are optinoal (NULL).
 error_t vmFetchMetadata(struct vm_t* vm, int handle, enum data_t* dtype,
                         struct shape_t** shape)
 {

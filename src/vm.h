@@ -31,6 +31,8 @@ struct tensor_t {
 #define MAX_TENSOR_COUNT 128
 
 struct vm_t {
+        // internal fields.
+
         // consider to use pages.
         struct tensor_t handles[MAX_TENSOR_COUNT];
 };
@@ -44,10 +46,9 @@ enum opcode_t {
 // -----------------------------------------------------------------------------
 
 struct vm_t* vmNew();
-void         vmFree();
-
-int  vmExec(enum opcode_t, void* opt, int lhs, int rhs);
-void vmSync();
+void         vmFree(struct vm_t*);
+error_t      vmExec(enum opcode_t, void* opt, int dst, int lhs, int rhs);
+void         vmSync();
 
 // -----------------------------------------------------------------------------
 // apis for tensors. / tensor.c
@@ -67,11 +68,5 @@ error_t vmFetchData(struct vm_t*, int handle, void** data);
 struct shape_t* spNew(int rank, int* dims);
 struct shape_t* spIncRef(struct shape_t*);
 struct shape_t* spDecRef(struct shape_t*);
-
-// -----------------------------------------------------------------------------
-// internal apis.
-// -----------------------------------------------------------------------------
-
-void vmFreeHandle(struct tensor_t* t);  // tensor.c
 
 #endif
