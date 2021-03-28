@@ -20,7 +20,7 @@ LDFLAGS         += ${EVA_LIB}
 # libs.
 # ------------------------------------------------------------------------------
 VM_HEADER       = ${SRC}/vm.h
-VM_LIB          = ${BUILD}/vm_vm.o ${BUILD}/vm_shape.o
+VM_LIB          = ${BUILD}/vm_vm.o ${BUILD}/vm_shape.o ${BUILD}/vm_tensor.o
 
 ALL_LIBS        = ${VM_LIB}
 
