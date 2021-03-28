@@ -5,6 +5,13 @@
 // internal apis.
 // -----------------------------------------------------------------------------
 
+#define MAX_TENSOR_COUNT 128
+
+struct vm_t {
+        // consider to use pages.
+        struct tensor_t handles[MAX_TENSOR_COUNT];
+};
+
 // tensor_t is allocated in pages. so, we set the fields and mark as used.
 static inline void vmFillHandle(struct tensor_t* t, enum data_t dtype,
                                 struct shape_t* s, void* data)

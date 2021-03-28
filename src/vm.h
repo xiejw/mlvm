@@ -28,14 +28,7 @@ struct tensor_t {
         void*           data;
 };
 
-#define MAX_TENSOR_COUNT 128
-
-struct vm_t {
-        // internal fields.
-
-        // consider to use pages.
-        struct tensor_t handles[MAX_TENSOR_COUNT];
-};
+struct vm_t;  // forward def.
 
 enum opcode_t {
         OP_ADD,
