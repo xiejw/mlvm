@@ -28,29 +28,15 @@ alloc:
         default:
                 return errNew("unsupported dtype for new tensor %d", dtype);
         }
-        p->dtype = dtype;
-        p->used  = 1;
-        p->shape = spIncRef(s);
-        p->data  = data;
 
+        vmFillHandle(p, dtype, s, data);
         return slot;
-}
-
-void vmFreeHandle(struct tensor_t* t)
-{
-        assert(t->used);
-        free(t->data);
-        spDecRef(t->shape);
-
-        t->shape = NULL;
-        t->data  = NULL;
-        t->used  = 0;
 }
 
 error_t vmFreeT(struct vm_t* vm, int handle)
 {
         assert(handle >= 0 && handle < MAX_TENSOR_COUNT);
-        vmFreeHandle(&vm->handles[handle]);
+        vmReleaseHandle(&vm->handles[handle]);
         return OK;
 }
 
