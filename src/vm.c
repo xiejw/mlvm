@@ -32,7 +32,12 @@ error_t vmExec(struct vm_t* vm, enum opcode_t op, void* opt, int dst, int lhs,
         switch (op) {
         case OP_ADD:
                 assert(opt == NULL);
-                return opAdd(td, t1, t2);
+                if (td->dtype == F32) {
+                        return vmOpAddF32(td, t1, t2);
+                }
+
+                return errNewWithNote(
+                    ENOTIMPL, "unimpl for OP_ADD with dtype %d", td->dtype);
 
         default:
                 return errNewWithNote(ENOTIMPL, "unimpl for vmExec");

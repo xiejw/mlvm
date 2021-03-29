@@ -9,9 +9,11 @@
 // data structures.
 // -----------------------------------------------------------------------------
 
+typedef float float32_t;
+
 enum data_t {
-        F32,
-        I32,
+        F32,  // float32_t
+        I32,  // int32_t
 };
 
 struct shape_t {
@@ -48,12 +50,11 @@ void         vmSync(struct vm_t* vm);
 // apis for tensors. / tensor.c
 // -----------------------------------------------------------------------------
 
-int     vmNewT(struct vm_t*, enum data_t, struct shape_t*);
-error_t vmFreeT(struct vm_t*, int);
+int     vmTensorNew(struct vm_t*, enum data_t, struct shape_t*);
+error_t vmTensorFree(struct vm_t*, int);
 
-error_t vmFetchMetadata(struct vm_t*, int handle, enum data_t*,
-                        struct shape_t**);
-error_t vmFetchData(struct vm_t*, int handle, void** data);
+error_t vmTensorInfo(struct vm_t*, int handle, enum data_t*, struct shape_t**);
+error_t vmTensorData(struct vm_t*, int handle, void** data);
 
 // -----------------------------------------------------------------------------
 // apis for shapes. / shape.c

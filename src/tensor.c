@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 // neg number if error. call site should clean error stack.
-int vmNewT(struct vm_t* vm, enum data_t dtype, struct shape_t* s)
+int vmTensorNew(struct vm_t* vm, enum data_t dtype, struct shape_t* s)
 {
         void*            data;
         struct tensor_t* p = vm->handles;
@@ -31,15 +31,15 @@ alloc:
         return slot;
 }
 
-error_t vmFreeT(struct vm_t* vm, int handle)
+error_t vmTensorFree(struct vm_t* vm, int handle)
 {
         vmReleaseHandle(vmGrabHandle(vm, handle));
         return OK;
 }
 
 // dtype and shape are optinoal (NULL).
-error_t vmFetchMetadata(struct vm_t* vm, int handle, enum data_t* dtype,
-                        struct shape_t** shape)
+error_t vmTensorInfo(struct vm_t* vm, int handle, enum data_t* dtype,
+                     struct shape_t** shape)
 {
         struct tensor_t* t = vmGrabHandle(vm, handle);
 
@@ -49,7 +49,7 @@ error_t vmFetchMetadata(struct vm_t* vm, int handle, enum data_t* dtype,
         return OK;
 }
 
-error_t vmFetchData(struct vm_t* vm, int handle, void** data)
+error_t vmTensorData(struct vm_t* vm, int handle, void** data)
 {
         struct tensor_t* t = vmGrabHandle(vm, handle);
 
