@@ -1,5 +1,6 @@
 #include "vm.h"
 
+#include "op.h"
 #include "vm_internal.h"
 
 #include <string.h>  // memset
@@ -21,9 +22,21 @@ void vmFree(struct vm_t* vm)
         free(vm);
 }
 
-error_t vmExec(enum opcode_t op, void* opt, int dst, int lhs, int rhs)
+error_t vmExec(struct vm_t* vm, enum opcode_t op, void* opt, int dst, int lhs,
+               int rhs)
 {
-        return errNew("unimpl for vmExec");
+        struct tensor_t* td = vmGrabHandle(vm, dst);
+        struct tensor_t* t1 = vmGrabHandle(vm, lhs);
+        struct tensor_t* t2 = vmGrabHandle(vm, rhs);
+
+        switch (op) {
+        case OP_ADD:
+                assert(opt == NULL);
+                return opAdd(td, t1, t2);
+
+        default:
+                return errNewWithNote(ENOTIMPL, "unimpl for vmExec");
+        }
 }
 
 void vmSync() {}

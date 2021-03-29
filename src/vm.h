@@ -40,8 +40,9 @@ enum opcode_t {
 
 struct vm_t* vmNew();
 void         vmFree(struct vm_t*);
-error_t      vmExec(enum opcode_t, void* opt, int dst, int lhs, int rhs);
-void         vmSync();
+error_t      vmExec(struct vm_t* vm, enum opcode_t, void* opt, int dst, int lhs,
+                    int rhs);
+void         vmSync(struct vm_t* vm);
 
 // -----------------------------------------------------------------------------
 // apis for tensors. / tensor.c

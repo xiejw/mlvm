@@ -4,8 +4,6 @@
 #include <assert.h>
 #include <stdlib.h>
 
-typedef float float32_t;
-
 // neg number if error. call site should clean error stack.
 int vmNewT(struct vm_t* vm, enum data_t dtype, struct shape_t* s)
 {
@@ -35,8 +33,7 @@ alloc:
 
 error_t vmFreeT(struct vm_t* vm, int handle)
 {
-        assert(handle >= 0 && handle < MAX_TENSOR_COUNT);
-        vmReleaseHandle(&vm->handles[handle]);
+        vmReleaseHandle(vmGrabHandle(vm, handle));
         return OK;
 }
 
@@ -44,8 +41,7 @@ error_t vmFreeT(struct vm_t* vm, int handle)
 error_t vmFetchMetadata(struct vm_t* vm, int handle, enum data_t* dtype,
                         struct shape_t** shape)
 {
-        assert(handle >= 0 && handle < MAX_TENSOR_COUNT);
-        struct tensor_t* t = &vm->handles[handle];
+        struct tensor_t* t = vmGrabHandle(vm, handle);
 
         assert(t->used);
         if (dtype != NULL) *dtype = t->dtype;
@@ -55,8 +51,7 @@ error_t vmFetchMetadata(struct vm_t* vm, int handle, enum data_t* dtype,
 
 error_t vmFetchData(struct vm_t* vm, int handle, void** data)
 {
-        assert(handle >= 0 && handle < MAX_TENSOR_COUNT);
-        struct tensor_t* t = &vm->handles[handle];
+        struct tensor_t* t = vmGrabHandle(vm, handle);
 
         assert(t->used);
         *data = t->data;

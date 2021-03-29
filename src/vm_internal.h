@@ -1,6 +1,8 @@
 #include <assert.h>
 #include <stdlib.h>
 
+typedef float float32_t;
+
 // -----------------------------------------------------------------------------
 // internal apis.
 // -----------------------------------------------------------------------------
@@ -11,6 +13,12 @@ struct vm_t {
         // consider to use pages.
         struct tensor_t handles[MAX_TENSOR_COUNT];
 };
+
+static inline struct tensor_t* vmGrabHandle(struct vm_t* vm, int handle)
+{
+        assert(handle >= 0 && handle < MAX_TENSOR_COUNT);
+        return &vm->handles[handle];
+}
 
 // tensor_t is allocated in pages. so, we set the fields and mark as used.
 static inline void vmFillHandle(struct tensor_t* t, enum data_t dtype,

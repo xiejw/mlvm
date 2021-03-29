@@ -12,7 +12,7 @@ int main()
         int t1 = vmNewT(vm, F32, r2_2x3);
         int t2 = vmNewT(vm, F32, r2_2x3);
 
-        err = vmExec(OP_ADD, NULL, t1, t1, t2);
+        err = vmExec(vm, OP_ADD, NULL, t1, t1, t2);
         if (err) {
                 errDump("failed to exec op");
                 goto cleanup;
