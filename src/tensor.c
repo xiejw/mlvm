@@ -57,3 +57,52 @@ error_t vmTensorData(struct vm_t* vm, int handle, void** data)
         *data = t->data;
         return OK;
 }
+
+void vmTensorDump(struct vm_t* vm, int handle, sds_t* s)
+{
+        struct tensor_t* t  = vmGrabHandle(vm, handle);
+        struct shape_t*  sp = t->shape;
+
+        // shape
+        sdsCatPrintf(s, "<");
+        for (int i = 0; i < sp->rank; i++) {
+                if (i != sp->rank - 1)
+                        sdsCatPrintf(s, "%d, ", sp->dims[i]);
+                else
+                        sdsCatPrintf(s, "%d", sp->dims[i]);
+        }
+        sdsCatPrintf(s, "> ");
+
+        // dtype
+        switch (t->dtype) {
+        case F32:
+                sdsCatPrintf(s, "f32 ");
+                break;
+        case I32:
+                sdsCatPrintf(s, "i32 ");
+                break;
+        default:
+                sdsCatPrintf(s, " unknown_dtype ");
+        }
+
+        // data
+#define print_data(dt, type_cast)                                           \
+        if (t->dtype == (dt)) {                                             \
+                size_t size = sp->size;                                     \
+                sdsCatPrintf(s, "<");                                       \
+                for (size_t i = 0; i < size; i++) {                         \
+                        sdsCatPrintf(s, "%f, ", ((type_cast)(t->data))[i]); \
+                        if (i >= 5 && i != size - 1) {                      \
+                                sdsCatPrintf(s, "...");                     \
+                                break;                                      \
+                        }                                                   \
+                }                                                           \
+                sdsCatPrintf(s, "> ");                                      \
+        }
+
+        print_data(F32, float32_t*);
+        print_data(I32, int32_t*);
+
+#undef print_data
+        return;
+}

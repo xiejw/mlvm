@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+#include "adt/sds.h"
 #include "base/error.h"
 
 // -----------------------------------------------------------------------------
@@ -55,6 +56,7 @@ error_t vmTensorFree(struct vm_t*, int);
 
 error_t vmTensorInfo(struct vm_t*, int handle, enum data_t*, struct shape_t**);
 error_t vmTensorData(struct vm_t*, int handle, void** data);
+void    vmTensorDump(struct vm_t*, int handle, sds_t* s);
 
 // -----------------------------------------------------------------------------
 // apis for shapes. / shape.c
