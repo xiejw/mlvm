@@ -86,18 +86,23 @@ void vmTensorDump(sds_t* s, struct vm_t* vm, int handle)
         }
 
         // data
-#define print_data(dt, type_cast)                                           \
-        if (t->dtype == (dt)) {                                             \
-                size_t size = sp->size;                                     \
-                sdsCatPrintf(s, "[");                                       \
-                for (size_t i = 0; i < size; i++) {                         \
-                        sdsCatPrintf(s, "%f, ", ((type_cast)(t->data))[i]); \
-                        if (i >= 5 && i != size - 1) {                      \
-                                sdsCatPrintf(s, "...");                     \
-                                break;                                      \
-                        }                                                   \
-                }                                                           \
-                sdsCatPrintf(s, "]");                                       \
+#define print_data(dt, type_cast)                                        \
+        if (t->dtype == (dt)) {                                          \
+                size_t size = sp->size;                                  \
+                sdsCatPrintf(s, "[");                                    \
+                for (size_t i = 0; i < size; i++) {                      \
+                        if (i != size - 1)                               \
+                                sdsCatPrintf(s, "%f, ",                  \
+                                             ((type_cast)(t->data))[i]); \
+                        else                                             \
+                                sdsCatPrintf(s, "%f",                    \
+                                             ((type_cast)(t->data))[i]); \
+                        if (i >= 5 && i != size - 1) {                   \
+                                sdsCatPrintf(s, "...");                  \
+                                break;                                   \
+                        }                                                \
+                }                                                        \
+                sdsCatPrintf(s, "]");                                    \
         }
 
         print_data(F32, float32_t*);
