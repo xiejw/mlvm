@@ -58,7 +58,7 @@ error_t vmTensorData(struct vm_t* vm, int handle, void** data)
         return OK;
 }
 
-void vmTensorDump(struct vm_t* vm, int handle, sds_t* s)
+void vmTensorDump(sds_t* s, struct vm_t* vm, int handle)
 {
         struct tensor_t* t  = vmGrabHandle(vm, handle);
         struct shape_t*  sp = t->shape;
@@ -89,7 +89,7 @@ void vmTensorDump(struct vm_t* vm, int handle, sds_t* s)
 #define print_data(dt, type_cast)                                           \
         if (t->dtype == (dt)) {                                             \
                 size_t size = sp->size;                                     \
-                sdsCatPrintf(s, "<");                                       \
+                sdsCatPrintf(s, "[");                                       \
                 for (size_t i = 0; i < size; i++) {                         \
                         sdsCatPrintf(s, "%f, ", ((type_cast)(t->data))[i]); \
                         if (i >= 5 && i != size - 1) {                      \
@@ -97,7 +97,7 @@ void vmTensorDump(struct vm_t* vm, int handle, sds_t* s)
                                 break;                                      \
                         }                                                   \
                 }                                                           \
-                sdsCatPrintf(s, "> ");                                      \
+                sdsCatPrintf(s, "]");                                       \
         }
 
         print_data(F32, float32_t*);

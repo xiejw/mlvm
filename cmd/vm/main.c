@@ -13,13 +13,13 @@ int main()
 
         int t1 = vmTensorNew(vm, F32, r2_2x3);
         int t2 = vmTensorNew(vm, F32, r2_2x3);
-        sdsClear(s);
-        vmTensorDump(vm, t1, &s);
-        printf("t1: %s\n", s);
+        sdsCatPrintf(&s, "t1: ");
+        vmTensorDump(&s, vm, t1);
+        sdsCatPrintf(&s, "\n");
 
-        sdsClear(s);
-        vmTensorDump(vm, t2, &s);
-        printf("t2: %s\n", s);
+        sdsCatPrintf(&s, "t2: ");
+        vmTensorDump(&s, vm, t2);
+        sdsCatPrintf(&s, "\n");
 
         err = vmExec(vm, OP_ADD, NULL, t1, t1, t2);
         if (err) {
@@ -27,10 +27,10 @@ int main()
                 goto cleanup;
         }
 
-        sdsClear(s);
-        vmTensorDump(vm, t1, &s);
+        sdsCatPrintf(&s, "result: ");
+        vmTensorDump(&s, vm, t1);
 
-        printf("succeed: %s\n", s);
+        printf("%s\n", s);
 
 cleanup:
         spDecRef(r2_2x3);
