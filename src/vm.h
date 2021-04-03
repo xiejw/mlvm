@@ -5,6 +5,7 @@
 
 #include "adt/sds.h"
 #include "base/error.h"
+#include "rng/srng64.h"
 
 // -----------------------------------------------------------------------------
 // data structures.
@@ -34,7 +35,14 @@ struct tensor_t {
 struct vm_t;  // forward def.
 
 enum opcode_t {
-        OP_ADD,
+        OP_ADD,  // shapes must match.
+};
+
+struct opopt_t {
+        int ref_count;
+        union {
+                struct srng64_t rng_seed;
+        };
 };
 
 // -----------------------------------------------------------------------------
@@ -46,6 +54,14 @@ void         vmFree(struct vm_t*);
 error_t      vmExec(struct vm_t* vm, enum opcode_t, void* opt, int dst, int lhs,
                     int rhs);
 void         vmSync(struct vm_t* vm);
+
+// -----------------------------------------------------------------------------
+// apis for vm.
+// -----------------------------------------------------------------------------
+
+struct opopt_t* vmOptNew();
+struct opopt_t* vmOptIncRef(struct opopt_t*);
+struct opopt_t* vmOptDecRef(struct opopt_t*);
 
 // -----------------------------------------------------------------------------
 // apis for tensors. / tensor.c
