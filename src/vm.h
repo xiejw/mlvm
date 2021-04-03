@@ -40,6 +40,7 @@ enum opcode_t {
 
 struct opopt_t {
         int ref_count;
+        int mode;  // distribution mode for rng.
         union {
                 struct srng64_t rng_seed;
         };
@@ -56,7 +57,7 @@ error_t      vmExec(struct vm_t* vm, enum opcode_t, void* opt, int dst, int lhs,
 void         vmSync(struct vm_t* vm);
 
 // -----------------------------------------------------------------------------
-// apis for vm.
+// apis for op options. / op.c
 // -----------------------------------------------------------------------------
 
 struct opopt_t* vmOptNew();
