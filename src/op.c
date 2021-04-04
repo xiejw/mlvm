@@ -5,31 +5,6 @@
 
 #include "rng/srng64_normal.h"
 
-struct opopt_t* vmOptNew()
-{
-        struct opopt_t* opt = malloc(sizeof(struct opopt_t));
-        opt->ref_count      = 0;
-        opt->mode           = 0;
-        return opt;
-}
-
-struct opopt_t* vmOptIncRef(struct opopt_t* opt)
-{
-        assert(opt->ref_count > 0);
-        opt->ref_count++;
-        return opt;
-}
-
-struct opopt_t* vmOptDecRef(struct opopt_t* opt)
-{
-        if (opt == NULL) return NULL;
-        if (--(opt->ref_count) == 0) {
-                free(opt);
-                return NULL;
-        }
-        return opt;
-}
-
 error_t vmOpAddF32(struct tensor_t* td, struct tensor_t* t1,
                    struct tensor_t* t2)
 {
@@ -55,7 +30,8 @@ error_t vmOpcRngF32(struct tensor_t* dst, int mode,
                     const struct srng64_t* ori_rng)
 {
         assert(mode == 0);
-        // make a copy to avoid advance the ori_rng.
+        assert(dst->dtype == F32);
+        // make a copy to avoid advancing the ori_rng.
         struct srng64_t rng = *ori_rng;
         srng64StdNormalF(&rng, dst->shape->size, (float32_t*)dst->data);
         return OK;
