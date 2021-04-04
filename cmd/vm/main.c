@@ -5,6 +5,15 @@
 
 #include "vm.h"
 
+#define NO_ERR(e) NO_ERR_IMPL_(e, __FILE__, __LINE__)
+
+#define NO_ERR_IMPL_(e, f, l)                                           \
+        if (e) {                                                        \
+                err = e;                                                \
+                errDump("failed to exec op @ file %s line %d\n", f, l); \
+                goto cleanup;                                           \
+        }
+
 int main()
 {
         error_t err = OK;
@@ -20,18 +29,10 @@ int main()
         int t1       = vmTensorNew(vm, F32, r2_2x3);
         opt.mode     = 0;  // normal.
         opt.rng_seed = rng;
-        err          = vmExec(vm, OP_RNG, &opt, t1, -1, -1);
-        if (err) {
-                errDump("failed to exec op");
-                goto cleanup;
-        }
+        NO_ERR(vmExec(vm, OP_RNG, &opt, t1, VM_UNUSED, VM_UNUSED));
 
         int t2 = vmTensorNew(vm, F32, r2_2x3);
-        err    = vmExec(vm, OP_RNG, &opt, t2, -1, -1);
-        if (err) {
-                errDump("failed to exec op");
-                goto cleanup;
-        }
+        NO_ERR(vmExec(vm, OP_RNG, &opt, t2, VM_UNUSED, VM_UNUSED));
 
         sdsCatPrintf(&s, "t1: ");
         vmTensorDump(&s, vm, t1);
@@ -41,11 +42,7 @@ int main()
         vmTensorDump(&s, vm, t2);
         sdsCatPrintf(&s, "\n");
 
-        err = vmExec(vm, OP_ADD, NULL, t1, t1, t2);
-        if (err) {
-                errDump("failed to exec op");
-                goto cleanup;
-        }
+        NO_ERR(vmExec(vm, OP_ADD, NULL, t1, t1, t2));
 
         sdsCatPrintf(&s, "ds: ");
         vmTensorDump(&s, vm, t1);
