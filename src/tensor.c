@@ -86,16 +86,16 @@ void vmTensorDump(sds_t* s, struct vm_t* vm, int handle)
         }
 
         // data
-#define print_data(dt, type_cast)                                        \
+#define print_data(dt, type_cast, fmt_str)                               \
         if (t->dtype == (dt)) {                                          \
                 size_t size = sp->size;                                  \
                 sdsCatPrintf(s, "[");                                    \
                 for (size_t i = 0; i < size; i++) {                      \
                         if (i != size - 1)                               \
-                                sdsCatPrintf(s, "%f, ",                  \
+                                sdsCatPrintf(s, fmt_str ", ",            \
                                              ((type_cast)(t->data))[i]); \
                         else                                             \
-                                sdsCatPrintf(s, "%f",                    \
+                                sdsCatPrintf(s, fmt_str,                 \
                                              ((type_cast)(t->data))[i]); \
                         if (i >= 5 && i != size - 1) {                   \
                                 sdsCatPrintf(s, "...");                  \
@@ -105,8 +105,8 @@ void vmTensorDump(sds_t* s, struct vm_t* vm, int handle)
                 sdsCatPrintf(s, "]");                                    \
         }
 
-        print_data(F32, float32_t*);
-        print_data(I32, int32_t*);
+        print_data(F32, float32_t*, "%.3f");
+        print_data(I32, int32_t*, "%d");
 
 #undef print_data
         return;

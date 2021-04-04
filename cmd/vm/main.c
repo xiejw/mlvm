@@ -47,7 +47,7 @@ int main()
                 goto cleanup;
         }
 
-        sdsCatPrintf(&s, "result: ");
+        sdsCatPrintf(&s, "ds: ");
         vmTensorDump(&s, vm, t1);
 
         printf("%s\n", s);
