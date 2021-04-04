@@ -36,13 +36,14 @@ struct vm_t;  // forward def.
 
 enum opcode_t {
         OP_ADD,  // shapes must match.
+        OP_RNG,
 };
 
 struct opopt_t {
         int ref_count;
         int mode;  // distribution mode for rng.
         union {
-                struct srng64_t rng_seed;
+                const struct srng64_t* rng_seed;  // unowned.
         };
 };
 
@@ -52,8 +53,8 @@ struct opopt_t {
 
 struct vm_t* vmNew();
 void         vmFree(struct vm_t*);
-error_t      vmExec(struct vm_t* vm, enum opcode_t, void* opt, int dst, int lhs,
-                    int rhs);
+error_t      vmExec(struct vm_t* vm, enum opcode_t, const struct opopt_t* opt,
+                    int dst, int lhs, int rhs);
 void         vmSync(struct vm_t* vm);
 
 // -----------------------------------------------------------------------------
