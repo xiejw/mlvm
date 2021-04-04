@@ -16,6 +16,8 @@ FMT_FOLDERS     =  ${SRC} ${CMD}  # required by eva.mk
 CFLAGS          += -I${EVA_PATH}/src
 LDFLAGS         += ${EVA_LIB}
 
+TEX             = docker run --rm -v `pwd`:/workdir xiejw/tex pdftex
+
 # ------------------------------------------------------------------------------
 # libs.
 # ------------------------------------------------------------------------------
@@ -32,6 +34,12 @@ ALL_LIBS        = ${VM_LIB}
 .DEFAULT_GOAL   = vm
 
 compile: ${BUILD} ${ALL_LIBS}
+
+.PNONY: doc
+doc: doc/design.pdf
+
+doc/design.pdf: doc/design.tex
+	${TEX} -output-directory `dirname "$@"` $<
 
 ${BUILD}/vm_%.o: ${SRC}/%.c ${VM_HEADER}
 	${EVA_CC} -o $@ -c $<
@@ -52,3 +60,4 @@ vm: compile ${BUILD}/vm
 
 ${BUILD}/vm: cmd/vm/main.c ${VM_LIB}
 	${EVA_LD} -o $@ $^
+

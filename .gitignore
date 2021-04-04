@@ -5,3 +5,6 @@
 *.swo
 *.swp
 
+# tex
+*.log
+*.pdf

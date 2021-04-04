@@ -1,0 +1,24 @@
+\noindent{}Hello MLVM.
+\vskip 1em
+
+The first level of the vm is designed to be eager execution only. It is super
+simple, easy to understand, and super efficient. Toward efficiency, there will be
+no check, just like a ordinary machine. So caller should be very confident about
+its correctness. A programming language and compiler built on top of the vm is
+highly recommended, but not required.
+
+Another design point is: How to define the model for parallelism. In particular,
+how to use the multi-core system to gain performance. Two ways are possible. The
+first one is offloading the computation to co-processors. With that, we need to
+introduce async value, multi-threads for heavy operations e.g., matmuls. The
+known challenges are also obvious: How to avoid cache line miss during processor
+switch, and how to design a scheduling system which handles cheap operations
+well---a chain of cheap operations might put most of the processors idle.
+
+The alternative is to design the vm for single processor execution only and do
+it well. Caller can launch multiple vm's each for single processor and adjust
+the affinity if needed. With that, MPI style collective are needed. For CPU
+within same OS process, we can provide a shared memory implementation for the
+collective to avoid data copying.
+
+\end
