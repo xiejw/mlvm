@@ -37,14 +37,19 @@ struct tensor_t {
 struct vm_t;  // forward def.
 
 enum opcode_t {
-        OP_ADD,  // shapes must match.
-        OP_RNG,
+        OP_ADD,  // shapes must match. used .f for scalar.
+        OP_MUL,  // shapes much match. used .f for scalar.
+        OP_MINUS,
+        OP_SUM,
+        OP_RNG,  // used .rng_seed for seed, mode for distribution.
 };
 
 struct opopt_t {
         int mode;  // distribution mode for rng.
         union {
                 const struct srng64_t* rng_seed;  // unowned.
+                float32_t              f;
+                int32_t                i;
         };
 };
 

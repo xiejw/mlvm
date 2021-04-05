@@ -46,6 +46,13 @@ int main()
 
         sdsCatPrintf(&s, "ds: ");
         vmTensorDump(&s, vm, t1);
+        sdsCatPrintf(&s, "\n");
+
+        NO_ERR(vmExec(vm, OP_MUL, NULL, t1, t1, t2));
+
+        sdsCatPrintf(&s, "ds: ");
+        vmTensorDump(&s, vm, t1);
+        sdsCatPrintf(&s, "\n");
 
         printf("%s\n", s);
 

@@ -1,11 +1,12 @@
+\hsize=5in
 \noindent{}Hello MLVM.
 \vskip 1em
 
-The first level of the vm is designed to be eager execution only. It is super
-simple, easy to understand, and super efficient. Toward efficiency, there will be
-no check, just like a ordinary machine. So caller should be very confident about
-its correctness. A programming language and compiler built on top of the vm is
-highly recommended, but not required.
+The first level of the vm is designed to be a system library, not compiler tool.
+It is super simple, easy to understand, and super efficient. Toward efficiency,
+there will be no check, just like a ordinary machine. So caller should be very
+confident about its correctness. A programming language and compiler built on
+top of the vm is highly recommended, but not required.
 
 Another design point is: How to define the model for parallelism. In particular,
 how to use the multi-core system to gain performance. Two ways are possible. The

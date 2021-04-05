@@ -33,16 +33,22 @@ error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
         if (rhs != -1) t2 = vmGrabHandle(vm, rhs);
 
         switch (op) {
-        case OP_ADD:
-                assert(opt == NULL);
-                assert(t1 != NULL);
-                assert(t2 != NULL);
-                if (td->dtype == F32) {
-                        return vmOpAddF32(td, t1, t2);
-                }
+#define CASE_ELEWISE_OP(OP, API)                                             \
+        case OP_##OP:                                                        \
+                assert(opt == NULL);                                         \
+                assert(t1 != NULL);                                          \
+                assert(t2 != NULL);                                          \
+                if (td->dtype == F32) {                                      \
+                        return vmOp##API##F32(td, t1, t2);                   \
+                }                                                            \
+                                                                             \
+                return errNewWithNote(ENOTIMPL,                              \
+                                      "unimpl for OP_" #OP " with dtype %d", \
+                                      td->dtype);
 
-                return errNewWithNote(
-                    ENOTIMPL, "unimpl for OP_ADD with dtype %d", td->dtype);
+                CASE_ELEWISE_OP(ADD, Add)
+                CASE_ELEWISE_OP(MUL, Mul)
+                CASE_ELEWISE_OP(MINUS, Minus)
 
         case OP_RNG:
                 assert(opt != NULL);
