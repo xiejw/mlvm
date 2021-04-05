@@ -40,7 +40,7 @@ enum opcode_t {
         OP_ADD,  // shapes must match. used .f for scalar.
         OP_MUL,  // shapes much match. used .f for scalar.
         OP_MINUS,
-        OP_SUM,
+        OP_REDUCE,
         OP_RNG,  // used .rng_seed for seed, mode for distribution.
 };
 

@@ -31,13 +31,30 @@ DEF_ELEWISE_OP(Add, +)
 DEF_ELEWISE_OP(Mul, *)
 DEF_ELEWISE_OP(Minus, -)
 
-error_t vmOpcRngF32(struct tensor_t* dst, int mode,
-                    const struct srng64_t* ori_rng)
+error_t vmOpRngF32(struct tensor_t* dst, int mode,
+                   const struct srng64_t* ori_rng)
 {
         // make a copy to avoid advancing the ori_rng.
         struct srng64_t rng = *ori_rng;
         assert(mode == 0);
         assert(dst->dtype == F32);
         srng64StdNormalF(&rng, dst->shape->size, (float32_t*)dst->data);
+        return OK;
+}
+
+error_t vmOpReduceF32(struct tensor_t* dst, struct tensor_t* t1, int mode)
+{
+        assert(mode == 0);  // sum
+        assert(t1->dtype == F32);
+        assert(dst->dtype == F32);
+        assert(1 == dst->shape->size);
+
+        float32_t  v    = 0;
+        size_t     size = t1->shape->size;
+        float32_t* data = (float32_t*)t1->data;
+        for (size_t i = 0; i < size; i++) {
+                v += data[i];
+        }
+        *(float32_t*)dst->data = v;
         return OK;
 }

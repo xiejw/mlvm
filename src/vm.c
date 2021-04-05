@@ -56,14 +56,26 @@ error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
                 assert(t1 == NULL);
                 assert(t2 == NULL);
                 if (td->dtype == F32) {
-                        return vmOpcRngF32(td, opt->mode, opt->rng_seed);
+                        return vmOpRngF32(td, opt->mode, opt->rng_seed);
                 }
 
                 return errNewWithNote(
                     ENOTIMPL, "unimpl for OP_RNG with dtype %d", td->dtype);
 
+        case OP_REDUCE:
+                assert(opt != NULL);
+                assert(opt->mode == 0);
+                assert(t1 != NULL);
+                assert(t2 == NULL);
+                if (td->dtype == F32) {
+                        return vmOpReduceF32(td, t1, opt->mode);
+                }
+
+                return errNewWithNote(
+                    ENOTIMPL, "unimpl for OP_REDUCE with dtype %d", td->dtype);
+
         default:
-                return errNewWithNote(ENOTIMPL, "unimpl for vmExec");
+                return errNewWithNote(ENOTIMPL, "unimpl op for vmExec: %d", op);
         }
 }
 
