@@ -22,6 +22,15 @@ void vmFree(struct vm_t* vm)
         free(vm);
 }
 
+error_t vmTensorSwap(struct vm_t* vm, int t, _mut_ void** data)
+{
+        struct tensor_t* ts  = vmGrabHandle(vm, t);
+        void*            old = ts->data;
+        ts->data             = *data;
+        *data                = old;
+        return OK;
+}
+
 error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
                int dst, int lhs, int rhs)
 {
@@ -78,5 +87,3 @@ error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
                 return errNewWithNote(ENOTIMPL, "unimpl op for vmExec: %d", op);
         }
 }
-
-void vmSync() {}

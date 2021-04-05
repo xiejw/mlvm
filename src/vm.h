@@ -61,18 +61,19 @@ struct vm_t* vmNew();
 void         vmFree(struct vm_t*);
 error_t      vmExec(struct vm_t* vm, enum opcode_t, const struct opopt_t* opt,
                     int dst, int lhs, int rhs);
-void         vmSync(struct vm_t* vm);
 
 // -----------------------------------------------------------------------------
 // apis for tensors. / tensor.c
 // -----------------------------------------------------------------------------
 
 int     vmTensorNew(struct vm_t*, enum data_t, struct shape_t*);
-error_t vmTensorFree(struct vm_t*, int);
+error_t vmTensorFree(struct vm_t*, int t);
 
-error_t vmTensorInfo(struct vm_t*, int handle, enum data_t*, struct shape_t**);
-error_t vmTensorData(struct vm_t*, int handle, void** data);
-void    vmTensorDump(sds_t* s, struct vm_t*, int handle);
+error_t vmTensorInfo(struct vm_t*, int t, _mut_ enum data_t*,
+                     _mut_ struct shape_t**);
+error_t vmTensorData(struct vm_t*, int t, _mut_ void** data);
+error_t vmTensorSwap(struct vm_t*, int t, _mut_ void** data);
+void    vmTensorDump(sds_t* s, struct vm_t*, int t);
 
 // -----------------------------------------------------------------------------
 // apis for shapes. / shape.c

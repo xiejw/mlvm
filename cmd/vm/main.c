@@ -30,7 +30,7 @@ int main()
         struct srng64_t* rng    = srng64New(123);
         struct opopt_t   opt;
 
-        printf("hello mlvm\n");
+        printf("hello mlvm\ninit\n");
 
         int t1 = vmTensorNew(vm, F32, r2_2x3);
         int t2 = vmTensorNew(vm, F32, r2_2x3);
@@ -40,17 +40,17 @@ int main()
         opt.rng_seed = rng;
         NO_ERR(vmExec(vm, OP_RNG, &opt, t1, VM_UNUSED, VM_UNUSED));
         NO_ERR(vmExec(vm, OP_RNG, &opt, t2, VM_UNUSED, VM_UNUSED));
-        SDS_CAT_PRINTF("t1: ", t1, "\n");
-        SDS_CAT_PRINTF("t2: ", t2, "\n");
+        SDS_CAT_PRINTF("\tt1: ", t1, "\n");
+        SDS_CAT_PRINTF("\tt2: ", t2, "\n");
 
         NO_ERR(vmExec(vm, OP_ADD, NULL, t1, t1, t2));
-        SDS_CAT_PRINTF("ds: ", t1, "\n");
+        SDS_CAT_PRINTF("t1 <- t1 + t2\n\tt1: ", t1, "\n");
 
         NO_ERR(vmExec(vm, OP_MUL, NULL, t1, t1, t2));
-        SDS_CAT_PRINTF("ds: ", t1, "\n");
+        SDS_CAT_PRINTF("t1 <- t1 * t2\n\tt1: ", t1, "\n");
 
         NO_ERR(vmExec(vm, OP_REDUCE, &opt, t3, t1, VM_UNUSED));
-        SDS_CAT_PRINTF("ds: ", t3, "\n");
+        SDS_CAT_PRINTF("t3 <- reduce(t1)\n\tt3: ", t3, "\n");
 
         printf("%s\n", s);
 
