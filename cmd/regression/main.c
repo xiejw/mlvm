@@ -38,18 +38,20 @@ int main()
         struct srng64_t* seed_for_input = srng64Split(seed);
         struct srng64_t* rng;  // free after each use.
 
-        float32_t* x;
-        float32_t  y;
+        float32_t* x_data;
+        float32_t* y_data;
         float32_t* w_data;
 
         printf("Linear Regression\n");
 
         int w_target = vmTensorNew(vm, F32, sp_weight);
         int w_learn  = vmTensorNew(vm, F32, sp_weight);
-        int input    = vmTensorNew(vm, F32, sp_weight);
+        int x        = vmTensorNew(vm, F32, sp_weight);
+        int y        = vmTensorNew(vm, F32, r1_1);
 
-        NO_ERR(vmTensorData(vm, input, (void**)&x));
+        NO_ERR(vmTensorData(vm, x, (void**)&x_data));
         NO_ERR(vmTensorData(vm, w_target, (void**)&w_data));
+        NO_ERR(vmTensorData(vm, y, (void**)&y_data));
 
         // ---
         // initial weight for the model (target).
@@ -72,18 +74,37 @@ int main()
 
         // --
         // prepare input sample: x,y.
-        new_input(seed_for_input, sp_weight->size, x, &y, w_data);
-        SDS_CAT_PRINTF("\tinput: ", input, "\n");
-        sdsCatPrintf(&s, "\ty: %f\n", y);
+        new_input(seed_for_input, sp_weight->size, x_data, y_data, w_data);
+        SDS_CAT_PRINTF("\tinput: ", x, "\n");
+        SDS_CAT_PRINTF("\ty: ", y, "\n");
 
-        // jNO_ERR(vmExec(vm, OP_ADD, NULL, t1, t1, t2));
-        // jSDS_CAT_PRINTF("t1 <- t1 + t2\n\tt1: ", t1, "\n");
+        // formula
+        //   forward pass
+        //      z = x * w
+        //      rz = reduce_sum(z)
+        //      l = z - y
+        //      l2 = l * l
+        //      loss = reduce_sum(l2)
+        //   backward pass
+        //      d_l2 = ones with shape as l
+        //      d_l = 2 * l * d_l2
+        //      d_rz = d_l
+        //      dz = ones with shape as l * d_rz
+        //      d_w = d_z * x
+        //
 
-        // jNO_ERR(vmExec(vm, OP_MUL, NULL, t1, t1, t2));
-        // jSDS_CAT_PRINTF("t1 <- t1 * t2\n\tt1: ", t1, "\n");
+        int z    = vmTensorNew(vm, F32, sp_weight);
+        int rz   = vmTensorNew(vm, F32, r1_1);
+        int l    = vmTensorNew(vm, F32, r1_1);
+        int l2   = vmTensorNew(vm, F32, r1_1);
+        int loss = vmTensorNew(vm, F32, r1_1);
 
-        // jNO_ERR(vmExec(vm, OP_REDUCE, &opt, t3, t1, VM_UNUSED));
-        // jSDS_CAT_PRINTF("t3 <- reduce(t1)\n\tt3: ", t3, "\n");
+        NO_ERR(vmExec(vm, OP_MUL, NULL, z, x, w_learn));
+        NO_ERR(vmExec(vm, OP_REDUCE, &opt, rz, z, VM_UNUSED));
+        NO_ERR(vmExec(vm, OP_MINUS, NULL, l, rz, y));
+        NO_ERR(vmExec(vm, OP_MUL, NULL, l2, l, l));
+        NO_ERR(vmExec(vm, OP_REDUCE, &opt, loss, l2, VM_UNUSED));
+        SDS_CAT_PRINTF("\tloss : ", loss, "\n");
 
         printf("%s\n", s);
 
