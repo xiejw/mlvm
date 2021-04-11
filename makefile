@@ -31,7 +31,7 @@ ALL_LIBS        = ${VM_LIB}
 # actions.
 # ------------------------------------------------------------------------------
 
-.DEFAULT_GOAL   = vm
+.DEFAULT_GOAL   = regression  # vm
 
 compile: ${BUILD} ${ALL_LIBS}
 
@@ -59,5 +59,11 @@ vm: compile ${BUILD}/vm
 	${EVA_EX} ${BUILD}/vm
 
 ${BUILD}/vm: cmd/vm/main.c ${VM_LIB}
+	${EVA_LD} -o $@ $^
+
+regression: compile ${BUILD}/regression
+	${EVA_EX} ${BUILD}/regression
+
+${BUILD}/regression: cmd/regression/main.c ${VM_LIB}
 	${EVA_LD} -o $@ $^
 
