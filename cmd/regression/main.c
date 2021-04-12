@@ -84,12 +84,6 @@ int main()
 
         SDS_CAT_PRINTF("\tinitial weight: ", w, "\n");
 
-        // ---
-        // prepare input sample: x,y.
-        new_input(seed_for_input, sp_weight->size, x_data, y_data, w_data);
-        SDS_CAT_PRINTF("\tinput: ", x, "\n");
-        SDS_CAT_PRINTF("\ty: ", y, "\n");
-
         // --- formula
         //   forward pass
         //      z[w] = x[w] * w[w]
@@ -104,29 +98,52 @@ int main()
         //      d_z[w] = ones_like(x[w]) * d_rz[]
         //      d_w[w] = d_z[w] * x[w]
         //
-        //   backward pass (simplified)
-        //      d_rz[] = 2 * l[]
-        //      d_w[w] = d_rz[] * x[w]
-        //
         //   optimizer
         //      d_w[w] = lr[] * d_w[w]  // reuse: update
         //      w[w] = w[w] - d_w[w]
         //
+        //   backward pass + optimizer (simplified)
+        //      d_rz[] = (2*lr) * l[]
+        //      d_w[w] = d_rz[] * x[w]
+        //      w[w] = w[w] - d_w[w]
 
         int z    = vmTensorNew(vm, F32, sp_weight);
         int rz   = vmTensorNew(vm, F32, r1_1);
         int l    = vmTensorNew(vm, F32, r1_1);
         int l2   = vmTensorNew(vm, F32, r1_1);
         int loss = l2;
+        int d_rz = vmTensorNew(vm, F32, r1_1);
+        int d_w  = vmTensorNew(vm, F32, sp_weight);
 
-        // forward pass.
-        NO_ERR(vmExec(vm, OP_MUL, NULL, z, x, w));
-        NO_ERR(vmExec(vm, OP_REDUCE, &opt, rz, z, VM_UNUSED));
-        NO_ERR(vmExec(vm, OP_MINUS, NULL, l, rz, y));
-        NO_ERR(vmExec(vm, OP_MUL, NULL, l2, l, l));
-        SDS_CAT_PRINTF("\tloss : ", loss, "\n");
+        for (size_t i = 0; i < 100; i++) {
+                sdsCatPrintf(&s, "\niteration %d\n", i);
 
-        printf("%s\n", s);
+                // ---
+                // prepare input sample: x,y.
+                new_input(seed_for_input, sp_weight->size, x_data, y_data,
+                          w_data);
+                SDS_CAT_PRINTF("\tinput: ", x, "\n");
+                SDS_CAT_PRINTF("\ty: ", y, "\n");
+
+                // forward pass.
+                NO_ERR(vmExec(vm, OP_MUL, NULL, z, x, w));
+                NO_ERR(vmExec(vm, OP_REDUCE, &opt, rz, z, VM_UNUSED));
+                NO_ERR(vmExec(vm, OP_MINUS, NULL, l, rz, y));
+                NO_ERR(vmExec(vm, OP_MUL, NULL, l2, l, l));
+                SDS_CAT_PRINTF("\tloss : ", loss, "\n");
+
+                // backward pass
+                opt.f = 2 * 0.05;  // 2 * learning_rate
+                NO_ERR(vmExec(vm, OP_MUL, &opt, d_rz, l, VM_UNUSED));
+                NO_ERR(vmExec(vm, OP_MUL, NULL, d_w, x,
+                              d_rz));  // d_rz must be t2.
+                NO_ERR(vmExec(vm, OP_MINUS, NULL, w, w, d_w));
+                SDS_CAT_PRINTF("\tgrad : ", d_w, "\n");
+                SDS_CAT_PRINTF("\tnew_w: ", w, "\n");
+                SDS_CAT_PRINTF("\ttgt w: ", w_target, "\n");
+                printf("%s\n", s);
+                sdsClear(s);
+        }
 
 cleanup:
         spDecRef(sp_weight);

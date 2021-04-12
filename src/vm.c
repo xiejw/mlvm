@@ -44,11 +44,15 @@ error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
         switch (op) {
 #define CASE_ELEWISE_OP(OP, API)                                             \
         case OP_##OP:                                                        \
-                assert(opt == NULL);                                         \
                 assert(t1 != NULL);                                          \
-                assert(t2 != NULL);                                          \
                 if (td->dtype == F32) {                                      \
-                        return vmOp##API##F32(td, t1, t2);                   \
+                        if (opt == NULL) {                                   \
+                                assert(t2 != NULL);                          \
+                                return vmOp##API##F32(td, t1, t2);           \
+                        } else {                                             \
+                                assert(t2 == NULL);                          \
+                                return vmOp##API##SF32(td, t1, opt->f);      \
+                        }                                                    \
                 }                                                            \
                                                                              \
                 return errNewWithNote(ENOTIMPL,                              \
