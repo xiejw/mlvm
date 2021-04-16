@@ -94,8 +94,8 @@ int main()
         printf("magic number: %08x\n", v);
         printf("n %d w %d h %d\n", n, w, h);
 
-        printf("reading one sample.\n");
-        n                  = 1;
+        printf("reading two samples.\n");
+        n                  = 2;
         size_t         s   = n * w * h;
         unsigned char* buf = malloc(sizeof(unsigned char) * s);
         ssize_t        r_s = read(fd, (void*)buf, s);
@@ -115,7 +115,41 @@ int main()
                 line += h;
         }
 
+        for (int i = 0; i < w; i++) {
+                for (int j = 0; j < h; j++) {
+                        unsigned char c = buf[j + line];
+                        if (c == 0) {
+                                printf(" ");
+                        } else {
+                                printf("%X", c / 16);
+                        }
+                }
+                printf("\n");
+                line += h;
+        }
+
         free(buf);
+        close(fd);
+
+        fd = open(train_labels, O_RDONLY);
+        if (fd == -1) {
+                printf("failed to open file: %s", train_labels);
+                return OK;
+        }
+
+        ASSER_NO_ERR(readInt32(fd, &v));
+        ASSER_NO_ERR(readInt32(fd, &n));
+        printf("magic number: %08x\n", v);
+        printf("n %d\n", n);
+        unsigned char l;
+        r_s = read(fd, (void*)&l, 1);
+        ASSER_NO_ERR(r_s != 1);
+        printf("label %d\n", (int)l);
+
+        r_s = read(fd, (void*)&l, 1);
+        ASSER_NO_ERR(r_s != 1);
+        printf("label %d\n", (int)l);
+
         close(fd);
         return OK;
 }
