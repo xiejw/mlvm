@@ -1,5 +1,6 @@
 #include <fcntl.h>  // open
 #include <stdio.h>
+#include <stdlib.h>  // malloc
 #include <unistd.h>  // close
 
 #define error_t int
@@ -67,6 +68,12 @@ error_t readInt32(int fd, int* v_int)
         return OK;
 }
 
+#define ASSER_NO_ERR(e)                      \
+        if ((e)) {                           \
+                printf("unexpected error."); \
+                return -1;                   \
+        }
+
 int main()
 {
         printf("hello mnist:\n    images: %s\n    labels: %s\n", train_images,
@@ -75,11 +82,40 @@ int main()
         int fd = open(train_images, O_RDONLY);
         if (fd == -1) {
                 printf("failed to open file: %s", train_images);
-        } else {
-                int v;
-                readInt32(fd, &v);
-                printf("magic number: %08x\n", v);
-                printf("closed file handle: %d\n", fd);
-                close(fd);
+                return OK;
         }
+
+        int v, n, w, h;
+        ASSER_NO_ERR(readInt32(fd, &v));
+        ASSER_NO_ERR(readInt32(fd, &n));
+        ASSER_NO_ERR(readInt32(fd, &w));
+        ASSER_NO_ERR(readInt32(fd, &h));
+
+        printf("magic number: %08x\n", v);
+        printf("n %d w %d h %d\n", n, w, h);
+
+        printf("reading one sample.\n");
+        n                  = 1;
+        size_t         s   = n * w * h;
+        unsigned char* buf = malloc(sizeof(unsigned char) * s);
+        ssize_t        r_s = read(fd, (void*)buf, s);
+        ASSER_NO_ERR(r_s != s);
+
+        int line = 0;
+        for (int i = 0; i < w; i++) {
+                for (int j = 0; j < h; j++) {
+                        unsigned char c = buf[j + line];
+                        if (c == 0) {
+                                printf(" ");
+                        } else {
+                                printf("%X", c / 16);
+                        }
+                }
+                printf("\n");
+                line += h;
+        }
+
+        free(buf);
+        close(fd);
+        return OK;
 }
