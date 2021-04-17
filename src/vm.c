@@ -63,6 +63,9 @@ error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
                 CASE_ELEWISE_OP(MUL, Mul)
                 CASE_ELEWISE_OP(MINUS, Minus)
 
+        case OP_MATMUL:
+                assert(opt == NULL);
+
         case OP_RNG:
                 assert(opt != NULL);
                 assert(opt->mode == 0);

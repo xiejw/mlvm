@@ -95,3 +95,46 @@ error_t vmOpReduceF32(struct tensor_t* dst, struct tensor_t* t1, int mode)
         *(float32_t*)dst->data = v;
         return OK;
 }
+
+error_t vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1,
+                      struct tensor_t* t2)
+{
+        assert(td != t1);
+        assert(td != t2);
+        assert(td->dtype == F32);
+        assert(t1->dtype == F32);
+        assert(t2->dtype == F32);
+        assert(td->shape->rank == 2);
+        assert(t1->shape->rank == 2);
+        assert(t2->shape->rank == 2);
+
+        // pm,mq -> pq
+        int p = td->shape->dims[0];
+        int q = td->shape->dims[1];
+        int m = t1->shape->dims[1];
+
+        if (p != t1->shape->dims[0] || m != t2->shape->dims[0] ||
+            q != t2->shape->dims[1]) {
+                return errNew("invalid matmul shape: %d/%d,%d/%d->%d/%d.",
+                              t1->shape->dims[0], t1->shape->dims[1],
+                              t2->shape->dims[0], t2->shape->dims[1],
+                              td->shape->dims[0], td->shape->dims[1]);
+        }
+
+        float32_t* o   = (float32_t*)td->data;
+        float32_t* lhs = (float32_t*)t1->data;
+        float32_t* rhs = (float32_t*)t2->data;
+
+        // stupid impl.
+        for (int i = 0; i < p; i++) {
+                for (int j = 0; j < q; j++) {
+                        float32_t v = 0;
+                        for (int k = 0; k < m; k++) {
+                                v += lhs[i * m + k] * rhs[k * q + j];
+                        }
+                        o[i * q + j] = v;
+                }
+        }
+
+        return OK;
+}

@@ -20,4 +20,7 @@ error_t vmOpReduceF32(struct tensor_t* dst, struct tensor_t* t1, int mode);
 
 error_t vmOpRngF32(struct tensor_t* dst, int mode, const struct srng64_t* seed);
 
+error_t vmOpMatmulF32(struct tensor_t* dst, struct tensor_t* t1,
+                      struct tensor_t* t2);
+
 #endif

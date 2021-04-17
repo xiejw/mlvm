@@ -37,9 +37,40 @@ struct tensor_t {
 struct vm_t;  // forward def.
 
 enum opcode_t {
-        OP_ADD,  // shapes must match. used .f for scalar.
-        OP_MUL,  // shapes much match. used .f for scalar.
+        // Element ops
+        //
+        // Data Types:
+        //   - only F32.
+        //
+        // Shapes:
+        //   - shapes are equal match.
+        //   - rhs is scalar, i.e., [1].
+        //   - rhs is NULL; uses .f for rhs scalar [F32].
+        //
+        // Option:
+        //   - opt must be NULL if .f is not used.
+        //
+        // In-Place:
+        //   - all operand handles can be used as destination.
+        OP_ADD,
+        OP_MUL,
         OP_MINUS,
+
+        // Matmul
+        //
+        // Data Types:
+        //   - only F32.
+        //
+        // Shapes:
+        //   - only rank 2 operands.
+        //
+        // Option:
+        //   - opt must be NULL.
+        //
+        // In-Place:
+        //   - dst must be unique.
+        OP_MATMUL,
+
         OP_REDUCE,
         OP_RNG,  // used .rng_seed for seed, mode for distribution.
 };
