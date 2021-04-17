@@ -50,7 +50,7 @@ int main()
         // ---
         // defines vm with some shapes.
 
-        struct vm_t*    vm        = vmNew();
+        // struct vm_t*    vm        = vmNew();
         struct shape_t* sp_scalar = spNew(1, (int[]){1});
         struct shape_t* sp_x      = spNew(2, (int[]){bs, is});
         struct shape_t* sp_y      = spNew(1, (int[]){bs});
@@ -60,19 +60,19 @@ int main()
         struct shape_t* sp_h2     = spNew(2, (int[]){bs, h2_s});
         struct shape_t* sp_o      = spNew(2, (int[]){bs, ls});
         struct shape_t* sp_l      = spNew(2, (int[]){bs, ls});
-        struct opopt_t  opt;
+        // struct opopt_t  opt;
 
-        int x    = vmTensorNew(vm, F32, sp_x);
-        int y    = vmTensorNew(vm, F32, sp_y);
-        int z    = vmTensorNew(vm, F32, sp_scalar);
-        int w1   = vmTensorNew(vm, F32, sp_w1);
-        int h1   = vmTensorNew(vm, F32, sp_h1);
-        int z1   = vmTensorNew(vm, F32, sp_h1);
-        int h2   = vmTensorNew(vm, F32, sp_h2);
-        int z2   = vmTensorNew(vm, F32, sp_h2);
-        int o    = vmTensorNew(vm, F32, sp_o);
-        int l    = vmTensorNew(vm, F32, sp_l);
-        int loss = vmTensorNew(vm, F32, sp_scalar);
+        // int x    = vmTensorNew(vm, F32, sp_x);
+        // int y    = vmTensorNew(vm, F32, sp_y);
+        // int z    = vmTensorNew(vm, F32, sp_scalar);
+        // int w1   = vmTensorNew(vm, F32, sp_w1);
+        // int h1   = vmTensorNew(vm, F32, sp_h1);
+        // int z1   = vmTensorNew(vm, F32, sp_h1);
+        // int h2   = vmTensorNew(vm, F32, sp_h2);
+        // int z2   = vmTensorNew(vm, F32, sp_h2);
+        // int o    = vmTensorNew(vm, F32, sp_o);
+        // int l    = vmTensorNew(vm, F32, sp_l);
+        // int loss = vmTensorNew(vm, F32, sp_scalar);
 
         // clean:
         spDecRef(sp_scalar);
