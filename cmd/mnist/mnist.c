@@ -147,6 +147,7 @@ clean:
         return err;
 }
 
+// prints the mnist image at buf.
 void printMnistImage(unsigned char* buf)
 {
         int line = 0;
