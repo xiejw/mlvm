@@ -113,5 +113,6 @@ void    vmTensorDump(sds_t* s, struct vm_t*, int t);
 struct shape_t* spNew(int rank, int* dims);
 struct shape_t* spIncRef(struct shape_t*);
 struct shape_t* spDecRef(struct shape_t*);
+void            spFreeAll();
 
 #endif
