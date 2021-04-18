@@ -38,8 +38,8 @@ error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
         struct tensor_t* t1 = NULL;
         struct tensor_t* t2 = NULL;
 
-        if (lhs != -1) t1 = vmGrabHandle(vm, lhs);
-        if (rhs != -1) t2 = vmGrabHandle(vm, rhs);
+        if (lhs != VM_UNUSED) t1 = vmGrabHandle(vm, lhs);
+        if (rhs != VM_UNUSED) t2 = vmGrabHandle(vm, rhs);
 
         switch (op) {
 #define CASE_ELEWISE_OP(OP, API)                                             \
@@ -64,7 +64,15 @@ error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
                 CASE_ELEWISE_OP(MINUS, Minus)
 
         case OP_MATMUL:
+                assert(t1 != NULL);
+                assert(t2 != NULL);
                 assert(opt == NULL);
+                if (td->dtype == F32) {
+                        return vmOpMatmulF32(td, t1, t2);
+                }
+
+                return errNewWithNote(
+                    ENOTIMPL, "unimpl for OP_MATMUL with dtype %d", td->dtype);
 
         case OP_RNG:
                 assert(opt != NULL);
