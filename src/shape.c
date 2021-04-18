@@ -84,4 +84,16 @@ struct shape_t* spDecRef(struct shape_t* p)
         return p;
 }
 
-void spFreeAll() {}
+void spFreeAll()
+{
+        struct shape_list_t* cur = root;
+        struct shape_list_t* next;
+        while (cur != NULL) {
+                next = cur->next;
+                assert(cur->s->ref_count == 1);
+                free(cur->s);
+                free(cur);
+                cur = next;
+        }
+        root = NULL;
+}

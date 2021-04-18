@@ -97,14 +97,15 @@ int main()
 
         if (FAKE_DATA) {
                 printf("generating fake minis data.");
-                prepareFakeData(seed, x_data, /*size=*/ sp_x->size);
+                prepareFakeData(seed, x_data, /*size=*/sp_x->size);
         }
 
 cleanup:
-        spFreeAll();
         if (images != NULL) free(images);
         if (labels != NULL) free(labels);
         srng64Free(seed);
+        vmFree(vm);
+        spFreeAll();
         return err;
 }
 
