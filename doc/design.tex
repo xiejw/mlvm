@@ -2,6 +2,16 @@
 \noindent{}Hello MLVM.
 \vskip \baselineskip
 
+The MLVM is the VM I want, and will, use for my own projects. It might fit
+others' needs; but I can understand and reason about it. It is simple and
+efficient. It does not do any checks--behave like a machine. And it provides raw
+accesses to the underlying stack, so it is possible to do in-place operations
+and swap pointers, which could be dangerous but certainly are critical for
+performance.
+
+\noindent{}Design.
+\vskip \baselineskip
+
 The first level of the vm is designed to be a system library, not compiler tool.
 It is super simple, easy to understand, and super efficient. Toward efficiency,
 there will be no check, just like a ordinary machine. So caller should be very
