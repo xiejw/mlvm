@@ -1,22 +1,26 @@
 \hsize=5in
+\vsize=7in
 \noindent{}Hello MLVM.
+\vskip 0.5\baselineskip
+
+The MLVM is a VM I want to, and will, use for my own projects for next decades.
+It might not fit others' needs; but I can understand and reason about it. It is
+simple and efficient. It does not do any checks--behave like a machine. And it
+provides raw accesses to the underlying stack, so it is possible to do in-place
+operations and swap pointers, which could be dangerous but certainly are
+critical for performance. Memory management is in user's hands, and auto-grad is
+not integrated--yet it is just simple and fast.
+
+
 \vskip \baselineskip
-
-The MLVM is the VM I want, and will, use for my own projects. It might fit
-others' needs; but I can understand and reason about it. It is simple and
-efficient. It does not do any checks--behave like a machine. And it provides raw
-accesses to the underlying stack, so it is possible to do in-place operations
-and swap pointers, which could be dangerous but certainly are critical for
-performance.
-
 \noindent{}Design.
-\vskip \baselineskip
+\vskip 0.5\baselineskip
 
-The first level of the vm is designed to be a system library, not compiler tool.
+The first level of the VM is designed to be a system library, not compiler tool.
 It is super simple, easy to understand, and super efficient. Toward efficiency,
 there will be no check, just like a ordinary machine. So caller should be very
 confident about its correctness. A programming language and compiler built on
-top of the vm is highly recommended, but not required.
+top of the VM is highly recommended, but not required.
 
 Another design point is: How to define the model for parallelism. In particular,
 how to use the multi-core system to gain performance. Two ways are possible. The
@@ -26,34 +30,37 @@ known challenges are also obvious: How to avoid cache line miss during processor
 switch, and how to design a scheduling system which handles cheap operations
 well---a chain of cheap operations might put most of the processors idle.
 
-The alternative is to design the vm for single processor execution only and do
-it well. Caller can launch multiple vm's each for single processor and adjust
-the affinity if needed. With that, MPI style collective are needed. For CPU
-within same OS process, we can provide a shared memory implementation for the
-collective to avoid data copying.
+The alternative is to design the VM for single processor execution only, and do
+it very well. Caller can launch multiple VM's each for single processor and
+adjust the affinity if needed. With that, MPI style collective are needed. For
+CPU within same OS process, we can provide a shared memory implementation for
+the collective to avoid data copying.
 
-\noindent{}Memory Management
 \vskip \baselineskip
+\noindent{}Memory Management
+\vskip 0.5\baselineskip
 
 When the VM was prototyped, Tensors were designed to be owned by the VM.  This
-was not necessary--the idea was motiviated by the file system in UNIX, so the
+was not necessary--the idea was motivated by the file system in UNIX, so the
 handles can be provided to user land and it will not be confused when to free
 the resources. Users are expected to free the resources when not need them at
-future points. When call vmFree, the vm will free all attached resouces also, so
-users can rely on this to avoid free all handles if then are lazy. This is OK as
-most of the Tensors have lifttime spanning as long as VM. All prototyped
+future points. When call vmFree, the VM will free all attached resources also,
+so users can rely on this to avoid free all handles if then are lazy. This is OK
+as most of the Tensors have lifetime spanning as long as the VM. All prototyped
 modeling examples actually statically allocate all Tensors used for all training
-steps, which saves significant time to malloc/free.
+steps, which saves significant time to malloc/free, repeatedly but
+unnecessarily. In case of sharing backing buffer across VMs, swapping pointers
+should be fine.
 
-Shape, on the other hand, is slightly different. It was designed to be reused,
-not only between VMs, but also between Tensors. So, the APIs are not coupled
-with VM, in constrast to Tensors. In addition, they were designed to base on
-reference count and, in future, can point to the same instance if the dimes are
-same. During modeling writings, it becomes obvious that user code needs to
+Shapes, on the other hand, are slightly different. They were designed to be
+reused, not only between VMs, but also across Tensors. So, the APIs are not
+coupled with VM, in contrast to Tensors. In addition, they were designed to base
+on reference count and, in future, can point to the same instance if the dimes
+are same. During modeling writings, it becomes obvious that user code needs to
 create too many shapes and free all of them in dozens of lines at the end of the
 program. To make this easier, we provide vmShapeNew API to create a shape, which
-can be reused in the two situations before; while the VM is just responsible to
-call spDefRef during vmFree stage, which is nice.
+can be reused in the two situations before; the VM is just responsible to call
+spDefRef during vmFree stage, which is nice.
 
 
 \end

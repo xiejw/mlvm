@@ -114,6 +114,5 @@ struct shape_t* vmShapeNew(struct vm_t* vm, int rank, int* dims);
 struct shape_t* spNew(int rank, int* dims);
 struct shape_t* spIncRef(struct shape_t*);
 struct shape_t* spDecRef(struct shape_t*);
-void            spFreeAll();
 
 #endif
