@@ -32,4 +32,28 @@ the affinity if needed. With that, MPI style collective are needed. For CPU
 within same OS process, we can provide a shared memory implementation for the
 collective to avoid data copying.
 
+\noindent{}Memory Management
+\vskip \baselineskip
+
+When the VM was prototyped, Tensors were designed to be owned by the VM.  This
+was not necessary--the idea was motiviated by the file system in UNIX, so the
+handles can be provided to user land and it will not be confused when to free
+the resources. Users are expected to free the resources when not need them at
+future points. When call vmFree, the vm will free all attached resouces also, so
+users can rely on this to avoid free all handles if then are lazy. This is OK as
+most of the Tensors have lifttime spanning as long as VM. All prototyped
+modeling examples actually statically allocate all Tensors used for all training
+steps, which saves significant time to malloc/free.
+
+Shape, on the other hand, is slightly different. It was designed to be reused,
+not only between VMs, but also between Tensors. So, the APIs are not coupled
+with VM, in constrast to Tensors. In addition, they were designed to base on
+reference count and, in future, can point to the same instance if the dimes are
+same. During modeling writings, it becomes obvious that user code needs to
+create too many shapes and free all of them in dozens of lines at the end of the
+program. To make this easier, we provide vmShapeNew API to create a shape, which
+can be reused in the two situations before; while the VM is just responsible to
+call spDefRef during vmFree stage, which is nice.
+
+
 \end
