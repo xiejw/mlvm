@@ -7,9 +7,12 @@
 
 #define MAX_TENSOR_COUNT 128
 
+struct list_t;
+
 struct vm_t {
         // consider to use pages.
         struct tensor_t handles[MAX_TENSOR_COUNT];
+        struct list_t*  shapes;
 };
 
 static inline struct tensor_t* vmGrabHandle(struct vm_t* vm, int handle)
@@ -42,3 +45,9 @@ static inline void vmReleaseHandle(struct tensor_t* t)
         t->data  = NULL;
         t->used  = 0;
 }
+
+// aux data structure.
+struct list_t {
+        void*          data;
+        struct list_t* next;
+};

@@ -76,20 +76,20 @@ int main()
         // defines vm with some shapes.
 
         struct vm_t*    vm   = vmNew();
-        struct shape_t* sp_x = spNew(2, (int[]){bs, is});
-        struct shape_t* sp_y = spNew(2, (int[]){bs, ls});
+        struct shape_t* sp_x = vmShapeNew(vm, 2, (int[]){bs, is});
+        struct shape_t* sp_y = vmShapeNew(vm, 2, (int[]){bs, ls});
 
-        struct shape_t* sp_w1 = spNew(2, (int[]){is, h1_s});
-        struct shape_t* sp_h1 = spNew(2, (int[]){bs, h1_s});
-        struct shape_t* sp_b1 = spNew(1, (int[]){h1_s});
+        struct shape_t* sp_w1 = vmShapeNew(vm, 2, (int[]){is, h1_s});
+        struct shape_t* sp_h1 = vmShapeNew(vm, 2, (int[]){bs, h1_s});
+        struct shape_t* sp_b1 = vmShapeNew(vm, 1, (int[]){h1_s});
 
-        struct shape_t* sp_w2 = spNew(2, (int[]){h1_s, h2_s});
-        // struct shape_t* sp_h2     = spNew(2, (int[]){bs, h2_s});
-        struct shape_t* sp_b2 = spNew(1, (int[]){h2_s});
+        struct shape_t* sp_w2 = vmShapeNew(vm, 2, (int[]){h1_s, h2_s});
+        // struct shape_t* sp_h2     = vmShapeNew(vm, 2, (int[]){bs, h2_s});
+        struct shape_t* sp_b2 = vmShapeNew(vm, 1, (int[]){h2_s});
 
-        struct shape_t* sp_w3 = spNew(2, (int[]){h2_s, ls});
-        // struct shape_t* sp_o      = spNew(2, (int[]){bs, ls});
-        // struct shape_t* sp_scalar = spNew(1, (int[]){1});
+        struct shape_t* sp_w3 = vmShapeNew(vm, 2, (int[]){h2_s, ls});
+        // struct shape_t* sp_o      = vmShapeNew(vm, 2, (int[]){bs, ls});
+        // struct shape_t* sp_scalar = vmShapeNew(vm, 1, (int[]){1});
         struct opopt_t opt;
 
         int x = vmTensorNew(vm, F32, sp_x);
@@ -114,7 +114,7 @@ int main()
 
         // ---
         // init weights
-        opt.mode = 0; // std normal.
+        opt.mode = 0;  // std normal.
         printf("init model weights.\n");
         NO_ERR(initModelWeight(vm, seed, &opt, w1));
         NO_ERR(initModelWeight(vm, seed, &opt, b1));
@@ -149,7 +149,6 @@ cleanup:
         if (labels != NULL) free(labels);
         srng64Free(seed);
         vmFree(vm);
-        spFreeAll();
         return err;
 }
 

@@ -19,7 +19,32 @@ void vmFree(struct vm_t* vm)
                 struct tensor_t* t = &vm->handles[i];
                 if (t->used) vmReleaseHandle(t);
         }
+        struct list_t* cur = vm->shapes;
+        struct list_t* nxt;
+        while (cur != NULL) {
+                nxt = cur->next;
+                spDecRef(cur->data);
+                free(cur);
+                cur = nxt;
+        }
         free(vm);
+}
+
+struct shape_t* vmShapeNew(struct vm_t* vm, int rank, int dims[])
+{
+        struct shape_t* s = spNew(rank, dims);
+
+        struct list_t* n = malloc(sizeof(struct list_t));
+        n->data          = s;
+        if (vm->shapes == NULL) {
+                n->next    = NULL;
+                vm->shapes = n;
+        } else {
+                n->next    = vm->shapes;
+                vm->shapes = n;
+        }
+
+        return s;
 }
 
 error_t vmTensorSwap(struct vm_t* vm, int t, _mut_ void** data)
