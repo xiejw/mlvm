@@ -1,6 +1,6 @@
 #include "vm.h"
 
-#include "op.h"
+#include "primitives.h"
 #include "vm_internal.h"
 
 #include <string.h>  // memset
