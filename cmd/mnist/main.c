@@ -38,20 +38,8 @@ int main()
         unsigned char*   labels = NULL;
         struct srng64_t* seed   = srng64New(123);
 
-        if (!FAKE_DATA) {
-                printf("reading real minis data.");
-                if ((err = readMnistData(&images, &labels))) {
-                        if (images != NULL) free(images);
-                        if (labels != NULL) free(labels);
-                        return err;
-                }
-        }
-
-        // is = IMAGE_SIZE
-        // ls = LABEL_SIZE
-        //
-        // x[bs, is]
-        // y[bs, ls]
+        // x[bs, is]    -- is = IMAGE_SIZE
+        // y[bs, ls]    -- ls = LABEL_SIZE
         //
         // forward pass
         //
@@ -95,20 +83,16 @@ int main()
 
         int x = vmTensorNew(vm, F32, sp_x);
         int y = vmTensorNew(vm, F32, sp_y);
-
         // int z    = vmTensorNew(vm, F32, sp_scalar);
-
         int w1  = vmTensorNew(vm, F32, sp_w1);
         int h1  = vmTensorNew(vm, F32, sp_h1);
         int b1  = vmTensorNew(vm, F32, sp_b1);
         int h1b = vmTensorNew(vm, F32, sp_h1);
         // int z1   = vmTensorNew(vm, F32, sp_h1);
-
         int w2 = vmTensorNew(vm, F32, sp_w2);
         int b2 = vmTensorNew(vm, F32, sp_b2);
         // int h2   = vmTensorNew(vm, F32, sp_h2);
         // int z2   = vmTensorNew(vm, F32, sp_h2);
-
         int w3 = vmTensorNew(vm, F32, sp_w3);
         // int o    = vmTensorNew(vm, F32, sp_o);
         // int loss = vmTensorNew(vm, F32, sp_scalar);
@@ -116,6 +100,7 @@ int main()
         // ---
         // init weights
         opt.mode = 0;  // std normal.
+
         printf("init model weights.\n");
         NO_ERR(initModelWeight(vm, seed, &opt, w1));
         NO_ERR(initModelWeight(vm, seed, &opt, b1));
@@ -135,6 +120,13 @@ int main()
                         prepareFakeData(seed, x_data, /*x_size=*/sp_x->size,
                                         y_data,
                                         /*y_size=*/sp_y->size);
+                } else {
+                        printf("reading real minis data.");
+                        if ((err = readMnistData(&images, &labels))) {
+                                if (images != NULL) free(images);
+                                if (labels != NULL) free(labels);
+                                return err;
+                        }
                 }
         }
 

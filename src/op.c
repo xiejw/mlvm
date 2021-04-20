@@ -24,19 +24,30 @@
                 float32_t* lhs = (float32_t*)t1->data;                         \
                 float32_t* rhs = (float32_t*)t2->data;                         \
                                                                                \
-                if (t2->shape->size == size) {                                 \
+                size_t t2_size = t2->shape->size;                              \
+                                                                               \
+                if (t2_size == size) {                                         \
                         for (size_t i = 0; i < size; i++) {                    \
                                 o[i] = lhs[i] op rhs[i];                       \
                         }                                                      \
-                } else if (t2->shape->size == 1) {                             \
+                } else if (t2_size == 1) {                                     \
                         float32_t s = rhs[0];                                  \
                         for (size_t i = 0; i < size; i++) {                    \
                                 o[i] = lhs[i] op s;                            \
                         }                                                      \
+                } else if (size % t2_size == 0) {                              \
+                        size_t loop_c = size / t2_size;                        \
+                        for (size_t c = 0; c < loop_c; c++) {                  \
+                                size_t offset = c * t2_size;                   \
+                                for (size_t i = 0; i < t2_size; i++) {         \
+                                        o[offset + i] =                        \
+                                            lhs[offset + i] op rhs[i];         \
+                                }                                              \
+                        }                                                      \
                 } else {                                                       \
                         return errNew(                                         \
                             "Op " #OP                                          \
-                            " support t1 and t2 same shape or t2 as scalar."); \
+                            " support t1s==t2s, t1s%%t2s==0 or t2s==1.");      \
                 }                                                              \
                 return OK;                                                     \
         }

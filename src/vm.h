@@ -44,6 +44,7 @@ enum opcode_t {
         //
         // Shapes:
         //   - shapes are equal match.
+        //   - lhs shape is multiple of rhs shape (broadcasting).
         //   - rhs is scalar, i.e., [1].
         //   - rhs is NULL; uses .f for rhs scalar [F32].
         //
