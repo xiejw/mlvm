@@ -28,6 +28,9 @@ static error_t initModelWeight(struct vm_t*, struct srng64_t*,
                 goto cleanup;                                           \
         }
 
+#define R1S(vm, s1)     vmShapeNew(vm, 1, (int[]){(s1)});
+#define R2S(vm, s1, s2) vmShapeNew(vm, 2, (int[]){(s1), (s2)});
+
 int main()
 {
         error_t          err    = OK;
@@ -75,22 +78,20 @@ int main()
         // ---
         // defines vm with some shapes.
 
-        struct vm_t*    vm   = vmNew();
-        struct shape_t* sp_x = vmShapeNew(vm, 2, (int[]){bs, is});
-        struct shape_t* sp_y = vmShapeNew(vm, 2, (int[]){bs, ls});
+        struct vm_t*   vm = vmNew();
+        struct opopt_t opt;
 
-        struct shape_t* sp_w1 = vmShapeNew(vm, 2, (int[]){is, h1_s});
-        struct shape_t* sp_h1 = vmShapeNew(vm, 2, (int[]){bs, h1_s});
-        struct shape_t* sp_b1 = vmShapeNew(vm, 1, (int[]){h1_s});
-
-        struct shape_t* sp_w2 = vmShapeNew(vm, 2, (int[]){h1_s, h2_s});
+        struct shape_t* sp_x  = R2S(vm, bs, is);
+        struct shape_t* sp_y  = R2S(vm, bs, ls);
+        struct shape_t* sp_w1 = R2S(vm, is, h1_s);
+        struct shape_t* sp_h1 = R2S(vm, bs, h1_s);
+        struct shape_t* sp_b1 = R1S(vm, h1_s);
+        struct shape_t* sp_w2 = R2S(vm, h1_s, h2_s);
         // struct shape_t* sp_h2     = vmShapeNew(vm, 2, (int[]){bs, h2_s});
-        struct shape_t* sp_b2 = vmShapeNew(vm, 1, (int[]){h2_s});
-
-        struct shape_t* sp_w3 = vmShapeNew(vm, 2, (int[]){h2_s, ls});
+        struct shape_t* sp_b2 = R1S(vm, h2_s);
+        struct shape_t* sp_w3 = R2S(vm, h2_s, ls);
         // struct shape_t* sp_o      = vmShapeNew(vm, 2, (int[]){bs, ls});
         // struct shape_t* sp_scalar = vmShapeNew(vm, 1, (int[]){1});
-        struct opopt_t opt;
 
         int x = vmTensorNew(vm, F32, sp_x);
         int y = vmTensorNew(vm, F32, sp_y);
