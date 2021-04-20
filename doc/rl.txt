@@ -1,0 +1,10 @@
+deepmind courses by david silver
+
+    https://deepmind.com/learning-resources/-introduction-reinforcement-learning-david-silver
+
+deepmind deep reinforcement learning
+
+    https://deepmind.com/blog/article/deep-reinforcement-learning
+
+    ....Playing Atari with Deep Reinforcement Learning 2013
+    ........Q-learning. Machine learning 1992
