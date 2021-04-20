@@ -69,32 +69,33 @@ int main()
         struct vm_t*   vm = vmNew();
         struct opopt_t opt;
 
-        struct shape_t* sp_x  = R2S(vm, bs, is);
-        struct shape_t* sp_y  = R2S(vm, bs, ls);
-        struct shape_t* sp_w1 = R2S(vm, is, h1_s);
-        struct shape_t* sp_h1 = R2S(vm, bs, h1_s);
-        struct shape_t* sp_b1 = R1S(vm, h1_s);
-        struct shape_t* sp_w2 = R2S(vm, h1_s, h2_s);
-        // struct shape_t* sp_h2     = vmShapeNew(vm, 2, (int[]){bs, h2_s});
-        struct shape_t* sp_b2 = R1S(vm, h2_s);
-        struct shape_t* sp_w3 = R2S(vm, h2_s, ls);
-        // struct shape_t* sp_o      = vmShapeNew(vm, 2, (int[]){bs, ls});
-        // struct shape_t* sp_scalar = vmShapeNew(vm, 1, (int[]){1});
+        struct shape_t* sp_x      = R2S(vm, bs, is);
+        struct shape_t* sp_y      = R2S(vm, bs, ls);
+        struct shape_t* sp_w1     = R2S(vm, is, h1_s);
+        struct shape_t* sp_h1     = R2S(vm, bs, h1_s);
+        struct shape_t* sp_b1     = R1S(vm, h1_s);
+        struct shape_t* sp_w2     = R2S(vm, h1_s, h2_s);
+        struct shape_t* sp_h2     = R2S(vm, bs, h2_s);
+        struct shape_t* sp_b2     = R1S(vm, h2_s);
+        struct shape_t* sp_w3     = R2S(vm, h2_s, ls);
+        struct shape_t* sp_o      = R2S(vm, bs, ls);
+        struct shape_t* sp_scalar = R1S(vm, 1);
 
-        int x = vmTensorNew(vm, F32, sp_x);
-        int y = vmTensorNew(vm, F32, sp_y);
-        // int z    = vmTensorNew(vm, F32, sp_scalar);
+        int x   = vmTensorNew(vm, F32, sp_x);
+        int y   = vmTensorNew(vm, F32, sp_y);
+        int z   = vmTensorNew(vm, F32, sp_scalar);
         int w1  = vmTensorNew(vm, F32, sp_w1);
         int h1  = vmTensorNew(vm, F32, sp_h1);
         int b1  = vmTensorNew(vm, F32, sp_b1);
         int h1b = vmTensorNew(vm, F32, sp_h1);
-        // int z1   = vmTensorNew(vm, F32, sp_h1);
-        int w2 = vmTensorNew(vm, F32, sp_w2);
-        int b2 = vmTensorNew(vm, F32, sp_b2);
-        // int h2   = vmTensorNew(vm, F32, sp_h2);
-        // int z2   = vmTensorNew(vm, F32, sp_h2);
-        int w3 = vmTensorNew(vm, F32, sp_w3);
-        // int o    = vmTensorNew(vm, F32, sp_o);
+        int z1  = vmTensorNew(vm, F32, sp_h1);
+        int w2  = vmTensorNew(vm, F32, sp_w2);
+        int b2  = vmTensorNew(vm, F32, sp_b2);
+        int h2  = vmTensorNew(vm, F32, sp_h2);
+        int h2b = vmTensorNew(vm, F32, sp_h2);
+        int z2  = vmTensorNew(vm, F32, sp_h2);
+        int w3  = vmTensorNew(vm, F32, sp_w3);
+        int o   = vmTensorNew(vm, F32, sp_o);
         // int loss = vmTensorNew(vm, F32, sp_scalar);
 
         // ---
@@ -135,6 +136,11 @@ int main()
         {
                 NO_ERR(vmExec(vm, OP_MATMUL, NULL, h1, x, w1));
                 NO_ERR(vmExec(vm, OP_ADD, NULL, h1b, h1, b1));
+                NO_ERR(vmExec(vm, OP_MAX, NULL, z1, h1b, z));
+                NO_ERR(vmExec(vm, OP_MATMUL, NULL, h2, z1, w2));
+                NO_ERR(vmExec(vm, OP_ADD, NULL, h2b, h2, b2));
+                NO_ERR(vmExec(vm, OP_MAX, NULL, z2, h2b, z));
+                NO_ERR(vmExec(vm, OP_MATMUL, NULL, o, z2, w3));
         }
 
 cleanup:

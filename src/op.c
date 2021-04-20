@@ -5,6 +5,11 @@
 
 #include "rng/srng64_normal.h"
 
+#define PLUS(x, y) ((x) + (y))
+#define MULT(x, y) ((x) * (y))
+#define MINU(x, y) ((x) - (y))
+#define MAXI(x, y) ((x) > (y) ? (x) : (y))
+
 #define DEF_ELEWISE_OP(OP, op)                                                 \
         error_t vmOp##OP##F32(struct tensor_t* td, struct tensor_t* t1,        \
                               struct tensor_t* t2)                             \
@@ -28,12 +33,12 @@
                                                                                \
                 if (t2_size == size) {                                         \
                         for (size_t i = 0; i < size; i++) {                    \
-                                o[i] = lhs[i] op rhs[i];                       \
+                                o[i] = op(lhs[i], rhs[i]);                     \
                         }                                                      \
                 } else if (t2_size == 1) {                                     \
                         float32_t s = rhs[0];                                  \
                         for (size_t i = 0; i < size; i++) {                    \
-                                o[i] = lhs[i] op s;                            \
+                                o[i] = op(lhs[i], s);                          \
                         }                                                      \
                 } else if (size % t2_size == 0) {                              \
                         size_t loop_c = size / t2_size;                        \
@@ -41,7 +46,7 @@
                                 size_t offset = c * t2_size;                   \
                                 for (size_t i = 0; i < t2_size; i++) {         \
                                         o[offset + i] =                        \
-                                            lhs[offset + i] op rhs[i];         \
+                                            op(lhs[offset + i], rhs[i]);       \
                                 }                                              \
                         }                                                      \
                 } else {                                                       \
@@ -52,9 +57,12 @@
                 return OK;                                                     \
         }
 
-DEF_ELEWISE_OP(Add, +)
-DEF_ELEWISE_OP(Mul, *)
-DEF_ELEWISE_OP(Minus, -)
+DEF_ELEWISE_OP(Add, PLUS)
+DEF_ELEWISE_OP(Mul, MULT)
+DEF_ELEWISE_OP(Minus, MINU)
+DEF_ELEWISE_OP(Max, MAXI)
+
+#undef DEF_ELEWISE_OP
 
 #define DEF_ELEWISE_OP_S(OP, op)                                         \
         error_t vmOp##OP##SF32(struct tensor_t* td, struct tensor_t* t1, \
@@ -70,14 +78,17 @@ DEF_ELEWISE_OP(Minus, -)
                 float32_t* lhs = (float32_t*)t1->data;                   \
                                                                          \
                 for (size_t i = 0; i < size; i++) {                      \
-                        o[i] = lhs[i] op s;                              \
+                        o[i] = op(lhs[i], s);                            \
                 }                                                        \
                 return OK;                                               \
         }
 
-DEF_ELEWISE_OP_S(Add, +)
-DEF_ELEWISE_OP_S(Mul, *)
-DEF_ELEWISE_OP_S(Minus, -)
+DEF_ELEWISE_OP_S(Add, PLUS)
+DEF_ELEWISE_OP_S(Mul, MULT)
+DEF_ELEWISE_OP_S(Minus, MINU)
+DEF_ELEWISE_OP_S(Max, MAXI)
+
+#undef DEF_ELEWISE_OP_S
 
 error_t vmOpRngF32(struct tensor_t* dst, int mode,
                    const struct srng64_t* ori_rng)

@@ -56,6 +56,7 @@ enum opcode_t {
         OP_ADD,
         OP_MUL,
         OP_MINUS,
+        OP_MAX,
 
         // Matmul
         //
