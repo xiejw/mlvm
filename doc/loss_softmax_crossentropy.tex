@@ -1,0 +1,77 @@
+\input gist_format
+
+% {{{1 Section Problem
+\section{Problem}
+\mnote{2019-05-01}
+
+Given predictions ${\bf p} = [p_1, p_2, \ldots, p_n]$ and targets
+${\bf y} = [y_1, y_2, \ldots, y_n]$, the cross entropy loss is defined as
+%
+$$
+    \loss = - \sum_{i} y_i \log p_i,
+$$
+with gradient:
+%
+$$
+    {\dv \loss \over \dv p_i} = - {\dv y_i \log p_i \over \dv p_i} = - {y_i \over p_i }.
+$$
+
+However, this gradient is not numerical stable, as for any super small $p_i$,
+i.e., $p_i \to 0$, the gradient is \symbol{NaN}.
+
+% {{{1 Section Solution
+\section{Solution}
+
+A common trick to solve this is calculating the gradient from loss $\loss$ w.r.t.
+the logits $o_i$  directly, where
+%
+$$
+    p_i = {\exp^{o_i} \over \sum_k \exp^{o_k}}.
+$$
+
+The gradient, w.r.t. logits, is
+%
+$$
+    {\dv \loss \over \dv o_i} =
+         - \sum_k {\dv \loss \over \dv p_k} {\dv p_k \over \dv o_i}.
+$$
+where
+%
+$$
+    {\dv \loss \over \dv p_k} = - {y_k \over p_k},
+$$
+and
+%
+$$
+    {\dv p_k \over \dv o_i} =
+        \cases { p_i (1-p_i), & if $k=i$; \cr
+                 -p_k p_i & if $k\neq i$. \cr }
+$$
+
+Substituting everything into the loss gradient, we get
+%
+$$
+    \eqalign{{\dv \loss \over \dv o_i}
+        & = (\dots) \cr
+        & = \left( p_i \sum_k { y_k} \right) - y_i \cr
+        & = p_i - y_i \cr
+    }
+$$
+where $\sum_k { y_k} = 1$ given ${\bf y}$ is target probability.
+
+% {{{1 Section DL Framework
+\section{Deep Learning Framework}
+
+Due to this reason, most deep learning frameworks provide API for users, e.g.,
+\symbol{tf.nn.softmax_cross_entropy_with_logits} in TensorFlow.
+
+User should avoid writing the loss function with pure math directly.  Similar
+stories can be found in
+\begitems
+\style n
+* \symbol{tf.nn.sigmoid_cross_entropy_with_logits}.
+* \symbol{sigmoid} and \symbol{softmax} calculations due to overflows.
+\enditems
+
+\vfill
+\bye
