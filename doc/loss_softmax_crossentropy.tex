@@ -1,20 +1,7 @@
-\font\secfont=cmss10
-\def\section #1{\vskip0.5\baselineskip\noindent{}{\secfont #1}\vskip\baselineskip}
-\def\loss{\hbox{\rm Loss}}
+\input doc/format
+
+\def\loss{{\rm Loss}}
 \def\dv{{\rm d}}
-% {{{3 Defines a \symbol macro for coding related nouns
-%
-% * It starts with a group and redfines the undercore (_) to be normal char
-% * As all arguments are read when process macro. The macro should be defined as
-%   two macros, so the underscore in the argument can be handled correctly.
-% * \relax makes the \catcode effective immediately. A {} (empty group) or empty
-%   space can work also. This is the space-after-number rule (See TexBook Page
-%   208).
-% * In the second macro, we use the OPmac local color to change the group as
-%   green color.
-\font\ninett=cmtt9
-\def\symbol{\begingroup\catcode`\_=12\relax\symbolimpl}
-\def\symbolimpl#1{{\ninett #1}\endgroup}
 
 % {{{1 Section Problem
 \section{Problem}

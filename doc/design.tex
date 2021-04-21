@@ -1,7 +1,8 @@
 \hsize=5in
 \vsize=7in
-\noindent{}Hello MLVM.
-\vskip 0.5\baselineskip
+\input doc/format
+
+\section{Hello MLVM}
 
 The MLVM is a VM I want to, and will, use for my own projects for next decades.
 It might not fit others' needs; but I can understand and reason about it. It is
@@ -12,9 +13,7 @@ critical for performance. Memory management is in user's hands, and auto-grad is
 not integrated--yet it is just simple and fast.
 
 
-\vskip \baselineskip
-\noindent{}Design.
-\vskip 0.5\baselineskip
+\section{Design}
 
 The first level of the VM is designed to be a system library, not compiler tool.
 It is super simple, easy to understand, and super efficient. Toward efficiency,
@@ -36,9 +35,7 @@ adjust the affinity if needed. With that, MPI style collective are needed. For
 CPU within same OS process, we can provide a shared memory implementation for
 the collective to avoid data copying.
 
-\vskip \baselineskip
-\noindent{}Memory Management
-\vskip 0.5\baselineskip
+\section{Memory Management}
 
 When the VM was prototyped, Tensors were designed to be owned by the VM.  This
 was not necessary--the idea was motivated by the file system in UNIX, so the
@@ -63,4 +60,5 @@ can be reused in the two situations before; the VM is just responsible to call
 spDefRef during vmFree stage, which is nice.
 
 
+\vfill
 \end
