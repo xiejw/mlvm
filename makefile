@@ -35,12 +35,6 @@ ALL_LIBS        = ${VM_LIB}
 
 compile: ${BUILD} ${ALL_LIBS}
 
-.PNONY: doc
-doc: doc/design.pdf
-
-doc/design.pdf: doc/design.tex
-	${TEX} -output-directory `dirname "$@"` $<
-
 ${BUILD}/vm_%.o: ${SRC}/%.c ${VM_HEADER}
 	${EVA_CC} -o $@ -c $<
 
@@ -73,4 +67,18 @@ mnist: compile ${BUILD}/mnist
 ${BUILD}/mnist: cmd/mnist/main.c ${VM_LIB}
 	${EVA_LD} -o $@ $^
 
+# ------------------------------------------------------------------------------
+# docs.
+# ------------------------------------------------------------------------------
+#
+DOC             = doc
+
+DOCS            = ${DOC}/design.pdf ${DOC}/loss_softmax_crossentropy.pdf
+
+.PNONY: ${DOCS}
+
+doc: ${DOCS}
+
+${DOC}/%.pdf: ${DOC}/%.tex
+	${TEX} -output-directory `dirname "$@"` $<
 
