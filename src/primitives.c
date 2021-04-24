@@ -160,3 +160,27 @@ error_t vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1,
 
         return OK;
 }
+
+error_t vmOpLossSCELF32(struct tensor_t* td, struct tensor_t* y,
+                        struct tensor_t* o)
+{
+        assert(td != y);
+        assert(td != o);
+        assert(td->dtype == F32);
+        assert(y->dtype == F32);
+        assert(o->dtype == F32);
+        assert(td->shape->rank == 1);
+        assert(y->shape->rank == 2);
+        assert(o->shape->rank == 2);
+        int bs = td->shape->dims[0];
+        int ft = y->shape->dims[1];
+
+        if (y->shape->dims[0] != bs || o->shape->dims[0] != bs ||
+            o->shape->dims[1] != ft) {
+                return errNew("invalid LossSCEL shape: %d/%d,%d/%d->%d.",
+                              y->shape->dims[0], y->shape->dims[1],
+                              o->shape->dims[0], o->shape->dims[1],
+                              td->shape->dims[0]);
+        }
+        return OK;
+}

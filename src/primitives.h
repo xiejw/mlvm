@@ -31,4 +31,10 @@ error_t vmOpRngF32(struct tensor_t* dst, int mode, const struct srng64_t* seed);
 // -----------------------------------------------------------------------------
 error_t vmOpMatmulF32(struct tensor_t* dst, struct tensor_t*, struct tensor_t*);
 
+// -----------------------------------------------------------------------------
+// loss.
+// -----------------------------------------------------------------------------
+error_t vmOpLossSCELF32(struct tensor_t* dst, struct tensor_t* y,
+                        struct tensor_t* o);
+
 #endif

@@ -126,6 +126,17 @@ error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
                 return errNewWithNote(
                     ENOTIMPL, "unimpl for OP_REDUCE with dtype %d", td->dtype);
 
+        case OP_LS_SCEL:
+                assert(t1 != NULL);
+                assert(t2 != NULL);
+                assert(opt == NULL);
+                if (td->dtype == F32) {
+                        return vmOpLossSCELF32(td, t1, t2);
+                }
+
+                return errNewWithNote(
+                    ENOTIMPL, "unimpl for OP_LS_SCEL with dtype %d", td->dtype);
+
         default:
                 return errNewWithNote(ENOTIMPL, "unimpl op for vmExec: %d", op);
         }

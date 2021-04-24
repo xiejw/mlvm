@@ -36,5 +36,6 @@ enum opcode_t {
         OP_MATMUL,
 
         OP_REDUCE,
-        OP_RNG,  // used .rng_seed for seed, mode for distribution.
+        OP_RNG,     // used .rng_seed for seed, mode for distribution.
+        OP_LS_SCEL  // softmax crossentropy with logits loss
 };

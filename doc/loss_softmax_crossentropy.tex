@@ -25,14 +25,14 @@ i.e., $p_i \to 0$, the gradient is \symbol{NaN}.
 % {{{1 Section Solution
 \section{Solution}
 
-A common trick to solve this is calculating the gradient from loss $\loss$ w.r.t.
-the logits $o_i$  directly, where
+A common trick to solve this is calculating the gradient from loss $\loss$
+w.r.t.~the logits $o_i$  directly, where
 %
 $$
     p_i = {\exp^{o_i} \over \sum_k \exp^{o_k}}.
 $$
 
-The gradient, w.r.t. logits, is
+The gradient, w.r.t.~logits, is
 %
 $$
     {\dv \loss \over \dv o_i} =

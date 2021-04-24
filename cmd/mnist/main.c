@@ -81,22 +81,22 @@ int main()
         struct shape_t* sp_o      = R2S(vm, bs, ls);
         struct shape_t* sp_scalar = R1S(vm, 1);
 
-        int x   = vmTensorNew(vm, F32, sp_x);
-        int y   = vmTensorNew(vm, F32, sp_y);
-        int z   = vmTensorNew(vm, F32, sp_scalar);
-        int w1  = vmTensorNew(vm, F32, sp_w1);
-        int h1  = vmTensorNew(vm, F32, sp_h1);
-        int b1  = vmTensorNew(vm, F32, sp_b1);
-        int h1b = vmTensorNew(vm, F32, sp_h1);
-        int z1  = vmTensorNew(vm, F32, sp_h1);
-        int w2  = vmTensorNew(vm, F32, sp_w2);
-        int b2  = vmTensorNew(vm, F32, sp_b2);
-        int h2  = vmTensorNew(vm, F32, sp_h2);
-        int h2b = vmTensorNew(vm, F32, sp_h2);
-        int z2  = vmTensorNew(vm, F32, sp_h2);
-        int w3  = vmTensorNew(vm, F32, sp_w3);
-        int o   = vmTensorNew(vm, F32, sp_o);
-        // int loss = vmTensorNew(vm, F32, sp_scalar);
+        int x    = vmTensorNew(vm, F32, sp_x);
+        int y    = vmTensorNew(vm, F32, sp_y);
+        int z    = vmTensorNew(vm, F32, sp_scalar);
+        int w1   = vmTensorNew(vm, F32, sp_w1);
+        int h1   = vmTensorNew(vm, F32, sp_h1);
+        int b1   = vmTensorNew(vm, F32, sp_b1);
+        int h1b  = vmTensorNew(vm, F32, sp_h1);
+        int z1   = vmTensorNew(vm, F32, sp_h1);
+        int w2   = vmTensorNew(vm, F32, sp_w2);
+        int b2   = vmTensorNew(vm, F32, sp_b2);
+        int h2   = vmTensorNew(vm, F32, sp_h2);
+        int h2b  = vmTensorNew(vm, F32, sp_h2);
+        int z2   = vmTensorNew(vm, F32, sp_h2);
+        int w3   = vmTensorNew(vm, F32, sp_w3);
+        int o    = vmTensorNew(vm, F32, sp_o);
+        int loss = vmTensorNew(vm, F32, sp_scalar);
 
         // ---
         // init weights
@@ -141,6 +141,7 @@ int main()
                 NO_ERR(vmExec(vm, OP_ADD, NULL, h2b, h2, b2));
                 NO_ERR(vmExec(vm, OP_MAX, NULL, z2, h2b, z));
                 NO_ERR(vmExec(vm, OP_MATMUL, NULL, o, z2, w3));
+                NO_ERR(vmExec(vm, OP_LS_SCEL, NULL, loss, y, o));
         }
 
 cleanup:
