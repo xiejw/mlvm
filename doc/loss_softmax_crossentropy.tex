@@ -22,7 +22,6 @@ $$
 However, this gradient is not numerical stable, as for any super small $p_i$,
 i.e., $p_i \to 0$, the gradient is \symbol{NaN}.
 
-% {{{1 Section Solution
 \section{Solution}
 
 A common trick to solve this is calculating the gradient from loss $\loss$
@@ -61,6 +60,40 @@ $$
     }
 $$
 where $\sum_k { y_k} = 1$ given ${\bf y}$ is target probability.
+
+\section{Numerical Stable}
+
+Now let's revisit the loss function with respect to the logits.
+%
+$$
+    \eqalign{
+      \loss & = - \sum_{i} y_i \log p_i, \cr
+            & = - \sum_{i} \left(
+                y_i \log {\exp^{o_i} \over \sum_k \exp^{o_k}}
+              \right)\cr
+    }
+$$
+For any large logit $o_k$, the $\exp$ is $\inf$, so unstable. The common trick
+is to find the max item $o_{max}=\max_k o_k$, and subtract it from all $o_k$s,
+i.e.,
+$$
+    \eqalign{
+      \loss & = - \sum_{i} \left(
+                y_i \log {\exp^{o_i} \over \sum_k \exp^{o_k}}
+                \right)\cr
+            & = - \sum_{i} \left(
+                y_i \log {\exp^{o_i-o_{max}} \over \sum_k \exp^{o_k-o_{max}}}
+                \right)\cr
+            & = -
+                \left(
+                   \sum_{i} y_i (o_i-o_{max})
+                \right)
+                + \log\left(
+                    \sum_k \exp^{o_k-o_{max}}
+                 \right)
+              \cr
+    }
+$$
 
 \vfill
 \bye

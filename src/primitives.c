@@ -1,6 +1,7 @@
 #include "primitives.h"
 
 #include <assert.h>
+#include <math.h>
 #include <stdlib.h>
 
 #include "rng/srng64_normal.h"
@@ -161,26 +162,50 @@ error_t vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1,
         return OK;
 }
 
-error_t vmOpLossSCELF32(struct tensor_t* td, struct tensor_t* y,
-                        struct tensor_t* o)
+error_t vmOpLossSCELF32(struct tensor_t* td, struct tensor_t* t1,
+                        struct tensor_t* t2)
 {
-        assert(td != y);
-        assert(td != o);
+        assert(td != t1);
+        assert(td != t2);
         assert(td->dtype == F32);
-        assert(y->dtype == F32);
-        assert(o->dtype == F32);
+        assert(t1->dtype == F32);
+        assert(t2->dtype == F32);
         assert(td->shape->rank == 1);
-        assert(y->shape->rank == 2);
-        assert(o->shape->rank == 2);
+        assert(t1->shape->rank == 2);
+        assert(t2->shape->rank == 2);
         int bs = td->shape->dims[0];
-        int ft = y->shape->dims[1];
+        int ft = t1->shape->dims[1];
 
-        if (y->shape->dims[0] != bs || o->shape->dims[0] != bs ||
-            o->shape->dims[1] != ft) {
+        if (t1->shape->dims[0] != bs || t2->shape->dims[0] != bs ||
+            t2->shape->dims[1] != ft) {
                 return errNew("invalid LossSCEL shape: %d/%d,%d/%d->%d.",
-                              y->shape->dims[0], y->shape->dims[1],
-                              o->shape->dims[0], o->shape->dims[1],
+                              t1->shape->dims[0], t1->shape->dims[1],
+                              t2->shape->dims[0], t2->shape->dims[1],
                               td->shape->dims[0]);
+        }
+        float32_t* loss = (float32_t*)td->data;
+        float32_t* y    = (float32_t*)t1->data;
+        float32_t* o    = (float32_t*)t2->data;
+
+        for (size_t i = 0; i < bs; i++) {
+                // find max exp and shift the value to become stable.
+                size_t  offset  = i * ft;
+                float_t max_o_k = o[offset];
+                for (size_t k = 1; k < ft; k++) {
+                        float32_t o_k = o[offset + k];
+                        if (o_k > max_o_k) max_o_k = o_k;
+                }
+
+                // real formular
+                float32_t sum = 0.0;
+                float32_t l   = 0.0;
+                for (size_t k = 0; k < ft; k++) {
+                        float32_t o_k = o[offset + k] - max_o_k;
+                        sum += exp(o_k);
+                        l -= y[offset + k] * o_k;
+                }
+
+                loss[i] = l + log(sum);
         }
         return OK;
 }

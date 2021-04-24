@@ -31,9 +31,15 @@ static error_t initModelWeight(struct vm_t*, struct srng64_t*,
 #define R1S(vm, s1)     vmShapeNew(vm, 1, (int[]){(s1)});
 #define R2S(vm, s1, s2) vmShapeNew(vm, 2, (int[]){(s1), (s2)});
 
+#define SDS_CAT_PRINTF(prefix, t, suffix) \
+        sdsCatPrintf(&s, prefix);         \
+        vmTensorDump(&s, vm, t);          \
+        sdsCatPrintf(&s, suffix);
+
 int main()
 {
         error_t          err    = OK;
+        sds_t            s      = sdsEmpty();
         unsigned char*   images = NULL;
         unsigned char*   labels = NULL;
         struct srng64_t* seed   = srng64New(123);
@@ -54,8 +60,9 @@ int main()
         //   z2[bs, h2]  = max(h2[bs, h2], z[1])
         //
         //   o [bs, ls]  = matmul(z2[bs, h2], w3[h2, ls])
-        //   loss[1]     = softmax_cross_entropy_with_logits(
+        //   l[bs]       = softmax_cross_entropy_with_logits(
         //                     y[bs, ls], o[bs, ls])
+        //   loss[1]     = sum(l[bs])
 
         const int bs   = 32;
         const int is   = IMAGE_SIZE;
@@ -79,6 +86,7 @@ int main()
         struct shape_t* sp_b2     = R1S(vm, h2_s);
         struct shape_t* sp_w3     = R2S(vm, h2_s, ls);
         struct shape_t* sp_o      = R2S(vm, bs, ls);
+        struct shape_t* sp_l      = R1S(vm, bs);
         struct shape_t* sp_scalar = R1S(vm, 1);
 
         int x    = vmTensorNew(vm, F32, sp_x);
@@ -96,6 +104,7 @@ int main()
         int z2   = vmTensorNew(vm, F32, sp_h2);
         int w3   = vmTensorNew(vm, F32, sp_w3);
         int o    = vmTensorNew(vm, F32, sp_o);
+        int l    = vmTensorNew(vm, F32, sp_l);
         int loss = vmTensorNew(vm, F32, sp_scalar);
 
         // ---
@@ -141,7 +150,14 @@ int main()
                 NO_ERR(vmExec(vm, OP_ADD, NULL, h2b, h2, b2));
                 NO_ERR(vmExec(vm, OP_MAX, NULL, z2, h2b, z));
                 NO_ERR(vmExec(vm, OP_MATMUL, NULL, o, z2, w3));
-                NO_ERR(vmExec(vm, OP_LS_SCEL, NULL, loss, y, o));
+                NO_ERR(vmExec(vm, OP_LS_SCEL, NULL, l, y, o));
+                opt.mode = 0;  // sum
+                NO_ERR(vmExec(vm, OP_REDUCE, &opt, loss, l, VM_UNUSED));
+                SDS_CAT_PRINTF("logits: ", o, "\n");
+                SDS_CAT_PRINTF("labels: ", y, "\n");
+                SDS_CAT_PRINTF("loss after softmax cel: ", l, "\n");
+                SDS_CAT_PRINTF("loss: ", loss, "\n");
+                printf("%s\n", s);
         }
 
 cleanup:
@@ -149,6 +165,7 @@ cleanup:
         if (labels != NULL) free(labels);
         srng64Free(seed);
         vmFree(vm);
+        sdsFree(s);
         return err;
 }
 
