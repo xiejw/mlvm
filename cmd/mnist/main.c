@@ -51,18 +51,36 @@ int main()
         //
         //   z[1] = zeros([1])
         //
-        //   h1[bs, h1]  = matmul(x[bs, is], w1[is, h1])
-        //   h1b[bs, h1] = h1[bs, h1] + b1[h1]
-        //   z1[bs, h1]  = max(h1b[bs, h1], z[1])
+        //   h1[bs, h1]   = matmul(x[bs, is], w1[is, h1])
+        //   h1b[bs, h1]  = h1[bs, h1] + b1[h1]
+        //   z1[bs, h1]   = max(h1b[bs, h1], z[1])
         //
-        //   h2[bs, h2]  = matmul(z1[bs, h1], w2[h1, h2])
-        //   h2b[bs, h2] = h2[bs, h2] + b2[h2]
-        //   z2[bs, h2]  = max(h2[bs, h2], z[1])
+        //   h2[bs, h2]   = matmul(z1[bs, h1], w2[h1, h2])
+        //   h2b[bs, h2]  = h2[bs, h2] + b2[h2]
+        //   z2[bs, h2]   = max(h2b[bs, h2], z[1])
         //
-        //   o [bs, ls]  = matmul(z2[bs, h2], w3[h2, ls])
-        //   l[bs]       = softmax_cross_entropy_with_logits(
+        //   o[bs, ls]    = matmul(z2[bs, h2], w3[h2, ls])
+        //   l[bs]        = softmax_cross_entropy_with_logits(
+        //                      y[bs, ls], o[bs, ls])
+        //   loss[1]      = sum(l[bs])
+        //
+        //  backward pass
+        //
+        //   d_o[bs, ls]  = grad_softmax_cross_entropy_with_logits(
         //                     y[bs, ls], o[bs, ls])
-        //   loss[1]     = sum(l[bs])
+        //   d_w3[h2, ls] = matmul(z2[bs, h2], d_o[bs, ls], trans_a)
+        //   d_z2[bs, h2] = matmul(o[bs, ls], w3[h2, ls], trans_b)
+        //   state_0      = cmp(h2b[bs, h2], z[1], larger)
+        //   d_h2b[bs, h2]= mul(d_z2[bs, h2], state_0)
+        //
+        //   d_h2[bs, h2] = d_h2b[bs, h2]
+        //   d_b2[h2]     = sum(d_h2b[bs, h2], axis=0)
+        //
+        //
+        //  todo
+        //    matmul with tranpose
+        //    scel with grad.
+        //    sum with axis
 
         const int bs   = 32;
         const int is   = IMAGE_SIZE;
