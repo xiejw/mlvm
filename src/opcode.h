@@ -29,8 +29,11 @@ enum opcode_t {
         // Shapes:
         //   - only rank 2 operands.
         //
-        // Option:
-        //   - opt must be NULL.
+        // Option: (see macros below OPT_MATMUL_TRANS_*)
+        //   - opt could be NULL, or opt.mode == 0. This means no transpose.
+        //   - mode == 2 means trans_lhs
+        //   - mode == 1 means trans_rhs
+        //   - other values of modes are invalid.
         //
         // In-Place:
         //   - dst must be unique.
@@ -40,3 +43,8 @@ enum opcode_t {
         OP_RNG,     // used .rng_seed for seed, mode for distribution.
         OP_LS_SCEL  // softmax crossentropy with logits loss
 };
+
+// --- common macros
+#define OPT_MATMUL_TRANS_NOT 0
+#define OPT_MATMUL_TRANS_LHS 2
+#define OPT_MATMUL_TRANS_RHS 1

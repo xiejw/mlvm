@@ -95,9 +95,19 @@ error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
         case OP_MATMUL:
                 assert(t1 != NULL);
                 assert(t2 != NULL);
-                assert(opt == NULL);
                 if (td->dtype == F32) {
-                        return vmOpMatmulF32(td, t1, t2, 0, 0);
+                        int trans_lhs = 0;
+                        int trans_rhs = 0;
+                        if (opt != NULL) {
+                                if (opt->mode == OPT_MATMUL_TRANS_LHS) {
+                                        trans_lhs = 1;
+                                } else {
+                                        assert(opt->mode ==
+                                               OPT_MATMUL_TRANS_RHS);
+                                        trans_rhs = 1;
+                                }
+                        }
+                        return vmOpMatmulF32(td, t1, t2, trans_lhs, trans_rhs);
                 }
 
                 return errNewWithNote(
