@@ -19,7 +19,7 @@ enum opcode_t {
         OP_MUL,
         OP_MINUS,
         OP_MAX,
-        OP_CMPL, // compare larger.
+        OP_CMPL,  // Compare large.
 
         // Matmul
         //

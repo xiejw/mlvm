@@ -78,7 +78,6 @@ int main()
         //
         //
         //  todo
-        //    matmul with tranpose
         //    scel with grad.
         //    sum with axis
 

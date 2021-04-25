@@ -123,7 +123,7 @@ error_t vmOpReduceF32(struct tensor_t* dst, struct tensor_t* t1, int mode)
 }
 
 error_t vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1,
-                      struct tensor_t* t2)
+                      struct tensor_t* t2, int trans_lhs, int trans_rhs)
 {
         assert(td != t1);
         assert(td != t2);
@@ -134,35 +134,98 @@ error_t vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1,
         assert(t1->shape->rank == 2);
         assert(t2->shape->rank == 2);
 
-        // pm,mq -> pq
-        int p = td->shape->dims[0];
-        int q = td->shape->dims[1];
-        int m = t1->shape->dims[1];
-
-        if (p != t1->shape->dims[0] || m != t2->shape->dims[0] ||
-            q != t2->shape->dims[1]) {
-                return errNew("invalid matmul shape: %d/%d,%d/%d->%d/%d.",
-                              t1->shape->dims[0], t1->shape->dims[1],
-                              t2->shape->dims[0], t2->shape->dims[1],
-                              td->shape->dims[0], td->shape->dims[1]);
-        }
-
         float32_t* o   = (float32_t*)td->data;
         float32_t* lhs = (float32_t*)t1->data;
         float32_t* rhs = (float32_t*)t2->data;
 
-        // stupid impl.
-        for (int i = 0; i < p; i++) {
-                for (int j = 0; j < q; j++) {
-                        float32_t v = 0;
-                        for (int k = 0; k < m; k++) {
-                                v += lhs[i * m + k] * rhs[k * q + j];
-                        }
-                        o[i * q + j] = v;
-                }
-        }
+        assert(trans_lhs == 0 || trans_rhs == 0);  // not support both.
 
-        return OK;
+        if (!trans_lhs && !trans_rhs) {
+                // pm,mq -> pq
+                int p = td->shape->dims[0];
+                int q = td->shape->dims[1];
+                int m = t1->shape->dims[1];
+
+                if (p != t1->shape->dims[0] || m != t2->shape->dims[0] ||
+                    q != t2->shape->dims[1]) {
+                        return errNew(
+                            "invalid matmul shape: %d/%d,%d/%d->%d/%d.",
+                            t1->shape->dims[0], t1->shape->dims[1],
+                            t2->shape->dims[0], t2->shape->dims[1],
+                            td->shape->dims[0], td->shape->dims[1]);
+                }
+
+                // stupid impl.
+                for (int i = 0; i < p; i++) {
+                        for (int j = 0; j < q; j++) {
+                                float32_t v = 0;
+                                for (int k = 0; k < m; k++) {
+                                        // For lhs, stride is (m, 1).
+                                        // For rhs, stride is (q, 1).
+                                        v += lhs[i * m + k] * rhs[k * q + j];
+                                }
+                                o[i * q + j] = v;
+                        }
+                }
+                return OK;
+        } else if (trans_rhs) {
+                // pm,mq -> pq
+                int p = td->shape->dims[0];
+                int q = td->shape->dims[1];
+                int m = t1->shape->dims[1];
+
+                if (p != t1->shape->dims[0] || m != t2->shape->dims[1] ||
+                    q != t2->shape->dims[0]) {
+                        return errNew(
+                            "invalid matmul shape: %d/%d,%d/%d->%d/%d.",
+                            t1->shape->dims[0], t1->shape->dims[1],
+                            t2->shape->dims[1], t2->shape->dims[0],
+                            td->shape->dims[0], td->shape->dims[1]);
+                }
+
+                // stupid impl.
+                for (int i = 0; i < p; i++) {
+                        for (int j = 0; j < q; j++) {
+                                float32_t v = 0;
+                                for (int k = 0; k < m; k++) {
+                                        // For lhs, stride is (m, 1).
+                                        // For rhs, stride is (1, m).
+                                        v += lhs[i * m + k] * rhs[k + j * m];
+                                }
+                                o[i * q + j] = v;
+                        }
+                }
+                return OK;
+        } else {
+                assert(trans_lhs);
+                // pm,mq -> pq
+                int p = td->shape->dims[0];
+                int q = td->shape->dims[1];
+                int m = t1->shape->dims[0];
+
+                if (p != t1->shape->dims[1] || m != t2->shape->dims[0] ||
+                    q != t2->shape->dims[1]) {
+                        return errNew(
+                            "invalid matmul shape: %d/%d,%d/%d->%d/%d.",
+                            t1->shape->dims[1], t1->shape->dims[0],
+                            t2->shape->dims[0], t2->shape->dims[1],
+                            td->shape->dims[0], td->shape->dims[1]);
+                }
+
+                // stupid impl.
+                for (int i = 0; i < p; i++) {
+                        for (int j = 0; j < q; j++) {
+                                float32_t v = 0;
+                                for (int k = 0; k < m; k++) {
+                                        // For lhs, stride is (1, p).
+                                        // For rhs, stride is (q, 1).
+                                        v += lhs[i + k * p] * rhs[k * q + j];
+                                }
+                                o[i * q + j] = v;
+                        }
+                }
+                return OK;
+        }
 }
 
 error_t vmOpLossSCELF32(struct tensor_t* td, struct tensor_t* t1,
