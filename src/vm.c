@@ -88,6 +88,7 @@ error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
                 CASE_ELEWISE_OP(MUL, Mul)
                 CASE_ELEWISE_OP(MINUS, Minus)
                 CASE_ELEWISE_OP(MAX, Max)
+                CASE_ELEWISE_OP(CMPL, CmpL)
 
 #undef CASE_ELEWISE_OP
 

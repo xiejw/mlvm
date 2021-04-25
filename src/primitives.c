@@ -10,6 +10,7 @@
 #define MULT(x, y) ((x) * (y))
 #define MINU(x, y) ((x) - (y))
 #define MAXI(x, y) ((x) > (y) ? (x) : (y))
+#define CMPL(x, y) ((x) > (y) ? (1) : (0))
 
 #define DEF_ELEWISE_OP(OP, op)                                                 \
         error_t vmOp##OP##F32(struct tensor_t* td, struct tensor_t* t1,        \
@@ -62,6 +63,7 @@ DEF_ELEWISE_OP(Add, PLUS)
 DEF_ELEWISE_OP(Mul, MULT)
 DEF_ELEWISE_OP(Minus, MINU)
 DEF_ELEWISE_OP(Max, MAXI)
+DEF_ELEWISE_OP(CmpL, CMPL)
 
 #undef DEF_ELEWISE_OP
 
@@ -88,6 +90,7 @@ DEF_ELEWISE_OP_S(Add, PLUS)
 DEF_ELEWISE_OP_S(Mul, MULT)
 DEF_ELEWISE_OP_S(Minus, MINU)
 DEF_ELEWISE_OP_S(Max, MAXI)
+DEF_ELEWISE_OP_S(CmpL, CMPL)
 
 #undef DEF_ELEWISE_OP_S
 
