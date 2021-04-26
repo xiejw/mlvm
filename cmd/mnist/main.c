@@ -8,11 +8,10 @@
 
 #include "mnist.c"
 
-static error_t readMnistData(unsigned char** images, unsigned char** labels);
-static void    prepareFakeData(struct srng64_t* seed, float32_t* x_data,
-                               size_t x_size, float32_t* y_data, size_t y_size);
 static error_t initModelWeight(struct vm_t*, struct srng64_t*,
                                struct opopt_t* rng, int w);
+static error_t prepareData(struct srng64_t* seed, float32_t* x_data,
+                           size_t x_size, float32_t* y_data, size_t y_size);
 
 #define IMAGE_SIZE (28 * 28)
 #define LABEL_SIZE (10)
@@ -36,8 +35,8 @@ static error_t initModelWeight(struct vm_t*, struct srng64_t*,
         vmTensorDump(&s, vm, t);          \
         sdsCatPrintf(&s, suffix);
 
-unsigned char* images = NULL;
-unsigned char* labels = NULL;
+static unsigned char* images = NULL;
+static unsigned char* labels = NULL;
 
 int main()
 {
@@ -89,7 +88,6 @@ int main()
 
         // ---
         // defines vm with some shapes.
-
         struct vm_t*   vm = vmNew();
         struct opopt_t opt;
 
@@ -126,35 +124,24 @@ int main()
 
         // ---
         // init weights
-        opt.mode = 0;  // std normal.
-
-        printf("init model weights.\n");
-        NO_ERR(initModelWeight(vm, seed, &opt, w1));
-        NO_ERR(initModelWeight(vm, seed, &opt, b1));
-        NO_ERR(initModelWeight(vm, seed, &opt, w2));
-        NO_ERR(initModelWeight(vm, seed, &opt, b2));
-        NO_ERR(initModelWeight(vm, seed, &opt, w3));
+        {
+                printf("init model weights.\n");
+                opt.mode = 0;  // std normal.
+                NO_ERR(initModelWeight(vm, seed, &opt, w1));
+                NO_ERR(initModelWeight(vm, seed, &opt, b1));
+                NO_ERR(initModelWeight(vm, seed, &opt, w2));
+                NO_ERR(initModelWeight(vm, seed, &opt, b2));
+                NO_ERR(initModelWeight(vm, seed, &opt, w3));
+        }
 
         // ---
         // fetch inputs.
-        float32_t *x_data, *y_data;
         {
+                float32_t *x_data, *y_data;
                 NO_ERR(vmTensorData(vm, x, (void**)&x_data));
                 NO_ERR(vmTensorData(vm, y, (void**)&y_data));
-
-                if (FAKE_DATA) {
-                        printf("generating fake minis data.");
-                        prepareFakeData(seed, x_data, /*x_size=*/sp_x->size,
-                                        y_data,
-                                        /*y_size=*/sp_y->size);
-                } else {
-                        printf("reading real minis data.");
-                        if ((err = readMnistData(&images, &labels))) {
-                                if (images != NULL) free(images);
-                                if (labels != NULL) free(labels);
-                                return err;
-                        }
-                }
+                NO_ERR(prepareData(seed, x_data, /*x_size=*/sp_x->size, y_data,
+                                   /*y_size=*/sp_y->size));
         }
 
         // ---
@@ -187,7 +174,7 @@ cleanup:
 }
 
 // impl
-error_t readMnistData(unsigned char** images, unsigned char** labels)
+static error_t readMnistData(unsigned char** images, unsigned char** labels)
 {
         error_t err = readMnistTrainingImages(images);
         if (err) {
@@ -205,11 +192,30 @@ error_t readMnistData(unsigned char** images, unsigned char** labels)
         return OK;
 }
 
-void prepareFakeData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
-                     float32_t* y_data, size_t y_size)
+static void prepareFakeData(struct srng64_t* seed, float32_t* x_data,
+                            size_t x_size, float32_t* y_data, size_t y_size)
 {
         srng64StdNormalF(seed, x_size, x_data);
         srng64StdNormalF(seed, y_size, y_data);
+}
+
+error_t prepareData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
+                    float32_t* y_data, size_t y_size)
+{
+        if (FAKE_DATA) {
+                printf("generating fake minis data.");
+                prepareFakeData(seed, x_data, x_size, y_data, y_size);
+                return OK;
+        } else {
+                error_t err;
+                printf("reading real minis data.");
+                if ((err = readMnistData(&images, &labels))) {
+                        if (images != NULL) free(images);
+                        if (labels != NULL) free(labels);
+                        return err;
+                }
+                return OK;
+        }
 }
 
 error_t initModelWeight(struct vm_t* vm, struct srng64_t* seed,
