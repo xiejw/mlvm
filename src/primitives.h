@@ -38,6 +38,6 @@ error_t vmOpMatmulF32(struct tensor_t* td, struct tensor_t*, struct tensor_t*,
 // loss.
 // -----------------------------------------------------------------------------
 error_t vmOpLossSCELF32(struct tensor_t* td, struct tensor_t* y,
-                        struct tensor_t* o);
+                        struct tensor_t* o, struct tensor_t* optional_g);
 
 #endif

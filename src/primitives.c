@@ -229,7 +229,7 @@ error_t vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1,
 }
 
 error_t vmOpLossSCELF32(struct tensor_t* td, struct tensor_t* t1,
-                        struct tensor_t* t2)
+                        struct tensor_t* t2, struct tensor_t* tg)
 {
         assert(td != t1);
         assert(td != t2);
@@ -252,26 +252,60 @@ error_t vmOpLossSCELF32(struct tensor_t* td, struct tensor_t* t1,
         float32_t* loss = (float32_t*)td->data;
         float32_t* y    = (float32_t*)t1->data;
         float32_t* o    = (float32_t*)t2->data;
+        float32_t* g    = NULL;
 
-        for (size_t i = 0; i < bs; i++) {
-                // find max exp and shift the value to become stable.
-                size_t  offset  = i * ft;
-                float_t max_o_k = o[offset];
-                for (size_t k = 1; k < ft; k++) {
-                        float32_t o_k = o[offset + k];
-                        if (o_k > max_o_k) max_o_k = o_k;
-                }
-
-                // real formular
-                float32_t sum = 0.0;
-                float32_t l   = 0.0;
-                for (size_t k = 0; k < ft; k++) {
-                        float32_t o_k = o[offset + k] - max_o_k;
-                        sum += exp(o_k);
-                        l -= y[offset + k] * o_k;
-                }
-
-                loss[i] = l + log(sum);
+        if (tg != NULL) {
+                // check gradient dtype and shapes.
+                assert(tg->dtype == F32);
+                assert(tg->shape->rank == 2);
+                assert(tg->shape->dims[0] == t2->shape->dims[0]);
+                assert(tg->shape->dims[1] == t2->shape->dims[1]);
+                g = (float32_t*)tg->data;
         }
+
+#define LOSS_SCEL_COMP(trigger_cond, static_grad_cond)                       \
+        if ((trigger_cond)) {                                                \
+                for (size_t i = 0; i < bs; i++) {                            \
+                        /* find max and shift the value toward num stable.*/ \
+                        size_t  offset  = i * ft;                            \
+                        float_t max_o_k = o[offset];                         \
+                        for (size_t k = 1; k < ft; k++) {                    \
+                                float32_t o_k = o[offset + k];               \
+                                if (o_k > max_o_k) max_o_k = o_k;            \
+                        }                                                    \
+                                                                             \
+                        /* real formular */                                  \
+                        float32_t sum = 0.0;                                 \
+                        float32_t l   = 0.0;                                 \
+                        for (size_t k = 0; k < ft; k++) {                    \
+                                float32_t o_k     = o[offset + k] - max_o_k; \
+                                float32_t exp_o_k = exp(o_k);                \
+                                sum += exp_o_k;                              \
+                                if ((static_grad_cond)) {                    \
+                                        g[offset + k] = exp_o_k;             \
+                                }                                            \
+                                l -= y[offset + k] * o_k;                    \
+                        }                                                    \
+                                                                             \
+                        if ((static_grad_cond)) {                            \
+                                /* normalize all components. */              \
+                                float32_t* gp = g + offset;                  \
+                                for (size_t k = 0; k < ft; k++) {            \
+                                        (*gp) /= sum;                        \
+                                        gp++;                                \
+                                }                                            \
+                        }                                                    \
+                                                                             \
+                        loss[i] = l + log(sum);                              \
+                }                                                            \
+        }
+
+        // Defines macros to repeat the code twice. The hope is the compiler
+        // can remove the control flow to avoid runtime cost.
+        LOSS_SCEL_COMP(g != NULL, 1)
+        LOSS_SCEL_COMP(g == NULL, 0)
+
+#undef LOSS_SCEL_COMP
+
         return OK;
 }

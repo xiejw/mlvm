@@ -41,7 +41,9 @@ ${BUILD}/vm_%.o: ${SRC}/%.c ${VM_HEADER}
 # header dependencies.
 ${BUILD}/vm_tensor.o: ${SRC}/vm_internal.h
 
-${BUILD}/vm_op.o: ${SRC}/op.h
+${BUILD}/vm_primitives.o: ${SRC}/primitives.h
+
+${BUILD}/vm_vm.o: ${SRC}/primitives.h
 
 # ------------------------------------------------------------------------------
 # cmd.

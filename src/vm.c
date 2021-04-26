@@ -142,7 +142,7 @@ error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
                 assert(t2 != NULL);
                 assert(opt == NULL);
                 if (td->dtype == F32) {
-                        return vmOpLossSCELF32(td, t1, t2);
+                        return vmOpLossSCELF32(td, t1, t2, NULL);
                 }
 
                 return errNewWithNote(
