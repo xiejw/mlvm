@@ -39,11 +39,12 @@ ${BUILD}/vm_%.o: ${SRC}/%.c ${VM_HEADER}
 	${EVA_CC} -o $@ -c $<
 
 # header dependencies.
+${BUILD}/vm_vm.o: ${SRC}/primitives.h ${SRC}/vm_internal.h
+
 ${BUILD}/vm_tensor.o: ${SRC}/vm_internal.h
 
 ${BUILD}/vm_primitives.o: ${SRC}/primitives.h
 
-${BUILD}/vm_vm.o: ${SRC}/primitives.h
 
 # ------------------------------------------------------------------------------
 # cmd.
