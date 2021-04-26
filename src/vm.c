@@ -140,9 +140,13 @@ error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
         case OP_LS_SCEL:
                 assert(t1 != NULL);
                 assert(t2 != NULL);
-                assert(opt == NULL);
+                struct tensor_t* tg = NULL;
                 if (td->dtype == F32) {
-                        return vmOpLossSCELF32(td, t1, t2, NULL);
+                        if (opt != NULL) {
+                                tg = vmGrabHandle(
+                                    vm, opt->i);  // handle of the gradient.
+                        }
+                        return vmOpLossSCELF32(td, t1, t2, tg);
                 }
 
                 return errNewWithNote(

@@ -290,9 +290,12 @@ error_t vmOpLossSCELF32(struct tensor_t* td, struct tensor_t* t1,
                         if ((static_grad_cond)) {                            \
                                 /* normalize all components. */              \
                                 float32_t* gp = g + offset;                  \
+                                /* p_i - y_i is the gradient w.r.t. o_i. */  \
+                                float32_t* yp = y + offset;                  \
                                 for (size_t k = 0; k < ft; k++) {            \
-                                        (*gp) /= sum;                        \
+                                        (*gp) = (*gp) / sum - (*yp);         \
                                         gp++;                                \
+                                        yp++;                                \
                                 }                                            \
                         }                                                    \
                                                                              \

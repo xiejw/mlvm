@@ -40,8 +40,16 @@ enum opcode_t {
         OP_MATMUL,
 
         OP_REDUCE,
-        OP_RNG,     // used .rng_seed for seed, mode for distribution.
-        OP_LS_SCEL  // softmax crossentropy with logits loss
+        OP_RNG,  // used .rng_seed for seed, mode for distribution.
+
+        // Softmax crossentropy with logits loss
+        //
+        // Data Types:
+        //   - only F32.
+        //
+        // Option:
+        //   - (optional) opt.i for tensor handle of grad w.r.t. o_i
+        OP_LS_SCEL
 };
 
 // --- common macros

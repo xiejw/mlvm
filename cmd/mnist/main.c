@@ -36,13 +36,14 @@ static error_t initModelWeight(struct vm_t*, struct srng64_t*,
         vmTensorDump(&s, vm, t);          \
         sdsCatPrintf(&s, suffix);
 
+unsigned char* images = NULL;
+unsigned char* labels = NULL;
+
 int main()
 {
-        error_t          err    = OK;
-        sds_t            s      = sdsEmpty();
-        unsigned char*   images = NULL;
-        unsigned char*   labels = NULL;
-        struct srng64_t* seed   = srng64New(123);
+        error_t          err  = OK;
+        sds_t            s    = sdsEmpty();
+        struct srng64_t* seed = srng64New(123);
 
         // x[bs, is]    -- is = IMAGE_SIZE
         // y[bs, ls]    -- ls = LABEL_SIZE
@@ -78,7 +79,6 @@ int main()
         //
         //
         //  todo
-        //    scel with grad.
         //    sum with axis
 
         const int bs   = 32;

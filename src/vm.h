@@ -37,7 +37,7 @@ struct tensor_t {
 struct vm_t;  // forward def.
 
 struct opopt_t {
-        int mode;  // distribution mode for rng.
+        int mode;
         union {
                 const struct srng64_t* rng_seed;  // unowned.
                 float32_t              f;
