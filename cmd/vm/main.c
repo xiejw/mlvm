@@ -19,7 +19,8 @@
         vmTensorDump(&s, vm, t);          \
         sdsCatPrintf(&s, suffix);
 
-int main()
+int
+main()
 {
         error_t err = OK;
         sds_t   s   = sdsEmpty();

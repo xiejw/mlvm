@@ -2,7 +2,8 @@
 
 #include <stdlib.h>
 
-struct shape_t* spNew(int rank, int* dims)
+struct shape_t*
+spNew(int rank, int* dims)
 {
         // some thoughts: if rank <= 3, we could build a bst to lookup existing
         // shape and reusing them. This should be fairly cheap to do and save
@@ -25,13 +26,15 @@ struct shape_t* spNew(int rank, int* dims)
         return s;
 }
 
-struct shape_t* spIncRef(struct shape_t* p)
+struct shape_t*
+spIncRef(struct shape_t* p)
 {
         p->ref_count++;
         return p;
 }
 
-struct shape_t* spDecRef(struct shape_t* p)
+struct shape_t*
+spDecRef(struct shape_t* p)
 {
         if (--(p->ref_count) == 0) {
                 // free the shape.

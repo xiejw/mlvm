@@ -15,15 +15,17 @@ struct vm_t {
         struct list_t*  shapes;
 };
 
-static inline struct tensor_t* vmGrabHandle(struct vm_t* vm, int handle)
+static inline struct tensor_t*
+vmGrabHandle(struct vm_t* vm, int handle)
 {
         assert(handle >= 0 && handle < MAX_TENSOR_COUNT);
         return &vm->handles[handle];
 }
 
 // tensor_t is allocated in pages. so, we set the fields and mark as used.
-static inline void vmFillHandle(struct tensor_t* t, enum data_t dtype,
-                                struct shape_t* s, void* data)
+static inline void
+vmFillHandle(struct tensor_t* t, enum data_t dtype, struct shape_t* s,
+             void* data)
 {
         assert(!(t->used));
         assert(t->shape == NULL);
@@ -35,7 +37,8 @@ static inline void vmFillHandle(struct tensor_t* t, enum data_t dtype,
 }
 
 // tensor_t is allocated in pages. so, we free the fields and mark as unused.
-static inline void vmReleaseHandle(struct tensor_t* t)
+static inline void
+vmReleaseHandle(struct tensor_t* t)
 {
         assert(t->used);
         free(t->data);

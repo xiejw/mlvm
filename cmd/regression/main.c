@@ -24,7 +24,8 @@
 void new_input(struct srng64_t* seed, size_t size, _mut_ float32_t* data,
                float32_t* y, float32_t* w);
 
-int main()
+int
+main()
 {
         error_t err = OK;
         sds_t   s   = sdsEmpty();
@@ -157,8 +158,9 @@ cleanup:
 
 // internal
 
-void new_input(struct srng64_t* seed, size_t size, _mut_ float32_t* data,
-               float32_t* y, float32_t* w)
+void
+new_input(struct srng64_t* seed, size_t size, _mut_ float32_t* data,
+          float32_t* y, float32_t* w)
 {
         // x
         srng64StdNormalF(seed, size, data);

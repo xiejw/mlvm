@@ -5,7 +5,8 @@
 
 #include <string.h>  // memset
 
-struct vm_t* vmNew()
+struct vm_t*
+vmNew()
 {
         size_t       size = sizeof(struct vm_t);
         struct vm_t* vm   = malloc(size);
@@ -13,7 +14,8 @@ struct vm_t* vmNew()
         return vm;
 }
 
-void vmFree(struct vm_t* vm)
+void
+vmFree(struct vm_t* vm)
 {
         for (int i = 0; i < MAX_TENSOR_COUNT; i++) {
                 struct tensor_t* t = &vm->handles[i];
@@ -30,7 +32,8 @@ void vmFree(struct vm_t* vm)
         free(vm);
 }
 
-struct shape_t* vmShapeNew(struct vm_t* vm, int rank, int dims[])
+struct shape_t*
+vmShapeNew(struct vm_t* vm, int rank, int dims[])
 {
         struct shape_t* s = spNew(rank, dims);
 
@@ -47,7 +50,8 @@ struct shape_t* vmShapeNew(struct vm_t* vm, int rank, int dims[])
         return s;
 }
 
-error_t vmTensorSwap(struct vm_t* vm, int t, _mut_ void** data)
+error_t
+vmTensorSwap(struct vm_t* vm, int t, _mut_ void** data)
 {
         struct tensor_t* ts  = vmGrabHandle(vm, t);
         void*            old = ts->data;
@@ -56,8 +60,9 @@ error_t vmTensorSwap(struct vm_t* vm, int t, _mut_ void** data)
         return OK;
 }
 
-error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
-               int dst, int lhs, int rhs)
+error_t
+vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
+       int lhs, int rhs)
 {
         struct tensor_t* td = vmGrabHandle(vm, dst);
         struct tensor_t* t1 = NULL;

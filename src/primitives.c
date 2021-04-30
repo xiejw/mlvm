@@ -94,8 +94,8 @@ DEF_ELEWISE_OP_S(CmpL, CMPL)
 
 #undef DEF_ELEWISE_OP_S
 
-error_t vmOpRngF32(struct tensor_t* dst, int mode,
-                   const struct srng64_t* ori_rng)
+error_t
+vmOpRngF32(struct tensor_t* dst, int mode, const struct srng64_t* ori_rng)
 {
         // make a copy to avoid advancing the ori_rng.
         struct srng64_t rng = *ori_rng;
@@ -109,8 +109,8 @@ error_t vmOpRngF32(struct tensor_t* dst, int mode,
 // reduction.
 // -----------------------------------------------------------------------------
 
-error_t vmOpReduceF32(struct tensor_t* dst, struct tensor_t* t1, int mode,
-                      int axis)
+error_t
+vmOpReduceF32(struct tensor_t* dst, struct tensor_t* t1, int mode, int axis)
 {
         assert(mode == 0);  // sum
         assert(t1->dtype == F32);
@@ -135,8 +135,9 @@ error_t vmOpReduceF32(struct tensor_t* dst, struct tensor_t* t1, int mode,
         return OK;
 }
 
-error_t vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1,
-                      struct tensor_t* t2, int trans_lhs, int trans_rhs)
+error_t
+vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
+              int trans_lhs, int trans_rhs)
 {
         assert(td != t1);
         assert(td != t2);
@@ -241,8 +242,9 @@ error_t vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1,
         }
 }
 
-error_t vmOpLossSCELF32(struct tensor_t* td, struct tensor_t* t1,
-                        struct tensor_t* t2, struct tensor_t* tg)
+error_t
+vmOpLossSCELF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
+                struct tensor_t* tg)
 {
         assert(td != t1);
         assert(td != t2);

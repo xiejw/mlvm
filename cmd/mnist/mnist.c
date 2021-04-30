@@ -48,7 +48,8 @@ static const int labelsFileMagic = 0x00000801;
 static const int imagesFileMagic = 0x00000803;
 
 // internal: Read 4 bytes and convert to big endian integer
-static error_t readInt32(int fd, int* v_int)
+static error_t
+readInt32(int fd, int* v_int)
 {
         // ssize_t read(int fd, void *buf, size_t count);
         unsigned char buf[4];
@@ -73,7 +74,8 @@ static error_t readInt32(int fd, int* v_int)
                 errEmitNote("unexpected error during parsing mnist files."); \
         }
 
-error_t readMnistTrainingImages(unsigned char** data)
+error_t
+readMnistTrainingImages(unsigned char** data)
 {
         error_t        err = OK;
         unsigned char* buf = NULL;
@@ -112,7 +114,8 @@ clean:
         return err;
 }
 
-error_t readMnistTrainingLabels(unsigned char** data)
+error_t
+readMnistTrainingLabels(unsigned char** data)
 {
         error_t        err = OK;
         unsigned char* buf = NULL;
@@ -148,7 +151,8 @@ clean:
 }
 
 // prints the mnist image at buf.
-void printMnistImage(unsigned char* buf)
+void
+printMnistImage(unsigned char* buf)
 {
         int line = 0;
         for (int i = 0; i < 28; i++) {

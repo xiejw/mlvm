@@ -38,7 +38,8 @@ static error_t prepareData(struct srng64_t* seed, float32_t* x_data,
 static unsigned char* images = NULL;
 static unsigned char* labels = NULL;
 
-int main()
+int
+main()
 {
         error_t          err  = OK;
         sds_t            s    = sdsEmpty();
@@ -174,7 +175,8 @@ cleanup:
 }
 
 // impl
-static error_t readMnistData(unsigned char** images, unsigned char** labels)
+static error_t
+readMnistData(unsigned char** images, unsigned char** labels)
 {
         error_t err = readMnistTrainingImages(images);
         if (err) {
@@ -192,15 +194,17 @@ static error_t readMnistData(unsigned char** images, unsigned char** labels)
         return OK;
 }
 
-static void prepareFakeData(struct srng64_t* seed, float32_t* x_data,
-                            size_t x_size, float32_t* y_data, size_t y_size)
+static void
+prepareFakeData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
+                float32_t* y_data, size_t y_size)
 {
         srng64StdNormalF(seed, x_size, x_data);
         srng64StdNormalF(seed, y_size, y_data);
 }
 
-error_t prepareData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
-                    float32_t* y_data, size_t y_size)
+error_t
+prepareData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
+            float32_t* y_data, size_t y_size)
 {
         if (FAKE_DATA) {
                 printf("generating fake minis data.");
@@ -218,8 +222,9 @@ error_t prepareData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
         }
 }
 
-error_t initModelWeight(struct vm_t* vm, struct srng64_t* seed,
-                        struct opopt_t* opt, int w)
+error_t
+initModelWeight(struct vm_t* vm, struct srng64_t* seed, struct opopt_t* opt,
+                int w)
 {
         struct srng64_t* weight_seed = srng64Split(seed);
         opt->rng_seed                = weight_seed;
