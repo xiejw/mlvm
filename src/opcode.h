@@ -39,7 +39,17 @@ enum opcode_t {
         //   - dst must be unique.
         OP_MATMUL,
 
+        // Reduction
+        //
+        // Data Types:
+        //   - only F32.
+        //
+        // Option: (see macros below OPT_REDUCE_*)
+        //   - opt.mode value table
+        //       0  std normal
+        //   - opt.i specifies the axis.
         OP_REDUCE,
+
         OP_RNG,  // used .rng_seed for seed, mode for distribution.
 
         // Softmax crossentropy with logits loss
@@ -56,3 +66,5 @@ enum opcode_t {
 #define OPT_MATMUL_TRANS_NOT 0
 #define OPT_MATMUL_TRANS_LHS 2
 #define OPT_MATMUL_TRANS_RHS 1
+
+#define OPT_REDUCE_STD_NORMAL 0

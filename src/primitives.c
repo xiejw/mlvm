@@ -105,20 +105,33 @@ error_t vmOpRngF32(struct tensor_t* dst, int mode,
         return OK;
 }
 
-error_t vmOpReduceF32(struct tensor_t* dst, struct tensor_t* t1, int mode)
+// -----------------------------------------------------------------------------
+// reduction.
+// -----------------------------------------------------------------------------
+
+error_t vmOpReduceF32(struct tensor_t* dst, struct tensor_t* t1, int mode,
+                      int axis)
 {
         assert(mode == 0);  // sum
         assert(t1->dtype == F32);
         assert(dst->dtype == F32);
-        assert(1 == dst->shape->size);
 
-        float32_t  v    = 0;
-        size_t     size = t1->shape->size;
-        float32_t* data = (float32_t*)t1->data;
-        for (size_t i = 0; i < size; i++) {
-                v += data[i];
+        if (axis == 0) {
+                assert(1 == dst->shape->size);
+                float32_t  v    = 0;
+                size_t     size = t1->shape->size;
+                float32_t* data = (float32_t*)t1->data;
+                for (size_t i = 0; i < size; i++) {
+                        v += data[i];
+                }
+                *(float32_t*)dst->data = v;
         }
-        *(float32_t*)dst->data = v;
+        //  else (axis >0) {
+        //          // reduce heading axes
+        //          assert(axis<dst->shape->rank);
+        //          size_t value_size = 1;
+
+        //  }
         return OK;
 }
 

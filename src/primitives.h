@@ -21,7 +21,8 @@ error_t vmOpCmpLSF32(struct tensor_t* td, struct tensor_t* t1, float32_t);
 // -----------------------------------------------------------------------------
 // reduction.
 // -----------------------------------------------------------------------------
-error_t vmOpReduceF32(struct tensor_t* td, struct tensor_t* t1, int mode);
+error_t vmOpReduceF32(struct tensor_t* td, struct tensor_t* t1, int mode,
+                      int axis);
 
 // -----------------------------------------------------------------------------
 // rng.

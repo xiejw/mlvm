@@ -131,7 +131,7 @@ error_t vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt,
                 assert(t1 != NULL);
                 assert(t2 == NULL);
                 if (td->dtype == F32) {
-                        return vmOpReduceF32(td, t1, opt->mode);
+                        return vmOpReduceF32(td, t1, opt->mode, 0);
                 }
 
                 return errNewWithNote(
