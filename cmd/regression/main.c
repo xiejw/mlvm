@@ -128,7 +128,7 @@ main()
 
                 // forward pass.
                 NO_ERR(vmExec(vm, OP_MUL, NULL, z, x, w));
-                opt.i = 0;
+                OPT_SET_REDUCTION_SUM(opt);
                 NO_ERR(vmExec(vm, OP_REDUCE, &opt, rz, z, VM_UNUSED));
                 NO_ERR(vmExec(vm, OP_MINUS, NULL, l, rz, y));
                 NO_ERR(vmExec(vm, OP_MUL, NULL, l2, l, l));

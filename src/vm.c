@@ -135,28 +135,40 @@ vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
                 assert(opt->mode == 0);
                 assert(t1 != NULL);
                 assert(t2 == NULL);
-                if (td->dtype == F32) {
-                        int axis = opt->i;
-                        return vmOpReduceF32(td, t1, opt->mode, axis);
+                if (td->dtype != F32) {
+                        return errNewWithNote(
+                            ENOTIMPL, "unimpl for OP_REDUCE with dtype %d",
+                            td->dtype);
                 }
 
-                return errNewWithNote(
-                    ENOTIMPL, "unimpl for OP_REDUCE with dtype %d", td->dtype);
+                int axis = 0;
+                if (OPT_MODE_GET_I_BIT(*opt)) {
+                        axis = opt->i;
+                } else {
+                        assert(opt->i == 0);
+                }
+                return vmOpReduceF32(td, t1, opt->mode, axis);
 
         case OP_LS_SCEL:
                 assert(t1 != NULL);
                 assert(t2 != NULL);
                 struct tensor_t* tg = NULL;
-                if (td->dtype == F32) {
-                        if (opt != NULL) {
-                                tg = vmGrabHandle(
-                                    vm, opt->i);  // handle of the gradient.
-                        }
-                        return vmOpLossSCELF32(td, t1, t2, tg);
+                if (td->dtype != F32) {
+                        return errNewWithNote(
+                            ENOTIMPL, "unimpl for OP_LS_SCEL with dtype %d",
+                            td->dtype);
                 }
 
-                return errNewWithNote(
-                    ENOTIMPL, "unimpl for OP_LS_SCEL with dtype %d", td->dtype);
+                if (opt != NULL) {
+                        if (OPT_MODE_GET_I_BIT(*opt)) {
+                                tg = vmGrabHandle(
+                                    vm,
+                                    opt->i);  // handle of the gradient.
+                        } else {
+                                assert(opt->i == 0);
+                        }
+                }
+                return vmOpLossSCELF32(td, t1, t2, tg);
 
         default:
                 return errNewWithNote(ENOTIMPL, "unimpl op for vmExec: %d", op);

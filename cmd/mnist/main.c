@@ -152,8 +152,7 @@ main()
                 NO_ERR(vmExec(vm, OP_MAX, NULL, z2, h2b, z));
                 NO_ERR(vmExec(vm, OP_MATMUL, NULL, o, z2, w3));
                 NO_ERR(vmExec(vm, OP_LS_SCEL, NULL, l, y, o));
-                opt.mode = 0;  // sum
-                opt.i    = 0;
+                OPT_SET_REDUCTION_SUM(opt);
                 NO_ERR(vmExec(vm, OP_REDUCE, &opt, loss, l, VM_UNUSED));
                 SDS_CAT_PRINTF("logits: ", o, "\n");
                 SDS_CAT_PRINTF("labels: ", y, "\n");

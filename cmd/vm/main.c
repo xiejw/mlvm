@@ -50,7 +50,7 @@ main()
         NO_ERR(vmExec(vm, OP_MUL, NULL, t1, t1, t2));
         SDS_CAT_PRINTF("t1 <- t1 * t2\n\tt1: ", t1, "\n");
 
-        opt.i = 0;
+        OPT_SET_REDUCTION_SUM(opt);
         NO_ERR(vmExec(vm, OP_REDUCE, &opt, t3, t1, VM_UNUSED));
         SDS_CAT_PRINTF("t3 <- reduce(t1)\n\tt3: ", t3, "\n");
 

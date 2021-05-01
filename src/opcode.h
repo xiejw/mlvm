@@ -62,9 +62,15 @@ enum opcode_t {
         //   - only F32.
         //
         // Option (required):
-        //   - opt.mode value table (see macros below OPT_REDUCE_*)
-        //       0  std normal
-        //   - opt.i specifies the axis.
+        //   - opt.mode value table
+        //
+        //     | v | reduction op | macro                 |
+        //     | 0 | sum          | OPT_SET_REDUCTION_SUM |
+        //
+        //   - opt.mode I bit (set after opt.mode)
+        //     - if set, then opt.i specifies the axis. Use
+        //       OPT_SET_REDUCTION_AXIS.
+        //     - otherwise, opt.i == 0
         OP_REDUCE,
 
         OP_RNG,  // used .rng_seed for seed, mode for distribution.
@@ -78,19 +84,29 @@ enum opcode_t {
         //
         // Option:
         //   - opt could be NULL.
-        //   - opt.mode grad state is set then opt.i for tensor handle of grad
-        //     w.r.t. o_i. Use OPT_SET_GRAD_TENSOR_HANDLER.
+        //   - opt.mode I bit
+        //     - if set then opt.i for tensor handle of grad w.r.t. o_i.
+        //       Use OPT_SET_GRAD_TENSOR_HANDLER.
+        //     - otherwise, opt.i == 0
         OP_LS_SCEL
 };
 
+// --- opt bits.
+#define OPT_MODE_I_BIT          0x10000
+#define OPT_MODE_GET_I_BIT(opt) (((opt).mode) & OPT_MODE_I_BIT)
+
 // --- common macros
+// --- matmul
 #define OPT_MATMUL_TRANS_NOT 0
 #define OPT_MATMUL_TRANS_LHS 2
 #define OPT_MATMUL_TRANS_RHS 1
 
-#define OPT_REDUCE_STD_NORMAL 0
+// --- reduction
+#define OPT_SET_REDUCTION_SUM(opt) ((opt).mode = 0, (opt).i = 0)
 
-#define OPT_MODE_GRAD_BIT 0x100
+#define OPT_SET_REDUCTION_AXIS(opt, axis) \
+        ((opt).mode |= OPT_MODE_I_BIT, (opt).i = (axis))
 
+// --- loss
 #define OPT_SET_GRAD_TENSOR_HANDLER(opt, td) \
-        ((opt).mode |= OPT_MODE_GRAD_BIT, (opt).i = (td))
+        ((opt).mode |= OPT_MODE_I_BIT, (opt).i = (td))
