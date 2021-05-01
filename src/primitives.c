@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>  // memcpy
 
 #include "rng/srng64_normal.h"
 
@@ -94,6 +95,10 @@ DEF_ELEWISE_OP_S(CmpL, CMPL)
 
 #undef DEF_ELEWISE_OP_S
 
+// -----------------------------------------------------------------------------
+// rng.
+// -----------------------------------------------------------------------------
+
 error_t
 vmOpRngF32(struct tensor_t* dst, int mode, const struct srng64_t* ori_rng)
 {
@@ -110,29 +115,60 @@ vmOpRngF32(struct tensor_t* dst, int mode, const struct srng64_t* ori_rng)
 // -----------------------------------------------------------------------------
 
 error_t
-vmOpReduceF32(struct tensor_t* dst, struct tensor_t* t1, int mode, int axis)
+vmOpReduceF32(struct tensor_t* td, struct tensor_t* t1, int mode, int axis)
 {
         assert(mode == 0);  // sum
         assert(t1->dtype == F32);
-        assert(dst->dtype == F32);
+        assert(td->dtype == F32);
 
         if (axis == 0) {
-                assert(1 == dst->shape->size);
+                assert(1 == td->shape->size);
                 float32_t  v    = 0;
                 size_t     size = t1->shape->size;
                 float32_t* data = (float32_t*)t1->data;
                 for (size_t i = 0; i < size; i++) {
                         v += data[i];
                 }
-                *(float32_t*)dst->data = v;
-        }
-        //  else (axis >0) {
-        //          // reduce heading axes
-        //          assert(axis<dst->shape->rank);
-        //          size_t value_size = 1;
+                *(float32_t*)td->data = v;
+                return OK;
+        } else if (axis > 0) {
+                // reduce heading axes. For [A, B] reducing values B along A.
+                assert(axis + td->shape->rank == t1->shape->rank);
+                assert(t1->shape->size > td->shape->size);
+                size_t value_size = td->shape->size;
+                size_t loop_count = t1->shape->size / value_size;
 
-        //  }
-        return OK;
+                float32_t* dst = (float32_t*)td->data;
+                float32_t* src = (float32_t*)t1->data;
+                memcpy(dst, src, value_size * sizeof(float32_t));
+                for (size_t i = 1; i < loop_count; i++) {
+                        src += value_size;
+                        for (size_t j = 1; j < value_size; j++) {
+                                dst[j] += src[j];
+                        }
+                }
+                return OK;
+        } else {
+                assert(axis < 0);
+                axis = -axis;
+                // reduce heading axes. For [A, B] reducing values B to scalar.
+                assert(axis + td->shape->rank == t1->shape->rank);
+                assert(t1->shape->size > td->shape->size);
+                size_t loop_count = td->shape->size;
+                size_t value_size = t1->shape->size / loop_count;
+
+                float32_t* dst = (float32_t*)td->data;
+                float32_t* src = (float32_t*)t1->data;
+                for (size_t i = 0; i < loop_count; i++) {
+                        float32_t v = 0.0;
+                        for (size_t j = 1; j < value_size; j++) {
+                                v += src[j];
+                        }
+                        dst[i] = v;
+                        src += value_size;
+                }
+                return OK;
+        }
 }
 
 error_t

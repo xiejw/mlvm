@@ -10,7 +10,7 @@ enum opcode_t {
         //   - rhs is scalar, i.e., [1].
         //   - rhs is NULL; uses .f for rhs scalar [F32].
         //
-        // Option:
+        // Option (optional):
         //   - opt must be NULL if .f is not used.
         //
         // In-Place:
@@ -29,10 +29,11 @@ enum opcode_t {
         // Shapes:
         //   - only rank 2 operands.
         //
-        // Option: (see macros below OPT_MATMUL_TRANS_*)
+        // Option (optional):
         //   - opt could be NULL, or opt.mode == 0. This means no transpose.
         //   - mode == 2 means trans_lhs
         //   - mode == 1 means trans_rhs
+        //     (see macros below OPT_MATMUL_TRANS_*)
         //   - other values of modes are invalid.
         //
         // In-Place:
@@ -44,8 +45,8 @@ enum opcode_t {
         // Data Types:
         //   - only F32.
         //
-        // Option: (see macros below OPT_REDUCE_*)
-        //   - opt.mode value table
+        // Option (required):
+        //   - opt.mode value table (see macros below OPT_REDUCE_*)
         //       0  std normal
         //   - opt.i specifies the axis.
         OP_REDUCE,
@@ -57,8 +58,8 @@ enum opcode_t {
         // Data Types:
         //   - only F32.
         //
-        // Option:
-        //   - (optional) opt.i for tensor handle of grad w.r.t. o_i
+        // Option (optional):
+        //   - opt.i for tensor handle of grad w.r.t. o_i
         OP_LS_SCEL
 };
 

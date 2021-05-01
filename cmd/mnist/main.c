@@ -76,10 +76,6 @@ main()
         //
         //   d_h2[bs, h2] = d_h2b[bs, h2]
         //   d_b2[h2]     = sum(d_h2b[bs, h2], axis=0)
-        //
-        //
-        //  todo
-        //    sum with axis
 
         const int bs   = 32;
         const int is   = IMAGE_SIZE;
@@ -157,6 +153,7 @@ main()
                 NO_ERR(vmExec(vm, OP_MATMUL, NULL, o, z2, w3));
                 NO_ERR(vmExec(vm, OP_LS_SCEL, NULL, l, y, o));
                 opt.mode = 0;  // sum
+                opt.i    = 0;
                 NO_ERR(vmExec(vm, OP_REDUCE, &opt, loss, l, VM_UNUSED));
                 SDS_CAT_PRINTF("logits: ", o, "\n");
                 SDS_CAT_PRINTF("labels: ", y, "\n");
