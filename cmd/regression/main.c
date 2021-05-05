@@ -135,7 +135,7 @@ main()
                 SDS_CAT_PRINTF("\tloss : ", loss, "\n");
 
                 // backward pass
-                opt.f = 2 * 0.05;  // 2 * learning_rate
+                OPT_SET_SCALAR_OPERAND(opt, 2 * 0.05);  // 2 * learning_rate
                 NO_ERR(vmExec(vm, OP_MUL, &opt, d_rz, l, VM_UNUSED));
                 NO_ERR(vmExec(vm, OP_MUL, NULL, d_w, x,
                               d_rz));  // d_rz must be t2.

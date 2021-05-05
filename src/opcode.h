@@ -22,9 +22,9 @@ enum opcode_t {
         //   - rhs is NULL; uses .f for rhs scalar [F32].
         //
         // Option:
-        //   - opt must be NULL if .f is not used.
-        //     - For this case, as rhs is NULL, special value in mode will not
-        //       be needed.
+        //   - opt must be NULL
+        //   - if opt is not NULL, F_BIT must be set and .f specicies the
+        //     scalar operand (the second operand).
         //
         // In-Place:
         //   - all operand handles can be used as destination.
@@ -67,9 +67,10 @@ enum opcode_t {
         //     | v | reduction op | macro                 |
         //     | 0 | sum          | OPT_SET_REDUCTION_SUM |
         //
-        //   - opt.mode I bit (set after opt.mode)
+        //   - opt.mode I bit
         //     - if set, then opt.i specifies the axis. Use
-        //       OPT_SET_REDUCTION_AXIS.
+        //       OPT_SET_REDUCTION_AXIS. Note OPT_SET_REDUCTION_SUM clears
+        //       bits, so the order must be correct.
         //     - otherwise, opt.i == 0
         OP_REDUCE,
 
@@ -92,10 +93,17 @@ enum opcode_t {
 };
 
 // --- opt bits.
+#define OPT_MODE_BIT_MASK       0xFF0000
 #define OPT_MODE_I_BIT          0x10000
+#define OPT_MODE_F_BIT          0x20000
 #define OPT_MODE_GET_I_BIT(opt) (((opt).mode) & OPT_MODE_I_BIT)
+#define OPT_MODE_GET_F_BIT(opt) (((opt).mode) & OPT_MODE_F_BIT)
 
 // --- common macros
+// --- element wise ops
+#define OPT_SET_SCALAR_OPERAND(opt, v) \
+        ((opt).mode = OPT_MODE_F_BIT, (opt).f = (v))
+
 // --- matmul
 #define OPT_MATMUL_TRANS_NOT 0
 #define OPT_MATMUL_TRANS_LHS 2

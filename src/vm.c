@@ -81,6 +81,7 @@ vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
                                 return vmOp##API##F32(td, t1, t2);           \
                         } else {                                             \
                                 assert(t2 == NULL);                          \
+                                assert(OPT_MODE_GET_F_BIT(*opt));            \
                                 return vmOp##API##SF32(td, t1, opt->f);      \
                         }                                                    \
                 }                                                            \
