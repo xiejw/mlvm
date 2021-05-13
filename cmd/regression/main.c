@@ -6,7 +6,7 @@
 
 #include "vm.h"
 
-#define NO_ERR(e) NO_ERR_IMPL_(e, __FILE__, __LINE__)
+#define NE(e) NO_ERR_IMPL_(e, __FILE__, __LINE__)
 
 #define NO_ERR_IMPL_(e, f, l)                                           \
         if (e) {                                                        \
@@ -62,16 +62,16 @@ main()
         float32_t* y_data;
         float32_t* w_data;
 
-        NO_ERR(vmTensorData(vm, x, (void**)&x_data));
-        NO_ERR(vmTensorData(vm, w_target, (void**)&w_data));
-        NO_ERR(vmTensorData(vm, y, (void**)&y_data));
+        NE(vmTensorData(vm, x, (void**)&x_data));
+        NE(vmTensorData(vm, w_target, (void**)&w_data));
+        NE(vmTensorData(vm, y, (void**)&y_data));
 
         // ---
         // initializes weight for the model (target).
         rng          = srng64Split(seed);
         opt.mode     = 0;  // normal.
         opt.rng_seed = rng;
-        NO_ERR(vmExec(vm, OP_RNG, &opt, w_target, VM_UNUSED, VM_UNUSED));
+        NE(vmExec(vm, OP_RNG, &opt, w_target, VM_UNUSED, VM_UNUSED));
         srng64Free(rng);
 
         SDS_CAT_PRINTF("\ttarget  weight: ", w_target, "\n");
@@ -80,7 +80,7 @@ main()
         // initializes weight for the model (about to learn).
         rng          = srng64Split(seed);
         opt.rng_seed = rng;
-        NO_ERR(vmExec(vm, OP_RNG, &opt, w, VM_UNUSED, VM_UNUSED));
+        NE(vmExec(vm, OP_RNG, &opt, w, VM_UNUSED, VM_UNUSED));
         srng64Free(rng);
 
         SDS_CAT_PRINTF("\tinitial weight: ", w, "\n");
@@ -127,19 +127,19 @@ main()
                 SDS_CAT_PRINTF("\ty: ", y, "\n");
 
                 // forward pass.
-                NO_ERR(vmExec(vm, OP_MUL, NULL, z, x, w));
+                NE(vmExec(vm, OP_MUL, NULL, z, x, w));
                 OPT_SET_REDUCTION_SUM(opt);
-                NO_ERR(vmExec(vm, OP_REDUCE, &opt, rz, z, VM_UNUSED));
-                NO_ERR(vmExec(vm, OP_MINUS, NULL, l, rz, y));
-                NO_ERR(vmExec(vm, OP_MUL, NULL, l2, l, l));
+                NE(vmExec(vm, OP_REDUCE, &opt, rz, z, VM_UNUSED));
+                NE(vmExec(vm, OP_MINUS, NULL, l, rz, y));
+                NE(vmExec(vm, OP_MUL, NULL, l2, l, l));
                 SDS_CAT_PRINTF("\tloss : ", loss, "\n");
 
                 // backward pass
                 OPT_SET_SCALAR_OPERAND(opt, 2 * 0.05);  // 2 * learning_rate
-                NO_ERR(vmExec(vm, OP_MUL, &opt, d_rz, l, VM_UNUSED));
-                NO_ERR(vmExec(vm, OP_MUL, NULL, d_w, x,
-                              d_rz));  // d_rz must be t2.
-                NO_ERR(vmExec(vm, OP_MINUS, NULL, w, w, d_w));
+                NE(vmExec(vm, OP_MUL, &opt, d_rz, l, VM_UNUSED));
+                NE(vmExec(vm, OP_MUL, NULL, d_w, x,
+                          d_rz));  // d_rz must be t2.
+                NE(vmExec(vm, OP_MINUS, NULL, w, w, d_w));
                 SDS_CAT_PRINTF("\tgrad : ", d_w, "\n");
                 SDS_CAT_PRINTF("\tnew_w: ", w, "\n");
                 SDS_CAT_PRINTF("\ttgt w: ", w_target, "\n");

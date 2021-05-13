@@ -31,9 +31,11 @@ ALL_LIBS        = ${VM_LIB}
 # actions.
 # ------------------------------------------------------------------------------
 
-.DEFAULT_GOAL   = mnist # regression  # vm
+.DEFAULT_GOAL   = compile_cmd # mnist # regression  # vm
 
 compile: ${BUILD} ${ALL_LIBS}
+
+compile_cmd: compile ${BUILD}/vm ${BUILD}/regression ${BUILD}/mnist
 
 ${BUILD}/vm_%.o: ${SRC}/%.c ${VM_HEADER}
 	${EVA_CC} -o $@ -c $<
