@@ -1,12 +1,16 @@
 #include <stdio.h>
 
+// eva
 #include "adt/sds.h"
 #include "rng/srng64.h"
 #include "rng/srng64_normal.h"
 
+// mlvm
 #include "vm.h"
 
-#include "mnist.c"
+// cmd
+#include "../helpers.h"
+#include "mnist.h"
 
 static error_t initModelWeight(struct vm_t*, struct srng64_t*,
                                struct opopt_t* rng, int w);
@@ -17,23 +21,6 @@ static error_t prepareData(struct srng64_t* seed, float32_t* x_data,
 #define LABEL_SIZE (10)
 
 #define FAKE_DATA 1
-
-#define NO_ERR(e) NO_ERR_IMPL_(e, __FILE__, __LINE__)
-
-#define NO_ERR_IMPL_(e, f, l)                                           \
-        if (e) {                                                        \
-                err = e;                                                \
-                errDump("failed to exec op @ file %s line %d\n", f, l); \
-                goto cleanup;                                           \
-        }
-
-#define R1S(vm, s1)     vmShapeNew(vm, 1, (int[]){(s1)});
-#define R2S(vm, s1, s2) vmShapeNew(vm, 2, (int[]){(s1), (s2)});
-
-#define SDS_CAT_PRINTF(prefix, t, suffix) \
-        sdsCatPrintf(&s, prefix);         \
-        vmTensorDump(&s, vm, t);          \
-        sdsCatPrintf(&s, suffix);
 
 static unsigned char* images = NULL;
 static unsigned char* labels = NULL;
@@ -136,36 +123,36 @@ main()
         {
                 printf("init model weights.\n");
                 opt.mode = 0;  // std normal.
-                NO_ERR(initModelWeight(vm, seed, &opt, w1));
-                NO_ERR(initModelWeight(vm, seed, &opt, b1));
-                NO_ERR(initModelWeight(vm, seed, &opt, w2));
-                NO_ERR(initModelWeight(vm, seed, &opt, b2));
-                NO_ERR(initModelWeight(vm, seed, &opt, w3));
+                NE(initModelWeight(vm, seed, &opt, w1));
+                NE(initModelWeight(vm, seed, &opt, b1));
+                NE(initModelWeight(vm, seed, &opt, w2));
+                NE(initModelWeight(vm, seed, &opt, b2));
+                NE(initModelWeight(vm, seed, &opt, w3));
         }
 
         // ---
         // fetch inputs.
         {
                 float32_t *x_data, *y_data;
-                NO_ERR(vmTensorData(vm, x, (void**)&x_data));
-                NO_ERR(vmTensorData(vm, y, (void**)&y_data));
-                NO_ERR(prepareData(seed, x_data, /*x_size=*/sp_x->size, y_data,
-                                   /*y_size=*/sp_y->size));
+                NE(vmTensorData(vm, x, (void**)&x_data));
+                NE(vmTensorData(vm, y, (void**)&y_data));
+                NE(prepareData(seed, x_data, /*x_size=*/sp_x->size, y_data,
+                               /*y_size=*/sp_y->size));
         }
 
         // ---
         // forward pass
         {
-                NO_ERR(vmExec(vm, OP_MATMUL, NULL, h1, x, w1));
-                NO_ERR(vmExec(vm, OP_ADD, NULL, h1b, h1, b1));
-                NO_ERR(vmExec(vm, OP_MAX, NULL, z1, h1b, z));
-                NO_ERR(vmExec(vm, OP_MATMUL, NULL, h2, z1, w2));
-                NO_ERR(vmExec(vm, OP_ADD, NULL, h2b, h2, b2));
-                NO_ERR(vmExec(vm, OP_MAX, NULL, z2, h2b, z));
-                NO_ERR(vmExec(vm, OP_MATMUL, NULL, o, z2, w3));
-                NO_ERR(vmExec(vm, OP_LS_SCEL, NULL, l, y, o));
+                NE(vmExec(vm, OP_MATMUL, NULL, h1, x, w1));
+                NE(vmExec(vm, OP_ADD, NULL, h1b, h1, b1));
+                NE(vmExec(vm, OP_MAX, NULL, z1, h1b, z));
+                NE(vmExec(vm, OP_MATMUL, NULL, h2, z1, w2));
+                NE(vmExec(vm, OP_ADD, NULL, h2b, h2, b2));
+                NE(vmExec(vm, OP_MAX, NULL, z2, h2b, z));
+                NE(vmExec(vm, OP_MATMUL, NULL, o, z2, w3));
+                NE(vmExec(vm, OP_LS_SCEL, NULL, l, y, o));
                 OPT_SET_REDUCTION_SUM(opt);
-                NO_ERR(vmExec(vm, OP_REDUCE, &opt, loss, l, VM_UNUSED));
+                NE(vmExec(vm, OP_REDUCE, &opt, loss, l, VM_UNUSED));
                 SDS_CAT_PRINTF("logits: ", o, "\n");
                 SDS_CAT_PRINTF("labels: ", y, "\n");
                 SDS_CAT_PRINTF("loss after softmax cel: ", l, "\n");
