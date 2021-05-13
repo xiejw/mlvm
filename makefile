@@ -4,7 +4,7 @@ EVA_LIB         = ${EVA_PATH}/.build_release/libeva.a
 include ${EVA_PATH}/eva.mk
 
 # ------------------------------------------------------------------------------
-# configurations.
+# Configurations.
 # ------------------------------------------------------------------------------
 
 SRC             =  src
@@ -18,6 +18,9 @@ LDFLAGS         += ${EVA_LIB}
 
 TEX             = docker run --rm -v `pwd`:/workdir xiejw/tex pdftex
 
+CMDS            = $(patsubst ${CMD}/%,%,$(wildcard ${CMD}/*))
+CMD_TARGETS     = $(patsubst ${CMD}/%/main.c,${BUILD}/%,$(wildcard ${CMD}/*/main.c))
+
 # ------------------------------------------------------------------------------
 # libs.
 # ------------------------------------------------------------------------------
@@ -28,14 +31,12 @@ VM_LIB          = ${BUILD}/vm_vm.o ${BUILD}/vm_shape.o ${BUILD}/vm_tensor.o \
 ALL_LIBS        = ${VM_LIB}
 
 # ------------------------------------------------------------------------------
-# actions.
+# Actions and Header Deps.
 # ------------------------------------------------------------------------------
 
-.DEFAULT_GOAL   = compile_cmd # mnist # regression  # vm
+.DEFAULT_GOAL   = compile
 
 compile: ${BUILD} ${ALL_LIBS}
-
-compile_cmd: compile ${BUILD}/vm ${BUILD}/regression ${BUILD}/mnist
 
 ${BUILD}/vm_%.o: ${SRC}/%.c ${VM_HEADER}
 	${EVA_CC} -o $@ -c $<
@@ -49,41 +50,21 @@ ${BUILD}/vm_primitives.o: ${SRC}/primitives.h
 
 
 # ------------------------------------------------------------------------------
-# cmd.
+# Cmd.
 # ------------------------------------------------------------------------------
 
-.PNONY: vm
+compile: ${CMD_TARGETS}
 
-vm: compile ${BUILD}/vm
-	${EVA_EX} ${BUILD}/vm
-
-${BUILD}/vm: cmd/vm/main.c ${VM_LIB}
-	${EVA_LD} -o $@ $^
-
-regression: compile ${BUILD}/regression
-	${EVA_EX} ${BUILD}/regression
-
-${BUILD}/regression: cmd/regression/main.c ${VM_LIB}
-	${EVA_LD} -o $@ $^
-
-mnist: compile ${BUILD}/mnist
-	${EVA_EX} ${BUILD}/mnist
-
-${BUILD}/mnist: cmd/mnist/main.c ${VM_LIB}
-	${EVA_LD} -o $@ $^
+$(foreach cmd,$(CMDS),$(eval $(call objs,$(cmd),$(BUILD),$(VM_LIB))))
 
 # ------------------------------------------------------------------------------
-# docs.
+# Docs.
 # ------------------------------------------------------------------------------
-#
+
 DOC             = doc
-
 DOCS            = ${DOC}/design.pdf ${DOC}/loss_softmax_crossentropy.pdf
-
-.PNONY: ${DOCS}
 
 doc: ${DOCS}
 
 ${DOC}/%.pdf: ${DOC}/%.tex
 	${TEX} -output-directory `dirname "$@"` $<
-
