@@ -1,24 +1,15 @@
 #include <stdio.h>
 
+// eva
 #include "adt/sds.h"
 #include "rng/srng64.h"
 #include "rng/srng64_normal.h"
 
+// mlvm
 #include "vm.h"
 
-#define NE(e) NO_ERR_IMPL_(e, __FILE__, __LINE__)
-
-#define NO_ERR_IMPL_(e, f, l)                                           \
-        if (e) {                                                        \
-                err = e;                                                \
-                errDump("failed to exec op @ file %s line %d\n", f, l); \
-                goto cleanup;                                           \
-        }
-
-#define SDS_CAT_PRINTF(prefix, t, suffix) \
-        sdsCatPrintf(&s, prefix);         \
-        vmTensorDump(&s, vm, t);          \
-        sdsCatPrintf(&s, suffix);
+// cmd
+#include "../helpers.h"
 
 // helper to generate next input
 void new_input(struct srng64_t* seed, size_t size, _mut_ float32_t* data,
@@ -74,7 +65,7 @@ main()
         NE(vmExec(vm, OP_RNG, &opt, w_target, VM_UNUSED, VM_UNUSED));
         srng64Free(rng);
 
-        SDS_CAT_PRINTF("\ttarget  weight: ", w_target, "\n");
+        S_PRINTF("\ttarget  weight: ", w_target, "\n");
 
         // ---
         // initializes weight for the model (about to learn).
@@ -83,7 +74,7 @@ main()
         NE(vmExec(vm, OP_RNG, &opt, w, VM_UNUSED, VM_UNUSED));
         srng64Free(rng);
 
-        SDS_CAT_PRINTF("\tinitial weight: ", w, "\n");
+        S_PRINTF("\tinitial weight: ", w, "\n");
 
         // --- formula
         //   forward pass
@@ -121,28 +112,38 @@ main()
 
                 // ---
                 // prepare input sample: x,y.
-                new_input(seed_for_input, sp_weight->size, x_data, y_data,
-                          w_data);
-                SDS_CAT_PRINTF("\tinput: ", x, "\n");
-                SDS_CAT_PRINTF("\ty: ", y, "\n");
+                {
+                        new_input(seed_for_input, sp_weight->size, x_data,
+                                  y_data, w_data);
+
+                        S_PRINTF("\tinput: ", x, "\n");
+                        S_PRINTF("\ty: ", y, "\n");
+                }
 
                 // forward pass.
-                NE(vmExec(vm, OP_MUL, NULL, z, x, w));
-                OPT_SET_REDUCTION_SUM(opt);
-                NE(vmExec(vm, OP_REDUCE, &opt, rz, z, VM_UNUSED));
-                NE(vmExec(vm, OP_MINUS, NULL, l, rz, y));
-                NE(vmExec(vm, OP_MUL, NULL, l2, l, l));
-                SDS_CAT_PRINTF("\tloss : ", loss, "\n");
+                {
+                        NE(vmExec(vm, OP_MUL, NULL, z, x, w));
+                        OPT_SET_REDUCTION_SUM(opt);
+                        NE(vmExec(vm, OP_REDUCE, &opt, rz, z, VM_UNUSED));
+                        NE(vmExec(vm, OP_MINUS, NULL, l, rz, y));
+                        NE(vmExec(vm, OP_MUL, NULL, l2, l, l));
+
+                        S_PRINTF("\tloss : ", loss, "\n");
+                }
 
                 // backward pass
-                OPT_SET_SCALAR_OPERAND(opt, 2 * 0.05);  // 2 * learning_rate
-                NE(vmExec(vm, OP_MUL, &opt, d_rz, l, VM_UNUSED));
-                NE(vmExec(vm, OP_MUL, NULL, d_w, x,
-                          d_rz));  // d_rz must be t2.
-                NE(vmExec(vm, OP_MINUS, NULL, w, w, d_w));
-                SDS_CAT_PRINTF("\tgrad : ", d_w, "\n");
-                SDS_CAT_PRINTF("\tnew_w: ", w, "\n");
-                SDS_CAT_PRINTF("\ttgt w: ", w_target, "\n");
+                {
+                        OPT_SET_SCALAR_OPERAND(opt,
+                                               2 * 0.05);  // 2 * learning_rate
+                        NE(vmExec(vm, OP_MUL, &opt, d_rz, l, VM_UNUSED));
+                        NE(vmExec(vm, OP_MUL, NULL, d_w, x,
+                                  d_rz));  // d_rz must be t2.
+                        NE(vmExec(vm, OP_MINUS, NULL, w, w, d_w));
+
+                        S_PRINTF("\tgrad : ", d_w, "\n");
+                        S_PRINTF("\tnew_w: ", w, "\n");
+                        S_PRINTF("\ttgt w: ", w_target, "\n");
+                }
                 printf("%s\n", s);
                 sdsClear(s);
         }

@@ -32,49 +32,51 @@ main()
         sds_t            s    = sdsEmpty();
         struct srng64_t* seed = srng64New(123);
 
-        // x[bs, is]    -- is = IMAGE_SIZE
-        // y[bs, ls]    -- ls = LABEL_SIZE
-        //
-        // forward pass
-        //
-        //   z[1] = zeros([1])
-        //
-        //   h1[bs, h1]   = matmul(x[bs, is], w1[is, h1])
-        //   h1b[bs, h1]  = h1[bs, h1] + b1[h1]
-        //   z1[bs, h1]   = max(h1b[bs, h1], z[1])
-        //
-        //   h2[bs, h2]   = matmul(z1[bs, h1], w2[h1, h2])
-        //   h2b[bs, h2]  = h2[bs, h2] + b2[h2]
-        //   z2[bs, h2]   = max(h2b[bs, h2], z[1])
-        //
-        //   o[bs, ls]    = matmul(z2[bs, h2], w3[h2, ls])
-        //   l[bs]        = softmax_cross_entropy_with_logits(
-        //                      y[bs, ls], o[bs, ls])
-        //   loss[1]      = sum(l[bs])
-        //
-        //  backward pass
-        //
-        //   d_o[bs, ls]  = grad_softmax_cross_entropy_with_logits(
-        //                     y[bs, ls], o[bs, ls])
-        //   d_w3[h2, ls] = matmul(z2[bs, h2], d_o[bs, ls], trans_a)
-        //   d_z2[bs, h2] = matmul(o[bs, ls], w3[h2, ls], trans_b)
-        //
-        //   -- the second matmul
-        //   state_0      = cmpL(h2b[bs, h2], z[1])
-        //   d_h2b[bs, h2]= mul(d_z2[bs, h2], state_0)
-        //
-        //   d_h2[bs, h2] = d_h2b[bs, h2]
-        //   d_b2[h2]     = sum(d_h2b[bs, h2], axis=1)
-        //
-        //   d_w2[h1, h2] = matmul(z1[bs, h1], d_h2[bs, h2], trans_a)
-        //   d_z1[bs, h1] = matmul(d_h2[bs, h2], w2[h1, h2] trans_b)
-        //
-        //   -- the first matmul
-        //   state_1      = cmpL(h1b[bs, h1], z[1])
-        //   d_h1b[bs, h1]= mul(d_z1[bs, h1], state1)
-        //   d_h1[bs, h1] = d_h1b[bs, h1]
-        //   d_b1[h1]     = sum(d_h1b[bs, h1], axis=1)
-        //   d_w1[is, h1])= matmul(x[bs, is], d_h1[bs, h1], trans_a)
+        {
+                // x[bs, is]    -- is = IMAGE_SIZE
+                // y[bs, ls]    -- ls = LABEL_SIZE
+                //
+                // forward pass
+                //
+                //   z[1] = zeros([1])
+                //
+                //   h1[bs, h1]   = matmul(x[bs, is], w1[is, h1])
+                //   h1b[bs, h1]  = h1[bs, h1] + b1[h1]
+                //   z1[bs, h1]   = max(h1b[bs, h1], z[1])
+                //
+                //   h2[bs, h2]   = matmul(z1[bs, h1], w2[h1, h2])
+                //   h2b[bs, h2]  = h2[bs, h2] + b2[h2]
+                //   z2[bs, h2]   = max(h2b[bs, h2], z[1])
+                //
+                //   o[bs, ls]    = matmul(z2[bs, h2], w3[h2, ls])
+                //   l[bs]        = softmax_cross_entropy_with_logits(
+                //                      y[bs, ls], o[bs, ls])
+                //   loss[1]      = sum(l[bs])
+                //
+                //  backward pass
+                //
+                //   d_o[bs, ls]  = grad_softmax_cross_entropy_with_logits(
+                //                     y[bs, ls], o[bs, ls])
+                //   d_w3[h2, ls] = matmul(z2[bs, h2], d_o[bs, ls], trans_a)
+                //   d_z2[bs, h2] = matmul(o[bs, ls], w3[h2, ls], trans_b)
+                //
+                //   -- the second matmul
+                //   state_0      = cmpL(h2b[bs, h2], z[1])
+                //   d_h2b[bs, h2]= mul(d_z2[bs, h2], state_0)
+                //
+                //   d_h2[bs, h2] = d_h2b[bs, h2]
+                //   d_b2[h2]     = sum(d_h2b[bs, h2], axis=1)
+                //
+                //   d_w2[h1, h2] = matmul(z1[bs, h1], d_h2[bs, h2], trans_a)
+                //   d_z1[bs, h1] = matmul(d_h2[bs, h2], w2[h1, h2] trans_b)
+                //
+                //   -- the first matmul
+                //   state_1      = cmpL(h1b[bs, h1], z[1])
+                //   d_h1b[bs, h1]= mul(d_z1[bs, h1], state1)
+                //   d_h1[bs, h1] = d_h1b[bs, h1]
+                //   d_b1[h1]     = sum(d_h1b[bs, h1], axis=1)
+                //   d_w1[is, h1])= matmul(x[bs, is], d_h1[bs, h1], trans_a)
+        }
 
         const int bs   = 32;
         const int is   = IMAGE_SIZE;
@@ -153,10 +155,11 @@ main()
                 NE(vmExec(vm, OP_LS_SCEL, NULL, l, y, o));
                 OPT_SET_REDUCTION_SUM(opt);
                 NE(vmExec(vm, OP_REDUCE, &opt, loss, l, VM_UNUSED));
-                SDS_CAT_PRINTF("logits: ", o, "\n");
-                SDS_CAT_PRINTF("labels: ", y, "\n");
-                SDS_CAT_PRINTF("loss after softmax cel: ", l, "\n");
-                SDS_CAT_PRINTF("loss: ", loss, "\n");
+
+                S_PRINTF("logits: ", o, "\n");
+                S_PRINTF("labels: ", y, "\n");
+                S_PRINTF("loss after softmax cel: ", l, "\n");
+                S_PRINTF("loss: ", loss, "\n");
                 printf("%s\n", s);
         }
 

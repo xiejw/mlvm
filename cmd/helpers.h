@@ -12,7 +12,7 @@
 #define R1S(vm, s1)     vmShapeNew(vm, 1, (int[]){(s1)});
 #define R2S(vm, s1, s2) vmShapeNew(vm, 2, (int[]){(s1), (s2)});
 
-#define SDS_CAT_PRINTF(prefix, t, suffix) \
-        sdsCatPrintf(&s, prefix);         \
-        vmTensorDump(&s, vm, t);          \
+#define S_PRINTF(prefix, t, suffix) \
+        sdsCatPrintf(&s, prefix);   \
+        vmTensorDump(&s, vm, t);    \
         sdsCatPrintf(&s, suffix);
