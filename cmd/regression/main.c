@@ -62,7 +62,7 @@ main()
         rng          = srng64Split(seed);
         opt.mode     = 0;  // normal.
         opt.rng_seed = rng;
-        NE(vmExec(vm, OP_RNG, &opt, w_target, VM_UNUSED, VM_UNUSED));
+        NE(vmExec(vm, OP_RNG, &opt, w_target, -1, -1));
         srng64Free(rng);
 
         S_PRINTF("\ttarget  weight: ", w_target, "\n");
@@ -71,7 +71,7 @@ main()
         // initializes weight for the model (about to learn).
         rng          = srng64Split(seed);
         opt.rng_seed = rng;
-        NE(vmExec(vm, OP_RNG, &opt, w, VM_UNUSED, VM_UNUSED));
+        NE(vmExec(vm, OP_RNG, &opt, w, -1, -1));
         srng64Free(rng);
 
         S_PRINTF("\tinitial weight: ", w, "\n");
@@ -123,8 +123,8 @@ main()
                 // forward pass.
                 {
                         NE(vmExec(vm, OP_MUL, NULL, z, x, w));
-                        OPT_SET_REDUCTION_SUM(opt);
-                        NE(vmExec(vm, OP_REDUCE, &opt, rz, z, VM_UNUSED));
+                        OPT_SET_REDUCTION_SUM(opt, 0);
+                        NE(vmExec(vm, OP_REDUCE, &opt, rz, z, -1));
                         NE(vmExec(vm, OP_MINUS, NULL, l, rz, y));
                         NE(vmExec(vm, OP_MUL, NULL, l2, l, l));
 
@@ -135,7 +135,7 @@ main()
                 {
                         OPT_SET_SCALAR_OPERAND(opt,
                                                2 * 0.05);  // 2 * learning_rate
-                        NE(vmExec(vm, OP_MUL, &opt, d_rz, l, VM_UNUSED));
+                        NE(vmExec(vm, OP_MUL, &opt, d_rz, l, -1));
                         NE(vmExec(vm, OP_MUL, NULL, d_w, x,
                                   d_rz));  // d_rz must be t2.
                         NE(vmExec(vm, OP_MINUS, NULL, w, w, d_w));

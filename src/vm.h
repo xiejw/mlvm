@@ -32,8 +32,6 @@ struct tensor_t {
         void*           data;
 };
 
-#define VM_UNUSED -1
-
 struct vm_t;  // forward def.
 
 struct opopt_t {

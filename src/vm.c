@@ -74,8 +74,8 @@ vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
         struct tensor_t* t1 = NULL;
         struct tensor_t* t2 = NULL;
 
-        if (lhs != VM_UNUSED) t1 = vmGrabHandle(vm, lhs);
-        if (rhs != VM_UNUSED) t2 = vmGrabHandle(vm, rhs);
+        if (lhs != -1) t1 = vmGrabHandle(vm, lhs);
+        if (rhs != -1) t2 = vmGrabHandle(vm, rhs);
 
         switch (op) {
 #define CASE_ELEWISE_OP(OP, API)                                             \

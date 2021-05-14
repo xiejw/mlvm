@@ -157,8 +157,8 @@ main()
                 NE(vmExec(vm, OP_MAX, NULL, z2, h2b, z));
                 NE(vmExec(vm, OP_MATMUL, NULL, o, z2, w3));
                 NE(vmExec(vm, OP_LS_SCEL, NULL, l, y, o));
-                OPT_SET_REDUCTION_SUM(opt);
-                NE(vmExec(vm, OP_REDUCE, &opt, loss, l, VM_UNUSED));
+                OPT_SET_REDUCTION_SUM(opt, 0);
+                NE(vmExec(vm, OP_REDUCE, &opt, loss, l, -1));
 
                 S_PRINTF("logits: ", o, "\n");
                 S_PRINTF("labels: ", y, "\n");
@@ -230,7 +230,7 @@ initModelWeight(struct vm_t* vm, struct srng64_t* seed, struct opopt_t* opt,
 {
         struct srng64_t* weight_seed = srng64Split(seed);
         opt->rng_seed                = weight_seed;
-        error_t err = vmExec(vm, OP_RNG, opt, w, VM_UNUSED, VM_UNUSED);
+        error_t err                  = vmExec(vm, OP_RNG, opt, w, -1, -1);
         srng64Free(weight_seed);
 
         return err;

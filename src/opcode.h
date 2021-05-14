@@ -69,8 +69,7 @@ enum opcode_t {
         //
         //   - opt.mode I bit
         //     - if set, then opt.i specifies the axis. Use
-        //       OPT_SET_REDUCTION_AXIS. Note OPT_SET_REDUCTION_SUM clears
-        //       bits, so the order must be correct.
+        //       OPT_SET_REDUCTION_SUM.
         //     - otherwise, opt.i == 0
         OP_REDUCE,
 
@@ -110,10 +109,7 @@ enum opcode_t {
 #define OPT_MATMUL_TRANS_RHS 1
 
 // --- reduction
-#define OPT_SET_REDUCTION_SUM(opt) ((opt).mode = 0, (opt).i = 0)
-
-#define OPT_SET_REDUCTION_AXIS(opt, axis) \
-        ((opt).mode |= OPT_MODE_I_BIT, (opt).i = (axis))
+#define OPT_SET_REDUCTION_SUM(opt, axis) ((opt).mode = 0, (opt).i = (axis))
 
 // --- loss
 #define OPT_SET_GRAD_TENSOR_HANDLER(opt, td) \

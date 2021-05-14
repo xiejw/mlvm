@@ -29,8 +29,8 @@ main()
         {
                 opt.mode     = 0;  // normal.
                 opt.rng_seed = rng;
-                NE(vmExec(vm, OP_RNG, &opt, t1, VM_UNUSED, VM_UNUSED));
-                NE(vmExec(vm, OP_RNG, &opt, t2, VM_UNUSED, VM_UNUSED));
+                NE(vmExec(vm, OP_RNG, &opt, t1, -1, -1));
+                NE(vmExec(vm, OP_RNG, &opt, t2, -1, -1));
 
                 S_PRINTF("\tt1: ", t1, "\n");
                 S_PRINTF("\tt2: ", t2, "\n");
@@ -47,8 +47,8 @@ main()
         }
 
         {
-                OPT_SET_REDUCTION_SUM(opt);
-                NE(vmExec(vm, OP_REDUCE, &opt, t3, t1, VM_UNUSED));
+                OPT_SET_REDUCTION_SUM(opt, 0);
+                NE(vmExec(vm, OP_REDUCE, &opt, t3, t1, -1));
                 S_PRINTF("t3 <- reduce(t1)\n\tt3: ", t3, "\n");
         }
 

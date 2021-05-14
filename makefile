@@ -22,7 +22,7 @@ CMDS            = $(patsubst ${CMD}/%,%,$(wildcard ${CMD}/*))
 CMD_TARGETS     = $(patsubst ${CMD}/%/main.c,${BUILD}/%,$(wildcard ${CMD}/*/main.c))
 
 # ------------------------------------------------------------------------------
-# libs.
+# Libs.
 # ------------------------------------------------------------------------------
 VM_HEADER       = ${SRC}/vm.h ${SRC}/opcode.h
 VM_LIB          = ${BUILD}/vm_vm.o ${BUILD}/vm_shape.o ${BUILD}/vm_tensor.o \
@@ -31,7 +31,16 @@ VM_LIB          = ${BUILD}/vm_vm.o ${BUILD}/vm_shape.o ${BUILD}/vm_tensor.o \
 ALL_LIBS        = ${VM_LIB}
 
 # ------------------------------------------------------------------------------
-# Actions and Header Deps.
+# Header Deps.
+# ------------------------------------------------------------------------------
+${BUILD}/vm_vm.o: ${SRC}/primitives.h ${SRC}/vm_internal.h
+
+${BUILD}/vm_tensor.o: ${SRC}/vm_internal.h
+
+${BUILD}/vm_primitives.o: ${SRC}/primitives.h
+
+# ------------------------------------------------------------------------------
+# Actions.
 # ------------------------------------------------------------------------------
 
 .DEFAULT_GOAL   = compile
@@ -40,14 +49,6 @@ compile: ${BUILD} ${ALL_LIBS}
 
 ${BUILD}/vm_%.o: ${SRC}/%.c ${VM_HEADER}
 	${EVA_CC} -o $@ -c $<
-
-# header dependencies.
-${BUILD}/vm_vm.o: ${SRC}/primitives.h ${SRC}/vm_internal.h
-
-${BUILD}/vm_tensor.o: ${SRC}/vm_internal.h
-
-${BUILD}/vm_primitives.o: ${SRC}/primitives.h
-
 
 # ------------------------------------------------------------------------------
 # Cmd.
