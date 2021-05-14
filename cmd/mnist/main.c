@@ -145,6 +145,10 @@ main()
         // ---
         // forward pass
         {
+                struct oparg_t prog[] = {
+                    {OP_MATMUL, h1, x, w1, 0},
+                };
+                vmBatch(vm, 1, prog);
                 NE(vmExec(vm, OP_MATMUL, NULL, h1, x, w1));
                 NE(vmExec(vm, OP_ADD, NULL, h1b, h1, b1));
                 NE(vmExec(vm, OP_MAX, NULL, z1, h1b, z));

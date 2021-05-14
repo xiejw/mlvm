@@ -61,6 +61,12 @@ vmTensorSwap(struct vm_t* vm, int t, _mut_ void** data)
 }
 
 error_t
+vmBatch(struct vm_t* vm, int size, const struct oparg_t* args)
+{
+        return OK;
+}
+
+error_t
 vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
        int lhs, int rhs)
 {
