@@ -61,7 +61,7 @@ main()
         // initializes weight for the model (target).
         rng          = srng64Split(seed);
         opt.mode     = 0;  // normal.
-        opt.rng_seed = rng;
+        opt.rng_seed = *rng;
         NE(vmExec(vm, OP_RNG, &opt, w_target, -1, -1));
         srng64Free(rng);
 
@@ -70,7 +70,7 @@ main()
         // ---
         // initializes weight for the model (about to learn).
         rng          = srng64Split(seed);
-        opt.rng_seed = rng;
+        opt.rng_seed = *rng;
         NE(vmExec(vm, OP_RNG, &opt, w, -1, -1));
         srng64Free(rng);
 

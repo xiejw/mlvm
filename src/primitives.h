@@ -27,7 +27,7 @@ error_t vmOpReduceF32(struct tensor_t* td, struct tensor_t* t1, int mode,
 // -----------------------------------------------------------------------------
 // rng.
 // -----------------------------------------------------------------------------
-error_t vmOpRngF32(struct tensor_t* td, int mode, const struct srng64_t* seed);
+error_t vmOpRngF32(struct tensor_t* td, int mode, struct srng64_t* seed);
 
 // -----------------------------------------------------------------------------
 // matmul.

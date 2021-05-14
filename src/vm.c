@@ -130,8 +130,9 @@ vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
                 assert(opt->mode == 0);
                 assert(t1 == NULL);
                 assert(t2 == NULL);
+                struct srng64_t rng = opt->rng_seed;
                 if (td->dtype == F32) {
-                        return vmOpRngF32(td, opt->mode, opt->rng_seed);
+                        return vmOpRngF32(td, opt->mode, &rng);
                 }
 
                 return errNewWithNote(

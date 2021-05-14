@@ -28,7 +28,7 @@ main()
 
         {
                 opt.mode     = 0;  // normal.
-                opt.rng_seed = rng;
+                opt.rng_seed = *rng;
                 NE(vmExec(vm, OP_RNG, &opt, t1, -1, -1));
                 NE(vmExec(vm, OP_RNG, &opt, t2, -1, -1));
 

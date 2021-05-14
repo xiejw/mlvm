@@ -37,9 +37,9 @@ struct vm_t;  // forward def.
 struct opopt_t {
         int mode;
         union {
-                const struct srng64_t* rng_seed;  // unowned.
-                float32_t              f;
-                int32_t                i;
+                int32_t         i;
+                float32_t       f;
+                struct srng64_t rng_seed;
         };
 };
 

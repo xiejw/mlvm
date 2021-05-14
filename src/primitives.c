@@ -100,13 +100,11 @@ DEF_ELEWISE_OP_S(CmpL, CMPL)
 // -----------------------------------------------------------------------------
 
 error_t
-vmOpRngF32(struct tensor_t* dst, int mode, const struct srng64_t* ori_rng)
+vmOpRngF32(struct tensor_t* dst, int mode, struct srng64_t* rng)
 {
-        // make a copy to avoid advancing the ori_rng.
-        struct srng64_t rng = *ori_rng;
         assert(mode == 0);
         assert(dst->dtype == F32);
-        srng64StdNormalF(&rng, dst->shape->size, (float32_t*)dst->data);
+        srng64StdNormalF(rng, dst->shape->size, (float32_t*)dst->data);
         return OK;
 }
 

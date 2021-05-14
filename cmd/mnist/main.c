@@ -229,7 +229,7 @@ initModelWeight(struct vm_t* vm, struct srng64_t* seed, struct opopt_t* opt,
                 int w)
 {
         struct srng64_t* weight_seed = srng64Split(seed);
-        opt->rng_seed                = weight_seed;
+        opt->rng_seed                = *weight_seed;
         error_t err                  = vmExec(vm, OP_RNG, opt, w, -1, -1);
         srng64Free(weight_seed);
 
