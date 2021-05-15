@@ -76,28 +76,30 @@ main()
 
         S_PRINTF("\tinitial weight: ", w, "\n");
 
-        // --- formula
-        //   forward pass
-        //      z[w] = x[w] * w[w]
-        //      rz[] = reduce_sum(z[w])
-        //      l[] = rz[] - y[]
-        //      l2[] = l[] * l[]
-        //      loss[] = reduce_sum(l2[])
-        //   backward pass
-        //      d_l2[] = ones_like(l2[])
-        //      d_l[] = 2 * l[] * d_l2[]
-        //      d_rz[] = d_l[]
-        //      d_z[w] = ones_like(x[w]) * d_rz[]
-        //      d_w[w] = d_z[w] * x[w]
-        //
-        //   optimizer
-        //      d_w[w] = lr[] * d_w[w]  // reuse: update
-        //      w[w] = w[w] - d_w[w]
-        //
-        //   backward pass + optimizer (simplified)
-        //      d_rz[] = (2*lr) * l[]
-        //      d_w[w] = d_rz[] * x[w]
-        //      w[w] = w[w] - d_w[w]
+        {
+                // --- formula
+                //   forward pass
+                //      z[w] = x[w] * w[w]
+                //      rz[] = reduce_sum(z[w])
+                //      l[] = rz[] - y[]
+                //      l2[] = l[] * l[]
+                //      loss[] = reduce_sum(l2[])
+                //   backward pass
+                //      d_l2[] = ones_like(l2[])
+                //      d_l[] = 2 * l[] * d_l2[]
+                //      d_rz[] = d_l[]
+                //      d_z[w] = ones_like(x[w]) * d_rz[]
+                //      d_w[w] = d_z[w] * x[w]
+                //
+                //   optimizer
+                //      d_w[w] = lr[] * d_w[w]  // reuse: update
+                //      w[w] = w[w] - d_w[w]
+                //
+                //   backward pass + optimizer (simplified)
+                //      d_rz[] = (2*lr) * l[]
+                //      d_w[w] = d_rz[] * x[w]
+                //      w[w] = w[w] - d_w[w]
+        }
 
         int z    = vmTensorNew(vm, F32, sp_weight);
         int rz   = vmTensorNew(vm, F32, r1_1);

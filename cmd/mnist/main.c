@@ -2,6 +2,7 @@
 
 // eva
 #include "adt/sds.h"
+#include "adt/vec.h"
 #include "rng/srng64.h"
 #include "rng/srng64_normal.h"
 
@@ -25,6 +26,7 @@ static error_t prepareData(struct srng64_t* seed, float32_t* x_data,
 static unsigned char* images = NULL;
 static unsigned char* labels = NULL;
 
+static vec_t(int) weights = vecNew();
 int
 main()
 {
@@ -76,6 +78,11 @@ main()
                 //   d_h1[bs, h1] = d_h1b[bs, h1]
                 //   d_b1[h1]     = sum(d_h1b[bs, h1], axis=1)
                 //   d_w1[is, h1])= matmul(x[bs, is], d_h1[bs, h1], trans_a)
+                //
+                // optimizer
+                //     for all weights w_i
+                //       d_wi[*] = lr[] * d_wi[*]
+                //       wi[*]   = wi[*] - d_wi[*]
         }
 
         const int bs   = 32;
@@ -120,11 +127,28 @@ main()
         int l    = vmTensorNew(vm, F32, sp_l);
         int loss = vmTensorNew(vm, F32, sp_scalar);
 
+        int d_o  = vmTensorNew(vm, F32, sp_o);
+        int d_w3 = vmTensorNew(vm, F32, sp_w3);
+        int d_z2 = vmTensorNew(vm, F32, sp_h2);
+
+        int state_0 = vmTensorNew(vm, F32, sp_h2);
+        int d_h2b   = vmTensorNew(vm, F32, sp_h2);
+        int d_h2    = d_h2b;
+        int d_b2    = vmTensorNew(vm, F32, sp_b2);
+        int d_w2    = vmTensorNew(vm, F32, sp_w2);
+        int d_z1    = vmTensorNew(vm, F32, sp_h1);
+
+        int state_1 = vmTensorNew(vm, F32, sp_h1);
+        int d_h1b   = vmTensorNew(vm, F32, sp_h1);
+        int d_h1    = d_h1b;
+        int d_b1    = vmTensorNew(vm, F32, sp_b1);
+        int d_w1    = vmTensorNew(vm, F32, sp_w1);
+
+        vec_t(int) weights = vecNew();
         // ---
         // init weights
         {
                 printf("init model weights.\n");
-                opt.mode = OPT_RNG_STD_NORMAL | OPT_MODE_R_BIT;
                 NE(initModelWeight(vm, seed, &opt, w1));
                 NE(initModelWeight(vm, seed, &opt, b1));
                 NE(initModelWeight(vm, seed, &opt, w2));
@@ -145,24 +169,45 @@ main()
         // ---
         // forward pass
         {
-                int d_o  = vmTensorNew(vm, F32, sp_o);
-                int d_w3 = vmTensorNew(vm, F32, sp_w3);
-                int d_z2 = vmTensorNew(vm, F32, sp_h2);
-
                 const struct oparg_t prog[] = {
                     // clang-format off
-{OP_MATMUL,  h1,   x,   w1,  0},
-{OP_ADD,     h1b,  h1,  b1,  0},
-{OP_MAX,     z1,   h1b, z,   0},
-{OP_MATMUL,  h2,   z1,  w2,  0},
-{OP_ADD,     h2b,  h2,  b2,  0},
-{OP_MAX,     z2,   h2b, z,   0},
-{OP_MATMUL,  o,    z2,  w3,  0},
-{OP_LS_SCEL, l,    y,   o,   1, {.mode=OPT_MODE_I_BIT,       .i=d_o  }},
-{OP_REDUCE,  loss, l,   -1,  1, {.mode=0|OPT_MODE_I_BIT,     .i=0    }},
+{OP_MATMUL,  h1,      x,     w1,      0},
+{OP_ADD,     h1b,     h1,    b1,      0},
+{OP_MAX,     z1,      h1b,   z,       0},
+{OP_MATMUL,  h2,      z1,    w2,      0},
+{OP_ADD,     h2b,     h2,    b2,      0},
+{OP_MAX,     z2,      h2b,   z,       0},
+{OP_MATMUL,  o,       z2,    w3,      0},
+{OP_LS_SCEL, l,       y,     o,       1, {.mode=OPT_MODE_I_BIT,       .i=d_o  }},
+{OP_REDUCE,  loss,    l,     -1,      1, {.mode=0|OPT_MODE_I_BIT,     .i=0    }},
 
-{OP_MATMUL,  d_w3, z2,  d_o, 1, {.mode=OPT_MATMUL_TRANS_LHS          }},
-{OP_MATMUL,  d_z2, d_o, w3,  1, {.mode=OPT_MATMUL_TRANS_RHS          }},
+// backprop for linear
+{OP_MATMUL,  d_w3,    z2,    d_o,     1, {.mode=OPT_MATMUL_TRANS_LHS          }},
+{OP_MATMUL,  d_z2,    d_o,   w3,      1, {.mode=OPT_MATMUL_TRANS_RHS          }},
+// backprop for the second matmul
+{OP_CMPL,    state_0, h2b,   z,       0},
+{OP_MUL,     d_h2b,   d_z2,  state_0, 0},
+{OP_REDUCE,  d_b2,    d_h2b, -1,      1, {.mode=0|OPT_MODE_I_BIT,     .i=1    }},
+{OP_MATMUL,  d_w2,    z1,    d_h2,    1, {.mode=OPT_MATMUL_TRANS_LHS          }},
+{OP_MATMUL,  d_z1,    d_h2,  w2,      1, {.mode=OPT_MATMUL_TRANS_RHS          }},
+// backprop for the first matmul
+{OP_CMPL,    state_1, h1b,   z,       0},
+{OP_MUL,     d_h1b,   d_z1,  state_1, 0},
+{OP_REDUCE,  d_b1,    d_h1b, -1,      1, {.mode=0|OPT_MODE_I_BIT,     .i=1    }},
+{OP_MATMUL,  d_w1,    x,     d_h1,    1, {.mode=OPT_MATMUL_TRANS_LHS          }},
+
+// optimizer
+{OP_MUL,     d_w1,    d_w1,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.01  }},
+{OP_MUL,     d_b1,    d_b1,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.01  }},
+{OP_MUL,     d_w2,    d_w2,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.01  }},
+{OP_MUL,     d_b2,    d_b2,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.01  }},
+{OP_MUL,     d_w3,    d_w3,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.01  }},
+
+{OP_MINUS,   w1,      w1,    d_w1,    0},
+{OP_MINUS,   b1,      b1,    d_b1,    0},
+{OP_MINUS,   w2,      w2,    d_w2,    0},
+{OP_MINUS,   b2,      b2,    d_b2,    0},
+{OP_MINUS,   w3,      w3,    d_w3,    0},
                     // clang-format on
                 };
                 NE(vmBatch(vm, sizeof(prog) / sizeof(struct oparg_t), prog));
@@ -180,6 +225,7 @@ cleanup:
         if (labels != NULL) free(labels);
         free(seed);
         vmFree(vm);
+        vecFree(weights);
         sdsFree(s);
         return err;
 }
@@ -236,10 +282,14 @@ error_t
 initModelWeight(struct vm_t* vm, struct srng64_t* seed, struct opopt_t* opt,
                 int w)
 {
-        struct srng64_t* weight_seed = srng64Split(seed);
-        opt->r                       = *(struct rng64_t*)weight_seed;
-        error_t err                  = vmExec(vm, OP_RNG, opt, w, -1, -1);
-        free(weight_seed);
+        struct srng64_t* rng = srng64Split(seed);
 
+        opt->mode   = OPT_RNG_STD_NORMAL | OPT_MODE_R_BIT;
+        opt->r      = *(struct rng64_t*)rng;
+        error_t err = vmExec(vm, OP_RNG, opt, w, -1, -1);
+
+        vecPushBack(weights, w);
+
+        free(rng);
         return err;
 }
