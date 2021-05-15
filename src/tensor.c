@@ -90,29 +90,34 @@ vmTensorDump(sds_t* s, struct vm_t* vm, int handle)
                 sdsCatPrintf(s, " unknown_dtype ");
         }
 
+#ifndef MLVM_TENSOR_DUMP_SIZE
+#define MLVM_TENSOR_DUMP_SIZE 10
+#endif
+
         // data
-#define print_data(dt, type_cast, fmt_str)                               \
-        if (t->dtype == (dt)) {                                          \
-                size_t size = sp->size;                                  \
-                sdsCatPrintf(s, "[");                                    \
-                for (size_t i = 0; i < size; i++) {                      \
-                        if (i != size - 1)                               \
-                                sdsCatPrintf(s, fmt_str ", ",            \
-                                             ((type_cast)(t->data))[i]); \
-                        else                                             \
-                                sdsCatPrintf(s, fmt_str,                 \
-                                             ((type_cast)(t->data))[i]); \
-                        if (i >= 15 && i != size - 1) {                  \
-                                sdsCatPrintf(s, "...");                  \
-                                break;                                   \
-                        }                                                \
-                }                                                        \
-                sdsCatPrintf(s, "]");                                    \
+#define print_data(dt, type_cast, fmt_str)                                     \
+        if (t->dtype == (dt)) {                                                \
+                size_t size = sp->size;                                        \
+                sdsCatPrintf(s, "[");                                          \
+                for (size_t i = 0; i < size; i++) {                            \
+                        if (i != size - 1)                                     \
+                                sdsCatPrintf(s, fmt_str ", ",                  \
+                                             ((type_cast)(t->data))[i]);       \
+                        else                                                   \
+                                sdsCatPrintf(s, fmt_str,                       \
+                                             ((type_cast)(t->data))[i]);       \
+                        if (i + 1 >= MLVM_TENSOR_DUMP_SIZE && i != size - 1) { \
+                                sdsCatPrintf(s, "...");                        \
+                                break;                                         \
+                        }                                                      \
+                }                                                              \
+                sdsCatPrintf(s, "]");                                          \
         }
 
         print_data(F32, float32_t*, "%.3f");
         print_data(I32, int32_t*, "%d");
 
 #undef print_data
+#undef MLVM_TENSOR_DUMP_SIZE
         return;
 }
