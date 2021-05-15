@@ -13,8 +13,7 @@
 #include "../helpers.h"
 #include "mnist.h"
 
-static error_t initModelWeight(struct vm_t*, struct srng64_t*,
-                               struct opopt_t* rng, int w);
+static error_t initTensorWRng(struct vm_t*, struct srng64_t*, int w);
 static error_t prepareData(struct srng64_t* seed, float32_t* x_data,
                            size_t x_size, float32_t* y_data, size_t y_size);
 
@@ -93,8 +92,7 @@ main()
 
         // ---
         // defines vm with some shapes.
-        struct vm_t*   vm = vmNew();
-        struct opopt_t opt;
+        struct vm_t* vm = vmNew();
 
         struct shape_t* sp_x      = R2S(vm, bs, is);
         struct shape_t* sp_y      = R2S(vm, bs, ls);
@@ -149,11 +147,11 @@ main()
         // init weights
         {
                 printf("init model weights.\n");
-                NE(initModelWeight(vm, seed, &opt, w1));
-                NE(initModelWeight(vm, seed, &opt, b1));
-                NE(initModelWeight(vm, seed, &opt, w2));
-                NE(initModelWeight(vm, seed, &opt, b2));
-                NE(initModelWeight(vm, seed, &opt, w3));
+                NE(initTensorWRng(vm, seed, w1));
+                NE(initTensorWRng(vm, seed, b1));
+                NE(initTensorWRng(vm, seed, w2));
+                NE(initTensorWRng(vm, seed, b2));
+                NE(initTensorWRng(vm, seed, w3));
         }
 
         // ---
@@ -200,11 +198,11 @@ main()
 {OP_MATMUL,  d_w1,    x,     d_h1,    1, {.mode=OPT_MATMUL_TRANS_LHS          }},
 
 // optimizer
-{OP_MUL,     d_w1,    d_w1,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.01  }},
-{OP_MUL,     d_b1,    d_b1,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.01  }},
-{OP_MUL,     d_w2,    d_w2,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.01  }},
-{OP_MUL,     d_b2,    d_b2,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.01  }},
-{OP_MUL,     d_w3,    d_w3,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.01  }},
+{OP_MUL,     d_w1,    d_w1,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.001  }},
+{OP_MUL,     d_b1,    d_b1,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.001  }},
+{OP_MUL,     d_w2,    d_w2,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.001  }},
+{OP_MUL,     d_b2,    d_b2,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.001  }},
+{OP_MUL,     d_w3,    d_w3,  -1,      1, {.mode=0|OPT_MODE_F_BIT,     .f=.001  }},
 
 {OP_MINUS,   w1,      w1,    d_w1,    0},
 {OP_MINUS,   b1,      b1,    d_b1,    0},
@@ -218,11 +216,19 @@ main()
                         NE(vmBatch(vm, sizeof(prog) / sizeof(struct oparg_t),
                                    prog));
 
+                        S_PRINTF("z: ", z, "\n");
+                        S_PRINTF("x: ", x, "\n");
+                        S_PRINTF("w1: ", w1, "\n");
+                        S_PRINTF("h1: ", h1, "\n");
+                        S_PRINTF("b1: ", b1, "\n");
+                        S_PRINTF("h1b: ", h1b, "\n");
+                        S_PRINTF("z1: ", z1, "\n");
                         S_PRINTF("logits: ", o, "\n");
                         S_PRINTF("labels: ", y, "\n");
                         S_PRINTF("loss after scel: ", l, "\n");
                         S_PRINTF("loss: ", loss, "\n");
                         S_PRINTF("grad d_o: ", d_o, "\n");
+                        S_PRINTF("d_w1: ", d_w1, "\n");
                         printf("%s\n", s);
                         sdsClear(s);
                 }
@@ -298,14 +304,14 @@ prepareData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
 }
 
 error_t
-initModelWeight(struct vm_t* vm, struct srng64_t* seed, struct opopt_t* opt,
-                int w)
+initTensorWRng(struct vm_t* vm, struct srng64_t* seed, int w)
 {
         struct srng64_t* rng = srng64Split(seed);
 
-        opt->mode   = OPT_RNG_STD_NORMAL | OPT_MODE_R_BIT;
-        opt->r      = *(struct rng64_t*)rng;
-        error_t err = vmExec(vm, OP_RNG, opt, w, -1, -1);
+        struct opopt_t opt;
+        opt.mode    = OPT_RNG_STD_NORMAL | OPT_MODE_R_BIT;
+        opt.r       = *(struct rng64_t*)rng;
+        error_t err = vmExec(vm, OP_RNG, &opt, w, -1, -1);
 
         vecPushBack(weights, w);
 

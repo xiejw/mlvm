@@ -102,7 +102,7 @@ vmTensorDump(sds_t* s, struct vm_t* vm, int handle)
                         else                                             \
                                 sdsCatPrintf(s, fmt_str,                 \
                                              ((type_cast)(t->data))[i]); \
-                        if (i >= 5 && i != size - 1) {                   \
+                        if (i >= 15 && i != size - 1) {                  \
                                 sdsCatPrintf(s, "...");                  \
                                 break;                                   \
                         }                                                \
