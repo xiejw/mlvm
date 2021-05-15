@@ -170,7 +170,7 @@ main()
 cleanup:
         if (images != NULL) free(images);
         if (labels != NULL) free(labels);
-        srng64Free(seed);
+        free(seed);
         vmFree(vm);
         sdsFree(s);
         return err;
@@ -200,8 +200,8 @@ static void
 prepareFakeData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
                 float32_t* y_data, size_t y_size)
 {
-        srng64StdNormalF(seed, x_size, x_data);
-        srng64StdNormalF(seed, y_size, y_data);
+        rng64StdNormalF((struct rng64_t*)seed, x_size, x_data);
+        rng64StdNormalF((struct rng64_t*)seed, y_size, y_data);
 }
 
 error_t
@@ -229,9 +229,9 @@ initModelWeight(struct vm_t* vm, struct srng64_t* seed, struct opopt_t* opt,
                 int w)
 {
         struct srng64_t* weight_seed = srng64Split(seed);
-        opt->rng_seed                = *weight_seed;
+        opt->r                       = *(struct rng64_t*)weight_seed;
         error_t err                  = vmExec(vm, OP_RNG, opt, w, -1, -1);
-        srng64Free(weight_seed);
+        free(weight_seed);
 
         return err;
 }

@@ -59,20 +59,20 @@ main()
 
         // ---
         // initializes weight for the model (target).
-        rng          = srng64Split(seed);
-        opt.mode     = 0;  // normal.
-        opt.rng_seed = *rng;
+        rng      = srng64Split(seed);
+        opt.mode = 0;  // normal.
+        opt.r    = *(struct rng64_t*)rng;
         NE(vmExec(vm, OP_RNG, &opt, w_target, -1, -1));
-        srng64Free(rng);
+        free(rng);
 
         S_PRINTF("\ttarget  weight: ", w_target, "\n");
 
         // ---
         // initializes weight for the model (about to learn).
-        rng          = srng64Split(seed);
-        opt.rng_seed = *rng;
+        rng   = srng64Split(seed);
+        opt.r = *(struct rng64_t*)rng;
         NE(vmExec(vm, OP_RNG, &opt, w, -1, -1));
-        srng64Free(rng);
+        free(rng);
 
         S_PRINTF("\tinitial weight: ", w, "\n");
 
@@ -151,8 +151,8 @@ main()
 cleanup:
         spDecRef(sp_weight);
         spDecRef(r1_1);
-        srng64Free(seed_for_input);
-        srng64Free(seed);
+        free(seed_for_input);
+        free(seed);
         sdsFree(s);
         vmFree(vm);
         return err;
@@ -165,7 +165,7 @@ new_input(struct srng64_t* seed, size_t size, _mut_ float32_t* data,
           float32_t* y, float32_t* w)
 {
         // x
-        srng64StdNormalF(seed, size, data);
+        rng64StdNormalF((struct rng64_t*)seed, size, data);
 
         // y
         float32_t local_y = 0;

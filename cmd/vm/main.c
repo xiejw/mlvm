@@ -27,8 +27,8 @@ main()
         int t3 = vmTensorNew(vm, F32, r1_1);
 
         {
-                opt.mode     = 0;  // normal.
-                opt.rng_seed = *rng;
+                opt.mode = 0;  // normal.
+                opt.r    = *(struct rng64_t*)rng;
                 NE(vmExec(vm, OP_RNG, &opt, t1, -1, -1));
                 NE(vmExec(vm, OP_RNG, &opt, t2, -1, -1));
 
@@ -57,7 +57,7 @@ main()
 cleanup:
         spDecRef(r2_2x3);
         spDecRef(r1_1);
-        srng64Free(rng);
+        free(rng);
         sdsFree(s);
         vmFree(vm);
         return err;
