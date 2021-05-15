@@ -167,21 +167,24 @@ main()
         }
 
         // ---
-        // forward pass
+        // loop
         {
                 const struct oparg_t prog[] = {
                     // clang-format off
+// the first matmul
 {OP_MATMUL,  h1,      x,     w1,      0},
 {OP_ADD,     h1b,     h1,    b1,      0},
 {OP_MAX,     z1,      h1b,   z,       0},
+// the second matmul
 {OP_MATMUL,  h2,      z1,    w2,      0},
 {OP_ADD,     h2b,     h2,    b2,      0},
 {OP_MAX,     z2,      h2b,   z,       0},
+// the linear layer
 {OP_MATMUL,  o,       z2,    w3,      0},
 {OP_LS_SCEL, l,       y,     o,       1, {.mode=OPT_MODE_I_BIT,       .i=d_o  }},
 {OP_REDUCE,  loss,    l,     -1,      1, {.mode=0|OPT_MODE_I_BIT,     .i=0    }},
 
-// backprop for linear
+// backprop for the linear layer
 {OP_MATMUL,  d_w3,    z2,    d_o,     1, {.mode=OPT_MATMUL_TRANS_LHS          }},
 {OP_MATMUL,  d_z2,    d_o,   w3,      1, {.mode=OPT_MATMUL_TRANS_RHS          }},
 // backprop for the second matmul
@@ -210,14 +213,19 @@ main()
 {OP_MINUS,   w3,      w3,    d_w3,    0},
                     // clang-format on
                 };
-                NE(vmBatch(vm, sizeof(prog) / sizeof(struct oparg_t), prog));
 
-                S_PRINTF("logits: ", o, "\n");
-                S_PRINTF("labels: ", y, "\n");
-                S_PRINTF("loss after scel: ", l, "\n");
-                S_PRINTF("loss: ", loss, "\n");
-                S_PRINTF("grad d_o: ", d_o, "\n");
-                printf("%s\n", s);
+                for (int i = 0; i < 100; i++) {
+                        NE(vmBatch(vm, sizeof(prog) / sizeof(struct oparg_t),
+                                   prog));
+
+                        S_PRINTF("logits: ", o, "\n");
+                        S_PRINTF("labels: ", y, "\n");
+                        S_PRINTF("loss after scel: ", l, "\n");
+                        S_PRINTF("loss: ", loss, "\n");
+                        S_PRINTF("grad d_o: ", d_o, "\n");
+                        printf("%s\n", s);
+                        sdsClear(s);
+                }
         }
 
 cleanup:
@@ -232,7 +240,7 @@ cleanup:
 
 // impl
 static error_t
-readMnistData(unsigned char** images, unsigned char** labels)
+prepareMnistData(unsigned char** images, unsigned char** labels)
 {
         error_t err = readMnistTrainingImages(images);
         if (err) {
@@ -255,7 +263,18 @@ prepareFakeData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
                 float32_t* y_data, size_t y_size)
 {
         rng64StdNormalF((struct rng64_t*)seed, x_size, x_data);
-        rng64StdNormalF((struct rng64_t*)seed, y_size, y_data);
+        size_t bs = y_size / LABEL_SIZE;
+
+        struct rng64_t* rng = (struct rng64_t*)seed;
+        for (size_t i = 0; i < bs; i++) {
+                int target = rng64NextUint64(rng) % LABEL_SIZE;
+                for (size_t j = 0; j < LABEL_SIZE; j++) {
+                        if (j == target)
+                                y_data[i * LABEL_SIZE + j] = 1;
+                        else
+                                y_data[i * LABEL_SIZE + j] = 0;
+                }
+        }
 }
 
 error_t
@@ -263,13 +282,13 @@ prepareData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
             float32_t* y_data, size_t y_size)
 {
         if (FAKE_DATA) {
-                printf("generating fake minis data.");
+                printf("generating fake minis data.\n");
                 prepareFakeData(seed, x_data, x_size, y_data, y_size);
                 return OK;
         } else {
                 error_t err;
-                printf("reading real minis data.");
-                if ((err = readMnistData(&images, &labels))) {
+                printf("reading real minis data.\n");
+                if ((err = prepareMnistData(&images, &labels))) {
                         if (images != NULL) free(images);
                         if (labels != NULL) free(labels);
                         return err;
