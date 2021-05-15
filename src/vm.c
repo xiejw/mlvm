@@ -71,8 +71,10 @@ vmBatch(struct vm_t* vm, size_t size, const struct oparg_t* args)
                 arg = &args[i];
                 if (arg->has_opt)
                         opt = &arg->opt;
-                else
+                else {
                         opt = NULL;
+                        assert(arg->opt.mode == 0);
+                }
 
                 err = vmExec(vm, arg->op, opt, arg->dst, arg->t1, arg->t2);
                 if (err) {

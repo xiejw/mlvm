@@ -120,6 +120,7 @@ main()
         int l    = vmTensorNew(vm, F32, sp_l);
         int loss = vmTensorNew(vm, F32, sp_scalar);
 
+        int d_o = vmTensorNew(vm, F32, sp_o);
         // ---
         // init weights
         {
@@ -145,7 +146,7 @@ main()
         // ---
         // forward pass
         {
-                struct oparg_t prog[] = {
+                const struct oparg_t prog[] = {
                     // clang-format off
                     {OP_MATMUL, h1,  x,   w1, 0},
                     {OP_ADD,    h1b, h1,  b1, 0},
@@ -154,17 +155,19 @@ main()
                     {OP_ADD,    h2b, h2,  b2, 0},
                     {OP_MAX,    z2,  h2b, z,  0},
                     {OP_MATMUL, o,   z2,  w3, 0},
-                    {OP_LS_SCEL,l,   y,   o,  0},
+                    {OP_LS_SCEL,l,   y,   o,  1,
+                                {.mode=OPT_MODE_I_BIT, .i=d_o}},
                     {OP_REDUCE, loss,l,   -1, 1,
                                 {.mode=0|OPT_MODE_I_BIT, .i=0}},
                     // clang-format on
                 };
-                vmBatch(vm, sizeof(prog) / sizeof(struct oparg_t), prog);
+                NE(vmBatch(vm, sizeof(prog) / sizeof(struct oparg_t), prog));
 
                 S_PRINTF("logits: ", o, "\n");
                 S_PRINTF("labels: ", y, "\n");
                 S_PRINTF("loss after scel: ", l, "\n");
                 S_PRINTF("loss: ", loss, "\n");
+                S_PRINTF("grad d_o: ", d_o, "\n");
                 printf("%s\n", s);
         }
 

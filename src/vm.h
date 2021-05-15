@@ -67,7 +67,7 @@ struct oparg_t {
         const struct opopt_t opt;
 };
 
-error_t vmBatch(struct vm_t* vm, size_t size, const struct* oparg_t);
+error_t vmBatch(struct vm_t* vm, size_t size, const struct oparg_t*);
 
 // -----------------------------------------------------------------------------
 // apis for tensors. / tensor.c
