@@ -58,7 +58,7 @@ main()
                 //   d_o[bs, ls]  = grad_softmax_cross_entropy_with_logits(
                 //                     y[bs, ls], o[bs, ls])
                 //   d_w3[h2, ls] = matmul(z2[bs, h2], d_o[bs, ls], trans_a)
-                //   d_z2[bs, h2] = matmul(o[bs, ls], w3[h2, ls], trans_b)
+                //   d_z2[bs, h2] = matmul(d_o[bs, ls], w3[h2, ls], trans_b)
                 //
                 //   -- the second matmul
                 //   state_0      = cmpL(h2b[bs, h2], z[1])
@@ -120,7 +120,6 @@ main()
         int l    = vmTensorNew(vm, F32, sp_l);
         int loss = vmTensorNew(vm, F32, sp_scalar);
 
-        int d_o = vmTensorNew(vm, F32, sp_o);
         // ---
         // init weights
         {
@@ -146,19 +145,24 @@ main()
         // ---
         // forward pass
         {
+                int d_o  = vmTensorNew(vm, F32, sp_o);
+                int d_w3 = vmTensorNew(vm, F32, sp_w3);
+                int d_z2 = vmTensorNew(vm, F32, sp_h2);
+
                 const struct oparg_t prog[] = {
                     // clang-format off
-                    {OP_MATMUL, h1,  x,   w1, 0},
-                    {OP_ADD,    h1b, h1,  b1, 0},
-                    {OP_MAX,    z1,  h1b, z,  0},
-                    {OP_MATMUL, h2,  z1,  w2, 0},
-                    {OP_ADD,    h2b, h2,  b2, 0},
-                    {OP_MAX,    z2,  h2b, z,  0},
-                    {OP_MATMUL, o,   z2,  w3, 0},
-                    {OP_LS_SCEL,l,   y,   o,  1,
-                                {.mode=OPT_MODE_I_BIT, .i=d_o}},
-                    {OP_REDUCE, loss,l,   -1, 1,
-                                {.mode=0|OPT_MODE_I_BIT, .i=0}},
+{OP_MATMUL,  h1,   x,   w1,  0},
+{OP_ADD,     h1b,  h1,  b1,  0},
+{OP_MAX,     z1,   h1b, z,   0},
+{OP_MATMUL,  h2,   z1,  w2,  0},
+{OP_ADD,     h2b,  h2,  b2,  0},
+{OP_MAX,     z2,   h2b, z,   0},
+{OP_MATMUL,  o,    z2,  w3,  0},
+{OP_LS_SCEL, l,    y,   o,   1, {.mode=OPT_MODE_I_BIT,       .i=d_o  }},
+{OP_REDUCE,  loss, l,   -1,  1, {.mode=0|OPT_MODE_I_BIT,     .i=0    }},
+
+{OP_MATMUL,  d_w3, z2,  d_o, 1, {.mode=OPT_MATMUL_TRANS_LHS          }},
+{OP_MATMUL,  d_z2, d_o, w3,  1, {.mode=OPT_MATMUL_TRANS_RHS          }},
                     // clang-format on
                 };
                 NE(vmBatch(vm, sizeof(prog) / sizeof(struct oparg_t), prog));
