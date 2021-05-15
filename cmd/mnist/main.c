@@ -14,6 +14,7 @@
 #include "mnist.h"
 
 static error_t initTensorWRng(struct vm_t*, struct srng64_t*, int w);
+static error_t initTensorWZeros(struct vm_t*, int w);
 static error_t prepareData(struct srng64_t* seed, float32_t* x_data,
                            size_t x_size, float32_t* y_data, size_t y_size);
 
@@ -142,17 +143,29 @@ main()
         int d_b1    = vmTensorNew(vm, F32, sp_b1);
         int d_w1    = vmTensorNew(vm, F32, sp_w1);
 
-        vec_t(int) weights = vecNew();
         // ---
         // init weights
         {
                 printf("init model weights.\n");
                 NE(initTensorWRng(vm, seed, w1));
-                NE(initTensorWRng(vm, seed, b1));
+                NE(initTensorWZeros(vm, b1));
                 NE(initTensorWRng(vm, seed, w2));
-                NE(initTensorWRng(vm, seed, b2));
+                NE(initTensorWZeros(vm, b2));
                 NE(initTensorWRng(vm, seed, w3));
+                vecPushBack(weights, w1);
+                vecPushBack(weights, b1);
+                vecPushBack(weights, w2);
+                vecPushBack(weights, b2);
+                vecPushBack(weights, w3);
+                S_PRINTF("w1: ", w1, "\n");
+                S_PRINTF("b1: ", b1, "\n");
+                S_PRINTF("w2: ", w2, "\n");
+                S_PRINTF("b2: ", b2, "\n");
+                S_PRINTF("w2: ", w3, "\n");
+                printf("%s\n", s);
+                sdsClear(s);
         }
+        NE(initTensorWZeros(vm, z));
 
         // ---
         // fetch inputs.
@@ -234,6 +247,14 @@ main()
                 }
         }
 
+        S_PRINTF("w1: ", w1, "\n");
+        S_PRINTF("b1: ", b1, "\n");
+        S_PRINTF("w2: ", w2, "\n");
+        S_PRINTF("b2: ", b2, "\n");
+        S_PRINTF("w2: ", w3, "\n");
+        printf("%s\n", s);
+        sdsClear(s);
+
 cleanup:
         if (images != NULL) free(images);
         if (labels != NULL) free(labels);
@@ -313,8 +334,12 @@ initTensorWRng(struct vm_t* vm, struct srng64_t* seed, int w)
         opt.r       = *(struct rng64_t*)rng;
         error_t err = vmExec(vm, OP_RNG, &opt, w, -1, -1);
 
-        vecPushBack(weights, w);
-
         free(rng);
         return err;
+}
+
+error_t
+initTensorWZeros(struct vm_t* vm, int w)
+{
+        return vmExec(vm, OP_FILL, NULL, w, -1, -1);
 }
