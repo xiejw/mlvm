@@ -60,7 +60,7 @@ main()
         // ---
         // initializes weight for the model (target).
         rng      = srng64Split(seed);
-        opt.mode = 0;  // normal.
+        opt.mode = OPT_RNG_STD_NORMAL | OPT_MODE_R_BIT;
         opt.r    = *(struct rng64_t*)rng;
         NE(vmExec(vm, OP_RNG, &opt, w_target, -1, -1));
         free(rng);

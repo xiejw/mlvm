@@ -27,7 +27,7 @@ main()
         int t3 = vmTensorNew(vm, F32, r1_1);
 
         {
-                opt.mode = 0;  // normal.
+                opt.mode = OPT_RNG_STD_NORMAL | OPT_MODE_R_BIT;
                 opt.r    = *(struct rng64_t*)rng;
                 NE(vmExec(vm, OP_RNG, &opt, t1, -1, -1));
                 NE(vmExec(vm, OP_RNG, &opt, t2, -1, -1));

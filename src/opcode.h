@@ -73,7 +73,22 @@ enum opcode_t {
         //     - otherwise, opt.i == 0
         OP_REDUCE,
 
-        OP_RNG,  // used .rng_seed for seed, mode for distribution.
+        // --------------------------------------------------------------------
+        // Rng.
+        // --------------------------------------------------------------------
+        //
+        // Data Types:
+        //   - only F32.
+        //
+        // Option (required):
+        //   - opt.mode value table
+        //
+        //     | v | distribution | macro              |
+        //     | 0 | std normal   | OPT_RNG_STD_NORMAL |
+        //
+        //   - opt.mode R bit
+        //     must set .r to provide rng (seed).
+        OP_RNG,
 
         // --------------------------------------------------------------------
         // Softmax crossentropy with logits loss
@@ -93,10 +108,13 @@ enum opcode_t {
 
 // --- opt bits.
 #define OPT_MODE_BIT_MASK       0xFF0000
+#define OPT_MODE_UNMASK         0x00FFFF
 #define OPT_MODE_I_BIT          0x10000
 #define OPT_MODE_F_BIT          0x20000
+#define OPT_MODE_R_BIT          0x40000
 #define OPT_MODE_GET_I_BIT(opt) (((opt).mode) & OPT_MODE_I_BIT)
 #define OPT_MODE_GET_F_BIT(opt) (((opt).mode) & OPT_MODE_F_BIT)
+#define OPT_MODE_GET_R_BIT(opt) (((opt).mode) & OPT_MODE_R_BIT)
 
 // --- common macros
 // --- element wise ops
@@ -110,6 +128,9 @@ enum opcode_t {
 
 // --- reduction
 #define OPT_SET_REDUCTION_SUM(opt, axis) ((opt).mode = 0, (opt).i = (axis))
+
+// --- rng
+#define OPT_RNG_STD_NORMAL 0
 
 // --- loss
 #define OPT_SET_GRAD_TENSOR_HANDLER(opt, td) \

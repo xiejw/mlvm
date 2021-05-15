@@ -124,7 +124,7 @@ main()
         // init weights
         {
                 printf("init model weights.\n");
-                opt.mode = 0;  // std normal.
+                opt.mode = OPT_RNG_STD_NORMAL | OPT_MODE_R_BIT;
                 NE(initModelWeight(vm, seed, &opt, w1));
                 NE(initModelWeight(vm, seed, &opt, b1));
                 NE(initModelWeight(vm, seed, &opt, w2));
