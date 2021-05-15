@@ -61,8 +61,26 @@ vmTensorSwap(struct vm_t* vm, int t, _mut_ void** data)
 }
 
 error_t
-vmBatch(struct vm_t* vm, int size, const struct oparg_t* args)
+vmBatch(struct vm_t* vm, size_t size, const struct oparg_t* args)
 {
+        const struct opopt_t* opt;
+        const struct oparg_t* arg;
+        error_t               err;
+
+        for (size_t i = 0; i < size; i++) {
+                arg = &args[i];
+                if (arg->has_opt)
+                        opt = &arg->opt;
+                else
+                        opt = NULL;
+
+                err = vmExec(vm, arg->op, opt, arg->dst, arg->t1, arg->t2);
+                if (err) {
+                        return errEmitNote("failed to exec %d-th instruction.",
+                                           i);
+                }
+        }
+
         return OK;
 }
 
@@ -142,7 +160,7 @@ vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
 
         case OP_REDUCE:
                 assert(opt != NULL);
-                assert(opt->mode == 0);
+                assert((opt->mode & OPT_MODE_UNMASK) == 0);
                 assert(t1 != NULL);
                 assert(t2 == NULL);
                 if (td->dtype != F32) {
@@ -157,7 +175,7 @@ vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
                 } else {
                         assert(opt->i == 0);
                 }
-                return vmOpReduceF32(td, t1, opt->mode, axis);
+                return vmOpReduceF32(td, t1, opt->mode & OPT_MODE_UNMASK, axis);
 
         case OP_LS_SCEL:
                 assert(t1 != NULL);

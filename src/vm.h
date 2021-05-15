@@ -59,15 +59,15 @@ error_t      vmExec(struct vm_t* vm, enum opcode_t, const struct opopt_t* opt,
 // experiment for vm.
 // -----------------------------------------------------------------------------
 struct oparg_t {
-        enum opcode_t  op;
-        int            dst;
-        int            t1;
-        int            t2;
-        int            null_opt;
-        struct opopt_t opt;
+        enum opcode_t        op;
+        int                  dst;
+        int                  t1;
+        int                  t2;
+        int                  has_opt;
+        const struct opopt_t opt;
 };
 
-error_t vmBatch(struct vm_t* vm, int size, const struct oparg_t[]);
+error_t vmBatch(struct vm_t* vm, size_t size, const struct* oparg_t);
 
 // -----------------------------------------------------------------------------
 // apis for tensors. / tensor.c

@@ -146,23 +146,24 @@ main()
         // forward pass
         {
                 struct oparg_t prog[] = {
-                    {OP_MATMUL, h1, x, w1, 0},
+                    // clang-format off
+                    {OP_MATMUL, h1,  x,   w1, 0},
+                    {OP_ADD,    h1b, h1,  b1, 0},
+                    {OP_MAX,    z1,  h1b, z,  0},
+                    {OP_MATMUL, h2,  z1,  w2, 0},
+                    {OP_ADD,    h2b, h2,  b2, 0},
+                    {OP_MAX,    z2,  h2b, z,  0},
+                    {OP_MATMUL, o,   z2,  w3, 0},
+                    {OP_LS_SCEL,l,   y,   o,  0},
+                    {OP_REDUCE, loss,l,   -1, 1,
+                                {.mode=0|OPT_MODE_I_BIT, .i=0}},
+                    // clang-format on
                 };
-                vmBatch(vm, 1, prog);
-                NE(vmExec(vm, OP_MATMUL, NULL, h1, x, w1));
-                NE(vmExec(vm, OP_ADD, NULL, h1b, h1, b1));
-                NE(vmExec(vm, OP_MAX, NULL, z1, h1b, z));
-                NE(vmExec(vm, OP_MATMUL, NULL, h2, z1, w2));
-                NE(vmExec(vm, OP_ADD, NULL, h2b, h2, b2));
-                NE(vmExec(vm, OP_MAX, NULL, z2, h2b, z));
-                NE(vmExec(vm, OP_MATMUL, NULL, o, z2, w3));
-                NE(vmExec(vm, OP_LS_SCEL, NULL, l, y, o));
-                OPT_SET_REDUCTION_SUM(opt, 0);
-                NE(vmExec(vm, OP_REDUCE, &opt, loss, l, -1));
+                vmBatch(vm, sizeof(prog) / sizeof(struct oparg_t), prog);
 
                 S_PRINTF("logits: ", o, "\n");
                 S_PRINTF("labels: ", y, "\n");
-                S_PRINTF("loss after softmax cel: ", l, "\n");
+                S_PRINTF("loss after scel: ", l, "\n");
                 S_PRINTF("loss: ", loss, "\n");
                 printf("%s\n", s);
         }

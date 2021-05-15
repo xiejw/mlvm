@@ -127,7 +127,8 @@ enum opcode_t {
 #define OPT_MATMUL_TRANS_RHS 1
 
 // --- reduction
-#define OPT_SET_REDUCTION_SUM(opt, axis) ((opt).mode = 0, (opt).i = (axis))
+#define OPT_SET_REDUCTION_SUM(opt, axis) \
+        ((opt).mode = 0 | OPT_MODE_I_BIT, (opt).i = (axis))
 
 // --- rng
 #define OPT_RNG_STD_NORMAL 0
