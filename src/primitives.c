@@ -70,10 +70,14 @@
 
 DEF_ELEWISE_OP(Add, PLUS)
 DEF_ELEWISE_OP(Mul, MULT)
-DEF_ELEWISE_OP(Minus, MINU)
 DEF_ELEWISE_OP(Max, MAXI)
 DEF_ELEWISE_OP(Eq, EQUA)
 DEF_ELEWISE_OP(CmpL, CMPL)
+
+#ifndef BLIS
+// Blis version is defined in primitives_blis.h
+DEF_ELEWISE_OP(Minus, MINU)
+#endif
 
 #undef DEF_ELEWISE_OP
 
@@ -99,17 +103,15 @@ DEF_ELEWISE_OP(CmpL, CMPL)
 DEF_ELEWISE_OP_S(Add, PLUS)
 DEF_ELEWISE_OP_S(Mul, MULT)
 DEF_ELEWISE_OP_S(Minus, MINU)
-DEF_ELEWISE_OP_S(Max, MAXI)
-DEF_ELEWISE_OP_S(Eq, EQUA)
-DEF_ELEWISE_OP_S(CmpL, CMPL)
+DEF_ELEWISE_OP_S(Max, MAXI) DEF_ELEWISE_OP_S(Eq, EQUA)
+    DEF_ELEWISE_OP_S(CmpL, CMPL)
 
 #undef DEF_ELEWISE_OP_S
 
-// -----------------------------------------------------------------------------
-// Rng.
-// -----------------------------------------------------------------------------
-error_t
-vmOpRngF32(struct tensor_t* dst, int mode, struct rng64_t* rng)
+    // -----------------------------------------------------------------------------
+    // Rng.
+    // -----------------------------------------------------------------------------
+    error_t vmOpRngF32(struct tensor_t* dst, int mode, struct rng64_t* rng)
 {
         assert(mode == 0);
         assert(dst->dtype == F32);
