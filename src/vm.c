@@ -161,6 +161,18 @@ vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
                 return errNewWithNote(
                     ENOTIMPL, "unimpl for OP_RNG with dtype %d", td->dtype);
 
+        case OP_ARGMAX:
+                assert(opt == NULL);
+                assert(t1 != NULL);
+                assert(t2 == NULL);
+
+                if (td->dtype == F32) {
+                        return vmOpArgMaxF32(td, t1);
+                }
+
+                return errNewWithNote(
+                    ENOTIMPL, "unimpl for OP_ARGMAX with dtype %d", td->dtype);
+
         case OP_REDUCE:
                 assert(opt != NULL);
                 assert((opt->mode & OPT_MODE_UNMASK) == 0);

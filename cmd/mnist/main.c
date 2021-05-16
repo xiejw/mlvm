@@ -126,6 +126,11 @@ main()
         int l    = vmTensorNew(vm, F32, sp_l);
         int loss = vmTensorNew(vm, F32, sp_scalar);
 
+        int arg_y = vmTensorNew(vm, F32, sp_l);
+        int arg_o = vmTensorNew(vm, F32, sp_l);
+        int same  = vmTensorNew(vm, F32, sp_l);
+        int count = vmTensorNew(vm, F32, sp_scalar);
+
         int d_o  = vmTensorNew(vm, F32, sp_o);
         int d_w3 = vmTensorNew(vm, F32, sp_w3);
         int d_z2 = vmTensorNew(vm, F32, sp_h2);
@@ -166,6 +171,8 @@ main()
                 sdsClear(s);
         }
         NE(initTensorWZeros(vm, z));
+        NE(initTensorWZeros(vm, count));
+        // NE(initTensorWZeros(vm, total));
 
         // ---
         // fetch inputs.
@@ -244,6 +251,16 @@ main()
                         S_PRINTF("d_w1: ", d_w1, "\n");
                         printf("%s\n", s);
                         sdsClear(s);
+
+                        NE(vmExec(vm, OP_ARGMAX, NULL, arg_y, y, -1));
+                        NE(vmExec(vm, OP_ARGMAX, NULL, arg_o, o, -1));
+                        NE(vmExec(vm, OP_EQ, NULL, same, arg_y, arg_o));
+                        struct opopt_t opt;
+                        OPT_SET_REDUCTION_SUM(opt, 0);
+                        NE(vmExec(vm, OP_REDUCE, &opt, count, same, -1));
+                        S_PRINTF("count: ", count, "\n");
+                        printf("%s\n", s);
+                        sdsClear(s);
                 }
         }
 
@@ -285,6 +302,8 @@ prepareMnistData(unsigned char** images, unsigned char** labels)
         return OK;
 }
 
+#include <stdio.h>
+
 static void
 prepareFakeData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
                 float32_t* y_data, size_t y_size)
@@ -295,6 +314,7 @@ prepareFakeData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
         struct rng64_t* rng = (struct rng64_t*)seed;
         for (size_t i = 0; i < bs; i++) {
                 int target = rng64NextUint64(rng) % LABEL_SIZE;
+                printf("tgt: %d\n", target);
                 for (size_t j = 0; j < LABEL_SIZE; j++) {
                         if (j == target)
                                 y_data[i * LABEL_SIZE + j] = 1;

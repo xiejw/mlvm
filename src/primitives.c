@@ -7,6 +7,9 @@
 
 #include "rng/srng64_normal.h"
 
+// -----------------------------------------------------------------------------
+// Element wise.
+// -----------------------------------------------------------------------------
 #define PLUS(x, y) ((x) + (y))
 #define MULT(x, y) ((x) * (y))
 #define MINU(x, y) ((x) - (y))
@@ -99,9 +102,8 @@ DEF_ELEWISE_OP_S(CmpL, CMPL)
 #undef DEF_ELEWISE_OP_S
 
 // -----------------------------------------------------------------------------
-// rng.
+// Rng.
 // -----------------------------------------------------------------------------
-
 error_t
 vmOpRngF32(struct tensor_t* dst, int mode, struct rng64_t* rng)
 {
@@ -112,7 +114,40 @@ vmOpRngF32(struct tensor_t* dst, int mode, struct rng64_t* rng)
 }
 
 // -----------------------------------------------------------------------------
-// reduction.
+// Arg.
+// -----------------------------------------------------------------------------
+error_t
+vmOpArgMaxF32(struct tensor_t* td, struct tensor_t* t1)
+{
+        assert(td->dtype == F32);
+        assert(t1->dtype == F32);
+        assert(1 == td->shape->rank);
+        assert(2 == t1->shape->rank);
+
+        size_t bs = td->shape->dims[0];
+        assert(bs == t1->shape->dims[0]);
+        size_t ft = t1->shape->dims[1];
+
+        float32_t* tgt  = (float32_t*)td->data;
+        float32_t* data = (float32_t*)t1->data;
+
+        for (size_t i = 0; i < bs; i++) {
+                size_t    offset = i * ft;
+                size_t    index  = 0;
+                float32_t v      = data[offset];
+                for (size_t j = 1; j < ft; j++) {
+                        if (v < data[offset + j]) {
+                                v     = data[offset + j];
+                                index = j;
+                        }
+                }
+                tgt[i] = index;
+        }
+        return OK;
+}
+
+// -----------------------------------------------------------------------------
+// Reduction.
 // -----------------------------------------------------------------------------
 
 error_t
@@ -172,6 +207,9 @@ vmOpReduceF32(struct tensor_t* td, struct tensor_t* t1, int mode, int axis)
         }
 }
 
+// -----------------------------------------------------------------------------
+// Matmul.
+// -----------------------------------------------------------------------------
 error_t
 vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
               int trans_lhs, int trans_rhs)
@@ -279,6 +317,9 @@ vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
         }
 }
 
+// -----------------------------------------------------------------------------
+// Loss.
+// -----------------------------------------------------------------------------
 error_t
 vmOpLossSCELF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
                 struct tensor_t* tg)
