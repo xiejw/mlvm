@@ -98,3 +98,21 @@ vmOpMinusF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2)
         }
         return errNew("Op_MINUS support t1s==t2s, t1s%%t2s==0 or t2s==1.");
 }
+
+error_t
+vmOpMulSF32(struct tensor_t* td, struct tensor_t* t1, float32_t s)
+{
+        assert(td->dtype == F32);
+        assert(t1->dtype == F32);
+
+        size_t size = t1->shape->size;
+        assert(size == td->shape->size);
+
+        float32_t* o   = (float32_t*)td->data;
+        float32_t* lhs = (float32_t*)t1->data;
+
+        // y = alpha * x
+        bli_sscal2v(BLIS_NO_CONJUGATE, size, /*alpha=*/&s,
+                    /*x=*/lhs, 1, /*y=*/o, 1);
+        return OK;
+}
