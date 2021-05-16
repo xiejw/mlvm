@@ -121,6 +121,7 @@ vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
                 CASE_ELEWISE_OP(MINUS, Minus)
                 CASE_ELEWISE_OP(MAX, Max)
                 CASE_ELEWISE_OP(CMPL, CmpL)
+                CASE_ELEWISE_OP(EQ, Eq)
 
 #undef CASE_ELEWISE_OP
 
