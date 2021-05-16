@@ -18,14 +18,15 @@ static error_t initTensorWZeros(struct vm_t*, int w);
 static error_t prepareData(struct srng64_t* seed, float32_t* x_data,
                            size_t x_size, float32_t* y_data, size_t y_size);
 
-#define IMAGE_SIZE (28 * 28)
-#define LABEL_SIZE (10)
+#define TOTOL_IMAGES 60000
+#define IMAGE_SIZE   (28 * 28)
+#define LABEL_SIZE   (10)
 
-#define FAKE_DATA 1
+#define FAKE_DATA 0
 
-static unsigned char* images = NULL;
-static unsigned char* labels = NULL;
-static it_count = 0;
+static unsigned char* images   = NULL;
+static unsigned char* labels   = NULL;
+static size_t         it_count = 0;
 
 static vec_t(int) weights = vecNew();
 int
@@ -127,10 +128,13 @@ main()
         int l    = vmTensorNew(vm, F32, sp_l);
         int loss = vmTensorNew(vm, F32, sp_scalar);
 
-        int arg_y = vmTensorNew(vm, F32, sp_l);
-        int arg_o = vmTensorNew(vm, F32, sp_l);
-        int same  = vmTensorNew(vm, F32, sp_l);
-        int count = vmTensorNew(vm, F32, sp_scalar);
+        int arg_y       = vmTensorNew(vm, F32, sp_l);
+        int arg_o       = vmTensorNew(vm, F32, sp_l);
+        int same        = vmTensorNew(vm, F32, sp_l);
+        int local_count = vmTensorNew(vm, F32, sp_scalar);
+        int local_total = vmTensorNew(vm, F32, sp_scalar);
+        int count       = vmTensorNew(vm, F32, sp_scalar);
+        int total       = vmTensorNew(vm, F32, sp_scalar);
 
         int d_o  = vmTensorNew(vm, F32, sp_o);
         int d_w3 = vmTensorNew(vm, F32, sp_w3);
@@ -172,24 +176,19 @@ main()
                 sdsClear(s);
         }
         NE(initTensorWZeros(vm, z));
-        NE(initTensorWZeros(vm, count));
-        // NE(initTensorWZeros(vm, total));
 
         // ---
         // fetch inputs.
+        float32_t *x_data, *y_data;
         {
-                float32_t *x_data, *y_data;
                 NE(vmTensorData(vm, x, (void**)&x_data));
                 NE(vmTensorData(vm, y, (void**)&y_data));
-                NE(prepareData(seed, x_data, /*x_size=*/sp_x->size, y_data,
-                               /*y_size=*/sp_y->size));
         }
 
         // ---
         // loop
-        {
-                const struct oparg_t prog[] = {
-                    // clang-format off
+        const struct oparg_t prog[] = {
+            // clang-format off
 // the first matmul
 {OP_MATMUL,  h1,      x,     w1,      0},
 {OP_ADD,     h1b,     h1,    b1,      0},
@@ -230,39 +229,57 @@ main()
 {OP_MINUS,   w2,      w2,    d_w2,    0},
 {OP_MINUS,   b2,      b2,    d_b2,    0},
 {OP_MINUS,   w3,      w3,    d_w3,    0},
-                    // clang-format on
-                };
+            // clang-format on
+        };
 
-                for (int i = 0; i < 100; i++) {
+        for (int ep = 0; ep < 12; ep++) {
+                NE(initTensorWZeros(vm, count));
+                NE(initTensorWZeros(vm, total));
+                for (int i = 0; i < TOTOL_IMAGES / bs; i++) {
+                        NE(prepareData(seed, x_data,
+                                       /*x_size=*/sp_x->size, y_data,
+                                       /*y_size=*/sp_y->size));
+
                         NE(vmBatch(vm, sizeof(prog) / sizeof(struct oparg_t),
                                    prog));
 
-                        S_PRINTF("z: ", z, "\n");
-                        S_PRINTF("x: ", x, "\n");
-                        S_PRINTF("w1: ", w1, "\n");
-                        S_PRINTF("h1: ", h1, "\n");
-                        S_PRINTF("b1: ", b1, "\n");
-                        S_PRINTF("h1b: ", h1b, "\n");
-                        S_PRINTF("z1: ", z1, "\n");
-                        S_PRINTF("logits: ", o, "\n");
-                        S_PRINTF("labels: ", y, "\n");
-                        S_PRINTF("loss after scel: ", l, "\n");
-                        S_PRINTF("loss: ", loss, "\n");
-                        S_PRINTF("grad d_o: ", d_o, "\n");
-                        S_PRINTF("d_w1: ", d_w1, "\n");
-                        printf("%s\n", s);
-                        sdsClear(s);
+                        // S_PRINTF("z: ", z, "\n");
+                        // S_PRINTF("x: ", x, "\n");
+                        // S_PRINTF("w1: ", w1, "\n");
+                        // S_PRINTF("h1: ", h1, "\n");
+                        // S_PRINTF("b1: ", b1, "\n");
+                        // S_PRINTF("h1b: ", h1b, "\n");
+                        // S_PRINTF("z1: ", z1, "\n");
+                        // S_PRINTF("logits: ", o, "\n");
+                        // S_PRINTF("labels: ", y, "\n");
+                        // S_PRINTF("loss after scel: ", l, "\n");
+                        // S_PRINTF("loss: ", loss, "\n");
+                        // S_PRINTF("grad d_o: ", d_o, "\n");
+                        // S_PRINTF("d_w1: ", d_w1, "\n");
+                        // printf("%s\n", s);
+                        // sdsClear(s);
 
                         NE(vmExec(vm, OP_ARGMAX, NULL, arg_y, y, -1));
                         NE(vmExec(vm, OP_ARGMAX, NULL, arg_o, o, -1));
                         NE(vmExec(vm, OP_EQ, NULL, same, arg_y, arg_o));
                         struct opopt_t opt;
                         OPT_SET_REDUCTION_SUM(opt, 0);
-                        NE(vmExec(vm, OP_REDUCE, &opt, count, same, -1));
-                        S_PRINTF("count: ", count, "\n");
-                        printf("%s\n", s);
-                        sdsClear(s);
+                        NE(vmExec(vm, OP_REDUCE, &opt, local_count, same, -1));
+                        NE(vmExec(vm, OP_REDUCE, &opt, local_total, y, -1));
+                        NE(vmExec(vm, OP_ADD, NULL, count, count, local_count));
+                        NE(vmExec(vm, OP_ADD, NULL, total, total, local_total));
+                        // S_PRINTF("local_count: ", local_count, "\n");
+                        // S_PRINTF("local_total: ", local_total, "\n");
+                        // printf("%s\n", s);
+                        // sdsClear(s);
                 }
+
+                sdsCatPrintf(&s, "----------------------\n epoch: %d\n", ep);
+                S_PRINTF("ep_count: ", count, "\n");
+                S_PRINTF("ep_total: ", total, "\n");
+                printf("%s\n", s);
+                sdsClear(s);
+                it_count = 0;
         }
 
         S_PRINTF("w1: ", w1, "\n");
@@ -289,28 +306,38 @@ prepareMnistData(float32_t* x_data, size_t x_size, float32_t* y_data,
                  size_t y_size)
 {
         if (images == NULL) {
-                error_t err = readMnistTrainingImages(images);
+                error_t err = readMnistTrainingImages(&images);
                 if (err) {
                         return err;
                 }
 
-                err = readMnistTrainingLabels(labels);
+                err = readMnistTrainingLabels(&labels);
                 if (err) {
                         return err;
                 }
-                printf("sample label %d -- image:\n", (int)**labels);
-                printMnistImage(*images);
-                printf("smaple label %d -- image:\n", (int)*(*labels + 1));
-                printMnistImage(*images + 28 * 28);
+                printf("sample label %d -- image:\n", (int)*labels);
+                printMnistImage(images);
+                printf("smaple label %d -- image:\n", (int)*(labels + 1));
+                printMnistImage(images + 28 * 28);
         }
+
         size_t bs = x_size / 28 / 28;
+        assert(bs * LABEL_SIZE == y_size);
 
-        unsigned char* buf  = images + it_count*IMAGE_SIZE;
+        unsigned char* buf = images + it_count * IMAGE_SIZE;
         for (size_t i = 0; i < x_size; i++) {
-                x_data[i] = ((float32_t)buf[i])/256;
+                x_data[i] = ((float32_t)buf[i]) / 256;
         }
 
-        buf = labels+it_count;
+        buf = labels + it_count;
+        for (size_t i = 0; i < bs; i++) {
+                int tgt = buf[i];
+                assert(tgt < LABEL_SIZE);
+                size_t offset = i * LABEL_SIZE;
+                for (size_t j = 0; j < LABEL_SIZE; j++) {
+                        y_data[offset + j] = j == tgt ? 1 : 0;
+                }
+        }
 
         it_count += bs;
         return OK;
@@ -343,12 +370,12 @@ prepareData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
             float32_t* y_data, size_t y_size)
 {
         if (FAKE_DATA) {
-                printf("generating fake minis data.\n");
+                // printf("generating fake minis data.\n");
                 prepareFakeData(seed, x_data, x_size, y_data, y_size);
                 return OK;
         } else {
                 error_t err;
-                printf("reading real minis data.\n");
+                // printf("reading real minis data.\n");
                 if ((err = prepareMnistData(x_data, x_size, y_data, y_size))) {
                         if (images != NULL) {
                                 free(images);

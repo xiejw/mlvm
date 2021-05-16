@@ -96,6 +96,7 @@ readMnistTrainingImages(unsigned char** data)
         NO_ERR(readInt32(fd, &n));
         NO_ERR(readInt32(fd, &w));
         NO_ERR(readInt32(fd, &h));
+        printf("Loaded MNIST images n x w x h: %d, %d, %d\n", n, w, h);
 
         size_t s = n * w * h;
 
