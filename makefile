@@ -30,6 +30,11 @@ VM_LIB          = ${BUILD}/vm_vm.o ${BUILD}/vm_shape.o ${BUILD}/vm_tensor.o \
 
 ALL_LIBS        = ${VM_LIB}
 
+ifdef BLIS
+CFLAGS += -DBLIS=1 -I../blis/include/${BLIS}/ -Wno-unused-function
+LDFLAGS += ../blis/lib/${BLIS}/libblis.a
+endif
+
 # ------------------------------------------------------------------------------
 # Header Deps.
 # ------------------------------------------------------------------------------
