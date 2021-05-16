@@ -8,7 +8,7 @@
 #include "rng/srng64_normal.h"
 
 #ifdef BLIS
-#include "blis.h"
+#include "primitives_blis.h"
 #endif
 
 // -----------------------------------------------------------------------------
@@ -233,7 +233,6 @@ vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
 
         assert(trans_lhs == 0 || trans_rhs == 0);  // not support both.
 
-#ifndef BLIS
         if (!trans_lhs && !trans_rhs) {
                 // pm,mq -> pq
                 int p = td->shape->dims[0];
@@ -249,6 +248,9 @@ vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
                             td->shape->dims[0], td->shape->dims[1]);
                 }
 
+#ifdef BLIS
+                vmBlisMatmul(p, q, m, lhs, rhs, o);
+#else
                 // stupid impl.
                 for (int i = 0; i < p; i++) {
                         for (int j = 0; j < q; j++) {
@@ -261,6 +263,7 @@ vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
                                 o[i * q + j] = v;
                         }
                 }
+#endif
                 return OK;
         } else if (trans_rhs) {
                 // pm,mq -> pq
@@ -277,6 +280,9 @@ vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
                             td->shape->dims[0], td->shape->dims[1]);
                 }
 
+#ifdef BLIS
+                vmBlisMatmulTR(p, q, m, lhs, rhs, o);
+#else
                 // stupid impl.
                 for (int i = 0; i < p; i++) {
                         for (int j = 0; j < q; j++) {
@@ -289,6 +295,7 @@ vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
                                 o[i * q + j] = v;
                         }
                 }
+#endif
                 return OK;
         } else {
                 assert(trans_lhs);
@@ -306,6 +313,9 @@ vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
                             td->shape->dims[0], td->shape->dims[1]);
                 }
 
+#ifdef BLIS
+                vmBlisMatmulTL(p, q, m, lhs, rhs, o);
+#else
                 // stupid impl.
                 for (int i = 0; i < p; i++) {
                         for (int j = 0; j < q; j++) {
@@ -318,83 +328,9 @@ vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
                                 o[i * q + j] = v;
                         }
                 }
-                return OK;
-        }
-#else
-        float32_t zero = 0;
-        float32_t one  = 1;
-        if (!trans_lhs && !trans_rhs) {
-                // pm,mq -> pq
-                int p = td->shape->dims[0];
-                int q = td->shape->dims[1];
-                int m = t1->shape->dims[1];
-
-                if (p != t1->shape->dims[0] || m != t2->shape->dims[0] ||
-                    q != t2->shape->dims[1]) {
-                        return errNew(
-                            "invalid matmul shape: %d/%d,%d/%d->%d/%d.",
-                            t1->shape->dims[0], t1->shape->dims[1],
-                            t2->shape->dims[0], t2->shape->dims[1],
-                            td->shape->dims[0], td->shape->dims[1]);
-                }
-                bli_sgemm(
-                    /*trans_a=*/BLIS_NO_TRANSPOSE,
-                    /*trans_b=*/BLIS_NO_TRANSPOSE,
-                    /*m=*/p,
-                    /*n=*/q,
-                    /*k=*/m,
-                    /*alpha=*/&one, lhs, m, 1, rhs, q, 1, /*beta=*/&zero, o, q,
-                    1);
-                return OK;
-        } else if (trans_rhs) {
-                // pm,mq -> pq
-                int p = td->shape->dims[0];
-                int q = td->shape->dims[1];
-                int m = t1->shape->dims[1];
-
-                if (p != t1->shape->dims[0] || m != t2->shape->dims[1] ||
-                    q != t2->shape->dims[0]) {
-                        return errNew(
-                            "invalid matmul shape: %d/%d,%d/%d->%d/%d.",
-                            t1->shape->dims[0], t1->shape->dims[1],
-                            t2->shape->dims[1], t2->shape->dims[0],
-                            td->shape->dims[0], td->shape->dims[1]);
-                }
-                bli_sgemm(
-                    /*trans_a=*/BLIS_NO_TRANSPOSE,
-                    /*trans_b=*/BLIS_TRANSPOSE,
-                    /*m=*/p,
-                    /*n=*/q,
-                    /*k=*/m,
-                    /*alpha=*/&one, lhs, m, 1, rhs, m, 1, /*beta=*/&zero, o, q,
-                    1);
-                return OK;
-        } else {
-                assert(trans_lhs);
-                // pm,mq -> pq
-                int p = td->shape->dims[0];
-                int q = td->shape->dims[1];
-                int m = t1->shape->dims[0];
-
-                if (p != t1->shape->dims[1] || m != t2->shape->dims[0] ||
-                    q != t2->shape->dims[1]) {
-                        return errNew(
-                            "invalid matmul shape: %d/%d,%d/%d->%d/%d.",
-                            t1->shape->dims[1], t1->shape->dims[0],
-                            t2->shape->dims[0], t2->shape->dims[1],
-                            td->shape->dims[0], td->shape->dims[1]);
-                }
-                bli_sgemm(
-                    /*trans_a=*/BLIS_TRANSPOSE,
-                    /*trans_b=*/BLIS_NO_TRANSPOSE,
-                    /*m=*/p,
-                    /*n=*/q,
-                    /*k=*/m,
-                    /*alpha=*/&one, lhs, p, 1, rhs, q, 1, /*beta=*/&zero, o, q,
-                    1);
-                return OK;
-        }
 #endif
+                return OK;
+        }
 }
 
 // -----------------------------------------------------------------------------
