@@ -25,6 +25,7 @@ static error_t prepareData(struct srng64_t* seed, float32_t* x_data,
 
 static unsigned char* images = NULL;
 static unsigned char* labels = NULL;
+static it_count = 0;
 
 static vec_t(int) weights = vecNew();
 int
@@ -284,21 +285,34 @@ cleanup:
 
 // impl
 static error_t
-prepareMnistData(unsigned char** images, unsigned char** labels)
+prepareMnistData(float32_t* x_data, size_t x_size, float32_t* y_data,
+                 size_t y_size)
 {
-        error_t err = readMnistTrainingImages(images);
-        if (err) {
-                return err;
+        if (images == NULL) {
+                error_t err = readMnistTrainingImages(images);
+                if (err) {
+                        return err;
+                }
+
+                err = readMnistTrainingLabels(labels);
+                if (err) {
+                        return err;
+                }
+                printf("sample label %d -- image:\n", (int)**labels);
+                printMnistImage(*images);
+                printf("smaple label %d -- image:\n", (int)*(*labels + 1));
+                printMnistImage(*images + 28 * 28);
+        }
+        size_t bs = x_size / 28 / 28;
+
+        unsigned char* buf  = images + it_count*IMAGE_SIZE;
+        for (size_t i = 0; i < x_size; i++) {
+                x_data[i] = ((float32_t)buf[i])/256;
         }
 
-        err = readMnistTrainingLabels(labels);
-        if (err) {
-                return err;
-        }
-        printf("sample label %d -- image:\n", (int)**labels);
-        printMnistImage(*images);
-        printf("smaple label %d -- image:\n", (int)*(*labels + 1));
-        printMnistImage(*images + 28 * 28);
+        buf = labels+it_count;
+
+        it_count += bs;
         return OK;
 }
 
@@ -335,9 +349,15 @@ prepareData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
         } else {
                 error_t err;
                 printf("reading real minis data.\n");
-                if ((err = prepareMnistData(&images, &labels))) {
-                        if (images != NULL) free(images);
-                        if (labels != NULL) free(labels);
+                if ((err = prepareMnistData(x_data, x_size, y_data, y_size))) {
+                        if (images != NULL) {
+                                free(images);
+                                images = NULL;
+                        }
+                        if (labels != NULL) {
+                                free(labels);
+                                labels = NULL;
+                        }
                         return err;
                 }
                 return OK;
