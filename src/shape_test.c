@@ -27,10 +27,20 @@ test_shape_ref()
         return NULL;
 }
 
+static char*
+test_shape_rank0()
+{
+        int             some_p[1] = {2};
+        struct shape_t* s         = spNew(0, some_p);
+        ASSERT_TRUE("NULL", s == NULL);
+        return NULL;
+}
+
 char*
 run_shape_suite()
 {
         RUN_TEST(test_shape_init);
         RUN_TEST(test_shape_ref);
+        RUN_TEST(test_shape_rank0);
         return NULL;
 }
