@@ -22,6 +22,8 @@ test_shape_ref()
         spIncRef(s);
         ASSERT_TRUE("ref", s->ref_count == 2);
         spDecRef(s);
+        ASSERT_TRUE("ref", s->ref_count == 1);
+        spDecRef(s);
         return NULL;
 }
 
