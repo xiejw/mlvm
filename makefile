@@ -18,9 +18,6 @@ LDFLAGS         += ${EVA_LIB}
 
 TEX             = docker run --rm -v `pwd`:/workdir xiejw/tex pdftex
 
-CMDS            = $(patsubst ${CMD}/%,%,$(wildcard ${CMD}/*))
-CMD_TARGETS     = $(patsubst ${CMD}/%/main.c,${BUILD}/%,$(wildcard ${CMD}/*/main.c))
-
 # ------------------------------------------------------------------------------
 # Libs.
 # ------------------------------------------------------------------------------
@@ -59,9 +56,15 @@ ${BUILD}/vm_%.o: ${SRC}/%.c ${VM_HEADER}
 # Cmd.
 # ------------------------------------------------------------------------------
 
+# Put test out from CMDS, as it needs special testing library.
+CMD_CANDIDATES  = $(patsubst ${CMD}/%,%,$(wildcard ${CMD}/*))
+CMDS            = $(filter-out test,${CMD_CANDIDATES})
+CMD_TARGETS     = $(patsubst ${CMD}/%/main.c,${BUILD}/%,$(wildcard ${CMD}/*/main.c))
+
 compile: ${CMD_TARGETS}
 
 $(foreach cmd,$(CMDS),$(eval $(call objs,$(cmd),$(BUILD),$(VM_LIB))))
+$(eval $(call objs,test,$(BUILD),$(VM_LIB)))
 
 # ------------------------------------------------------------------------------
 # Docs.

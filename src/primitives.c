@@ -107,16 +107,17 @@ DEF_ELEWISE_OP_S(Eq, EQUA)
 DEF_ELEWISE_OP_S(CmpL, CMPL)
 
 #ifndef BLIS
-    // Blis version is defined in primitives_blis.h
-    DEF_ELEWISE_OP_S(Mul, MULT)
+// Blis version is defined in primitives_blis.h
+DEF_ELEWISE_OP_S(Mul, MULT)
 #endif
 
 #undef DEF_ELEWISE_OP_S
 
-    // -----------------------------------------------------------------------------
-    // Rng.
-    // -----------------------------------------------------------------------------
-    error_t vmOpRngF32(struct tensor_t* dst, int mode, struct rng64_t* rng)
+// -----------------------------------------------------------------------------
+// Rng.
+// -----------------------------------------------------------------------------
+error_t
+vmOpRngF32(struct tensor_t* dst, int mode, struct rng64_t* rng)
 {
         assert(mode == 0);
         assert(dst->dtype == F32);
