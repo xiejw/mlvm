@@ -29,15 +29,16 @@ int tests_run = 0;  // declared in testing/testing.h
 int
 main()
 {
-        // ---------------------------------------------------------------------------
+        // ---------------------------------------------------------------------
         // Adds all suites.
         //
         // Convenstion is for foo, a test suite fn run_foo_suite is called. For
         // customized case, use ADD_SUITE_NAME_AND_FN.
 
         ADD_SUITE(shape);  // shape_test.c
+        ADD_SUITE(vm);     // vm_test.c
 
-        // ---------------------------------------------------------------------------
+        // ---------------------------------------------------------------------
         // Runs all suites and reports.
         int suites_failed = run_all_suites();
         return suites_failed ? -1 : 0;
