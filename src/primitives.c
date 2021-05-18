@@ -21,7 +21,7 @@
 #define EQUA(x, y) ((x) == (y))
 #define CMPL(x, y) ((x) > (y) ? (1) : (0))
 
-#define DEF_ELEWISE_OP(OP, op)                                                 \
+#define DEF_ELEWISE_OP(OP, op, static_cond, special_handle)                    \
         error_t vmOp##OP##F32(struct tensor_t* td, struct tensor_t* t1,        \
                               struct tensor_t* t2)                             \
         {                                                                      \
@@ -42,43 +42,51 @@
                                                                                \
                 size_t t2_size = t2->shape->size;                              \
                                                                                \
-                if (t2_size == size) {                                         \
-                        for (size_t i = 0; i < size; i++) {                    \
-                                o[i] = op(lhs[i], rhs[i]);                     \
-                        }                                                      \
-                } else if (t2_size == 1) {                                     \
-                        float32_t s = rhs[0];                                  \
-                        for (size_t i = 0; i < size; i++) {                    \
-                                o[i] = op(lhs[i], s);                          \
-                        }                                                      \
-                } else if (size % t2_size == 0) {                              \
-                        size_t loop_c = size / t2_size;                        \
-                        for (size_t c = 0; c < loop_c; c++) {                  \
-                                size_t offset = c * t2_size;                   \
-                                for (size_t i = 0; i < t2_size; i++) {         \
-                                        o[offset + i] =                        \
-                                            op(lhs[offset + i], rhs[i]);       \
-                                }                                              \
-                        }                                                      \
+                if (static_cond) {                                             \
+                        special_handle(o, lhs, rhs, size, t2_size);            \
                 } else {                                                       \
-                        return errNew(                                         \
-                            "Op " #OP                                          \
-                            " support t1s==t2s, t1s%%t2s==0 or t2s==1.");      \
+                        if (t2_size == size) {                                 \
+                                for (size_t i = 0; i < size; i++) {            \
+                                        o[i] = op(lhs[i], rhs[i]);             \
+                                }                                              \
+                        } else if (t2_size == 1) {                             \
+                                float32_t s = rhs[0];                          \
+                                for (size_t i = 0; i < size; i++) {            \
+                                        o[i] = op(lhs[i], s);                  \
+                                }                                              \
+                        } else if (size % t2_size == 0) {                      \
+                                size_t loop_c = size / t2_size;                \
+                                for (size_t c = 0; c < loop_c; c++) {          \
+                                        size_t offset = c * t2_size;           \
+                                        for (size_t i = 0; i < t2_size; i++) { \
+                                                o[offset + i] = op(            \
+                                                    lhs[offset + i], rhs[i]);  \
+                                        }                                      \
+                                }                                              \
+                        } else {                                               \
+                                return errNew("Op " #OP                        \
+                                              " support t1s==t2s, "            \
+                                              "t1s%%t2s==0 or t2s==1.");       \
+                        }                                                      \
                 }                                                              \
                 return OK;                                                     \
         }
 
-DEF_ELEWISE_OP(Add, PLUS)
-DEF_ELEWISE_OP(Mul, MULT)
-DEF_ELEWISE_OP(Max, MAXI)
-DEF_ELEWISE_OP(Eq, EQUA)
-DEF_ELEWISE_OP(CmpL, CMPL)
+#define DUMMY_HANDLER(x, y, v, s, s2)
+
+DEF_ELEWISE_OP(Add, PLUS, 0, DUMMY_HANDLER)
+DEF_ELEWISE_OP(Mul, MULT, 0, DUMMY_HANDLER)
+DEF_ELEWISE_OP(Max, MAXI, 0, DUMMY_HANDLER)
+DEF_ELEWISE_OP(Eq, EQUA, 0, DUMMY_HANDLER)
+DEF_ELEWISE_OP(CmpL, CMPL, 0, DUMMY_HANDLER)
 
 #ifndef BLIS
-// Blis version is defined in primitives_blis.h
-DEF_ELEWISE_OP(Minus, MINU)
+DEF_ELEWISE_OP(Minus, MINU, 0, DUMMY_HANDLER)
+#else
+DEF_ELEWISE_OP(Minus, MINU, 1, vmBlisMinusF32)
 #endif
 
+#undef DUMMY_HANDLER
 #undef DEF_ELEWISE_OP
 
 #define DEF_ELEWISE_OP_S(OP, op, static_cond, special_handle)            \
@@ -119,7 +127,6 @@ DEF_ELEWISE_OP_S(Mul, MULT, 1, vmBlisMulSF32)
 #endif
 
 #undef DUMMY_HANDLER
-
 #undef DEF_ELEWISE_OP_S
 
 // -----------------------------------------------------------------------------
