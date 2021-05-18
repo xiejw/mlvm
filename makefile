@@ -27,7 +27,8 @@ VM_LIB          = ${BUILD}/vm_vm.o ${BUILD}/vm_shape.o ${BUILD}/vm_tensor.o \
 
 ALL_LIBS        = ${VM_LIB}
 
-TEST_LIBS       = ${BUILD}/shape_test.o ${BUILD}/vm_test.o
+TEST_LIBS       = ${BUILD}/shape_test.o ${BUILD}/tensor_test.o \
+		  ${BUILD}/vm_test.o
 
 ifdef BLIS
 CFLAGS  += -DBLIS=1 -I../blis/include/${BLIS}/ -Wno-unused-function
