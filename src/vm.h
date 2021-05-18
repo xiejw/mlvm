@@ -44,7 +44,7 @@ struct opopt_t {
 };
 
 // enum opcode_t;
-#include "opcode.h"
+#include "op.h"
 
 // -----------------------------------------------------------------------------
 // apis for vm.

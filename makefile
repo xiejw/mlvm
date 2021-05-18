@@ -21,7 +21,7 @@ TEX             = docker run --rm -v `pwd`:/workdir xiejw/tex pdftex
 # ------------------------------------------------------------------------------
 # Libs.
 # ------------------------------------------------------------------------------
-VM_HEADER       = ${SRC}/vm.h ${SRC}/opcode.h
+VM_HEADER       = ${SRC}/vm.h ${SRC}/op.h
 VM_LIB          = ${BUILD}/vm_vm.o ${BUILD}/vm_shape.o ${BUILD}/vm_tensor.o \
                   ${BUILD}/vm_primitives.o
 
