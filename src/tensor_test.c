@@ -5,6 +5,23 @@
 #include <string.h>
 
 static char*
+test_vm_tensor_new()
+{
+        struct vm_t* vm = vmNew();
+
+        for (int i = 0; i < 10; i++) {
+                struct shape_t* s  = vmShapeNew(vm, 2, (int[]){3, 4});
+                int             td = vmTensorNew(vm, F32, s);
+                ASSERT_TRUE("td", td == i);
+        }
+        for (int i = 0; i < 10; i++) {
+                ASSERT_TRUE("err", OK == vmTensorFree(vm, i));
+        }
+        vmFree(vm);
+        return NULL;
+}
+
+static char*
 test_vm_tensor_info()
 {
         struct vm_t* vm = vmNew();
@@ -95,6 +112,7 @@ test_vm_tensor_swap()
 char*
 run_tensor_suite()
 {
+        RUN_TEST(test_vm_tensor_new);
         RUN_TEST(test_vm_tensor_info);
         RUN_TEST(test_vm_tensor_data);
         RUN_TEST(test_vm_tensor_swap);
