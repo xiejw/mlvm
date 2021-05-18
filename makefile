@@ -27,9 +27,6 @@ VM_LIB          = ${BUILD}/vm_vm.o ${BUILD}/vm_shape.o ${BUILD}/vm_tensor.o \
 
 ALL_LIBS        = ${VM_LIB}
 
-TEST_LIBS       = ${BUILD}/shape_test.o ${BUILD}/tensor_test.o \
-		  ${BUILD}/vm_test.o
-
 ifdef BLIS
 CFLAGS  += -DBLIS=1 -I../blis/include/${BLIS}/ -Wno-unused-function
 LDFLAGS += ../blis/lib/${BLIS}/libblis.a -pthread
@@ -55,14 +52,11 @@ compile: ${BUILD} ${ALL_LIBS}
 ${BUILD}/vm_%.o: ${SRC}/%.c ${VM_HEADER}
 	${EVA_CC} -o $@ -c $<
 
-${BUILD}/%_test.o: ${SRC}/%_test.c ${VM_HEADER}
-	${EVA_CC} -o $@ -c $<
-
 # ------------------------------------------------------------------------------
 # Cmd.
 # ------------------------------------------------------------------------------
 
-# Put test out from CMDS, as it needs special testing library.
+# Put `test` out from CMDS, as it needs special testing library in next section.
 CMD_CANDIDATES  = $(patsubst ${CMD}/%,%,$(wildcard ${CMD}/*))
 CMDS            = $(filter-out test,${CMD_CANDIDATES})
 CMD_TARGETS     = $(patsubst ${CMD}/%/main.c,${BUILD}/%,$(wildcard ${CMD}/*/main.c))
@@ -70,7 +64,18 @@ CMD_TARGETS     = $(patsubst ${CMD}/%/main.c,${BUILD}/%,$(wildcard ${CMD}/*/main
 compile: ${CMD_TARGETS}
 
 $(foreach cmd,$(CMDS),$(eval $(call objs,$(cmd),$(BUILD),$(VM_LIB))))
+
+# ------------------------------------------------------------------------------
+# Tests.
+# ------------------------------------------------------------------------------
+TEST_LIBS       = ${BUILD}/shape_test.o ${BUILD}/tensor_test.o \
+		  ${BUILD}/vm_test.o
+
+${BUILD}/%_test.o: ${SRC}/%_test.c ${VM_HEADER}
+	${EVA_CC} -o $@ -c $<
+
 $(eval $(call objs,test,$(BUILD),$(VM_LIB) $(TEST_LIBS)))
+
 
 # ------------------------------------------------------------------------------
 # Docs.
