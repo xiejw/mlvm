@@ -81,7 +81,7 @@ DEF_ELEWISE_OP(Minus, MINU)
 
 #undef DEF_ELEWISE_OP
 
-#define DEF_ELEWISE_OP_S(OP, op)                                         \
+#define DEF_ELEWISE_OP_S(OP, op, static_cond, special_handle)            \
         error_t vmOp##OP##SF32(struct tensor_t* td, struct tensor_t* t1, \
                                float32_t s)                              \
         {                                                                \
@@ -94,22 +94,31 @@ DEF_ELEWISE_OP(Minus, MINU)
                 float32_t* o   = (float32_t*)td->data;                   \
                 float32_t* lhs = (float32_t*)t1->data;                   \
                                                                          \
-                for (size_t i = 0; i < size; i++) {                      \
-                        o[i] = op(lhs[i], s);                            \
+                if (static_cond) {                                       \
+                        special_handle(o, lhs, s, size);                 \
+                } else {                                                 \
+                        for (size_t i = 0; i < size; i++) {              \
+                                o[i] = op(lhs[i], s);                    \
+                        }                                                \
                 }                                                        \
                 return OK;                                               \
         }
 
-DEF_ELEWISE_OP_S(Add, PLUS)
-DEF_ELEWISE_OP_S(Minus, MINU)
-DEF_ELEWISE_OP_S(Max, MAXI)
-DEF_ELEWISE_OP_S(Eq, EQUA)
-DEF_ELEWISE_OP_S(CmpL, CMPL)
+#define DUMMY_HANDLER(x, y, v, s)
+
+DEF_ELEWISE_OP_S(Add, PLUS, 0, DUMMY_HANDLER)
+DEF_ELEWISE_OP_S(Minus, MINU, 0, DUMMY_HANDLER)
+DEF_ELEWISE_OP_S(Max, MAXI, 0, DUMMY_HANDLER)
+DEF_ELEWISE_OP_S(Eq, EQUA, 0, DUMMY_HANDLER)
+DEF_ELEWISE_OP_S(CmpL, CMPL, 0, DUMMY_HANDLER)
 
 #ifndef BLIS
-// Blis version is defined in primitives_blis.h
-DEF_ELEWISE_OP_S(Mul, MULT)
+DEF_ELEWISE_OP_S(Mul, MULT, 0, DUMMY_HANDLER)
+#else
+DEF_ELEWISE_OP_S(Mul, MULT, 1, vmBlisMulSF32)
 #endif
+
+#undef DUMMY_HANDLER
 
 #undef DEF_ELEWISE_OP_S
 
@@ -257,7 +266,7 @@ vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
                 }
 
 #ifdef BLIS
-                vmBlisMatmul(p, q, m, lhs, rhs, o);
+                vmBlisMatmulF32(p, q, m, lhs, rhs, o);
 #else
                 // stupid impl.
                 for (int i = 0; i < p; i++) {
@@ -289,7 +298,7 @@ vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
                 }
 
 #ifdef BLIS
-                vmBlisMatmulTR(p, q, m, lhs, rhs, o);
+                vmBlisMatmulTRF32(p, q, m, lhs, rhs, o);
 #else
                 // stupid impl.
                 for (int i = 0; i < p; i++) {
@@ -322,7 +331,7 @@ vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
                 }
 
 #ifdef BLIS
-                vmBlisMatmulTL(p, q, m, lhs, rhs, o);
+                vmBlisMatmulTLF32(p, q, m, lhs, rhs, o);
 #else
                 // stupid impl.
                 for (int i = 0; i < p; i++) {

@@ -2,7 +2,7 @@
 #include "blis.h"
 
 static inline void
-vmBlisMatmul(int m, int n, int k, float* a, float* b, float* c)
+vmBlisMatmulF32(int m, int n, int k, float* a, float* b, float* c)
 {
         float32_t zero = 0;
         float32_t one  = 1;
@@ -16,7 +16,7 @@ vmBlisMatmul(int m, int n, int k, float* a, float* b, float* c)
 }
 
 static inline void
-vmBlisMatmulTR(int m, int n, int k, float* a, float* b, float* c)
+vmBlisMatmulTRF32(int m, int n, int k, float* a, float* b, float* c)
 {
         float32_t zero = 0;
         float32_t one  = 1;
@@ -30,7 +30,7 @@ vmBlisMatmulTR(int m, int n, int k, float* a, float* b, float* c)
 }
 
 static inline void
-vmBlisMatmulTL(int m, int n, int k, float* a, float* b, float* c)
+vmBlisMatmulTLF32(int m, int n, int k, float* a, float* b, float* c)
 {
         float32_t zero = 0;
         float32_t one  = 1;
@@ -99,20 +99,10 @@ vmOpMinusF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2)
         return errNew("Op_MINUS support t1s==t2s, t1s%%t2s==0 or t2s==1.");
 }
 
-error_t
-vmOpMulSF32(struct tensor_t* td, struct tensor_t* t1, float32_t s)
+void
+vmBlisMulSF32(float32_t* o, float32_t* lhs, float32_t v, size_t size)
 {
-        assert(td->dtype == F32);
-        assert(t1->dtype == F32);
-
-        size_t size = t1->shape->size;
-        assert(size == td->shape->size);
-
-        float32_t* o   = (float32_t*)td->data;
-        float32_t* lhs = (float32_t*)t1->data;
-
         // y = alpha * x
-        bli_sscal2v(BLIS_NO_CONJUGATE, size, /*alpha=*/&s,
+        bli_sscal2v(BLIS_NO_CONJUGATE, size, /*alpha=*/&v,
                     /*x=*/lhs, 1, /*y=*/o, 1);
-        return OK;
 }
