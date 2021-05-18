@@ -51,16 +51,6 @@ vmShapeNew(struct vm_t* vm, int rank, int dims[])
 }
 
 error_t
-vmTensorSwap(struct vm_t* vm, int t, _mut_ void** data)
-{
-        struct tensor_t* ts  = vmGrabHandle(vm, t);
-        void*            old = ts->data;
-        ts->data             = *data;
-        *data                = old;
-        return OK;
-}
-
-error_t
 vmBatch(struct vm_t* vm, size_t size, const struct oparg_t* args)
 {
         const struct opopt_t* opt;

@@ -62,6 +62,16 @@ vmTensorData(struct vm_t* vm, int handle, void** data)
         return OK;
 }
 
+error_t
+vmTensorSwap(struct vm_t* vm, int t, _mut_ void** data)
+{
+        struct tensor_t* ts  = vmGrabHandle(vm, t);
+        void*            old = ts->data;
+        ts->data             = *data;
+        *data                = old;
+        return OK;
+}
+
 void
 vmTensorDump(sds_t* s, struct vm_t* vm, int handle)
 {

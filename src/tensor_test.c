@@ -61,10 +61,42 @@ test_vm_tensor_data()
         return NULL;
 }
 
+static char*
+test_vm_tensor_swap()
+{
+        struct vm_t* vm = vmNew();
+
+        int td;
+        {
+                struct shape_t* s = vmShapeNew(vm, 2, (int[]){1, 2});
+                td                = vmTensorNew(vm, F32, s);
+                ASSERT_TRUE("td", td == 0);
+        }
+
+        {
+                float32_t* data = malloc(2 * sizeof(float32_t));
+                data[0]         = 2.34;
+                data[1]         = 5.67;
+                ASSERT_TRUE("err", OK == vmTensorSwap(vm, td, (void**)&data));
+                free(data);
+        }
+
+        {
+                sds_t s = sdsEmpty();
+                vmTensorDump(&s, vm, td);
+                const char* expected = "<1, 2> f32 [2.340, 5.670]";
+                ASSERT_TRUE("dump", 0 == strcmp(s, expected));
+                sdsFree(s);
+        }
+        vmFree(vm);
+        return NULL;
+}
+
 char*
 run_tensor_suite()
 {
         RUN_TEST(test_vm_tensor_info);
         RUN_TEST(test_vm_tensor_data);
+        RUN_TEST(test_vm_tensor_swap);
         return NULL;
 }
