@@ -69,7 +69,7 @@ $(foreach cmd,$(CMDS),$(eval $(call objs,$(cmd),$(BUILD),$(VM_LIB))))
 # Tests.
 # ------------------------------------------------------------------------------
 TEST_LIBS       = ${BUILD}/shape_test.o ${BUILD}/tensor_test.o \
-		  ${BUILD}/vm_test.o
+		  ${BUILD}/vm_test.o ${BUILD}/op_test.o
 
 ${BUILD}/%_test.o: ${SRC}/%_test.c ${VM_HEADER}
 	${EVA_CC} -o $@ -c $<
