@@ -17,6 +17,7 @@ error_t expect_dump(struct vm_t* vm, int td, const char* expected);
 
 #define CHECK_TENSOR(vm, td, expect)                   \
         if (expect_dump(vm, td, expect)) {             \
+                errDump("tensor mismatch.\n"); \
                 return "failed to expect tensor dump"; \
         }
 
@@ -42,8 +43,9 @@ test_element_ops()
         COPY_DATA(vm, t1, 2, ((float32_t[]){2.34, 5.67}));
         COPY_DATA(vm, t2, 2, ((float32_t[]){4.34, 3.67}));
 
-        enum opcode_t ops[]           = {OP_ADD, OP_MINUS, OP_MAX};
+        enum opcode_t ops[]           = {OP_ADD, OP_MUL, OP_MINUS, OP_MAX};
         const char*   expected_strs[] = {
+            "<1, 2> f32 [6.680, 9.340]",
             "<1, 2> f32 [6.680, 9.340]",
             "<1, 2> f32 [-2.000, 2.000]",
             "<1, 2> f32 [4.340, 5.670]",
@@ -84,7 +86,7 @@ expect_dump(struct vm_t* vm, int td, const char* expected)
         vmTensorDump(&s, vm, td);
         if (0 != strcmp(s, expected)) {
                 sdsFree(s);
-                return errNew("mismatch.");
+                return errNew("info:\nexpected: %s\ngot     : %s\n", expected, s);
         }
         sdsFree(s);
         return OK;
