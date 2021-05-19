@@ -15,13 +15,22 @@ error_t expect_dump(struct vm_t* vm, int td, const char* expected);
                 return "failed to copy data"; \
         }
 
-#define EXPECT_DUMP(vm, td, expect)                    \
+#define CHECK_TENSOR(vm, td, expect)                   \
         if (expect_dump(vm, td, expect)) {             \
                 return "failed to expect tensor dump"; \
         }
 
+#define NE(e)                               \
+        if ((e)) {                          \
+                return "unexpected error."; \
+        }
+
+// -----------------------------------------------------------------------------
+// unit tests.
+// -----------------------------------------------------------------------------
+
 static char*
-test_op_add()
+test_element_ops()
 {
         struct vm_t*    vm = vmNew();
         struct shape_t* s  = vmShapeNew(vm, 2, (int[]){1, 2});
@@ -33,8 +42,17 @@ test_op_add()
         COPY_DATA(vm, t1, 2, ((float32_t[]){2.34, 5.67}));
         COPY_DATA(vm, t2, 2, ((float32_t[]){4.34, 3.67}));
 
-        ASSERT_TRUE("err", OK == vmExec(vm, OP_ADD, NULL, td, t1, t2));
-        EXPECT_DUMP(vm, td, "<1, 2> f32 [6.680, 9.340]");
+        enum opcode_t ops[]           = {OP_ADD, OP_MINUS, OP_MAX};
+        const char*   expected_strs[] = {
+            "<1, 2> f32 [6.680, 9.340]",
+            "<1, 2> f32 [-2.000, 2.000]",
+            "<1, 2> f32 [4.340, 5.670]",
+        };
+
+        for (int i = 0; i < sizeof(ops) / sizeof(enum opcode_t); i++) {
+                NE(vmExec(vm, ops[i], NULL, td, t1, t2));
+                CHECK_TENSOR(vm, td, expected_strs[i]);
+        }
         vmFree(vm);
         return NULL;
 }
@@ -42,7 +60,7 @@ test_op_add()
 char*
 run_op_suite()
 {
-        RUN_TEST(test_op_add);
+        RUN_TEST(test_element_ops);
         return NULL;
 }
 
