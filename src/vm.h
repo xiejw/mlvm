@@ -3,12 +3,13 @@
 
 #include <stdint.h>
 
+// eva
 #include "adt/sds.h"
 #include "base/error.h"
 #include "rng/srng64.h"
 
 // -----------------------------------------------------------------------------
-// data structures.
+// Data structures.
 // -----------------------------------------------------------------------------
 
 typedef float float32_t;
@@ -43,11 +44,11 @@ struct opopt_t {
         };
 };
 
-// enum opcode_t;
+// Enum opcode_t;
 #include "op.h"
 
 // -----------------------------------------------------------------------------
-// apis for vm.
+// Apis for vm.
 // -----------------------------------------------------------------------------
 
 struct vm_t* vmNew();
@@ -56,7 +57,7 @@ error_t      vmExec(struct vm_t* vm, enum opcode_t, const struct opopt_t* opt,
                     int dst, int lhs, int rhs);
 
 // -----------------------------------------------------------------------------
-// experiment for vm.
+// Apis for batch execution.
 // -----------------------------------------------------------------------------
 struct oparg_t {
         enum opcode_t        op;
@@ -70,7 +71,7 @@ struct oparg_t {
 error_t vmBatch(struct vm_t* vm, size_t size, const struct oparg_t*);
 
 // -----------------------------------------------------------------------------
-// apis for tensors. / tensor.c
+// Apis for tensors. / tensor.c
 // -----------------------------------------------------------------------------
 
 int     vmTensorNew(struct vm_t*, enum data_t, struct shape_t*);
@@ -83,7 +84,7 @@ error_t vmTensorSwap(struct vm_t*, int t, _mut_ void** data);
 void    vmTensorDump(sds_t* s, struct vm_t*, int t);
 
 // -----------------------------------------------------------------------------
-// apis for shapes. / shape.c
+// Apis for shapes. / shape.c
 // -----------------------------------------------------------------------------
 
 struct shape_t* vmShapeNew(struct vm_t* vm, int rank, int* dims);

@@ -1,9 +1,10 @@
 #include "vm.h"
-
-#include "primitives.h"
 #include "vm_internal.h"
 
 #include <string.h>  // memset
+
+// mlvm
+#include "primitives.h"
 
 struct vm_t*
 vmNew()
