@@ -1,3 +1,6 @@
+// -----------------------------------------------------------------------------
+// Op code with spec.
+// -----------------------------------------------------------------------------
 enum opcode_t {
         // Option.
         //   - Option can be optional. If so, the NULL is provided and it
@@ -127,7 +130,9 @@ enum opcode_t {
         OP_LS_SCEL
 };
 
-// --- opt bits.
+// -----------------------------------------------------------------------------
+// Opt mask bits.
+// -----------------------------------------------------------------------------
 #define OPT_MODE_BIT_MASK       0xFF0000
 #define OPT_MODE_UNMASK         0x00FFFF
 #define OPT_MODE_I_BIT          0x10000
@@ -137,23 +142,26 @@ enum opcode_t {
 #define OPT_MODE_GET_F_BIT(opt) (((opt).mode) & OPT_MODE_F_BIT)
 #define OPT_MODE_GET_R_BIT(opt) (((opt).mode) & OPT_MODE_R_BIT)
 
-// --- common macros
-// --- element wise ops
+// -----------------------------------------------------------------------------
+// Common macros
+// -----------------------------------------------------------------------------
+//
+// --- Element wise ops
 #define OPT_SET_SCALAR_OPERAND(opt, v) \
         ((opt).mode = OPT_MODE_F_BIT, (opt).f = (v))
 
-// --- matmul
+// --- Matmul
 #define OPT_MATMUL_TRANS_NOT 0
 #define OPT_MATMUL_TRANS_LHS 2
 #define OPT_MATMUL_TRANS_RHS 1
 
-// --- reduction
+// --- Reduction
 #define OPT_SET_REDUCTION_SUM(opt, axis) \
         ((opt).mode = 0 | OPT_MODE_I_BIT, (opt).i = (axis))
 
-// --- rng
+// --- Rng
 #define OPT_RNG_STD_NORMAL 0
 
-// --- loss
+// --- Loss
 #define OPT_SET_GRAD_TENSOR_HANDLER(opt, td) \
         ((opt).mode |= OPT_MODE_I_BIT, (opt).i = (td))
