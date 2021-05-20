@@ -43,12 +43,13 @@ test_element_ops()
         COPY_DATA(vm, t1, 2, ((float32_t[]){2.34, 5.67}));
         COPY_DATA(vm, t2, 2, ((float32_t[]){4.34, 3.67}));
 
-        enum opcode_t ops[]           = {OP_ADD, OP_MUL, OP_MINUS, OP_MAX};
-        const char*   expected_strs[] = {
-            "<1, 2> f32 [6.680, 9.340]",
-            "<1, 2> f32 [10.156, 20.809]",
-            "<1, 2> f32 [-2.000, 2.000]",
-            "<1, 2> f32 [4.340, 5.670]",
+        enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS,
+                               OP_MAX, OP_EQ,  OP_CMPL};
+
+        const char* expected_strs[] = {
+            "<1, 2> f32 [6.680, 9.340]",  "<1, 2> f32 [10.156, 20.809]",
+            "<1, 2> f32 [-2.000, 2.000]", "<1, 2> f32 [4.340, 5.670]",
+            "<1, 2> f32 [0.000, 0.000]",  "<1, 2> f32 [0.000, 1.000]",
         };
 
         for (int i = 0; i < sizeof(ops) / sizeof(enum opcode_t); i++) {
