@@ -15,9 +15,9 @@ error_t expect_dump(struct vm_t* vm, int td, const char* expected);
                 return "failed to copy data"; \
         }
 
-#define CHECK_TENSOR(vm, td, expect)                   \
+#define CHECK_TENSOR(vm, td, expect, fmt, ...)         \
         if (expect_dump(vm, td, expect)) {             \
-                errDump("tensor mismatch.\n"); \
+                errDump(fmt, __VA_ARGS__);             \
                 return "failed to expect tensor dump"; \
         }
 
@@ -46,14 +46,15 @@ test_element_ops()
         enum opcode_t ops[]           = {OP_ADD, OP_MUL, OP_MINUS, OP_MAX};
         const char*   expected_strs[] = {
             "<1, 2> f32 [6.680, 9.340]",
-            "<1, 2> f32 [6.680, 9.340]",
+            "<1, 2> f32 [10.156, 20.809]",
             "<1, 2> f32 [-2.000, 2.000]",
             "<1, 2> f32 [4.340, 5.670]",
         };
 
         for (int i = 0; i < sizeof(ops) / sizeof(enum opcode_t); i++) {
                 NE(vmExec(vm, ops[i], NULL, td, t1, t2));
-                CHECK_TENSOR(vm, td, expected_strs[i]);
+                CHECK_TENSOR(vm, td, expected_strs[i], "failed at %d-th Op\n",
+                             i);
         }
         vmFree(vm);
         return NULL;
@@ -86,7 +87,8 @@ expect_dump(struct vm_t* vm, int td, const char* expected)
         vmTensorDump(&s, vm, td);
         if (0 != strcmp(s, expected)) {
                 sdsFree(s);
-                return errNew("info:\nexpected: %s\ngot     : %s\n", expected, s);
+                return errNew("info:\nexpected: %s\ngot     : %s\n", expected,
+                              s);
         }
         sdsFree(s);
         return OK;
