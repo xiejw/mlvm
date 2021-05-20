@@ -61,10 +61,47 @@ test_element_ops()
         return NULL;
 }
 
+static char*
+test_matmul()
+{
+        struct vm_t*    vm = vmNew();
+        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){2, 2});
+
+        int t1 = vmTensorNew(vm, F32, s);
+        int t2 = vmTensorNew(vm, F32, s);
+        int td = vmTensorNew(vm, F32, s);
+
+        COPY_DATA(vm, t1, 4, ((float32_t[]){2.34, 5.67, -1.23, 2.34}));
+        COPY_DATA(vm, t2, 4, ((float32_t[]){4.34, 3.67, -2.24, 3.45}));
+
+        struct opopt_t opt1 = {.mode = OPT_MATMUL_TRANS_NOT};
+        struct opopt_t opt2 = {.mode = OPT_MATMUL_TRANS_LHS};
+        struct opopt_t opt3 = {.mode = OPT_MATMUL_TRANS_RHS};
+
+        struct opopt_t* opts[] = {NULL, &opt1, &opt2, &opt3};
+
+        const char* expected_strs[] = {
+            "<2, 2> f32 [-2.545, 28.149, -10.580, 3.559]",
+            "<2, 2> f32 [-2.545, 28.149, -10.580, 3.559]",
+            "<2, 2> f32 [12.911, 4.344, 19.366, 28.882]",
+            "<2, 2> f32 [30.965, 14.320, 3.250, 10.828]",
+        };
+
+        for (int i = 0; i < sizeof(opts) / sizeof(struct opopt_t*); i++) {
+                NE(vmExec(vm, OP_MATMUL, opts[i], td, t1, t2));
+                CHECK_TENSOR(vm, td, expected_strs[i], "failed at %d-th opt\n",
+                             i);
+        }
+
+        vmFree(vm);
+        return NULL;
+}
+
 char*
 run_op_suite()
 {
         RUN_TEST(test_element_ops);
+        RUN_TEST(test_matmul);
         return NULL;
 }
 

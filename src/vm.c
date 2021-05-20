@@ -122,7 +122,7 @@ vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
                 if (td->dtype == F32) {
                         int trans_lhs = 0;
                         int trans_rhs = 0;
-                        if (opt != NULL) {
+                        if (opt != NULL && opt->mode != OPT_MATMUL_TRANS_NOT) {
                                 if (opt->mode == OPT_MATMUL_TRANS_LHS) {
                                         trans_lhs = 1;
                                 } else {
