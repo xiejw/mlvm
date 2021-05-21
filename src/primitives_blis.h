@@ -48,6 +48,7 @@ vmBlisMinusF32(float32_t* o, float32_t* lhs, float32_t* rhs, size_t size,
                size_t rhs_size)
 {
         float32_t zeros      = 0;
+        float32_t ones       = 1;
         float32_t minus_ones = -1;
         if (rhs_size == size || rhs_size == 1) {
                 size_t stride = rhs_size == 1 ? 0 : 1;
@@ -59,22 +60,24 @@ vmBlisMinusF32(float32_t* o, float32_t* lhs, float32_t* rhs, size_t size,
                             stride,
                             /*y=*/o, 1);
                 } else {
-                        // z = y + alphax * x + alphay * y.
+                        bli_ssetv(BLIS_NO_CONJUGATE, size, &zeros, o, 1);
+                        // z = z + alphax * x + alphay * y.
                         bli_saxpy2v(BLIS_NO_CONJUGATE, BLIS_NO_CONJUGATE, size,
-                                    /*alphax=*/&minus_ones, /*alphay=*/&zeros,
+                                    /*alphax=*/&minus_ones, /*alphay=*/&ones,
                                     /*x=*/rhs, stride, /*y=*/lhs, 1, o, 1);
                 }
                 return;
         }
 
         if (size % rhs_size == 0) {
+                bli_ssetv(BLIS_NO_CONJUGATE, size, &zeros, o, 1);
                 size_t loop_c = size / rhs_size;
                 size_t offset = 0;
                 for (size_t c = 0; c < loop_c; c++) {
-                        // z = y + alphax * x + alphay * y.
+                        // z = z + alphax * x + alphay * y.
                         bli_saxpy2v(
                             BLIS_NO_CONJUGATE, BLIS_NO_CONJUGATE, rhs_size,
-                            /*alphax=*/&minus_ones, /*alphay=*/&zeros,
+                            /*alphax=*/&minus_ones, /*alphay=*/&ones,
                             /*x=*/rhs, 1, /*y=*/lhs + offset, 1, o + offset, 1);
 
                         offset += rhs_size;

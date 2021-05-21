@@ -62,6 +62,38 @@ test_element_ops()
 }
 
 static char*
+test_element_ops_with_scalar_rhs()
+{
+        struct vm_t*    vm = vmNew();
+        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){1, 2});
+        struct shape_t* s1 = vmShapeNew(vm, 1, (int[]){1});
+
+        int t1 = vmTensorNew(vm, F32, s);
+        int t2 = vmTensorNew(vm, F32, s1);
+        int td = vmTensorNew(vm, F32, s);
+
+        COPY_DATA(vm, t1, 2, ((float32_t[]){2.34, 5.67}));
+        COPY_DATA(vm, t2, 1, ((float32_t[]){3.67}));
+
+        enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS,
+                               OP_MAX, OP_EQ,  OP_CMPL};
+
+        const char* expected_strs[] = {
+            "<1, 2> f32 [6.010, 9.340]",  "<1, 2> f32 [8.588, 20.809]",
+            "<1, 2> f32 [-1.330, 2.000]", "<1, 2> f32 [3.670, 5.670]",
+            "<1, 2> f32 [0.000, 0.000]",  "<1, 2> f32 [0.000, 1.000]",
+        };
+
+        for (int i = 0; i < sizeof(ops) / sizeof(enum opcode_t); i++) {
+                NE(vmExec(vm, ops[i], NULL, td, t1, t2));
+                CHECK_TENSOR(vm, td, expected_strs[i], "failed at %d-th Op\n",
+                             i);
+        }
+        vmFree(vm);
+        return NULL;
+}
+
+static char*
 test_element_ops_f()
 {
         struct vm_t*    vm = vmNew();
@@ -131,6 +163,7 @@ char*
 run_op_suite()
 {
         RUN_TEST(test_element_ops);
+        RUN_TEST(test_element_ops_with_scalar_rhs);
         RUN_TEST(test_element_ops_f);
         RUN_TEST(test_matmul);
         return NULL;
