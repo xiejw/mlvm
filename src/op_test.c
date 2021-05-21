@@ -264,6 +264,29 @@ test_reduce()
         return NULL;
 }
 
+static char*
+test_rng()
+{
+        struct vm_t*    vm = vmNew();
+        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){2, 3});
+
+        int t = vmTensorNew(vm, F32, s);
+
+        struct srng64_t* rng = srng64New(456);
+
+        struct opopt_t opt = {.mode = 0 | OPT_MODE_R_BIT,
+                              .r    = *(struct rng64_t*)rng};
+
+        const char* expected_str =
+            "<2, 3> f32 [1.348, -1.670, 1.431, 0.632, 0.288, 1.630]";
+
+        NE(vmExec(vm, OP_RNG, &opt, t, -1, -1));
+        CHECK_TENSOR(vm, t, expected_str, "failed at %s\n", "rng");
+
+        vmFree(vm);
+        return NULL;
+}
+
 char*
 run_op_suite()
 {
@@ -274,6 +297,7 @@ run_op_suite()
         RUN_TEST(test_matmul);
         RUN_TEST(test_argmax);
         RUN_TEST(test_reduce);
+        RUN_TEST(test_rng);
         return NULL;
 }
 
