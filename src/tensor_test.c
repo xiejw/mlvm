@@ -5,7 +5,7 @@
 #include <string.h>
 
 static char*
-test_vm_tensor_new()
+test_tensor_new()
 {
         struct vm_t* vm = vmNew();
 
@@ -22,7 +22,7 @@ test_vm_tensor_new()
 }
 
 static char*
-test_vm_tensor_info()
+test_tensor_info()
 {
         struct vm_t* vm = vmNew();
 
@@ -49,7 +49,7 @@ test_vm_tensor_info()
 }
 
 static char*
-test_vm_tensor_data()
+test_tensor_data()
 {
         struct vm_t* vm = vmNew();
 
@@ -79,7 +79,7 @@ test_vm_tensor_data()
 }
 
 static char*
-test_vm_tensor_swap()
+test_tensor_swap()
 {
         struct vm_t* vm = vmNew();
 
@@ -112,9 +112,9 @@ test_vm_tensor_swap()
 char*
 run_tensor_suite()
 {
-        RUN_TEST(test_vm_tensor_new);
-        RUN_TEST(test_vm_tensor_info);
-        RUN_TEST(test_vm_tensor_data);
-        RUN_TEST(test_vm_tensor_swap);
+        RUN_TEST(test_tensor_new);
+        RUN_TEST(test_tensor_info);
+        RUN_TEST(test_tensor_data);
+        RUN_TEST(test_tensor_swap);
         return NULL;
 }
