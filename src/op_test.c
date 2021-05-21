@@ -224,6 +224,46 @@ test_argmax()
         return NULL;
 }
 
+static char*
+test_reduce()
+{
+        struct vm_t*    vm = vmNew();
+        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){2, 3});
+        struct shape_t* s1 = vmShapeNew(vm, 1, (int[]){1});
+        struct shape_t* s2 = vmShapeNew(vm, 1, (int[]){3});
+        struct shape_t* s3 = vmShapeNew(vm, 1, (int[]){2});
+
+        int t  = vmTensorNew(vm, F32, s);
+        int t1 = vmTensorNew(vm, F32, s1);
+        int t2 = vmTensorNew(vm, F32, s2);
+        int t3 = vmTensorNew(vm, F32, s3);
+
+        COPY_DATA(vm, t, 6,
+                  ((float32_t[]){2.34, 5.67, 2.00, 3.00, 4.00, 5.00}));
+
+        struct opopt_t opts[] = {
+            {.mode = 0 | OPT_MODE_I_BIT, .i = 0},
+            {.mode = 0 | OPT_MODE_I_BIT, .i = 1},
+            {.mode = 0 | OPT_MODE_I_BIT, .i = -1},
+        };
+
+        const char* expected_strs[] = {
+            "<1> f32 [22.010]",
+            "<3> f32 [5.340, 9.670, 7.000]",
+            "<2> f32 [10.010, 12.000]",
+        };
+
+        const int tds[] = {t1, t2, t3};
+
+        for (int i = 0; i < sizeof(opts) / sizeof(struct opopt_t); i++) {
+                NE(vmExec(vm, OP_REDUCE, opts + i, tds[i], t, -1));
+                CHECK_TENSOR(vm, tds[i], expected_strs[i],
+                             "failed at %d-th Op\n", i);
+        }
+        vmFree(vm);
+        return NULL;
+}
+
 char*
 run_op_suite()
 {
@@ -233,6 +273,7 @@ run_op_suite()
         RUN_TEST(test_ele_ops_f_bit);
         RUN_TEST(test_matmul);
         RUN_TEST(test_argmax);
+        RUN_TEST(test_reduce);
         return NULL;
 }
 

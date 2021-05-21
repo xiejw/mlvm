@@ -207,7 +207,7 @@ vmOpReduceF32(struct tensor_t* td, struct tensor_t* t1, int mode, int axis)
                 memcpy(dst, src, value_size * sizeof(float32_t));
                 for (size_t i = 1; i < loop_count; i++) {
                         src += value_size;
-                        for (size_t j = 1; j < value_size; j++) {
+                        for (size_t j = 0; j < value_size; j++) {
                                 dst[j] += src[j];
                         }
                 }
@@ -225,7 +225,7 @@ vmOpReduceF32(struct tensor_t* td, struct tensor_t* t1, int mode, int axis)
                 float32_t* src = (float32_t*)t1->data;
                 for (size_t i = 0; i < loop_count; i++) {
                         float32_t v = 0.0;
-                        for (size_t j = 1; j < value_size; j++) {
+                        for (size_t j = 0; j < value_size; j++) {
                                 v += src[j];
                         }
                         dst[i] = v;
