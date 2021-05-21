@@ -34,22 +34,25 @@ static char*
 test_element_ops()
 {
         struct vm_t*    vm = vmNew();
-        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){1, 2});
+        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){1, 3});
 
         int t1 = vmTensorNew(vm, F32, s);
         int t2 = vmTensorNew(vm, F32, s);
         int td = vmTensorNew(vm, F32, s);
 
-        COPY_DATA(vm, t1, 2, ((float32_t[]){2.34, 5.67}));
-        COPY_DATA(vm, t2, 2, ((float32_t[]){4.34, 3.67}));
+        COPY_DATA(vm, t1, 3, ((float32_t[]){2.34, 5.67, 2.00}));
+        COPY_DATA(vm, t2, 3, ((float32_t[]){4.34, 3.67, 2.00}));
 
         enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS,
                                OP_MAX, OP_EQ,  OP_CMPL};
 
         const char* expected_strs[] = {
-            "<1, 2> f32 [6.680, 9.340]",  "<1, 2> f32 [10.156, 20.809]",
-            "<1, 2> f32 [-2.000, 2.000]", "<1, 2> f32 [4.340, 5.670]",
-            "<1, 2> f32 [0.000, 0.000]",  "<1, 2> f32 [0.000, 1.000]",
+            "<1, 3> f32 [6.680, 9.340, 4.000]",
+            "<1, 3> f32 [10.156, 20.809, 4.000]",
+            "<1, 3> f32 [-2.000, 2.000, 0.000]",
+            "<1, 3> f32 [4.340, 5.670, 2.000]",
+            "<1, 3> f32 [0.000, 0.000, 1.000]",
+            "<1, 3> f32 [0.000, 1.000, 0.000]",
         };
 
         for (int i = 0; i < sizeof(ops) / sizeof(enum opcode_t); i++) {
@@ -65,23 +68,26 @@ static char*
 test_element_ops_with_scalar_rhs()
 {
         struct vm_t*    vm = vmNew();
-        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){1, 2});
+        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){1, 3});
         struct shape_t* s1 = vmShapeNew(vm, 1, (int[]){1});
 
         int t1 = vmTensorNew(vm, F32, s);
         int t2 = vmTensorNew(vm, F32, s1);
         int td = vmTensorNew(vm, F32, s);
 
-        COPY_DATA(vm, t1, 2, ((float32_t[]){2.34, 5.67}));
+        COPY_DATA(vm, t1, 3, ((float32_t[]){2.34, 5.67, 3.67}));
         COPY_DATA(vm, t2, 1, ((float32_t[]){3.67}));
 
         enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS,
                                OP_MAX, OP_EQ,  OP_CMPL};
 
         const char* expected_strs[] = {
-            "<1, 2> f32 [6.010, 9.340]",  "<1, 2> f32 [8.588, 20.809]",
-            "<1, 2> f32 [-1.330, 2.000]", "<1, 2> f32 [3.670, 5.670]",
-            "<1, 2> f32 [0.000, 0.000]",  "<1, 2> f32 [0.000, 1.000]",
+            "<1, 3> f32 [6.010, 9.340, 7.340]",
+            "<1, 3> f32 [8.588, 20.809, 13.469]",
+            "<1, 3> f32 [-1.330, 2.000, 0.000]",
+            "<1, 3> f32 [3.670, 5.670, 3.670]",
+            "<1, 3> f32 [0.000, 0.000, 1.000]",
+            "<1, 3> f32 [0.000, 1.000, 0.000]",
         };
 
         for (int i = 0; i < sizeof(ops) / sizeof(enum opcode_t); i++) {
@@ -97,20 +103,23 @@ static char*
 test_element_ops_f()
 {
         struct vm_t*    vm = vmNew();
-        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){1, 2});
+        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){1, 3});
 
         int t1 = vmTensorNew(vm, F32, s);
         int td = vmTensorNew(vm, F32, s);
 
-        COPY_DATA(vm, t1, 2, ((float32_t[]){2.34, 5.67}));
+        COPY_DATA(vm, t1, 3, ((float32_t[]){2.34, 5.67, 3.000}));
 
         enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS,
                                OP_MAX, OP_EQ,  OP_CMPL};
 
         const char* expected_strs[] = {
-            "<1, 2> f32 [5.340, 8.670]",  "<1, 2> f32 [7.020, 17.010]",
-            "<1, 2> f32 [-0.660, 2.670]", "<1, 2> f32 [3.000, 5.670]",
-            "<1, 2> f32 [0.000, 0.000]",  "<1, 2> f32 [0.000, 1.000]",
+            "<1, 3> f32 [5.340, 8.670, 6.000]",
+            "<1, 3> f32 [7.020, 17.010, 9.000]",
+            "<1, 3> f32 [-0.660, 2.670, 0.000]",
+            "<1, 3> f32 [3.000, 5.670, 3.000]",
+            "<1, 3> f32 [0.000, 0.000, 1.000]",
+            "<1, 3> f32 [0.000, 1.000, 0.000]",
         };
 
         const struct opopt_t opt = {.mode = OPT_MODE_F_BIT, .f = 3};
