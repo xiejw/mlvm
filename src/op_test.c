@@ -203,6 +203,27 @@ test_matmul()
         return NULL;
 }
 
+static char*
+test_argmax()
+{
+        struct vm_t*    vm = vmNew();
+        struct shape_t* s1 = vmShapeNew(vm, 2, (int[]){2, 2});
+        struct shape_t* s2 = vmShapeNew(vm, 1, (int[]){2});
+
+        int t1 = vmTensorNew(vm, F32, s1);
+        int td = vmTensorNew(vm, F32, s2);
+
+        COPY_DATA(vm, t1, 4, ((float32_t[]){2.34, 1.67, -1.23, 2.34}));
+
+        const char* expected_str = "<2> f32 [0.000, 1.000]";
+
+        NE(vmExec(vm, OP_ARGMAX, NULL, td, t1, -1));
+        CHECK_TENSOR(vm, td, expected_str, "failed %s", "argmax");
+
+        vmFree(vm);
+        return NULL;
+}
+
 char*
 run_op_suite()
 {
@@ -211,6 +232,7 @@ run_op_suite()
         RUN_TEST(test_ele_ops_scalar_operand);
         RUN_TEST(test_ele_ops_f_bit);
         RUN_TEST(test_matmul);
+        RUN_TEST(test_argmax);
         return NULL;
 }
 
