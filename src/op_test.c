@@ -31,7 +31,7 @@ error_t expect_dump(struct vm_t* vm, int td, const char* expected);
 // -----------------------------------------------------------------------------
 
 static char*
-test_element_ops()
+test_ele_ops()
 {
         struct vm_t*    vm = vmNew();
         struct shape_t* s  = vmShapeNew(vm, 2, (int[]){1, 3});
@@ -65,7 +65,7 @@ test_element_ops()
 }
 
 static char*
-test_element_ops_with_multiple_size()
+test_ele_ops_unequal_size()
 {
         struct vm_t*    vm = vmNew();
         struct shape_t* s1 = vmShapeNew(vm, 2, (int[]){1, 4});
@@ -100,7 +100,7 @@ test_element_ops_with_multiple_size()
 }
 
 static char*
-test_element_ops_with_scalar_rhs()
+test_ele_ops_scalar_operand()
 {
         struct vm_t*    vm = vmNew();
         struct shape_t* s  = vmShapeNew(vm, 2, (int[]){1, 3});
@@ -135,7 +135,7 @@ test_element_ops_with_scalar_rhs()
 }
 
 static char*
-test_element_ops_f()
+test_ele_ops_f_bit()
 {
         struct vm_t*    vm = vmNew();
         struct shape_t* s  = vmShapeNew(vm, 2, (int[]){1, 3});
@@ -206,10 +206,10 @@ test_matmul()
 char*
 run_op_suite()
 {
-        RUN_TEST(test_element_ops);
-        RUN_TEST(test_element_ops_with_multiple_size);
-        RUN_TEST(test_element_ops_with_scalar_rhs);
-        RUN_TEST(test_element_ops_f);
+        RUN_TEST(test_ele_ops);
+        RUN_TEST(test_ele_ops_unequal_size);
+        RUN_TEST(test_ele_ops_scalar_operand);
+        RUN_TEST(test_ele_ops_f_bit);
         RUN_TEST(test_matmul);
         return NULL;
 }
