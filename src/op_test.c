@@ -317,6 +317,42 @@ test_fill()
         return NULL;
 }
 
+static char*
+test_ls_scel()
+{
+        struct vm_t*    vm = vmNew();
+        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){2, 3});
+        struct shape_t* s1 = vmShapeNew(vm, 1, (int[]){2});
+
+        int t1 = vmTensorNew(vm, F32, s);
+        int t2 = vmTensorNew(vm, F32, s);
+        int td = vmTensorNew(vm, F32, s1);
+        int tg = vmTensorNew(vm, F32, s);
+
+        // label
+        COPY_DATA(vm, t1, 6, ((float32_t[]){0.2, 0.3, .5, 0.5, 0.4, .1}));
+        // logit
+        COPY_DATA(vm, t2, 6,
+                  ((float32_t[]){10.0, 20.0, -15.0, 1.0, 2.0, -5.0}));
+
+        const char* expected_loss = "<2> f32 [19.500, 1.514]";
+        const char* expected_grad =
+            "<2, 3> f32 [-0.200, 0.700, -0.500, -0.231, 0.331, -0.099]";
+
+        // case 1
+        NE(vmExec(vm, OP_LS_SCEL, NULL, td, t1, t2));
+        CHECK_TENSOR(vm, td, expected_loss, "failed at %s", "loss");
+
+        // case 2
+        struct opopt_t opt = {.mode = 0 | OPT_MODE_I_BIT, .i = tg};
+        NE(vmExec(vm, OP_LS_SCEL, &opt, td, t1, t2));
+        CHECK_TENSOR(vm, td, expected_loss, "failed at %s", "loss");
+        CHECK_TENSOR(vm, tg, expected_grad, "failed at %s", "grad");
+
+        vmFree(vm);
+        return NULL;
+}
+
 char*
 run_op_suite()
 {
@@ -329,6 +365,7 @@ run_op_suite()
         RUN_TEST(test_reduce);
         RUN_TEST(test_rng);
         RUN_TEST(test_fill);
+        RUN_TEST(test_ls_scel);
         return NULL;
 }
 

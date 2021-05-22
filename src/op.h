@@ -123,10 +123,8 @@ enum opcode_t {
         //
         // Option:
         //   - opt could be NULL.
-        //   - opt.mode I bit
-        //     - if set then opt.i for tensor handle of grad w.r.t. o_i.
-        //       Use OPT_SET_GRAD_TENSOR_HANDLER.
-        //     - otherwise, opt.i == 0
+        //   - if not NULL, opt.mode I bit must be set. Then opt.i for tensor
+        //   handle of grad w.r.t. o_i.  Use OPT_SET_GRAD_TENSOR_HANDLER.
         OP_LS_SCEL
 };
 
