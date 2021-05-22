@@ -23,6 +23,7 @@ error_t expect_dump(struct vm_t* vm, int td, const char* expected);
 
 #define NE(e)                               \
         if ((e)) {                          \
+                errDump("error:\n");        \
                 return "unexpected error."; \
         }
 
@@ -287,6 +288,35 @@ test_rng()
         return NULL;
 }
 
+static char*
+test_fill()
+{
+        struct vm_t*    vm = vmNew();
+        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){2, 2});
+
+        int t = vmTensorNew(vm, F32, s);
+
+        struct opopt_t  opt1   = {.mode = 0 | OPT_MODE_I_BIT, .f = 0.0};
+        struct opopt_t  opt2   = {.mode = 0 | OPT_MODE_I_BIT, .f = 1.0};
+        struct opopt_t* opts[] = {NULL, &opt1, &opt2};
+
+        const char* expected_strs[] = {
+            "<2, 2> f32 [0.000, 0.000, 0.000, 0.000]",
+            "<2, 2> f32 [0.000, 0.000, 0.000, 0.000]",
+            "<2, 2> f32 [1.000, 1.000, 1.000, 1.000]",
+        };
+
+        for (int i = 0; i < sizeof(opts) / sizeof(struct opopt_t*); i++) {
+                if (i > 0) continue;  // unimpl
+
+                NE(vmExec(vm, OP_FILL, opts[i], t, -1, -1));
+                CHECK_TENSOR(vm, t, expected_strs[i], "failed at %d-th Op\n",
+                             i);
+        }
+        vmFree(vm);
+        return NULL;
+}
+
 char*
 run_op_suite()
 {
@@ -298,6 +328,7 @@ run_op_suite()
         RUN_TEST(test_argmax);
         RUN_TEST(test_reduce);
         RUN_TEST(test_rng);
+        RUN_TEST(test_fill);
         return NULL;
 }
 
