@@ -92,4 +92,8 @@ struct shape_t* spNew(int rank, int* dims);
 struct shape_t* spIncRef(struct shape_t*);
 struct shape_t* spDecRef(struct shape_t*);
 
+#define R1S(vm, s1)     vmShapeNew(vm, 1, (int[]){(s1)});
+#define R2S(vm, s1, s2) vmShapeNew(vm, 2, (int[]){(s1), (s2)});
+
+
 #endif
