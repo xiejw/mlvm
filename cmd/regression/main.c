@@ -63,7 +63,7 @@ main()
         opt.mode = OPT_RNG_STD_NORMAL | OPT_MODE_R_BIT;
         opt.r    = *(struct rng64_t*)rng;
         NE(vmExec(vm, OP_RNG, &opt, w_target, -1, -1));
-        free(rng);
+        srng64Free(rng);
 
         S_PRINTF("\ttarget  weight: ", w_target, "\n");
 
@@ -72,7 +72,7 @@ main()
         rng   = srng64Split(seed);
         opt.r = *(struct rng64_t*)rng;
         NE(vmExec(vm, OP_RNG, &opt, w, -1, -1));
-        free(rng);
+        srng64Free(rng);
 
         S_PRINTF("\tinitial weight: ", w, "\n");
 
@@ -153,8 +153,8 @@ main()
 cleanup:
         spDecRef(sp_weight);
         spDecRef(r1_1);
-        free(seed_for_input);
-        free(seed);
+        srng64Free(seed_for_input);
+        srng64Free(seed);
         sdsFree(s);
         vmFree(vm);
         return err;

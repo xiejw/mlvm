@@ -57,7 +57,7 @@ main()
 cleanup:
         spDecRef(r2_2x3);
         spDecRef(r1_1);
-        free(rng);
+        srng64Free(rng);
         sdsFree(s);
         vmFree(vm);
         return err;

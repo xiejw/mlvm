@@ -293,7 +293,7 @@ main()
 cleanup:
         if (images != NULL) free(images);
         if (labels != NULL) free(labels);
-        free(seed);
+        srng64Free(seed);
         vmFree(vm);
         vecFree(weights);
         sdsFree(s);
@@ -401,7 +401,7 @@ initTensorWRng(struct vm_t* vm, struct srng64_t* seed, int w)
         opt.r       = *(struct rng64_t*)rng;
         error_t err = vmExec(vm, OP_RNG, &opt, w, -1, -1);
 
-        free(rng);
+        srng64Free(rng);
         return err;
 }
 
