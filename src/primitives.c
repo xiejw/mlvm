@@ -358,6 +358,21 @@ vmOpMatmulF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
 }
 
 // -----------------------------------------------------------------------------
+// Fill.
+// -----------------------------------------------------------------------------
+error_t
+vmOpFillF32(struct tensor_t* td, float32_t v)
+{
+        assert(td->dtype == F32);
+        size_t     size = td->shape->size;
+        float32_t* data = (float32_t*)td->data;
+        for (size_t i = 0; i < size; i++) {
+                data[i] = v;
+        }
+        return OK;
+}
+
+// -----------------------------------------------------------------------------
 // Loss.
 // -----------------------------------------------------------------------------
 error_t

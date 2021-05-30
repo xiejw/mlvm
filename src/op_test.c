@@ -296,8 +296,8 @@ test_fill()
 
         int t = vmTensorNew(vm, F32, s);
 
-        struct opopt_t  opt1   = {.mode = 0 | OPT_MODE_I_BIT, .f = 0.0};
-        struct opopt_t  opt2   = {.mode = 0 | OPT_MODE_I_BIT, .f = 1.0};
+        struct opopt_t  opt1   = {.mode = 0 | OPT_MODE_F_BIT, .f = 0.0};
+        struct opopt_t  opt2   = {.mode = 0 | OPT_MODE_F_BIT, .f = 1.0};
         struct opopt_t* opts[] = {NULL, &opt1, &opt2};
 
         const char* expected_strs[] = {
@@ -307,8 +307,6 @@ test_fill()
         };
 
         for (int i = 0; i < sizeof(opts) / sizeof(struct opopt_t*); i++) {
-                if (i > 0) continue;  // unimpl
-
                 NE(vmExec(vm, OP_FILL, opts[i], t, -1, -1));
                 CHECK_TENSOR(vm, t, expected_strs[i], "failed at %d-th Op\n",
                              i);

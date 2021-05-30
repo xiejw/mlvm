@@ -197,7 +197,9 @@ vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
                                td->shape->size * sizeof(float32_t));
                         return OK;
                 }
-                return errNewWithNote(ENOTIMPL, "unimpl for OP_FILL with opt");
+                assert((opt->mode & OPT_MODE_UNMASK) == 0);
+                assert(OPT_MODE_GET_F_BIT(*opt));
+                return vmOpFillF32(td, opt->f);
 
         case OP_LS_SCEL:
                 assert(t1 != NULL);

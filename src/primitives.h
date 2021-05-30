@@ -43,6 +43,11 @@ error_t vmOpMatmulF32(struct tensor_t* td, struct tensor_t*, struct tensor_t*,
                       int trans_lhs, int trans_rhs);
 
 // -----------------------------------------------------------------------------
+// Fill.
+// -----------------------------------------------------------------------------
+error_t vmOpFillF32(struct tensor_t* td, float32_t);
+
+// -----------------------------------------------------------------------------
 // Loss.
 // -----------------------------------------------------------------------------
 error_t vmOpLossSCELF32(struct tensor_t* td, struct tensor_t* y,
