@@ -4,15 +4,16 @@
 * Readable
 * Coherent
 
-# Compile Flags
+## Compile Flags
 
 ```
-FLAGS+=-DMLVM_TENSOR_DUMP_SIZE=3 m -B mnist
+MLVM_TENSOR_DUMP_SIZE           The number of elements to print for Tensor.
+    e.g. CFLAGS+=-DMLVM_TENSOR_DUMP_SIZE=3 make -B regression
 ```
 
 ## Blis
 
-Compile blis in ../blis
+Compile blis in `../blis`
 
 ```
 # cd blis
