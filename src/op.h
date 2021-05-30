@@ -118,6 +118,8 @@ enum opcode_t {
         // Softmax crossentropy with logits loss
         // --------------------------------------------------------------------
         //
+        // t1 is the lable (distribution) t2 is the logits (unnormalized).
+        //
         // Data Types:
         //   - only F32.
         //
