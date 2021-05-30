@@ -284,6 +284,7 @@ test_rng()
         NE(vmExec(vm, OP_RNG, &opt, t, -1, -1));
         CHECK_TENSOR(vm, t, expected_str, "failed at %s\n", "rng");
 
+        srng64Free(rng);
         vmFree(vm);
         return NULL;
 }
