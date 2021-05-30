@@ -7,8 +7,8 @@
 ## Compile Flags
 
 ```
-MLVM_TENSOR_DUMP_SIZE           The number of elements to print for Tensor.
-    e.g. CFLAGS+=-DMLVM_TENSOR_DUMP_SIZE=3 make -B regression
+MLVM_TENSOR_DUMP_SIZE    The number of elements to print for Tensor, e.g.,
+                         CFLAGS+=-DMLVM_TENSOR_DUMP_SIZE=3 make -B regression
 ```
 
 ## Blis
