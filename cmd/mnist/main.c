@@ -343,8 +343,6 @@ prepareMnistData(float32_t* x_data, size_t x_size, float32_t* y_data,
         return OK;
 }
 
-#include <stdio.h>
-
 static void
 prepareFakeData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
                 float32_t* y_data, size_t y_size)
@@ -370,12 +368,10 @@ prepareData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
             float32_t* y_data, size_t y_size)
 {
         if (FAKE_DATA) {
-                // printf("generating fake minis data.\n");
                 prepareFakeData(seed, x_data, x_size, y_data, y_size);
                 return OK;
         } else {
                 error_t err;
-                // printf("reading real minis data.\n");
                 if ((err = prepareMnistData(x_data, x_size, y_data, y_size))) {
                         if (images != NULL) {
                                 free(images);
