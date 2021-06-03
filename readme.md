@@ -27,16 +27,10 @@ $ ./configure auto
 $ make
 ```
 
-Obtain the config name
-```
-# cd blis
-$ grep ^CONFIG_NAME config.mk
-CONFIG_NAME       := haswell
-```
-
 Compile MLVM with blis, e.g.,
 
 ```
 # cd mlvm
-$ make BLIS=haswell RELESAE=1 -B
+$ make BLIS=1 RELESAE=1 -B
+$ make BLIS=1 RELESAE=1 libmlvm
 ```
