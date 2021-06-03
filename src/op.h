@@ -34,6 +34,7 @@ enum opcode_t {
         OP_ADD,
         OP_MUL,
         OP_MINUS,
+        OP_DIVIDE,
         OP_MAX,
         OP_EQ,
         OP_CMPL,  // Compare large.

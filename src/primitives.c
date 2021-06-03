@@ -17,6 +17,7 @@
 #define PLUS(x, y) ((x) + (y))
 #define MULT(x, y) ((x) * (y))
 #define MINU(x, y) ((x) - (y))
+#define DIVI(x, y) ((x) / (y))
 #define MAXI(x, y) ((x) > (y) ? (x) : (y))
 #define EQUA(x, y) ((x) == (y))
 #define CMPL(x, y) ((x) > (y) ? (1) : (0))
@@ -76,6 +77,7 @@
 
 DEF_ELEWISE_OP(Add, PLUS, 0, DUMMY_HANDLER)
 DEF_ELEWISE_OP(Mul, MULT, 0, DUMMY_HANDLER)
+DEF_ELEWISE_OP(Divide, DIVI, 0, DUMMY_HANDLER)
 DEF_ELEWISE_OP(Max, MAXI, 0, DUMMY_HANDLER)
 DEF_ELEWISE_OP(Eq, EQUA, 0, DUMMY_HANDLER)
 DEF_ELEWISE_OP(CmpL, CMPL, 0, DUMMY_HANDLER)
@@ -116,6 +118,7 @@ DEF_ELEWISE_OP(Minus, MINU, 1, vmBlisMinusF32)
 
 DEF_ELEWISE_OP_S(Add, PLUS, 0, DUMMY_HANDLER)
 DEF_ELEWISE_OP_S(Minus, MINU, 0, DUMMY_HANDLER)
+DEF_ELEWISE_OP_S(Divide, DIVI, 0, DUMMY_HANDLER)
 DEF_ELEWISE_OP_S(Max, MAXI, 0, DUMMY_HANDLER)
 DEF_ELEWISE_OP_S(Eq, EQUA, 0, DUMMY_HANDLER)
 DEF_ELEWISE_OP_S(CmpL, CMPL, 0, DUMMY_HANDLER)

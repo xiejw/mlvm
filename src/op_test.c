@@ -44,13 +44,14 @@ test_ele_ops()
         COPY_DATA(vm, t1, 3, ((float32_t[]){2.34, 5.67, 2.00}));
         COPY_DATA(vm, t2, 3, ((float32_t[]){4.34, 3.67, 2.00}));
 
-        enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS,
+        enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS, OP_DIVIDE,
                                OP_MAX, OP_EQ,  OP_CMPL};
 
         const char* expected_strs[] = {
             "<1, 3> f32 [6.680, 9.340, 4.000]",
             "<1, 3> f32 [10.156, 20.809, 4.000]",
             "<1, 3> f32 [-2.000, 2.000, 0.000]",
+            "<1, 3> f32 [0.539, 1.545, 1.000]",
             "<1, 3> f32 [4.340, 5.670, 2.000]",
             "<1, 3> f32 [0.000, 0.000, 1.000]",
             "<1, 3> f32 [0.000, 1.000, 0.000]",
@@ -79,13 +80,14 @@ test_ele_ops_unequal_size()
         COPY_DATA(vm, t1, 4, ((float32_t[]){2.34, 5.67, 4.34, 2.00}));
         COPY_DATA(vm, t2, 2, ((float32_t[]){3.67, 2.00}));
 
-        enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS,
+        enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS, OP_DIVIDE,
                                OP_MAX, OP_EQ,  OP_CMPL};
 
         const char* expected_strs[] = {
             "<1, 4> f32 [6.010, 7.670, 8.010, 4.000]",
             "<1, 4> f32 [8.588, 11.340, 15.928, 4.000]",
             "<1, 4> f32 [-1.330, 3.670, 0.670, 0.000]",
+            "<1, 4> f32 [0.638, 2.835, 1.183, 1.000]",
             "<1, 4> f32 [3.670, 5.670, 4.340, 2.000]",
             "<1, 4> f32 [0.000, 0.000, 0.000, 1.000]",
             "<1, 4> f32 [0.000, 1.000, 1.000, 0.000]",
@@ -114,13 +116,14 @@ test_ele_ops_scalar_operand()
         COPY_DATA(vm, t1, 3, ((float32_t[]){2.34, 5.67, 3.67}));
         COPY_DATA(vm, t2, 1, ((float32_t[]){3.67}));
 
-        enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS,
+        enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS, OP_DIVIDE,
                                OP_MAX, OP_EQ,  OP_CMPL};
 
         const char* expected_strs[] = {
             "<1, 3> f32 [6.010, 9.340, 7.340]",
             "<1, 3> f32 [8.588, 20.809, 13.469]",
             "<1, 3> f32 [-1.330, 2.000, 0.000]",
+            "<1, 3> f32 [0.638, 1.545, 1.000]",
             "<1, 3> f32 [3.670, 5.670, 3.670]",
             "<1, 3> f32 [0.000, 0.000, 1.000]",
             "<1, 3> f32 [0.000, 1.000, 0.000]",
