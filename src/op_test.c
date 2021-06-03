@@ -226,6 +226,36 @@ test_argmax()
 }
 
 static char*
+test_isqrt()
+{
+        struct vm_t*    vm = vmNew();
+        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){2, 2});
+
+        int t1 = vmTensorNew(vm, F32, s);
+        int td = vmTensorNew(vm, F32, s);
+
+        COPY_DATA(vm, t1, 4, ((float32_t[]){2.34, 5.67, 0.00, 2.34}));
+
+        struct opopt_t opt1 = {.mode = OPT_MODE_F_BIT, .f = 2.0};
+
+        struct opopt_t* opts[] = {NULL, &opt1};
+
+        const char* expected_strs[] = {
+            "<2, 2> f32 [0.654, 0.420, inf, 0.654]",
+            "<2, 2> f32 [0.480, 0.361, 0.707, 0.480]",
+        };
+
+        for (int i = 0; i < sizeof(opts) / sizeof(struct opopt_t*); i++) {
+                NE(vmExec(vm, OP_ISQRT, opts[i], td, t1, -1));
+                CHECK_TENSOR(vm, td, expected_strs[i], "failed at %d-th opt\n",
+                             i);
+        }
+
+        vmFree(vm);
+        return NULL;
+}
+
+static char*
 test_reduce()
 {
         struct vm_t*    vm = vmNew();
@@ -361,6 +391,7 @@ run_op_suite()
         RUN_TEST(test_ele_ops_f_bit);
         RUN_TEST(test_matmul);
         RUN_TEST(test_argmax);
+        RUN_TEST(test_isqrt);
         RUN_TEST(test_reduce);
         RUN_TEST(test_rng);
         RUN_TEST(test_fill);
