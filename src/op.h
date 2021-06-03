@@ -80,7 +80,8 @@ enum opcode_t {
         //   - opt could be NULL.
         //   - If not NULL, then .f specicies the epsilon that
         //
-        //       1 / sqrt(t1+epsilon)
+        //       1 / sqrt(t1+epsilon)    if opt.mode = 0
+        //       1 / (sqrt(t1)+epsilon)  if opt.mode = 1
         OP_ISQRT,
 
         // --------------------------------------------------------------------

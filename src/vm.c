@@ -210,10 +210,13 @@ vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
                 }
 
                 if (opt == NULL) {
-                        return vmOpISqrtF32(td, t1, NULL);
+                        return vmOpISqrtF32(td, t1, NULL, /*mode=*/-1);
                 }
+
+                assert((opt->mode & OPT_MODE_UNMASK) >> 1 == 0);
                 assert(OPT_MODE_GET_F_BIT(*opt));
-                return vmOpISqrtF32(td, t1, &opt->f);
+                return vmOpISqrtF32(td, t1, &opt->f,
+                                    /*mode=*/opt->mode & OPT_MODE_UNMASK);
 
         case OP_LS_SCEL:
                 assert(t1 != NULL);

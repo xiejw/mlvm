@@ -237,12 +237,14 @@ test_isqrt()
         COPY_DATA(vm, t1, 4, ((float32_t[]){2.34, 5.67, 0.00, 2.34}));
 
         struct opopt_t opt1 = {.mode = OPT_MODE_F_BIT, .f = 2.0};
+        struct opopt_t opt2 = {.mode = 1 | OPT_MODE_F_BIT, .f = 2.0};
 
-        struct opopt_t* opts[] = {NULL, &opt1};
+        struct opopt_t* opts[] = {NULL, &opt1, &opt2};
 
         const char* expected_strs[] = {
             "<2, 2> f32 [0.654, 0.420, inf, 0.654]",
             "<2, 2> f32 [0.480, 0.361, 0.707, 0.480]",
+            "<2, 2> f32 [0.283, 0.228, 0.500, 0.283]",
         };
 
         for (int i = 0; i < sizeof(opts) / sizeof(struct opopt_t*); i++) {

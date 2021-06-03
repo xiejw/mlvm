@@ -30,7 +30,7 @@ error_t vmOpReduceF32(struct tensor_t* td, struct tensor_t* t1, int mode,
 // Inverse Sqrt.
 // -----------------------------------------------------------------------------
 error_t vmOpISqrtF32(struct tensor_t* td, struct tensor_t* t1,
-                     const float32_t* e);
+                     const float32_t* e, int mode);
 
 // -----------------------------------------------------------------------------
 // Arg.
