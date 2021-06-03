@@ -201,6 +201,20 @@ vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
                 assert(OPT_MODE_GET_F_BIT(*opt));
                 return vmOpFillF32(td, opt->f);
 
+        case OP_ISQRT:
+                assert(t2 == NULL);
+                if (td->dtype != F32) {
+                        return errNewWithNote(
+                            ENOTIMPL, "unimpl for OP_ISQRT with dtype %d",
+                            td->dtype);
+                }
+
+                if (opt == NULL) {
+                        return vmOpISqrtF32(td, t1, NULL);
+                }
+                assert(OPT_MODE_GET_F_BIT(*opt));
+                return vmOpISqrtF32(td, t1, &opt->f);
+
         case OP_LS_SCEL:
                 assert(t1 != NULL);
                 assert(t2 != NULL);

@@ -460,3 +460,33 @@ vmOpLossSCELF32(struct tensor_t* td, struct tensor_t* t1, struct tensor_t* t2,
 
         return OK;
 }
+
+// -----------------------------------------------------------------------------
+// Inverse Sqrt.
+// -----------------------------------------------------------------------------
+error_t
+vmOpISqrtF32(struct tensor_t* td, struct tensor_t* t1, const float32_t* e)
+{
+        assert(td->dtype == F32);
+        assert(t1->dtype == F32);
+
+        float32_t* dst = (float32_t*)td->data;
+        float32_t* src = (float32_t*)t1->data;
+
+        size_t size = t1->shape->size;
+        if (size != td->shape->size) {
+                return errNew("Op_ISQRT must have equal size.");
+        }
+
+        if (e == NULL) {
+                for (size_t i = 0; i < size; i++) {
+                        dst[i] = 1.0 / sqrt(src[i]);
+                }
+        } else {
+                float32_t v = *e;
+                for (size_t i = 0; i < size; i++) {
+                        dst[i] = 1.0 / sqrt(src[i] + v);
+                }
+        }
+        return OK;
+}
