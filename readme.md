@@ -14,6 +14,7 @@ both eager execution, in-place mutation, and batch mode. Check
 ```
 MLVM_TENSOR_DUMP_SIZE    The number of elements to print for Tensor, e.g.,
                          CFLAGS+=-DMLVM_TENSOR_DUMP_SIZE=3 make -B regression
+MLVM_MAX_TENSOR_COUNT    The number of tensors VM supports, defaults to 128.
 ```
 
 ## Blis

@@ -11,7 +11,7 @@ vmTensorNew(struct vm_t* vm, enum data_t dtype, struct shape_t* s)
         void*            data;
         struct tensor_t* p = vm->handles;
         int              slot;
-        for (slot = 0; slot < MAX_TENSOR_COUNT; slot++, p++) {
+        for (slot = 0; slot < MLVM_MAX_TENSOR_COUNT; slot++, p++) {
                 if (p->used == 0) goto alloc;
         }
         return errNew("all handle spaces are used.");

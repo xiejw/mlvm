@@ -1,6 +1,7 @@
 #include "vm.h"
 #include "vm_internal.h"
 
+#include <stdlib.h>  // calloc
 #include <string.h>  // memset
 
 // mlvm
@@ -9,16 +10,13 @@
 struct vm_t*
 vmNew()
 {
-        size_t       size = sizeof(struct vm_t);
-        struct vm_t* vm   = malloc(size);
-        memset(vm, 0, size);
-        return vm;
+        return calloc(1, sizeof(struct vm_t));
 }
 
 void
 vmFree(struct vm_t* vm)
 {
-        for (int i = 0; i < MAX_TENSOR_COUNT; i++) {
+        for (int i = 0; i < MLVM_MAX_TENSOR_COUNT; i++) {
                 struct tensor_t* t = &vm->handles[i];
                 if (t->used) vmReleaseHandle(t);
         }

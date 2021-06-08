@@ -5,20 +5,22 @@
 // internal apis.
 // -----------------------------------------------------------------------------
 
-#define MAX_TENSOR_COUNT 128
+#ifndef MLVM_MAX_TENSOR_COUNT
+#define MLVM_MAX_TENSOR_COUNT 128
+#endif
 
 struct list_t;
 
 struct vm_t {
         // consider to use pages.
-        struct tensor_t handles[MAX_TENSOR_COUNT];
+        struct tensor_t handles[MLVM_MAX_TENSOR_COUNT];
         struct list_t*  shapes;
 };
 
 static inline struct tensor_t*
 vmGrabHandle(struct vm_t* vm, int handle)
 {
-        assert(handle >= 0 && handle < MAX_TENSOR_COUNT);
+        assert(handle >= 0 && handle < MLVM_MAX_TENSOR_COUNT);
         return &vm->handles[handle];
 }
 
