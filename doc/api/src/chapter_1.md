@@ -1,15 +1,14 @@
 # MLVM
 
-MLVM is a fast VM to execute machine learning pritimives.
+TL;DR; MLVM is a fast VM to execute machine learning pritimives.
 
 The MLVM is a VM I want to, and will, use for my own projects for next decades.
 It might not fit others' needs; but I can understand and reason about it. It is
-simple and efficient. It does not do any checks--behave like a machine. And it
-provides raw accesses to the underlying stack, so it is possible to do in-place
-operations and swap pointers, which could be dangerous but certainly are
-critical for performance. Memory management is in user's hands, and auto-grad is
-not integrated--yet it is just simple and fast.
-
+simple and efficient. It does not do any checks&ndahs;behave like a machine. And
+it provides raw accesses to the underlying stack, so it is possible to do
+in-place operations and swap pointers, which could be dangerous but certainly
+are critical for performance. Memory management is in user's hands, and
+auto-grad is not integrated&ndash;yet it is just simple and fast.
 
 ## Design
 
@@ -25,11 +24,10 @@ first one is offloading the computation to co-processors. With that, we need to
 introduce async value, multi-threads for heavy operations e.g., matmuls. The
 known challenges are also obvious: How to avoid cache line miss during processor
 switch, and how to design a scheduling system which handles cheap operations
-well---a chain of cheap operations might put most of the processors idle.
+well&ndash;a chain of cheap operations might put most of the processors idle.
 
 The alternative is to design the VM for single processor execution only, and do
 it very well. Caller can launch multiple VM's each for single processor and
 adjust the affinity if needed. With that, MPI style collective are needed. For
 CPU within same OS process, we can provide a shared memory implementation for
 the collective to avoid data copying.
-
