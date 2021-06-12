@@ -29,8 +29,8 @@ struct shape_t {
 struct tensor_t {
         enum data_t     dtype : 7;
         int             used : 1;
-        struct shape_t* shape;
-        void*           data;
+        struct shape_t *shape;
+        void           *data;
 };
 
 struct vm_t;  // forward def.
@@ -51,9 +51,9 @@ struct opopt_t {
 // Apis for vm.
 // -----------------------------------------------------------------------------
 
-struct vm_t* vmNew();
-void         vmFree(struct vm_t*);
-error_t      vmExec(struct vm_t* vm, enum opcode_t, const struct opopt_t* opt,
+struct vm_t *vmNew();
+void         vmFree(struct vm_t *);
+error_t      vmExec(struct vm_t *vm, enum opcode_t, const struct opopt_t *opt,
                     int dst, int lhs, int rhs);
 
 // -----------------------------------------------------------------------------
@@ -68,29 +68,29 @@ struct oparg_t {
         struct opopt_t opt;
 };
 
-error_t vmBatch(struct vm_t* vm, size_t size, const struct oparg_t*);
+error_t vmBatch(struct vm_t *vm, size_t size, const struct oparg_t *);
 
 // -----------------------------------------------------------------------------
 // Apis for tensors. / tensor.c
 // -----------------------------------------------------------------------------
 
-int     vmTensorNew(struct vm_t*, enum data_t, struct shape_t*);
-error_t vmTensorFree(struct vm_t*, int t);
+int     vmTensorNew(struct vm_t *, enum data_t, struct shape_t *);
+error_t vmTensorFree(struct vm_t *, int t);
 
-error_t vmTensorInfo(struct vm_t*, int t, _mut_ enum data_t*,
-                     _mut_ struct shape_t**);
-error_t vmTensorData(struct vm_t*, int t, _mut_ void** data);
-error_t vmTensorSwap(struct vm_t*, int t, _mut_ void** data);
-void    vmTensorDump(sds_t* s, struct vm_t*, int t);
+error_t vmTensorInfo(struct vm_t *, int t, _mut_ enum data_t *,
+                     _mut_ struct shape_t **);
+error_t vmTensorData(struct vm_t *, int t, _mut_ void **data);
+error_t vmTensorSwap(struct vm_t *, int t, _mut_ void **data);
+void    vmTensorDump(sds_t *s, struct vm_t *, int t);
 
 // -----------------------------------------------------------------------------
 // Apis for shapes. / shape.c
 // -----------------------------------------------------------------------------
 
-struct shape_t* vmShapeNew(struct vm_t* vm, int rank, int* dims);
-struct shape_t* spNew(int rank, int* dims);
-struct shape_t* spIncRef(struct shape_t*);
-struct shape_t* spDecRef(struct shape_t*);
+struct shape_t *vmShapeNew(struct vm_t *vm, int rank, int *dims);
+struct shape_t *spNew(int rank, int *dims);
+struct shape_t *spIncRef(struct shape_t *);
+struct shape_t *spDecRef(struct shape_t *);
 
 #define R1S(vm, s1)     vmShapeNew(vm, 1, (int[]){(s1)});
 #define R2S(vm, s1, s2) vmShapeNew(vm, 2, (int[]){(s1), (s2)});

@@ -6,10 +6,10 @@
 
 // neg number if error. call site should clean error stack.
 int
-vmTensorNew(struct vm_t* vm, enum data_t dtype, struct shape_t* s)
+vmTensorNew(struct vm_t *vm, enum data_t dtype, struct shape_t *s)
 {
-        void*            data;
-        struct tensor_t* p = vm->handles;
+        void            *data;
+        struct tensor_t *p = vm->handles;
         int              slot;
         for (slot = 0; slot < MLVM_MAX_TENSOR_COUNT; slot++, p++) {
                 if (p->used == 0) goto alloc;
@@ -33,7 +33,7 @@ alloc:
 }
 
 error_t
-vmTensorFree(struct vm_t* vm, int handle)
+vmTensorFree(struct vm_t *vm, int handle)
 {
         vmReleaseHandle(vmGrabHandle(vm, handle));
         return OK;
@@ -41,10 +41,10 @@ vmTensorFree(struct vm_t* vm, int handle)
 
 // dtype and shape are optinoal (NULL).
 error_t
-vmTensorInfo(struct vm_t* vm, int handle, enum data_t* dtype,
-             struct shape_t** shape)
+vmTensorInfo(struct vm_t *vm, int handle, enum data_t *dtype,
+             struct shape_t **shape)
 {
-        struct tensor_t* t = vmGrabHandle(vm, handle);
+        struct tensor_t *t = vmGrabHandle(vm, handle);
 
         assert(t->used);
         if (dtype != NULL) *dtype = t->dtype;
@@ -53,9 +53,9 @@ vmTensorInfo(struct vm_t* vm, int handle, enum data_t* dtype,
 }
 
 error_t
-vmTensorData(struct vm_t* vm, int handle, void** data)
+vmTensorData(struct vm_t *vm, int handle, void **data)
 {
-        struct tensor_t* t = vmGrabHandle(vm, handle);
+        struct tensor_t *t = vmGrabHandle(vm, handle);
 
         assert(t->used);
         *data = t->data;
@@ -63,20 +63,20 @@ vmTensorData(struct vm_t* vm, int handle, void** data)
 }
 
 error_t
-vmTensorSwap(struct vm_t* vm, int t, _mut_ void** data)
+vmTensorSwap(struct vm_t *vm, int t, _mut_ void **data)
 {
-        struct tensor_t* ts  = vmGrabHandle(vm, t);
-        void*            old = ts->data;
+        struct tensor_t *ts  = vmGrabHandle(vm, t);
+        void            *old = ts->data;
         ts->data             = *data;
         *data                = old;
         return OK;
 }
 
 void
-vmTensorDump(sds_t* s, struct vm_t* vm, int handle)
+vmTensorDump(sds_t *s, struct vm_t *vm, int handle)
 {
-        struct tensor_t* t  = vmGrabHandle(vm, handle);
-        struct shape_t*  sp = t->shape;
+        struct tensor_t *t  = vmGrabHandle(vm, handle);
+        struct shape_t  *sp = t->shape;
 
         // shape
         sdsCatPrintf(s, "<");
@@ -124,8 +124,8 @@ vmTensorDump(sds_t* s, struct vm_t* vm, int handle)
                 sdsCatPrintf(s, "]");                                          \
         }
 
-        print_data(F32, float32_t*, "%.3f");
-        print_data(I32, int32_t*, "%d");
+        print_data(F32, float32_t *, "%.3f");
+        print_data(I32, int32_t *, "%d");
 
 #undef print_data
 #undef MLVM_TENSOR_DUMP_SIZE

@@ -4,13 +4,13 @@
 
 #include <string.h>
 
-static char*
+static char *
 test_tensor_new()
 {
-        struct vm_t* vm = vmNew();
+        struct vm_t *vm = vmNew();
 
         for (int i = 0; i < 10; i++) {
-                struct shape_t* s  = vmShapeNew(vm, 2, (int[]){3, 4});
+                struct shape_t *s  = vmShapeNew(vm, 2, (int[]){3, 4});
                 int             td = vmTensorNew(vm, F32, s);
                 ASSERT_TRUE("td", td == i);
         }
@@ -21,21 +21,21 @@ test_tensor_new()
         return NULL;
 }
 
-static char*
+static char *
 test_tensor_info()
 {
-        struct vm_t* vm = vmNew();
+        struct vm_t *vm = vmNew();
 
         int td;
         {
-                struct shape_t* s = vmShapeNew(vm, 2, (int[]){3, 4});
+                struct shape_t *s = vmShapeNew(vm, 2, (int[]){3, 4});
                 td                = vmTensorNew(vm, F32, s);
                 ASSERT_TRUE("td", td == 0);
         }
 
         {
                 enum data_t     dtype;
-                struct shape_t* s1;
+                struct shape_t *s1;
                 ASSERT_TRUE("err", OK == vmTensorInfo(vm, td, &dtype, &s1));
                 ASSERT_TRUE("dtype", dtype == F32);
                 ASSERT_TRUE("rank", s1->rank == 2);
@@ -48,29 +48,29 @@ test_tensor_info()
         return NULL;
 }
 
-static char*
+static char *
 test_tensor_data()
 {
-        struct vm_t* vm = vmNew();
+        struct vm_t *vm = vmNew();
 
         int td;
         {
-                struct shape_t* s = vmShapeNew(vm, 2, (int[]){1, 2});
+                struct shape_t *s = vmShapeNew(vm, 2, (int[]){1, 2});
                 td                = vmTensorNew(vm, F32, s);
                 ASSERT_TRUE("td", td == 0);
         }
 
         {
                 float32_t  src[2] = {2.34, 5.67};
-                float32_t* data;
-                ASSERT_TRUE("err", OK == vmTensorData(vm, td, (void**)&data));
+                float32_t *data;
+                ASSERT_TRUE("err", OK == vmTensorData(vm, td, (void **)&data));
                 memcpy(data, src, 2 * sizeof(float32_t));
         }
 
         {
                 sds_t s = sdsEmpty();
                 vmTensorDump(&s, vm, td);
-                const char* expected = "<1, 2> f32 [2.340, 5.670]";
+                const char *expected = "<1, 2> f32 [2.340, 5.670]";
                 ASSERT_TRUE("dump", 0 == strcmp(s, expected));
                 sdsFree(s);
         }
@@ -78,30 +78,30 @@ test_tensor_data()
         return NULL;
 }
 
-static char*
+static char *
 test_tensor_swap()
 {
-        struct vm_t* vm = vmNew();
+        struct vm_t *vm = vmNew();
 
         int td;
         {
-                struct shape_t* s = vmShapeNew(vm, 2, (int[]){1, 2});
+                struct shape_t *s = vmShapeNew(vm, 2, (int[]){1, 2});
                 td                = vmTensorNew(vm, F32, s);
                 ASSERT_TRUE("td", td == 0);
         }
 
         {
-                float32_t* data = malloc(2 * sizeof(float32_t));
+                float32_t *data = malloc(2 * sizeof(float32_t));
                 data[0]         = 2.34;
                 data[1]         = 5.67;
-                ASSERT_TRUE("err", OK == vmTensorSwap(vm, td, (void**)&data));
+                ASSERT_TRUE("err", OK == vmTensorSwap(vm, td, (void **)&data));
                 free(data);
         }
 
         {
                 sds_t s = sdsEmpty();
                 vmTensorDump(&s, vm, td);
-                const char* expected = "<1, 2> f32 [2.340, 5.670]";
+                const char *expected = "<1, 2> f32 [2.340, 5.670]";
                 ASSERT_TRUE("dump", 0 == strcmp(s, expected));
                 sdsFree(s);
         }
@@ -109,7 +109,7 @@ test_tensor_swap()
         return NULL;
 }
 
-char*
+char *
 run_tensor_suite()
 {
         RUN_TEST(test_tensor_new);

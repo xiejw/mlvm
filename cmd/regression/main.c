@@ -12,8 +12,8 @@
 #include "../helpers.h"
 
 // helper to generate next input
-void new_input(struct srng64_t* seed, size_t size, _mut_ float32_t* data,
-               float32_t* y, float32_t* w);
+void new_input(struct srng64_t *seed, size_t size, _mut_ float32_t *data,
+               float32_t *y, float32_t *w);
 
 int
 main()
@@ -26,17 +26,17 @@ main()
         // ---
         // defines vm with some shapes.
 
-        struct vm_t*    vm        = vmNew();
-        struct shape_t* sp_weight = spNew(1, (int[]){6});
-        struct shape_t* r1_1      = spNew(1, (int[]){1});
+        struct vm_t    *vm        = vmNew();
+        struct shape_t *sp_weight = spNew(1, (int[]){6});
+        struct shape_t *r1_1      = spNew(1, (int[]){1});
         struct opopt_t  opt;
 
         // ---
         // prepares the seeds, one for model and one for input.
 
-        struct srng64_t* seed           = srng64New(123);
-        struct srng64_t* seed_for_input = srng64Split(seed);
-        struct srng64_t* rng;  // free after each use.
+        struct srng64_t *seed           = srng64New(123);
+        struct srng64_t *seed_for_input = srng64Split(seed);
+        struct srng64_t *rng;  // free after each use.
 
         // ---
         // allocates the tensors for model, input and output.
@@ -49,19 +49,19 @@ main()
         // ---
         // obtains the pointers to the real data.
 
-        float32_t* x_data;
-        float32_t* y_data;
-        float32_t* w_data;
+        float32_t *x_data;
+        float32_t *y_data;
+        float32_t *w_data;
 
-        NE(vmTensorData(vm, x, (void**)&x_data));
-        NE(vmTensorData(vm, w_target, (void**)&w_data));
-        NE(vmTensorData(vm, y, (void**)&y_data));
+        NE(vmTensorData(vm, x, (void **)&x_data));
+        NE(vmTensorData(vm, w_target, (void **)&w_data));
+        NE(vmTensorData(vm, y, (void **)&y_data));
 
         // ---
         // initializes weight for the model (target).
         rng      = srng64Split(seed);
         opt.mode = OPT_RNG_STD_NORMAL | OPT_MODE_R_BIT;
-        opt.r    = *(struct rng64_t*)rng;
+        opt.r    = *(struct rng64_t *)rng;
         NE(vmExec(vm, OP_RNG, &opt, w_target, -1, -1));
         srng64Free(rng);
 
@@ -70,7 +70,7 @@ main()
         // ---
         // initializes weight for the model (about to learn).
         rng   = srng64Split(seed);
-        opt.r = *(struct rng64_t*)rng;
+        opt.r = *(struct rng64_t *)rng;
         NE(vmExec(vm, OP_RNG, &opt, w, -1, -1));
         srng64Free(rng);
 
@@ -163,11 +163,11 @@ cleanup:
 // internal
 
 void
-new_input(struct srng64_t* seed, size_t size, _mut_ float32_t* data,
-          float32_t* y, float32_t* w)
+new_input(struct srng64_t *seed, size_t size, _mut_ float32_t *data,
+          float32_t *y, float32_t *w)
 {
         // x
-        rng64StdNormalF((struct rng64_t*)seed, size, data);
+        rng64StdNormalF((struct rng64_t *)seed, size, data);
 
         // y
         float32_t local_y = 0;

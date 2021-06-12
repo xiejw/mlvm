@@ -2,7 +2,7 @@
 #include "blis.h"
 
 static inline void
-vmBlisMatmulF32(int m, int n, int k, float* a, float* b, float* c)
+vmBlisMatmulF32(int m, int n, int k, float *a, float *b, float *c)
 {
         float32_t zero = 0;
         float32_t one  = 1;
@@ -16,7 +16,7 @@ vmBlisMatmulF32(int m, int n, int k, float* a, float* b, float* c)
 }
 
 static inline void
-vmBlisMatmulTRF32(int m, int n, int k, float* a, float* b, float* c)
+vmBlisMatmulTRF32(int m, int n, int k, float *a, float *b, float *c)
 {
         float32_t zero = 0;
         float32_t one  = 1;
@@ -30,7 +30,7 @@ vmBlisMatmulTRF32(int m, int n, int k, float* a, float* b, float* c)
 }
 
 static inline void
-vmBlisMatmulTLF32(int m, int n, int k, float* a, float* b, float* c)
+vmBlisMatmulTLF32(int m, int n, int k, float *a, float *b, float *c)
 {
         float32_t zero = 0;
         float32_t one  = 1;
@@ -44,7 +44,7 @@ vmBlisMatmulTLF32(int m, int n, int k, float* a, float* b, float* c)
 }
 
 static inline void
-vmBlisMinusF32(float32_t* o, float32_t* lhs, float32_t* rhs, size_t size,
+vmBlisMinusF32(float32_t *o, float32_t *lhs, float32_t *rhs, size_t size,
                size_t rhs_size)
 {
         float32_t zeros      = 0;
@@ -91,7 +91,7 @@ vmBlisMinusF32(float32_t* o, float32_t* lhs, float32_t* rhs, size_t size,
 }
 
 static inline void
-vmBlisMulSF32(float32_t* o, float32_t* lhs, float32_t v, size_t size)
+vmBlisMulSF32(float32_t *o, float32_t *lhs, float32_t v, size_t size)
 {
         // y = alpha * x
         bli_sscal2v(BLIS_NO_CONJUGATE, size, /*alpha=*/&v,

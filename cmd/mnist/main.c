@@ -13,10 +13,10 @@
 #include "../helpers.h"
 #include "mnist.h"
 
-static error_t initTensorWRng(struct vm_t*, struct srng64_t*, int w);
-static error_t initTensorWZeros(struct vm_t*, int w);
-static error_t prepareData(struct srng64_t* seed, float32_t* x_data,
-                           size_t x_size, float32_t* y_data, size_t y_size);
+static error_t initTensorWRng(struct vm_t *, struct srng64_t *, int w);
+static error_t initTensorWZeros(struct vm_t *, int w);
+static error_t prepareData(struct srng64_t *seed, float32_t *x_data,
+                           size_t x_size, float32_t *y_data, size_t y_size);
 
 #define TOTOL_IMAGES 60000
 #define IMAGE_SIZE   (28 * 28)
@@ -24,8 +24,8 @@ static error_t prepareData(struct srng64_t* seed, float32_t* x_data,
 
 #define FAKE_DATA 0
 
-static unsigned char* images   = NULL;
-static unsigned char* labels   = NULL;
+static unsigned char *images   = NULL;
+static unsigned char *labels   = NULL;
 static size_t         it_count = 0;
 
 static vec_t(int) weights = vecNew();
@@ -34,7 +34,7 @@ main()
 {
         error_t          err  = OK;
         sds_t            s    = sdsEmpty();
-        struct srng64_t* seed = srng64New(123);
+        struct srng64_t *seed = srng64New(123);
 
         {
                 // x[bs, is]    -- is = IMAGE_SIZE
@@ -95,20 +95,20 @@ main()
 
         // ---
         // defines vm with some shapes.
-        struct vm_t* vm = vmNew();
+        struct vm_t *vm = vmNew();
 
-        struct shape_t* sp_x      = R2S(vm, bs, is);
-        struct shape_t* sp_y      = R2S(vm, bs, ls);
-        struct shape_t* sp_w1     = R2S(vm, is, h1_s);
-        struct shape_t* sp_h1     = R2S(vm, bs, h1_s);
-        struct shape_t* sp_b1     = R1S(vm, h1_s);
-        struct shape_t* sp_w2     = R2S(vm, h1_s, h2_s);
-        struct shape_t* sp_h2     = R2S(vm, bs, h2_s);
-        struct shape_t* sp_b2     = R1S(vm, h2_s);
-        struct shape_t* sp_w3     = R2S(vm, h2_s, ls);
-        struct shape_t* sp_o      = R2S(vm, bs, ls);
-        struct shape_t* sp_l      = R1S(vm, bs);
-        struct shape_t* sp_scalar = R1S(vm, 1);
+        struct shape_t *sp_x      = R2S(vm, bs, is);
+        struct shape_t *sp_y      = R2S(vm, bs, ls);
+        struct shape_t *sp_w1     = R2S(vm, is, h1_s);
+        struct shape_t *sp_h1     = R2S(vm, bs, h1_s);
+        struct shape_t *sp_b1     = R1S(vm, h1_s);
+        struct shape_t *sp_w2     = R2S(vm, h1_s, h2_s);
+        struct shape_t *sp_h2     = R2S(vm, bs, h2_s);
+        struct shape_t *sp_b2     = R1S(vm, h2_s);
+        struct shape_t *sp_w3     = R2S(vm, h2_s, ls);
+        struct shape_t *sp_o      = R2S(vm, bs, ls);
+        struct shape_t *sp_l      = R1S(vm, bs);
+        struct shape_t *sp_scalar = R1S(vm, 1);
 
         int x    = vmTensorNew(vm, F32, sp_x);
         int y    = vmTensorNew(vm, F32, sp_y);
@@ -181,8 +181,8 @@ main()
         // fetch inputs.
         float32_t *x_data, *y_data;
         {
-                NE(vmTensorData(vm, x, (void**)&x_data));
-                NE(vmTensorData(vm, y, (void**)&y_data));
+                NE(vmTensorData(vm, x, (void **)&x_data));
+                NE(vmTensorData(vm, y, (void **)&y_data));
         }
 
         // ---
@@ -302,7 +302,7 @@ cleanup:
 
 // impl
 static error_t
-prepareMnistData(float32_t* x_data, size_t x_size, float32_t* y_data,
+prepareMnistData(float32_t *x_data, size_t x_size, float32_t *y_data,
                  size_t y_size)
 {
         if (images == NULL) {
@@ -324,7 +324,7 @@ prepareMnistData(float32_t* x_data, size_t x_size, float32_t* y_data,
         size_t bs = x_size / 28 / 28;
         assert(bs * LABEL_SIZE == y_size);
 
-        unsigned char* buf = images + it_count * IMAGE_SIZE;
+        unsigned char *buf = images + it_count * IMAGE_SIZE;
         for (size_t i = 0; i < x_size; i++) {
                 x_data[i] = ((float32_t)buf[i]) / 256;
         }
@@ -344,13 +344,13 @@ prepareMnistData(float32_t* x_data, size_t x_size, float32_t* y_data,
 }
 
 static void
-prepareFakeData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
-                float32_t* y_data, size_t y_size)
+prepareFakeData(struct srng64_t *seed, float32_t *x_data, size_t x_size,
+                float32_t *y_data, size_t y_size)
 {
-        rng64StdNormalF((struct rng64_t*)seed, x_size, x_data);
+        rng64StdNormalF((struct rng64_t *)seed, x_size, x_data);
         size_t bs = y_size / LABEL_SIZE;
 
-        struct rng64_t* rng = (struct rng64_t*)seed;
+        struct rng64_t *rng = (struct rng64_t *)seed;
         for (size_t i = 0; i < bs; i++) {
                 int target = rng64NextUint64(rng) % LABEL_SIZE;
                 printf("tgt: %d\n", target);
@@ -364,8 +364,8 @@ prepareFakeData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
 }
 
 error_t
-prepareData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
-            float32_t* y_data, size_t y_size)
+prepareData(struct srng64_t *seed, float32_t *x_data, size_t x_size,
+            float32_t *y_data, size_t y_size)
 {
         if (FAKE_DATA) {
                 prepareFakeData(seed, x_data, x_size, y_data, y_size);
@@ -388,13 +388,13 @@ prepareData(struct srng64_t* seed, float32_t* x_data, size_t x_size,
 }
 
 error_t
-initTensorWRng(struct vm_t* vm, struct srng64_t* seed, int w)
+initTensorWRng(struct vm_t *vm, struct srng64_t *seed, int w)
 {
-        struct srng64_t* rng = srng64Split(seed);
+        struct srng64_t *rng = srng64Split(seed);
 
         struct opopt_t opt;
         opt.mode    = OPT_RNG_STD_NORMAL | OPT_MODE_R_BIT;
-        opt.r       = *(struct rng64_t*)rng;
+        opt.r       = *(struct rng64_t *)rng;
         error_t err = vmExec(vm, OP_RNG, &opt, w, -1, -1);
 
         srng64Free(rng);
@@ -402,7 +402,7 @@ initTensorWRng(struct vm_t* vm, struct srng64_t* seed, int w)
 }
 
 error_t
-initTensorWZeros(struct vm_t* vm, int w)
+initTensorWZeros(struct vm_t *vm, int w)
 {
         return vmExec(vm, OP_FILL, NULL, w, -1, -1);
 }

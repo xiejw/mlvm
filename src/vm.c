@@ -7,21 +7,21 @@
 // mlvm
 #include "primitives.h"
 
-struct vm_t*
+struct vm_t *
 vmNew()
 {
         return calloc(1, sizeof(struct vm_t));
 }
 
 void
-vmFree(struct vm_t* vm)
+vmFree(struct vm_t *vm)
 {
         for (int i = 0; i < MLVM_MAX_TENSOR_COUNT; i++) {
-                struct tensor_t* t = &vm->handles[i];
+                struct tensor_t *t = &vm->handles[i];
                 if (t->used) vmReleaseHandle(t);
         }
-        struct list_t* cur = vm->shapes;
-        struct list_t* nxt;
+        struct list_t *cur = vm->shapes;
+        struct list_t *nxt;
         while (cur != NULL) {
                 nxt = cur->next;
                 spDecRef(cur->data);
@@ -31,12 +31,12 @@ vmFree(struct vm_t* vm)
         free(vm);
 }
 
-struct shape_t*
-vmShapeNew(struct vm_t* vm, int rank, int dims[])
+struct shape_t *
+vmShapeNew(struct vm_t *vm, int rank, int dims[])
 {
-        struct shape_t* s = spNew(rank, dims);
+        struct shape_t *s = spNew(rank, dims);
 
-        struct list_t* n = malloc(sizeof(struct list_t));
+        struct list_t *n = malloc(sizeof(struct list_t));
         n->data          = s;
         if (vm->shapes == NULL) {
                 n->next    = NULL;
@@ -50,10 +50,10 @@ vmShapeNew(struct vm_t* vm, int rank, int dims[])
 }
 
 error_t
-vmBatch(struct vm_t* vm, size_t size, const struct oparg_t* args)
+vmBatch(struct vm_t *vm, size_t size, const struct oparg_t *args)
 {
-        const struct opopt_t* opt;
-        const struct oparg_t* arg;
+        const struct opopt_t *opt;
+        const struct oparg_t *arg;
         error_t               err;
 
         for (size_t i = 0; i < size; i++) {
@@ -76,12 +76,12 @@ vmBatch(struct vm_t* vm, size_t size, const struct oparg_t* args)
 }
 
 error_t
-vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
+vmExec(struct vm_t *vm, enum opcode_t op, const struct opopt_t *opt, int dst,
        int lhs, int rhs)
 {
-        struct tensor_t* td = vmGrabHandle(vm, dst);
-        struct tensor_t* t1 = NULL;
-        struct tensor_t* t2 = NULL;
+        struct tensor_t *td = vmGrabHandle(vm, dst);
+        struct tensor_t *t1 = NULL;
+        struct tensor_t *t2 = NULL;
 
         if (lhs != -1) t1 = vmGrabHandle(vm, lhs);
         if (rhs != -1) t2 = vmGrabHandle(vm, rhs);
@@ -220,7 +220,7 @@ vmExec(struct vm_t* vm, enum opcode_t op, const struct opopt_t* opt, int dst,
         case OP_LS_SCEL:
                 assert(t1 != NULL);
                 assert(t2 != NULL);
-                struct tensor_t* tg = NULL;
+                struct tensor_t *tg = NULL;
                 if (td->dtype != F32) {
                         return errNewWithNote(
                             ENOTIMPL, "unimpl for OP_LS_SCEL with dtype %d",

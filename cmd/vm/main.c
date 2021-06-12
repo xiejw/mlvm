@@ -16,10 +16,10 @@ main()
         error_t err = OK;
         sds_t   s   = sdsEmpty();
 
-        struct vm_t*     vm     = vmNew();
-        struct shape_t*  r2_2x3 = spNew(2, (int[]){2, 3});
-        struct shape_t*  r1_1   = spNew(1, (int[]){1});
-        struct srng64_t* rng    = srng64New(123);
+        struct vm_t     *vm     = vmNew();
+        struct shape_t  *r2_2x3 = spNew(2, (int[]){2, 3});
+        struct shape_t  *r1_1   = spNew(1, (int[]){1});
+        struct srng64_t *rng    = srng64New(123);
         struct opopt_t   opt;
 
         int t1 = vmTensorNew(vm, F32, r2_2x3);
@@ -28,7 +28,7 @@ main()
 
         {
                 opt.mode = OPT_RNG_STD_NORMAL | OPT_MODE_R_BIT;
-                opt.r    = *(struct rng64_t*)rng;
+                opt.r    = *(struct rng64_t *)rng;
                 NE(vmExec(vm, OP_RNG, &opt, t1, -1, -1));
                 NE(vmExec(vm, OP_RNG, &opt, t2, -1, -1));
 

@@ -7,8 +7,8 @@
 // -----------------------------------------------------------------------------
 // helper prototype
 // -----------------------------------------------------------------------------
-error_t copy_data(struct vm_t* vm, int td, size_t size, float32_t* src);
-error_t expect_dump(struct vm_t* vm, int td, const char* expected);
+error_t copy_data(struct vm_t *vm, int td, size_t size, float32_t *src);
+error_t expect_dump(struct vm_t *vm, int td, const char *expected);
 
 #define COPY_DATA(vm, td, size, src)          \
         if (copy_data(vm, td, size, src)) {   \
@@ -31,11 +31,11 @@ error_t expect_dump(struct vm_t* vm, int td, const char* expected);
 // unit tests.
 // -----------------------------------------------------------------------------
 
-static char*
+static char *
 test_ele_ops()
 {
-        struct vm_t*    vm = vmNew();
-        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){1, 3});
+        struct vm_t    *vm = vmNew();
+        struct shape_t *s  = vmShapeNew(vm, 2, (int[]){1, 3});
 
         int t1 = vmTensorNew(vm, F32, s);
         int t2 = vmTensorNew(vm, F32, s);
@@ -47,7 +47,7 @@ test_ele_ops()
         enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS, OP_DIVIDE,
                                OP_MAX, OP_EQ,  OP_CMPL};
 
-        const char* expected_strs[] = {
+        const char *expected_strs[] = {
             "<1, 3> f32 [6.680, 9.340, 4.000]",
             "<1, 3> f32 [10.156, 20.809, 4.000]",
             "<1, 3> f32 [-2.000, 2.000, 0.000]",
@@ -66,12 +66,12 @@ test_ele_ops()
         return NULL;
 }
 
-static char*
+static char *
 test_ele_ops_unequal_size()
 {
-        struct vm_t*    vm = vmNew();
-        struct shape_t* s1 = vmShapeNew(vm, 2, (int[]){1, 4});
-        struct shape_t* s2 = vmShapeNew(vm, 2, (int[]){1, 2});
+        struct vm_t    *vm = vmNew();
+        struct shape_t *s1 = vmShapeNew(vm, 2, (int[]){1, 4});
+        struct shape_t *s2 = vmShapeNew(vm, 2, (int[]){1, 2});
 
         int t1 = vmTensorNew(vm, F32, s1);
         int t2 = vmTensorNew(vm, F32, s2);
@@ -83,7 +83,7 @@ test_ele_ops_unequal_size()
         enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS, OP_DIVIDE,
                                OP_MAX, OP_EQ,  OP_CMPL};
 
-        const char* expected_strs[] = {
+        const char *expected_strs[] = {
             "<1, 4> f32 [6.010, 7.670, 8.010, 4.000]",
             "<1, 4> f32 [8.588, 11.340, 15.928, 4.000]",
             "<1, 4> f32 [-1.330, 3.670, 0.670, 0.000]",
@@ -102,12 +102,12 @@ test_ele_ops_unequal_size()
         return NULL;
 }
 
-static char*
+static char *
 test_ele_ops_scalar_operand()
 {
-        struct vm_t*    vm = vmNew();
-        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){1, 3});
-        struct shape_t* s1 = vmShapeNew(vm, 1, (int[]){1});
+        struct vm_t    *vm = vmNew();
+        struct shape_t *s  = vmShapeNew(vm, 2, (int[]){1, 3});
+        struct shape_t *s1 = vmShapeNew(vm, 1, (int[]){1});
 
         int t1 = vmTensorNew(vm, F32, s);
         int t2 = vmTensorNew(vm, F32, s1);
@@ -119,7 +119,7 @@ test_ele_ops_scalar_operand()
         enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS, OP_DIVIDE,
                                OP_MAX, OP_EQ,  OP_CMPL};
 
-        const char* expected_strs[] = {
+        const char *expected_strs[] = {
             "<1, 3> f32 [6.010, 9.340, 7.340]",
             "<1, 3> f32 [8.588, 20.809, 13.469]",
             "<1, 3> f32 [-1.330, 2.000, 0.000]",
@@ -138,11 +138,11 @@ test_ele_ops_scalar_operand()
         return NULL;
 }
 
-static char*
+static char *
 test_ele_ops_f_bit()
 {
-        struct vm_t*    vm = vmNew();
-        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){1, 3});
+        struct vm_t    *vm = vmNew();
+        struct shape_t *s  = vmShapeNew(vm, 2, (int[]){1, 3});
 
         int t1 = vmTensorNew(vm, F32, s);
         int td = vmTensorNew(vm, F32, s);
@@ -152,7 +152,7 @@ test_ele_ops_f_bit()
         enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS,
                                OP_MAX, OP_EQ,  OP_CMPL};
 
-        const char* expected_strs[] = {
+        const char *expected_strs[] = {
             "<1, 3> f32 [5.340, 8.670, 6.000]",
             "<1, 3> f32 [7.020, 17.010, 9.000]",
             "<1, 3> f32 [-0.660, 2.670, 0.000]",
@@ -171,11 +171,11 @@ test_ele_ops_f_bit()
         return NULL;
 }
 
-static char*
+static char *
 test_matmul()
 {
-        struct vm_t*    vm = vmNew();
-        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){2, 2});
+        struct vm_t    *vm = vmNew();
+        struct shape_t *s  = vmShapeNew(vm, 2, (int[]){2, 2});
 
         int t1 = vmTensorNew(vm, F32, s);
         int t2 = vmTensorNew(vm, F32, s);
@@ -188,16 +188,16 @@ test_matmul()
         struct opopt_t opt2 = {.mode = OPT_MATMUL_TRANS_LHS};
         struct opopt_t opt3 = {.mode = OPT_MATMUL_TRANS_RHS};
 
-        struct opopt_t* opts[] = {NULL, &opt1, &opt2, &opt3};
+        struct opopt_t *opts[] = {NULL, &opt1, &opt2, &opt3};
 
-        const char* expected_strs[] = {
+        const char *expected_strs[] = {
             "<2, 2> f32 [-2.545, 28.149, -10.580, 3.559]",
             "<2, 2> f32 [-2.545, 28.149, -10.580, 3.559]",
             "<2, 2> f32 [12.911, 4.344, 19.366, 28.882]",
             "<2, 2> f32 [30.965, 14.320, 3.250, 10.828]",
         };
 
-        for (int i = 0; i < sizeof(opts) / sizeof(struct opopt_t*); i++) {
+        for (int i = 0; i < sizeof(opts) / sizeof(struct opopt_t *); i++) {
                 NE(vmExec(vm, OP_MATMUL, opts[i], td, t1, t2));
                 CHECK_TENSOR(vm, td, expected_strs[i], "failed at %d-th opt\n",
                              i);
@@ -207,19 +207,19 @@ test_matmul()
         return NULL;
 }
 
-static char*
+static char *
 test_argmax()
 {
-        struct vm_t*    vm = vmNew();
-        struct shape_t* s1 = vmShapeNew(vm, 2, (int[]){2, 2});
-        struct shape_t* s2 = vmShapeNew(vm, 1, (int[]){2});
+        struct vm_t    *vm = vmNew();
+        struct shape_t *s1 = vmShapeNew(vm, 2, (int[]){2, 2});
+        struct shape_t *s2 = vmShapeNew(vm, 1, (int[]){2});
 
         int t1 = vmTensorNew(vm, F32, s1);
         int td = vmTensorNew(vm, F32, s2);
 
         COPY_DATA(vm, t1, 4, ((float32_t[]){2.34, 1.67, -1.23, 2.34}));
 
-        const char* expected_str = "<2> f32 [0.000, 1.000]";
+        const char *expected_str = "<2> f32 [0.000, 1.000]";
 
         NE(vmExec(vm, OP_ARGMAX, NULL, td, t1, -1));
         CHECK_TENSOR(vm, td, expected_str, "failed %s", "argmax");
@@ -228,11 +228,11 @@ test_argmax()
         return NULL;
 }
 
-static char*
+static char *
 test_isqrt()
 {
-        struct vm_t*    vm = vmNew();
-        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){2, 2});
+        struct vm_t    *vm = vmNew();
+        struct shape_t *s  = vmShapeNew(vm, 2, (int[]){2, 2});
 
         int t1 = vmTensorNew(vm, F32, s);
         int td = vmTensorNew(vm, F32, s);
@@ -242,15 +242,15 @@ test_isqrt()
         struct opopt_t opt1 = {.mode = OPT_MODE_F_BIT, .f = 2.0};
         struct opopt_t opt2 = {.mode = 1 | OPT_MODE_F_BIT, .f = 2.0};
 
-        struct opopt_t* opts[] = {NULL, &opt1, &opt2};
+        struct opopt_t *opts[] = {NULL, &opt1, &opt2};
 
-        const char* expected_strs[] = {
+        const char *expected_strs[] = {
             "<2, 2> f32 [0.654, 0.420, inf, 0.654]",
             "<2, 2> f32 [0.480, 0.361, 0.707, 0.480]",
             "<2, 2> f32 [0.283, 0.228, 0.500, 0.283]",
         };
 
-        for (int i = 0; i < sizeof(opts) / sizeof(struct opopt_t*); i++) {
+        for (int i = 0; i < sizeof(opts) / sizeof(struct opopt_t *); i++) {
                 NE(vmExec(vm, OP_ISQRT, opts[i], td, t1, -1));
                 CHECK_TENSOR(vm, td, expected_strs[i], "failed at %d-th opt\n",
                              i);
@@ -260,14 +260,14 @@ test_isqrt()
         return NULL;
 }
 
-static char*
+static char *
 test_reduce()
 {
-        struct vm_t*    vm = vmNew();
-        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){2, 3});
-        struct shape_t* s1 = vmShapeNew(vm, 1, (int[]){1});
-        struct shape_t* s2 = vmShapeNew(vm, 1, (int[]){3});
-        struct shape_t* s3 = vmShapeNew(vm, 1, (int[]){2});
+        struct vm_t    *vm = vmNew();
+        struct shape_t *s  = vmShapeNew(vm, 2, (int[]){2, 3});
+        struct shape_t *s1 = vmShapeNew(vm, 1, (int[]){1});
+        struct shape_t *s2 = vmShapeNew(vm, 1, (int[]){3});
+        struct shape_t *s3 = vmShapeNew(vm, 1, (int[]){2});
 
         int t  = vmTensorNew(vm, F32, s);
         int t1 = vmTensorNew(vm, F32, s1);
@@ -283,7 +283,7 @@ test_reduce()
             {.mode = 0 | OPT_MODE_I_BIT, .i = -1},
         };
 
-        const char* expected_strs[] = {
+        const char *expected_strs[] = {
             "<1> f32 [22.010]",
             "<3> f32 [5.340, 9.670, 7.000]",
             "<2> f32 [10.010, 12.000]",
@@ -300,20 +300,20 @@ test_reduce()
         return NULL;
 }
 
-static char*
+static char *
 test_rng()
 {
-        struct vm_t*    vm = vmNew();
-        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){2, 3});
+        struct vm_t    *vm = vmNew();
+        struct shape_t *s  = vmShapeNew(vm, 2, (int[]){2, 3});
 
         int t = vmTensorNew(vm, F32, s);
 
-        struct srng64_t* rng = srng64New(456);
+        struct srng64_t *rng = srng64New(456);
 
         struct opopt_t opt = {.mode = 0 | OPT_MODE_R_BIT,
-                              .r    = *(struct rng64_t*)rng};
+                              .r    = *(struct rng64_t *)rng};
 
-        const char* expected_str =
+        const char *expected_str =
             "<2, 3> f32 [1.348, -1.670, 1.431, 0.632, 0.288, 1.630]";
 
         NE(vmExec(vm, OP_RNG, &opt, t, -1, -1));
@@ -324,25 +324,25 @@ test_rng()
         return NULL;
 }
 
-static char*
+static char *
 test_fill()
 {
-        struct vm_t*    vm = vmNew();
-        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){2, 2});
+        struct vm_t    *vm = vmNew();
+        struct shape_t *s  = vmShapeNew(vm, 2, (int[]){2, 2});
 
         int t = vmTensorNew(vm, F32, s);
 
         struct opopt_t  opt1   = {.mode = 0 | OPT_MODE_F_BIT, .f = 0.0};
         struct opopt_t  opt2   = {.mode = 0 | OPT_MODE_F_BIT, .f = 1.0};
-        struct opopt_t* opts[] = {NULL, &opt1, &opt2};
+        struct opopt_t *opts[] = {NULL, &opt1, &opt2};
 
-        const char* expected_strs[] = {
+        const char *expected_strs[] = {
             "<2, 2> f32 [0.000, 0.000, 0.000, 0.000]",
             "<2, 2> f32 [0.000, 0.000, 0.000, 0.000]",
             "<2, 2> f32 [1.000, 1.000, 1.000, 1.000]",
         };
 
-        for (int i = 0; i < sizeof(opts) / sizeof(struct opopt_t*); i++) {
+        for (int i = 0; i < sizeof(opts) / sizeof(struct opopt_t *); i++) {
                 NE(vmExec(vm, OP_FILL, opts[i], t, -1, -1));
                 CHECK_TENSOR(vm, t, expected_strs[i], "failed at %d-th Op\n",
                              i);
@@ -351,12 +351,12 @@ test_fill()
         return NULL;
 }
 
-static char*
+static char *
 test_ls_scel()
 {
-        struct vm_t*    vm = vmNew();
-        struct shape_t* s  = vmShapeNew(vm, 2, (int[]){2, 3});
-        struct shape_t* s1 = vmShapeNew(vm, 1, (int[]){2});
+        struct vm_t    *vm = vmNew();
+        struct shape_t *s  = vmShapeNew(vm, 2, (int[]){2, 3});
+        struct shape_t *s1 = vmShapeNew(vm, 1, (int[]){2});
 
         int t1 = vmTensorNew(vm, F32, s);
         int t2 = vmTensorNew(vm, F32, s);
@@ -369,8 +369,8 @@ test_ls_scel()
         COPY_DATA(vm, t2, 6,
                   ((float32_t[]){10.0, 20.0, -15.0, 1.0, 2.0, -5.0}));
 
-        const char* expected_loss = "<2> f32 [19.500, 1.514]";
-        const char* expected_grad =
+        const char *expected_loss = "<2> f32 [19.500, 1.514]";
+        const char *expected_grad =
             "<2, 3> f32 [-0.200, 0.700, -0.500, -0.231, 0.331, -0.099]";
 
         // case 1
@@ -387,7 +387,7 @@ test_ls_scel()
         return NULL;
 }
 
-char*
+char *
 run_op_suite()
 {
         RUN_TEST(test_ele_ops);
@@ -408,17 +408,17 @@ run_op_suite()
 // helper impl
 // -----------------------------------------------------------------------------
 error_t
-copy_data(struct vm_t* vm, int td, size_t size, float32_t* src)
+copy_data(struct vm_t *vm, int td, size_t size, float32_t *src)
 {
-        float32_t* data;
-        error_t    err = vmTensorData(vm, td, (void**)&data);
+        float32_t *data;
+        error_t    err = vmTensorData(vm, td, (void **)&data);
         if (err) return err;
         memcpy(data, src, size * sizeof(float32_t));
         return OK;
 }
 
 error_t
-expect_dump(struct vm_t* vm, int td, const char* expected)
+expect_dump(struct vm_t *vm, int td, const char *expected)
 {
         sds_t s = sdsEmpty();
         vmTensorDump(&s, vm, td);

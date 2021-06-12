@@ -10,10 +10,10 @@
 // gzip -d -k file_name.gz
 #define MNIST_PATH "../mlvm_examples/files/"
 
-static const char* const train_images = MNIST_PATH "train-images-idx3-ubyte";
-static const char* const train_labels = MNIST_PATH "train-labels-idx1-ubyte";
-static const char* const test_images  = MNIST_PATH "t10k-images-idx3-ubyte";
-static const char* const test_labels  = MNIST_PATH "t10k-labels-idx1-ubyte";
+static const char *const train_images = MNIST_PATH "train-images-idx3-ubyte";
+static const char *const train_labels = MNIST_PATH "train-labels-idx1-ubyte";
+static const char *const test_images  = MNIST_PATH "t10k-images-idx3-ubyte";
+static const char *const test_labels  = MNIST_PATH "t10k-labels-idx1-ubyte";
 
 //
 // The basic format is
@@ -50,11 +50,11 @@ static const int imagesFileMagic = 0x00000803;
 
 // internal: Read 4 bytes and convert to big endian integer
 static error_t
-readInt32(int fd, int* v_int)
+readInt32(int fd, int *v_int)
 {
         // ssize_t read(int fd, void *buf, size_t count);
         unsigned char buf[4];
-        ssize_t       n = read(fd, (void*)buf, 4);
+        ssize_t       n = read(fd, (void *)buf, 4);
         if (n != 4) {
                 return n;
         }
@@ -76,10 +76,10 @@ readInt32(int fd, int* v_int)
         }
 
 error_t
-readMnistTrainingImages(unsigned char** data)
+readMnistTrainingImages(unsigned char **data)
 {
         error_t        err = OK;
-        unsigned char* buf = NULL;
+        unsigned char *buf = NULL;
         int            v, n, w, h;
         int            fd = open(train_images, O_RDONLY);
 
@@ -101,7 +101,7 @@ readMnistTrainingImages(unsigned char** data)
         size_t s = n * w * h;
 
         buf         = malloc(sizeof(unsigned char) * s);
-        ssize_t r_s = read(fd, (void*)buf, s);
+        ssize_t r_s = read(fd, (void *)buf, s);
         if (r_s != s) {
                 err = errNew("file is incomplete.");
                 goto clean;
@@ -117,10 +117,10 @@ clean:
 }
 
 error_t
-readMnistTrainingLabels(unsigned char** data)
+readMnistTrainingLabels(unsigned char **data)
 {
         error_t        err = OK;
-        unsigned char* buf = NULL;
+        unsigned char *buf = NULL;
         int            v, n;
         int            fd = open(train_labels, O_RDONLY);
 
@@ -137,7 +137,7 @@ readMnistTrainingLabels(unsigned char** data)
         NO_ERR(readInt32(fd, &n));
 
         buf       = malloc(sizeof(unsigned char) * n);
-        ssize_t s = read(fd, (void*)buf, n);
+        ssize_t s = read(fd, (void *)buf, n);
         if (n != s) {
                 err = errNew("file is incomplete.");
                 goto clean;
@@ -154,7 +154,7 @@ clean:
 
 // prints the mnist image at buf.
 void
-printMnistImage(unsigned char* buf)
+printMnistImage(unsigned char *buf)
 {
         int line = 0;
         for (int i = 0; i < 28; i++) {
