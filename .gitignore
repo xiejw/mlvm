@@ -8,3 +8,6 @@
 # tex
 *.log
 *.pdf
+
+# mdbook
+doc/api/book
