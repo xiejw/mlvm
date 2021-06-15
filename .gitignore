@@ -6,8 +6,6 @@
 *.swp
 
 # tex
-*.log
 *.pdf
+*.log
 
-# mdbook
-doc/api/book
