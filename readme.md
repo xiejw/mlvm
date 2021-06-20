@@ -34,4 +34,5 @@ Compile MLVM with blis, e.g.,
 # cd mlvm
 $ make BLIS=1 RELESAE=1 -B
 $ make BLIS=1 RELESAE=1 libmlvm
+$ make BLIS=1 test -B
 ```
