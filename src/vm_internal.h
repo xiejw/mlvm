@@ -5,7 +5,7 @@
 // -----------------------------------------------------------------------------
 // Internal VM Spec.
 // -----------------------------------------------------------------------------
-#ifdef VM_SPEC
+#if defined(VM_SPEC) || defined(VM_INTERNAL)
 #ifndef MLVM_MAX_TENSOR_COUNT
 #define MLVM_MAX_TENSOR_COUNT 128
 #endif

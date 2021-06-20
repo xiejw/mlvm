@@ -13,7 +13,7 @@ CMD             =  cmd
 FMT_FOLDERS     =  ${SRC} ${CMD} ${INCLUDE}  # required by eva.mk
 
 CFLAGS          += -I${SRC} -I${INCLUDE} -I${EVA_PATH}/src -g
-CFLAGS          += -g -DVM_INTERNAL=1 -DVM_SPEC=1
+CFLAGS          += -g -DVM_INTERNAL=1
 LDFLAGS         += ${EVA_LIB}
 
 TEX             = docker run --rm -v `pwd`:/workdir xiejw/tex pdftex
