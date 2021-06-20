@@ -20,6 +20,10 @@ enum opcode_t {
         // Element ops
         // --------------------------------------------------------------------
         //
+        // Operands:
+        //   - both, if opt is NULL.
+        //   - t1 only if opt is not NULL
+        //
         // Data Types:
         //   - only F32.
         //
@@ -48,6 +52,9 @@ enum opcode_t {
         // Matmul
         // --------------------------------------------------------------------
         //
+        // Operands:
+        //   - both.
+        //
         // Data Types:
         //   - only F32.
         //
@@ -70,12 +77,14 @@ enum opcode_t {
         // Arg
         // --------------------------------------------------------------------
         //
+        // Operands:
+        //   - t1 only.
+        //
         // Data Types:
         //   - only F32.
         //
         // Shapes:
-        //   - only rank 2 lhs.
-        //   - rhs is NULL (-1).
+        //   - only rank 2.
         //
         // Option:
         //   - NULL
@@ -94,20 +103,33 @@ enum opcode_t {
         // Data Types:
         //   - only F32.
         //
+        // Shapes:
+        //   - any.
+        //
         // Option (optional):
-        //   - opt could be NULL.
+        //   - opt could be NULL. Defaults to no epsilon.
+        //
         //   - If not NULL, then .f specicies the epsilon that
         //
         //       1 / sqrt(t1+epsilon)    if opt.mode = 0
         //       1 / (sqrt(t1)+epsilon)  if opt.mode = 1
+        //
+        // In-Place:
+        //   - dst is allowed to be t1.
         OP_ISQRT,
 
         // --------------------------------------------------------------------
         // Reduction
         // --------------------------------------------------------------------
         //
+        // Operands:
+        //   - t1 only.
+        //
         // Data Types:
         //   - only F32.
+        //
+        // Shapes:
+        //   - any.
         //
         // Option (required):
         //   - opt.mode value table
@@ -118,15 +140,24 @@ enum opcode_t {
         //   - opt.mode I bit
         //     - if set, then opt.i specifies the axis. Use
         //       OPT_SET_REDUCTION_SUM.
-        //     - otherwise, opt.i == 0
+        //     - otherwise, opt.i must be 0
+        //
+        // In-Place:
+        //   - not allowed.
         OP_REDUCE,
 
         // --------------------------------------------------------------------
         // Rng.
         // --------------------------------------------------------------------
         //
+        // Operands:
+        //   - no operands.
+        //
         // Data Types:
         //   - only F32.
+        //
+        // Shapes:
+        //   - any.
         //
         // Option (required):
         //   - opt.mode value table
@@ -136,33 +167,53 @@ enum opcode_t {
         //
         //   - opt.mode R bit
         //     must set .r to provide rng (seed).
+        //
+        // In-Place:
+        //   - In-place anyway.
         OP_RNG,
 
         // --------------------------------------------------------------------
         // Fill.
         // --------------------------------------------------------------------
         //
+        // Operands:
+        //   - no operands.
+        //
         // Data Types:
         //   - only F32.
+        //
+        // Shapes:
+        //   - any.
         //
         // Option (optional):
         //   - NULL if fill with zero (optimized).
         //   - opt.f (F bit) to value to fill
+        //
+        // In-Place:
+        //   - In-place anyway.
         OP_FILL,
 
         // --------------------------------------------------------------------
         // Softmax crossentropy with logits loss
         // --------------------------------------------------------------------
         //
-        // t1 is the lable (distribution) t2 is the logits (unnormalized).
+        // Operands:
+        //   - t1 is the label (must be valid distribution)
+        //   - t2 is the logits (recommmended to be unnormalized).
         //
         // Data Types:
         //   - only F32.
+        //
+        // Shapes:
+        //   - Rank 2 only for both.
         //
         // Option:
         //   - opt could be NULL.
         //   - if not NULL, opt.mode I bit must be set. Then opt.i for tensor
         //   handle of grad w.r.t. o_i.  Use OPT_SET_GRAD_TENSOR_HANDLER.
+        //
+        // In-Place:
+        //   - Not allowed.
         OP_LS_SCEL
 };
 
