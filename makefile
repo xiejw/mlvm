@@ -8,10 +8,11 @@ include ${EVA_PATH}/eva.mk
 # ------------------------------------------------------------------------------
 
 SRC             =  src
+INCLUDE         =  include
 CMD             =  cmd
-FMT_FOLDERS     =  ${SRC} ${CMD}  # required by eva.mk
+FMT_FOLDERS     =  ${SRC} ${CMD} ${INCLUDE}  # required by eva.mk
 
-CFLAGS          += -I${SRC} -I${EVA_PATH}/src -g
+CFLAGS          += -I${SRC} -I${INCLUDE} -I${EVA_PATH}/src -g
 LDFLAGS         += ${EVA_LIB}
 
 TEX             = docker run --rm -v `pwd`:/workdir xiejw/tex pdftex
@@ -19,7 +20,7 @@ TEX             = docker run --rm -v `pwd`:/workdir xiejw/tex pdftex
 # ------------------------------------------------------------------------------
 # Libs.
 # ------------------------------------------------------------------------------
-VM_HEADER       = ${SRC}/vm.h ${SRC}/op.h
+VM_HEADER       = ${INCLUDE}/vm.h ${SRC}/op.h
 VM_LIB          = ${BUILD}/vm_vm.o ${BUILD}/vm_shape.o ${BUILD}/vm_tensor.o \
                   ${BUILD}/vm_primitives.o
 

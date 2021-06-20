@@ -49,7 +49,7 @@ struct opopt_t {
 #include "op.h"
 
 // -----------------------------------------------------------------------------
-// APIs for vm.
+// APIs for vm.  / vm.c
 // -----------------------------------------------------------------------------
 
 struct vm_t *vmNew();
@@ -58,7 +58,7 @@ error_t      vmExec(struct vm_t *vm, enum opcode_t, const struct opopt_t *opt,
                     int dst, int lhs, int rhs);
 
 // -----------------------------------------------------------------------------
-// APIs for Batch Execution.
+// APIs for Batch Execution.  / vm.c
 // -----------------------------------------------------------------------------
 struct oparg_t {
         enum opcode_t  op;
