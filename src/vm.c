@@ -1,12 +1,15 @@
 #include "vm.h"
-#include "vm_internal.h"
 
 #include <stdlib.h>  // calloc
 #include <string.h>  // memset
 
 // mlvm
 #include "primitives.h"
+#include "vm_internal.h"
 
+// -----------------------------------------------------------------------------
+// Impl for VM APIs.
+// -----------------------------------------------------------------------------
 struct vm_t *
 vmNew()
 {
@@ -16,18 +19,23 @@ vmNew()
 void
 vmFree(struct vm_t *vm)
 {
+        // Release tensors.
         for (int i = 0; i < MLVM_MAX_TENSOR_COUNT; i++) {
                 struct tensor_t *t = &vm->handles[i];
                 if (t->used) vmReleaseHandle(t);
         }
-        struct list_t *cur = vm->shapes;
-        struct list_t *nxt;
-        while (cur != NULL) {
-                nxt = cur->next;
-                spDecRef(cur->data);
-                free(cur);
-                cur = nxt;
+
+        // Release shapes managed by vm.
+        struct list_t *curr = vm->shapes;
+        struct list_t *next;
+        while (curr != NULL) {
+                next = curr->next;
+                spDecRef(curr->data);
+                free(curr);
+                curr = next;
         }
+
+        // Release vm.
         free(vm);
 }
 
@@ -36,6 +44,7 @@ vmShapeNew(struct vm_t *vm, int rank, int dims[])
 {
         struct shape_t *s = spNew(rank, dims);
 
+        // Attach to vm shape lists.
         struct list_t *n = malloc(sizeof(struct list_t));
         n->data          = s;
         if (vm->shapes == NULL) {
@@ -75,16 +84,16 @@ vmBatch(struct vm_t *vm, size_t size, const struct oparg_t *args)
         return OK;
 }
 
+// -----------------------------------------------------------------------------
+// Impl for VM Exec.
+// -----------------------------------------------------------------------------
 error_t
 vmExec(struct vm_t *vm, enum opcode_t op, const struct opopt_t *opt, int dst,
        int lhs, int rhs)
 {
         struct tensor_t *td = vmGrabHandle(vm, dst);
-        struct tensor_t *t1 = NULL;
-        struct tensor_t *t2 = NULL;
-
-        if (lhs != -1) t1 = vmGrabHandle(vm, lhs);
-        if (rhs != -1) t2 = vmGrabHandle(vm, rhs);
+        struct tensor_t *t1 = (lhs != -1) ? vmGrabHandle(vm, lhs) : NULL;
+        struct tensor_t *t2 = (rhs != -1) ? vmGrabHandle(vm, rhs) : NULL;
 
         switch (op) {
 #define CASE_ELEWISE_OP(OP, API)                                             \

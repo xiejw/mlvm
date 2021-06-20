@@ -92,7 +92,7 @@ struct shape_t *spNew(int rank, int *dims);
 struct shape_t *spIncRef(struct shape_t *);
 struct shape_t *spDecRef(struct shape_t *);
 
-struct shape_t *vmShapeNew(struct vm_t *vm, int rank, int *dims);
+struct shape_t *vmShapeNew(struct vm_t *vm, int rank, int *dims);  // vm.c
 
 // Macors for shapes.
 #define R1S(vm, s1)     vmShapeNew(vm, 1, (int[]){(s1)});

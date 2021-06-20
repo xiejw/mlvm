@@ -1,21 +1,47 @@
+// Internal for VM only. Guard by VM_SPEC and VM_INTERNAL symbol.
+//
+// Not designed to be included in general. Use vm.h instead.
+
+// -----------------------------------------------------------------------------
+// Internal VM Spec.
+// -----------------------------------------------------------------------------
+#ifdef VM_SPEC
+#ifndef MLVM_MAX_TENSOR_COUNT
+#define MLVM_MAX_TENSOR_COUNT 128
+#endif
+#endif  // VM_SPEC
+
+#ifdef VM_INTERNAL
 #include <assert.h>
 #include <stdlib.h>
 
 // -----------------------------------------------------------------------------
-// internal apis.
+// Internal VM APIs.
 // -----------------------------------------------------------------------------
 
-#ifndef MLVM_MAX_TENSOR_COUNT
-#define MLVM_MAX_TENSOR_COUNT 128
-#endif
+// -----------------------------------------------------------------------------
+// The VM Defn.
+// -----------------------------------------------------------------------------
 
+// Forward decl.
 struct list_t;
 
+// The VM structure.
 struct vm_t {
         // consider to use pages.
         struct tensor_t handles[MLVM_MAX_TENSOR_COUNT];
         struct list_t  *shapes;
 };
+
+// Aux data structure.
+struct list_t {
+        void          *data;
+        struct list_t *next;
+};
+
+// -----------------------------------------------------------------------------
+// VM Helpers.
+// -----------------------------------------------------------------------------
 
 static inline struct tensor_t *
 vmGrabHandle(struct vm_t *vm, int handle)
@@ -51,8 +77,4 @@ vmReleaseHandle(struct tensor_t *t)
         t->used  = 0;
 }
 
-// aux data structure.
-struct list_t {
-        void          *data;
-        struct list_t *next;
-};
+#endif  // VM_INTERNAL
