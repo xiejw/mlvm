@@ -5,9 +5,11 @@ The design goals of MLVM is
 * Readable
 * Coherent
 
-It has only one concept, the `struct vm_t` (in [vm.h](src/vm.h)). It supports
-both eager execution, in-place mutation, and batch mode. Check
-[Blueberry](https://github.com/xiejw/blueberry) for one possible way to use it.
+It has only one concept, the `struct vm_t` (in [vm.h](include/vm.h)). It
+supports eager execution, in-place mutation, and batch mode.
+
+Check [Blueberry](https://github.com/xiejw/blueberry) for one possible way to
+use it.
 
 ## Compile Flags
 
