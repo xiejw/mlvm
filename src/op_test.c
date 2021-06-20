@@ -7,7 +7,7 @@
 // -----------------------------------------------------------------------------
 // helper prototype
 // -----------------------------------------------------------------------------
-error_t copy_data(struct vm_t *vm, int td, size_t size, float32_t *src);
+error_t copy_data(struct vm_t *vm, int td, size_t size, f32_t *src);
 error_t expect_dump(struct vm_t *vm, int td, const char *expected);
 
 #define COPY_DATA(vm, td, size, src)          \
@@ -41,8 +41,8 @@ test_ele_ops()
         int t2 = vmTensorNew(vm, F32, s);
         int td = vmTensorNew(vm, F32, s);
 
-        COPY_DATA(vm, t1, 3, ((float32_t[]){2.34, 5.67, 2.00}));
-        COPY_DATA(vm, t2, 3, ((float32_t[]){4.34, 3.67, 2.00}));
+        COPY_DATA(vm, t1, 3, ((f32_t[]){2.34, 5.67, 2.00}));
+        COPY_DATA(vm, t2, 3, ((f32_t[]){4.34, 3.67, 2.00}));
 
         enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS, OP_DIVIDE,
                                OP_MAX, OP_EQ,  OP_CMPL};
@@ -77,8 +77,8 @@ test_ele_ops_unequal_size()
         int t2 = vmTensorNew(vm, F32, s2);
         int td = vmTensorNew(vm, F32, s1);
 
-        COPY_DATA(vm, t1, 4, ((float32_t[]){2.34, 5.67, 4.34, 2.00}));
-        COPY_DATA(vm, t2, 2, ((float32_t[]){3.67, 2.00}));
+        COPY_DATA(vm, t1, 4, ((f32_t[]){2.34, 5.67, 4.34, 2.00}));
+        COPY_DATA(vm, t2, 2, ((f32_t[]){3.67, 2.00}));
 
         enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS, OP_DIVIDE,
                                OP_MAX, OP_EQ,  OP_CMPL};
@@ -113,8 +113,8 @@ test_ele_ops_scalar_operand()
         int t2 = vmTensorNew(vm, F32, s1);
         int td = vmTensorNew(vm, F32, s);
 
-        COPY_DATA(vm, t1, 3, ((float32_t[]){2.34, 5.67, 3.67}));
-        COPY_DATA(vm, t2, 1, ((float32_t[]){3.67}));
+        COPY_DATA(vm, t1, 3, ((f32_t[]){2.34, 5.67, 3.67}));
+        COPY_DATA(vm, t2, 1, ((f32_t[]){3.67}));
 
         enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS, OP_DIVIDE,
                                OP_MAX, OP_EQ,  OP_CMPL};
@@ -147,7 +147,7 @@ test_ele_ops_f_bit()
         int t1 = vmTensorNew(vm, F32, s);
         int td = vmTensorNew(vm, F32, s);
 
-        COPY_DATA(vm, t1, 3, ((float32_t[]){2.34, 5.67, 3.000}));
+        COPY_DATA(vm, t1, 3, ((f32_t[]){2.34, 5.67, 3.000}));
 
         enum opcode_t ops[] = {OP_ADD, OP_MUL, OP_MINUS,
                                OP_MAX, OP_EQ,  OP_CMPL};
@@ -181,8 +181,8 @@ test_matmul()
         int t2 = vmTensorNew(vm, F32, s);
         int td = vmTensorNew(vm, F32, s);
 
-        COPY_DATA(vm, t1, 4, ((float32_t[]){2.34, 5.67, -1.23, 2.34}));
-        COPY_DATA(vm, t2, 4, ((float32_t[]){4.34, 3.67, -2.24, 3.45}));
+        COPY_DATA(vm, t1, 4, ((f32_t[]){2.34, 5.67, -1.23, 2.34}));
+        COPY_DATA(vm, t2, 4, ((f32_t[]){4.34, 3.67, -2.24, 3.45}));
 
         struct opopt_t opt1 = {.mode = OPT_MATMUL_TRANS_NOT};
         struct opopt_t opt2 = {.mode = OPT_MATMUL_TRANS_LHS};
@@ -217,7 +217,7 @@ test_argmax()
         int t1 = vmTensorNew(vm, F32, s1);
         int td = vmTensorNew(vm, F32, s2);
 
-        COPY_DATA(vm, t1, 4, ((float32_t[]){2.34, 1.67, -1.23, 2.34}));
+        COPY_DATA(vm, t1, 4, ((f32_t[]){2.34, 1.67, -1.23, 2.34}));
 
         const char *expected_str = "<2> f32 [0.000, 1.000]";
 
@@ -237,7 +237,7 @@ test_isqrt()
         int t1 = vmTensorNew(vm, F32, s);
         int td = vmTensorNew(vm, F32, s);
 
-        COPY_DATA(vm, t1, 4, ((float32_t[]){2.34, 5.67, 0.00, 2.34}));
+        COPY_DATA(vm, t1, 4, ((f32_t[]){2.34, 5.67, 0.00, 2.34}));
 
         struct opopt_t opt1 = {.mode = OPT_MODE_F_BIT, .f = 2.0};
         struct opopt_t opt2 = {.mode = 1 | OPT_MODE_F_BIT, .f = 2.0};
@@ -274,8 +274,7 @@ test_reduce()
         int t2 = vmTensorNew(vm, F32, s2);
         int t3 = vmTensorNew(vm, F32, s3);
 
-        COPY_DATA(vm, t, 6,
-                  ((float32_t[]){2.34, 5.67, 2.00, 3.00, 4.00, 5.00}));
+        COPY_DATA(vm, t, 6, ((f32_t[]){2.34, 5.67, 2.00, 3.00, 4.00, 5.00}));
 
         struct opopt_t opts[] = {
             {.mode = 0 | OPT_MODE_I_BIT, .i = 0},
@@ -364,10 +363,9 @@ test_ls_scel()
         int tg = vmTensorNew(vm, F32, s);
 
         // label
-        COPY_DATA(vm, t1, 6, ((float32_t[]){0.2, 0.3, .5, 0.5, 0.4, .1}));
+        COPY_DATA(vm, t1, 6, ((f32_t[]){0.2, 0.3, .5, 0.5, 0.4, .1}));
         // logit
-        COPY_DATA(vm, t2, 6,
-                  ((float32_t[]){10.0, 20.0, -15.0, 1.0, 2.0, -5.0}));
+        COPY_DATA(vm, t2, 6, ((f32_t[]){10.0, 20.0, -15.0, 1.0, 2.0, -5.0}));
 
         const char *expected_loss = "<2> f32 [19.500, 1.514]";
         const char *expected_grad =
@@ -408,12 +406,12 @@ run_op_suite()
 // helper impl
 // -----------------------------------------------------------------------------
 error_t
-copy_data(struct vm_t *vm, int td, size_t size, float32_t *src)
+copy_data(struct vm_t *vm, int td, size_t size, f32_t *src)
 {
-        float32_t *data;
-        error_t    err = vmTensorData(vm, td, (void **)&data);
+        f32_t  *data;
+        error_t err = vmTensorData(vm, td, (void **)&data);
         if (err) return err;
-        memcpy(data, src, size * sizeof(float32_t));
+        memcpy(data, src, size * sizeof(f32_t));
         return OK;
 }
 

@@ -61,10 +61,10 @@ test_tensor_data()
         }
 
         {
-                float32_t  src[2] = {2.34, 5.67};
-                float32_t *data;
+                f32_t  src[2] = {2.34, 5.67};
+                f32_t *data;
                 ASSERT_TRUE("err", OK == vmTensorData(vm, td, (void **)&data));
-                memcpy(data, src, 2 * sizeof(float32_t));
+                memcpy(data, src, 2 * sizeof(f32_t));
         }
 
         {
@@ -91,9 +91,9 @@ test_tensor_swap()
         }
 
         {
-                float32_t *data = malloc(2 * sizeof(float32_t));
-                data[0]         = 2.34;
-                data[1]         = 5.67;
+                f32_t *data = malloc(2 * sizeof(f32_t));
+                data[0]     = 2.34;
+                data[1]     = 5.67;
                 ASSERT_TRUE("err", OK == vmTensorSwap(vm, td, (void **)&data));
                 free(data);
         }

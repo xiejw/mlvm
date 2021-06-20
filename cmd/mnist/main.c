@@ -15,8 +15,8 @@
 
 static error_t initTensorWRng(struct vm_t *, struct srng64_t *, int w);
 static error_t initTensorWZeros(struct vm_t *, int w);
-static error_t prepareData(struct srng64_t *seed, float32_t *x_data,
-                           size_t x_size, float32_t *y_data, size_t y_size);
+static error_t prepareData(struct srng64_t *seed, f32_t *x_data, size_t x_size,
+                           f32_t *y_data, size_t y_size);
 
 #define TOTOL_IMAGES 60000
 #define IMAGE_SIZE   (28 * 28)
@@ -179,7 +179,7 @@ main()
 
         // ---
         // fetch inputs.
-        float32_t *x_data, *y_data;
+        f32_t *x_data, *y_data;
         {
                 NE(vmTensorData(vm, x, (void **)&x_data));
                 NE(vmTensorData(vm, y, (void **)&y_data));
@@ -302,8 +302,7 @@ cleanup:
 
 // impl
 static error_t
-prepareMnistData(float32_t *x_data, size_t x_size, float32_t *y_data,
-                 size_t y_size)
+prepareMnistData(f32_t *x_data, size_t x_size, f32_t *y_data, size_t y_size)
 {
         if (images == NULL) {
                 error_t err = readMnistTrainingImages(&images);
@@ -326,7 +325,7 @@ prepareMnistData(float32_t *x_data, size_t x_size, float32_t *y_data,
 
         unsigned char *buf = images + it_count * IMAGE_SIZE;
         for (size_t i = 0; i < x_size; i++) {
-                x_data[i] = ((float32_t)buf[i]) / 256;
+                x_data[i] = ((f32_t)buf[i]) / 256;
         }
 
         buf = labels + it_count;
@@ -344,8 +343,8 @@ prepareMnistData(float32_t *x_data, size_t x_size, float32_t *y_data,
 }
 
 static void
-prepareFakeData(struct srng64_t *seed, float32_t *x_data, size_t x_size,
-                float32_t *y_data, size_t y_size)
+prepareFakeData(struct srng64_t *seed, f32_t *x_data, size_t x_size,
+                f32_t *y_data, size_t y_size)
 {
         rng64StdNormalF((struct rng64_t *)seed, x_size, x_data);
         size_t bs = y_size / LABEL_SIZE;
@@ -364,8 +363,8 @@ prepareFakeData(struct srng64_t *seed, float32_t *x_data, size_t x_size,
 }
 
 error_t
-prepareData(struct srng64_t *seed, float32_t *x_data, size_t x_size,
-            float32_t *y_data, size_t y_size)
+prepareData(struct srng64_t *seed, f32_t *x_data, size_t x_size, f32_t *y_data,
+            size_t y_size)
 {
         if (FAKE_DATA) {
                 prepareFakeData(seed, x_data, x_size, y_data, y_size);

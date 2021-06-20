@@ -192,8 +192,7 @@ vmExec(struct vm_t *vm, enum opcode_t op, const struct opopt_t *opt, int dst,
                 }
 
                 if (opt == NULL) {
-                        memset(td->data, 0,
-                               td->shape->size * sizeof(float32_t));
+                        memset(td->data, 0, td->shape->size * sizeof(f32_t));
                         return OK;
                 }
                 assert((opt->mode & OPT_MODE_UNMASK) == 0);

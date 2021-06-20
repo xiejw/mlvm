@@ -33,14 +33,14 @@ test_vm_exec()
 
         {
                 // cp data into t1 and t2.
-                float32_t  t1_src[2] = {2.34, 5.67};
-                float32_t  t2_src[2] = {4.34, 3.67};
-                float32_t *data;
+                f32_t  t1_src[2] = {2.34, 5.67};
+                f32_t  t2_src[2] = {4.34, 3.67};
+                f32_t *data;
 
                 ASSERT_TRUE("err", OK == vmTensorData(vm, t1, (void **)&data));
-                memcpy(data, t1_src, 2 * sizeof(float32_t));
+                memcpy(data, t1_src, 2 * sizeof(f32_t));
                 ASSERT_TRUE("err", OK == vmTensorData(vm, t2, (void **)&data));
-                memcpy(data, t2_src, 2 * sizeof(float32_t));
+                memcpy(data, t2_src, 2 * sizeof(f32_t));
         }
 
         ASSERT_TRUE("err", OK == vmExec(vm, OP_ADD, NULL, td, t1, t2));
@@ -76,14 +76,14 @@ test_vm_batch()
 
         {
                 // cp data into t1 and t2.
-                float32_t  t1_src[2] = {2.34, 5.67};
-                float32_t  t2_src[2] = {4.34, 3.67};
-                float32_t *data;
+                f32_t  t1_src[2] = {2.34, 5.67};
+                f32_t  t2_src[2] = {4.34, 3.67};
+                f32_t *data;
 
                 ASSERT_TRUE("err", OK == vmTensorData(vm, t1, (void **)&data));
-                memcpy(data, t1_src, 2 * sizeof(float32_t));
+                memcpy(data, t1_src, 2 * sizeof(f32_t));
                 ASSERT_TRUE("err", OK == vmTensorData(vm, t2, (void **)&data));
-                memcpy(data, t2_src, 2 * sizeof(float32_t));
+                memcpy(data, t2_src, 2 * sizeof(f32_t));
         }
 
         const struct oparg_t program[] = {

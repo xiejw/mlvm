@@ -2,12 +2,17 @@
 // Op code with spec.
 // -----------------------------------------------------------------------------
 enum opcode_t {
+        // --------------------------------------------------------------------
+        // General Design Guidelines.
+        // --------------------------------------------------------------------
         // Option.
         //   - Option can be optional. If so, the NULL is provided and it
-        //     matches the default setting.
-        //   - If Option.mode is used only, then macros should be provided, so
-        //     the caller can have some readability.
-        //   - If Option union {i,f,etc} is used, to avoid the sitution the
+        //     means the default setting.
+        //
+        //   - If Option.mode is used only, then macros is recommended, e.g.,
+        //     OPT_MODE_I_BIT, etc. So the caller can have some readability.
+        //
+        //   - If Option union {i,f,r} is used, to avoid the sitution the
         //     caller forgets to update them, option.mode be must set in an
         //     explicit way so the check can be performed.
 
@@ -25,7 +30,7 @@ enum opcode_t {
         //   - rhs is NULL; uses .f for rhs scalar [F32].
         //
         // Option:
-        //   - opt must be NULL
+        //   - opt could be NULL
         //   - if opt is not NULL, F_BIT must be set and .f specicies the
         //     scalar operand (the second operand).
         //
@@ -37,7 +42,7 @@ enum opcode_t {
         OP_DIVIDE,
         OP_MAX,
         OP_EQ,
-        OP_CMPL,  // Compare large.
+        OP_CMPL,  // Compare Larger.
 
         // --------------------------------------------------------------------
         // Matmul
@@ -50,7 +55,9 @@ enum opcode_t {
         //   - only rank 2 operands.
         //
         // Option:
-        //   - opt could be NULL, or opt.mode == 0, i.e., OPT_MATMUL_TRANS_NOT
+        //   - opt could be NULL. It means opt.mode == 0, i.e.,
+        //     OPT_MATMUL_TRANS_NOT
+        //
         //   - mode == 2 means trans_lhs, i.e., OPT_MATMUL_TRANS_LHS
         //   - mode == 1 means trans_rhs, i.e., OPT_MATMUL_TRANS_RHS
         //   - other values of modes are invalid.
@@ -65,6 +72,16 @@ enum opcode_t {
         //
         // Data Types:
         //   - only F32.
+        //
+        // Shapes:
+        //   - only rank 2 lhs.
+        //   - rhs is NULL (-1).
+        //
+        // Option:
+        //   - NULL
+        //
+        // In-Place:
+        //   - No. dst is rank 1.
         OP_ARGMAX,
 
         // --------------------------------------------------------------------

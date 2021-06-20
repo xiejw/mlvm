@@ -19,7 +19,7 @@ vmTensorNew(struct vm_t *vm, enum data_t dtype, struct shape_t *s)
 alloc:
         switch (dtype) {
         case F32:
-                data = malloc(s->size * sizeof(float32_t));
+                data = malloc(s->size * sizeof(f32_t));
                 break;
         case I32:
                 data = malloc(s->size * sizeof(int32_t));
@@ -124,7 +124,7 @@ vmTensorDump(sds_t *s, struct vm_t *vm, int handle)
                 sdsCatPrintf(s, "]");                                          \
         }
 
-        print_data(F32, float32_t *, "%.3f");
+        print_data(F32, f32_t *, "%.3f");
         print_data(I32, int32_t *, "%d");
 
 #undef print_data

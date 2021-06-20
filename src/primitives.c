@@ -37,9 +37,9 @@
                             " support t1 and t2 same shape or t2 as scalar."); \
                 }                                                              \
                                                                                \
-                float32_t *o   = (float32_t *)td->data;                        \
-                float32_t *lhs = (float32_t *)t1->data;                        \
-                float32_t *rhs = (float32_t *)t2->data;                        \
+                f32_t *o   = (f32_t *)td->data;                                \
+                f32_t *lhs = (f32_t *)t1->data;                                \
+                f32_t *rhs = (f32_t *)t2->data;                                \
                                                                                \
                 size_t t2_size = t2->shape->size;                              \
                                                                                \
@@ -51,7 +51,7 @@
                                         o[i] = op(lhs[i], rhs[i]);             \
                                 }                                              \
                         } else if (t2_size == 1) {                             \
-                                float32_t s = rhs[0];                          \
+                                f32_t s = rhs[0];                              \
                                 for (size_t i = 0; i < size; i++) {            \
                                         o[i] = op(lhs[i], s);                  \
                                 }                                              \
@@ -93,7 +93,7 @@ DEF_ELEWISE_OP(Minus, MINU, 1, vmBlisMinusF32)
 
 #define DEF_ELEWISE_OP_S(OP, op, static_cond, special_handle)            \
         error_t vmOp##OP##SF32(struct tensor_t *td, struct tensor_t *t1, \
-                               float32_t s)                              \
+                               f32_t s)                                  \
         {                                                                \
                 assert(td->dtype == F32);                                \
                 assert(t1->dtype == F32);                                \
@@ -101,8 +101,8 @@ DEF_ELEWISE_OP(Minus, MINU, 1, vmBlisMinusF32)
                 size_t size = t1->shape->size;                           \
                 assert(size == td->shape->size);                         \
                                                                          \
-                float32_t *o   = (float32_t *)td->data;                  \
-                float32_t *lhs = (float32_t *)t1->data;                  \
+                f32_t *o   = (f32_t *)td->data;                          \
+                f32_t *lhs = (f32_t *)t1->data;                          \
                                                                          \
                 if (static_cond) {                                       \
                         special_handle(o, lhs, s, size);                 \
@@ -140,7 +140,7 @@ vmOpRngF32(struct tensor_t *dst, int mode, struct rng64_t *rng)
 {
         assert(mode == 0);
         assert(dst->dtype == F32);
-        rng64StdNormalF(rng, dst->shape->size, (float32_t *)dst->data);
+        rng64StdNormalF(rng, dst->shape->size, (f32_t *)dst->data);
         return OK;
 }
 
@@ -159,13 +159,13 @@ vmOpArgMaxF32(struct tensor_t *td, struct tensor_t *t1)
         assert(bs == t1->shape->dims[0]);
         size_t ft = t1->shape->dims[1];
 
-        float32_t *tgt  = (float32_t *)td->data;
-        float32_t *data = (float32_t *)t1->data;
+        f32_t *tgt  = (f32_t *)td->data;
+        f32_t *data = (f32_t *)t1->data;
 
         for (size_t i = 0; i < bs; i++) {
-                size_t    offset = i * ft;
-                size_t    index  = 0;
-                float32_t v      = data[offset];
+                size_t offset = i * ft;
+                size_t index  = 0;
+                f32_t  v      = data[offset];
                 for (size_t j = 1; j < ft; j++) {
                         if (v < data[offset + j]) {
                                 v     = data[offset + j];
@@ -190,13 +190,13 @@ vmOpReduceF32(struct tensor_t *td, struct tensor_t *t1, int mode, int axis)
 
         if (axis == 0) {
                 assert(1 == td->shape->size);
-                float32_t  v    = 0;
-                size_t     size = t1->shape->size;
-                float32_t *data = (float32_t *)t1->data;
+                f32_t  v    = 0;
+                size_t size = t1->shape->size;
+                f32_t *data = (f32_t *)t1->data;
                 for (size_t i = 0; i < size; i++) {
                         v += data[i];
                 }
-                *(float32_t *)td->data = v;
+                *(f32_t *)td->data = v;
                 return OK;
         } else if (axis > 0) {
                 // reduce heading axes. For [A, B] reducing values B along A.
@@ -205,9 +205,9 @@ vmOpReduceF32(struct tensor_t *td, struct tensor_t *t1, int mode, int axis)
                 size_t value_size = td->shape->size;
                 size_t loop_count = t1->shape->size / value_size;
 
-                float32_t *dst = (float32_t *)td->data;
-                float32_t *src = (float32_t *)t1->data;
-                memcpy(dst, src, value_size * sizeof(float32_t));
+                f32_t *dst = (f32_t *)td->data;
+                f32_t *src = (f32_t *)t1->data;
+                memcpy(dst, src, value_size * sizeof(f32_t));
                 for (size_t i = 1; i < loop_count; i++) {
                         src += value_size;
                         for (size_t j = 0; j < value_size; j++) {
@@ -224,10 +224,10 @@ vmOpReduceF32(struct tensor_t *td, struct tensor_t *t1, int mode, int axis)
                 size_t loop_count = td->shape->size;
                 size_t value_size = t1->shape->size / loop_count;
 
-                float32_t *dst = (float32_t *)td->data;
-                float32_t *src = (float32_t *)t1->data;
+                f32_t *dst = (f32_t *)td->data;
+                f32_t *src = (f32_t *)t1->data;
                 for (size_t i = 0; i < loop_count; i++) {
-                        float32_t v = 0.0;
+                        f32_t v = 0.0;
                         for (size_t j = 0; j < value_size; j++) {
                                 v += src[j];
                         }
@@ -254,9 +254,9 @@ vmOpMatmulF32(struct tensor_t *td, struct tensor_t *t1, struct tensor_t *t2,
         assert(t1->shape->rank == 2);
         assert(t2->shape->rank == 2);
 
-        float32_t *o   = (float32_t *)td->data;
-        float32_t *lhs = (float32_t *)t1->data;
-        float32_t *rhs = (float32_t *)t2->data;
+        f32_t *o   = (f32_t *)td->data;
+        f32_t *lhs = (f32_t *)t1->data;
+        f32_t *rhs = (f32_t *)t2->data;
 
         assert(trans_lhs == 0 || trans_rhs == 0);  // not support both.
 
@@ -281,7 +281,7 @@ vmOpMatmulF32(struct tensor_t *td, struct tensor_t *t1, struct tensor_t *t2,
                 // stupid impl.
                 for (int i = 0; i < p; i++) {
                         for (int j = 0; j < q; j++) {
-                                float32_t v = 0;
+                                f32_t v = 0;
                                 for (int k = 0; k < m; k++) {
                                         // For lhs, stride is (m, 1).
                                         // For rhs, stride is (q, 1).
@@ -313,7 +313,7 @@ vmOpMatmulF32(struct tensor_t *td, struct tensor_t *t1, struct tensor_t *t2,
                 // stupid impl.
                 for (int i = 0; i < p; i++) {
                         for (int j = 0; j < q; j++) {
-                                float32_t v = 0;
+                                f32_t v = 0;
                                 for (int k = 0; k < m; k++) {
                                         // For lhs, stride is (m, 1).
                                         // For rhs, stride is (1, m).
@@ -346,7 +346,7 @@ vmOpMatmulF32(struct tensor_t *td, struct tensor_t *t1, struct tensor_t *t2,
                 // stupid impl.
                 for (int i = 0; i < p; i++) {
                         for (int j = 0; j < q; j++) {
-                                float32_t v = 0;
+                                f32_t v = 0;
                                 for (int k = 0; k < m; k++) {
                                         // For lhs, stride is (1, p).
                                         // For rhs, stride is (q, 1).
@@ -364,11 +364,11 @@ vmOpMatmulF32(struct tensor_t *td, struct tensor_t *t1, struct tensor_t *t2,
 // Fill.
 // -----------------------------------------------------------------------------
 error_t
-vmOpFillF32(struct tensor_t *td, float32_t v)
+vmOpFillF32(struct tensor_t *td, f32_t v)
 {
         assert(td->dtype == F32);
-        size_t     size = td->shape->size;
-        float32_t *data = (float32_t *)td->data;
+        size_t size = td->shape->size;
+        f32_t *data = (f32_t *)td->data;
         for (size_t i = 0; i < size; i++) {
                 data[i] = v;
         }
@@ -400,10 +400,10 @@ vmOpLossSCELF32(struct tensor_t *td, struct tensor_t *t1, struct tensor_t *t2,
                               t2->shape->dims[0], t2->shape->dims[1],
                               td->shape->dims[0]);
         }
-        float32_t *loss = (float32_t *)td->data;
-        float32_t *y    = (float32_t *)t1->data;
-        float32_t *o    = (float32_t *)t2->data;
-        float32_t *g    = NULL;
+        f32_t *loss = (f32_t *)td->data;
+        f32_t *y    = (f32_t *)t1->data;
+        f32_t *o    = (f32_t *)t2->data;
+        f32_t *g    = NULL;
 
         if (tg != NULL) {
                 // check gradient dtype and shapes.
@@ -411,7 +411,7 @@ vmOpLossSCELF32(struct tensor_t *td, struct tensor_t *t1, struct tensor_t *t2,
                 assert(tg->shape->rank == 2);
                 assert(tg->shape->dims[0] == t2->shape->dims[0]);
                 assert(tg->shape->dims[1] == t2->shape->dims[1]);
-                g = (float32_t *)tg->data;
+                g = (f32_t *)tg->data;
         }
 
 #define LOSS_SCEL_COMP(trigger_cond, static_grad_cond)                       \
@@ -421,16 +421,16 @@ vmOpLossSCELF32(struct tensor_t *td, struct tensor_t *t1, struct tensor_t *t2,
                         size_t  offset  = i * ft;                            \
                         float_t max_o_k = o[offset];                         \
                         for (size_t k = 1; k < ft; k++) {                    \
-                                float32_t o_k = o[offset + k];               \
+                                f32_t o_k = o[offset + k];                   \
                                 if (o_k > max_o_k) max_o_k = o_k;            \
                         }                                                    \
                                                                              \
                         /* real formular */                                  \
-                        float32_t sum = 0.0;                                 \
-                        float32_t l   = 0.0;                                 \
+                        f32_t sum = 0.0;                                     \
+                        f32_t l   = 0.0;                                     \
                         for (size_t k = 0; k < ft; k++) {                    \
-                                float32_t o_k     = o[offset + k] - max_o_k; \
-                                float32_t exp_o_k = exp(o_k);                \
+                                f32_t o_k     = o[offset + k] - max_o_k;     \
+                                f32_t exp_o_k = exp(o_k);                    \
                                 sum += exp_o_k;                              \
                                 if ((static_grad_cond)) {                    \
                                         g[offset + k] = exp_o_k;             \
@@ -440,9 +440,9 @@ vmOpLossSCELF32(struct tensor_t *td, struct tensor_t *t1, struct tensor_t *t2,
                                                                              \
                         if ((static_grad_cond)) {                            \
                                 /* normalize all components. */              \
-                                float32_t *gp = g + offset;                  \
+                                f32_t *gp = g + offset;                      \
                                 /* p_i - y_i is the gradient w.r.t. o_i. */  \
-                                float32_t *yp = y + offset;                  \
+                                f32_t *yp = y + offset;                      \
                                 for (size_t k = 0; k < ft; k++) {            \
                                         (*gp) = (*gp) / sum - (*yp);         \
                                         gp++;                                \
@@ -468,14 +468,13 @@ vmOpLossSCELF32(struct tensor_t *td, struct tensor_t *t1, struct tensor_t *t2,
 // Inverse Sqrt.
 // -----------------------------------------------------------------------------
 error_t
-vmOpISqrtF32(struct tensor_t *td, struct tensor_t *t1, const float32_t *e,
-             int mode)
+vmOpISqrtF32(struct tensor_t *td, struct tensor_t *t1, const f32_t *e, int mode)
 {
         assert(td->dtype == F32);
         assert(t1->dtype == F32);
 
-        float32_t *dst = (float32_t *)td->data;
-        float32_t *src = (float32_t *)t1->data;
+        f32_t *dst = (f32_t *)td->data;
+        f32_t *src = (f32_t *)t1->data;
 
         size_t size = t1->shape->size;
         if (size != td->shape->size) {
@@ -487,13 +486,13 @@ vmOpISqrtF32(struct tensor_t *td, struct tensor_t *t1, const float32_t *e,
                         dst[i] = 1.0 / sqrt(src[i]);
                 }
         } else if (mode == 0) {
-                float32_t v = *e;
+                f32_t v = *e;
                 for (size_t i = 0; i < size; i++) {
                         dst[i] = 1.0 / sqrt(src[i] + v);
                 }
         } else {
                 assert(mode == 1);
-                float32_t v = *e;
+                f32_t v = *e;
                 for (size_t i = 0; i < size; i++) {
                         dst[i] = 1.0 / (sqrt(src[i]) + v);
                 }

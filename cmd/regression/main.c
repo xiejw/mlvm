@@ -12,8 +12,8 @@
 #include "../helpers.h"
 
 // helper to generate next input
-void new_input(struct srng64_t *seed, size_t size, _mut_ float32_t *data,
-               float32_t *y, float32_t *w);
+void new_input(struct srng64_t *seed, size_t size, _mut_ f32_t *data, f32_t *y,
+               f32_t *w);
 
 int
 main()
@@ -49,9 +49,9 @@ main()
         // ---
         // obtains the pointers to the real data.
 
-        float32_t *x_data;
-        float32_t *y_data;
-        float32_t *w_data;
+        f32_t *x_data;
+        f32_t *y_data;
+        f32_t *w_data;
 
         NE(vmTensorData(vm, x, (void **)&x_data));
         NE(vmTensorData(vm, w_target, (void **)&w_data));
@@ -163,14 +163,14 @@ cleanup:
 // internal
 
 void
-new_input(struct srng64_t *seed, size_t size, _mut_ float32_t *data,
-          float32_t *y, float32_t *w)
+new_input(struct srng64_t *seed, size_t size, _mut_ f32_t *data, f32_t *y,
+          f32_t *w)
 {
         // x
         rng64StdNormalF((struct rng64_t *)seed, size, data);
 
         // y
-        float32_t local_y = 0;
+        f32_t local_y = 0;
         for (size_t i = 0; i < size; i++) {
                 local_y += w[i] * data[i];
         }
