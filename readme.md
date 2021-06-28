@@ -19,7 +19,11 @@ MLVM_TENSOR_DUMP_SIZE    The number of elements to print for Tensor, e.g.,
 MLVM_MAX_TENSOR_COUNT    The number of tensors VM supports, defaults to 128.
 ```
 
-## Blis
+## BLIS
+
+[BLIS](https://github.com/flame/blis) is a portable software framework for
+instantiating high-performance BLAS-like dense linear algebra libraries. It is
+very well documented and easy to integrate.
 
 Compile blis in `../blis`
 
