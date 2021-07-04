@@ -75,10 +75,14 @@ $(foreach cmd,$(CMDS),$(eval $(call objs,$(cmd),$(BUILD),$(VM_LIB))))
 # ------------------------------------------------------------------------------
 # Tests.
 # ------------------------------------------------------------------------------
-TEST_LIBS       = ${BUILD}/shape_test.o ${BUILD}/tensor_test.o \
-		  ${BUILD}/vm_test.o ${BUILD}/op_test.o
+VM_TEST_LIBS    = ${BUILD}/vm_shape_test.o \
+		  ${BUILD}/vm_tensor_test.o \
+		  ${BUILD}/vm_vm_test.o \
+		  ${BUILD}/vm_op_test.o
 
-${BUILD}/%_test.o: ${VM_SRC}/%_test.c ${VM_HEADER}
+TEST_LIBS       = ${VM_TEST_LIBS}
+
+${BUILD}/vm_%_test.o: ${VM_SRC}/%_test.c ${VM_HEADER}
 	${EVA_CC} -o $@ -c $<
 
 $(eval $(call objs,test,$(BUILD),$(VM_LIB) $(TEST_LIBS)))
