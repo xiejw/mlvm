@@ -42,3 +42,7 @@ $ make BLIS=1 RELESAE=1 -B
 $ make BLIS=1 RELESAE=1 libmlvm
 $ make BLIS=1 test -B
 ```
+
+## CMDs
+
+Cmds contain some examples how to use mlvm as libraries.
