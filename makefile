@@ -12,7 +12,9 @@ INCLUDE         =  include
 CMD             =  cmd
 FMT_FOLDERS     =  ${SRC} ${CMD} ${INCLUDE}  # required by eva.mk
 
-CFLAGS          += -I${SRC} -I${INCLUDE} -I${EVA_PATH}/src -g
+VM_SRC          =  ${SRC}/vm
+
+CFLAGS          += -I${SRC}/vm -I${INCLUDE} -I${EVA_PATH}/src -g
 CFLAGS          += -g -DVM_INTERNAL=1
 LDFLAGS         += ${EVA_LIB}
 
@@ -21,7 +23,7 @@ TEX             = docker run --rm -v `pwd`:/workdir xiejw/tex pdftex
 # ------------------------------------------------------------------------------
 # Libs.
 # ------------------------------------------------------------------------------
-VM_HEADER       = ${INCLUDE}/vm.h ${SRC}/op.h
+VM_HEADER       = ${INCLUDE}/vm.h ${VM_SRC}/op.h
 VM_LIB          = ${BUILD}/vm_vm.o ${BUILD}/vm_shape.o ${BUILD}/vm_tensor.o \
                   ${BUILD}/vm_primitives.o
 
@@ -30,11 +32,11 @@ ALL_LIBS        = ${VM_LIB}
 # ------------------------------------------------------------------------------
 # Header Deps.
 # ------------------------------------------------------------------------------
-${BUILD}/vm_vm.o: ${SRC}/primitives.h ${SRC}/vm_internal.h
+${BUILD}/vm_vm.o: ${VM_SRC}/primitives.h ${VM_SRC}/vm_internal.h
 
-${BUILD}/vm_tensor.o: ${SRC}/vm_internal.h
+${BUILD}/vm_tensor.o: ${VM_SRC}/vm_internal.h
 
-${BUILD}/vm_primitives.o: ${SRC}/primitives.h
+${BUILD}/vm_primitives.o: ${VM_SRC}/primitives.h
 
 # ------------------------------------------------------------------------------
 # Actions.
@@ -44,7 +46,7 @@ ${BUILD}/vm_primitives.o: ${SRC}/primitives.h
 
 compile: ${BUILD} ${ALL_LIBS}
 
-${BUILD}/vm_%.o: ${SRC}/%.c ${VM_HEADER}
+${BUILD}/vm_%.o: ${VM_SRC}/%.c ${VM_HEADER}
 	${EVA_CC} -o $@ -c $<
 
 libmlvm: compile ${BUILD}/libmlvm.a
@@ -71,7 +73,7 @@ $(foreach cmd,$(CMDS),$(eval $(call objs,$(cmd),$(BUILD),$(VM_LIB))))
 TEST_LIBS       = ${BUILD}/shape_test.o ${BUILD}/tensor_test.o \
 		  ${BUILD}/vm_test.o ${BUILD}/op_test.o
 
-${BUILD}/%_test.o: ${SRC}/%_test.c ${VM_HEADER}
+${BUILD}/%_test.o: ${VM_SRC}/%_test.c ${VM_HEADER}
 	${EVA_CC} -o $@ -c $<
 
 $(eval $(call objs,test,$(BUILD),$(VM_LIB) $(TEST_LIBS)))
