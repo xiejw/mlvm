@@ -14,7 +14,7 @@ FMT_FOLDERS     =  ${SRC} ${CMD} ${INCLUDE}  # required by eva.mk
 
 VM_SRC          =  ${SRC}/vm
 
-CFLAGS          += -I${VM_SRC} -I${INCLUDE} -I${EVA_PATH}/src
+CFLAGS          += -I${EVA_PATH}/src -I${INCLUDE} -I${VM_SRC}
 CFLAGS          += -DVM_INTERNAL=1
 
 ifndef RELEASE
@@ -29,7 +29,9 @@ TEX             = docker run --rm -v `pwd`:/workdir xiejw/tex pdftex
 # Libs.
 # ------------------------------------------------------------------------------
 VM_HEADER       = ${INCLUDE}/vm.h ${VM_SRC}/op.h
-VM_LIB          = ${BUILD}/vm_vm.o ${BUILD}/vm_shape.o ${BUILD}/vm_tensor.o \
+VM_LIB          = ${BUILD}/vm_vm.o \
+		  ${BUILD}/vm_shape.o \
+		  ${BUILD}/vm_tensor.o \
                   ${BUILD}/vm_primitives.o
 
 ALL_LIBS        = ${VM_LIB}
