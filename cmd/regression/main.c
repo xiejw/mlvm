@@ -9,9 +9,9 @@
 #include "vm.h"
 
 // cmd
-#include "../helpers.h"
+#include "../helpers.h"  // NE, S_PRINTF macros
 
-// helper to generate next input
+// Helper to generate next input
 void new_input(struct srng64_t *seed, size_t size, _mut_ f32_t *data, f32_t *y,
                f32_t *w);
 
@@ -21,10 +21,10 @@ main()
         error_t err = OK;
         sds_t   s   = sdsEmpty();
 
-        printf("Linear Regression\n");
+        printf("MLVM Demo: Linear Regression\n");
 
         // ---
-        // defines vm with some shapes.
+        // Defines vm with some shapes.
 
         struct vm_t    *vm        = vmNew();
         struct shape_t *sp_weight = spNew(1, (int[]){6});
@@ -32,14 +32,14 @@ main()
         struct opopt_t  opt;
 
         // ---
-        // prepares the seeds, one for model and one for input.
+        // Prepares the seeds, one for model and one for input.
 
         struct srng64_t *seed           = srng64New(123);
         struct srng64_t *seed_for_input = srng64Split(seed);
         struct srng64_t *rng;  // free after each use.
 
         // ---
-        // allocates the tensors for model, input and output.
+        // Allocates the tensors for model, input and output.
 
         int w_target = vmTensorNew(vm, F32, sp_weight);
         int w        = vmTensorNew(vm, F32, sp_weight);
@@ -47,7 +47,7 @@ main()
         int y        = vmTensorNew(vm, F32, r1_1);
 
         // ---
-        // obtains the pointers to the real data.
+        // Obtains the pointers to the real data.
 
         f32_t *x_data;
         f32_t *y_data;
@@ -58,7 +58,7 @@ main()
         NE(vmTensorData(vm, y, (void **)&y_data));
 
         // ---
-        // initializes weight for the model (target).
+        // Initializes weight for the model (target).
         rng      = srng64Split(seed);
         opt.mode = OPT_RNG_STD_NORMAL | OPT_MODE_R_BIT;
         opt.r    = *(struct rng64_t *)rng;
@@ -68,7 +68,7 @@ main()
         S_PRINTF("\ttarget  weight: ", w_target, "\n");
 
         // ---
-        // initializes weight for the model (about to learn).
+        // Initializes weight for the model (about to learn).
         rng   = srng64Split(seed);
         opt.r = *(struct rng64_t *)rng;
         NE(vmExec(vm, OP_RNG, &opt, w, -1, -1));
@@ -77,7 +77,7 @@ main()
         S_PRINTF("\tinitial weight: ", w, "\n");
 
         {
-                // --- formula
+                // --- Formula
                 //   forward pass
                 //      z[w] = x[w] * w[w]
                 //      rz[] = reduce_sum(z[w])
@@ -101,6 +101,9 @@ main()
                 //      w[w] = w[w] - d_w[w]
         }
 
+        // ---
+        // Intermediate values.
+
         int z    = vmTensorNew(vm, F32, sp_weight);
         int rz   = vmTensorNew(vm, F32, r1_1);
         int l    = vmTensorNew(vm, F32, r1_1);
@@ -113,7 +116,7 @@ main()
                 sdsCatPrintf(&s, "\niteration %d\n", i);
 
                 // ---
-                // prepare input sample: x,y.
+                // Prepare input sample: x,y.
                 {
                         new_input(seed_for_input, sp_weight->size, x_data,
                                   y_data, w_data);
@@ -122,7 +125,7 @@ main()
                         S_PRINTF("\ty: ", y, "\n");
                 }
 
-                // forward pass.
+                // Forward pass.
                 {
                         NE(vmExec(vm, OP_MUL, NULL, z, x, w));
                         OPT_SET_REDUCTION_SUM(opt, 0);
@@ -133,7 +136,7 @@ main()
                         S_PRINTF("\tloss : ", loss, "\n");
                 }
 
-                // backward pass
+                // Backward pass
                 {
                         OPT_SET_SCALAR_OPERAND(opt,
                                                2 * 0.05);  // 2 * learning_rate
