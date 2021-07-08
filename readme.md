@@ -43,6 +43,7 @@ $ make BLIS=1 RELESAE=1 libmlvm
 $ make BLIS=1 test -B
 ```
 
-## CMDs
+## Use as a Low-Level Library
 
-Cmds contain some examples how to use mlvm as libraries.
+Cmds contain some examples how to use mlvm as libraries. Check `*_demo` under
+`cmd` folder.
