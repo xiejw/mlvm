@@ -37,7 +37,7 @@ test_shape_rank0()
 }
 
 char *
-run_shape_suite()
+run_vm_shape_suite()
 {
         RUN_TEST(test_shape_init);
         RUN_TEST(test_shape_ref);

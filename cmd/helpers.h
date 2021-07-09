@@ -2,7 +2,7 @@
 
 #define NE(e) _NO_ERR_IMPL_(e, __FILE__, __LINE__)
 
-#define _NO_ERR_IMPL_(e, f, l)                                         \
+#define _NO_ERR_IMPL_(e, f, l)                                        \
         if (e) {                                                      \
                 err = e;                                              \
                 errDump("failed to exec op @ file %s line %d", f, l); \

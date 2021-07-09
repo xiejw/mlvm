@@ -35,10 +35,10 @@ main()
         // Convenstion is for foo, a test suite fn run_foo_suite is called. For
         // customized case, use ADD_SUITE_NAME_AND_FN.
 
-        ADD_SUITE(op);      // op_test.c
-        ADD_SUITE(shape);   // shape_test.c
-        ADD_SUITE(tensor);  // tensor_test.c
-        ADD_SUITE(vm);      // vm_test.c
+        ADD_SUITE(vm_op);      // vm_op_test.c
+        ADD_SUITE(vm_shape);   // vm_shape_test.c
+        ADD_SUITE(vm_tensor);  // vm_tensor_test.c
+        ADD_SUITE(vm_vm);      // vm_vm_test.c
 
         // ---------------------------------------------------------------------
         // Runs all suites and reports.

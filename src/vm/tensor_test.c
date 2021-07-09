@@ -110,7 +110,7 @@ test_tensor_swap()
 }
 
 char *
-run_tensor_suite()
+run_vm_tensor_suite()
 {
         RUN_TEST(test_tensor_new);
         RUN_TEST(test_tensor_info);

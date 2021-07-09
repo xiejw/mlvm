@@ -109,7 +109,7 @@ test_vm_batch()
 }
 
 char *
-run_vm_suite()
+run_vm_vm_suite()
 {
         RUN_TEST(test_vm_new);
         RUN_TEST(test_vm_exec);

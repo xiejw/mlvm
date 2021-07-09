@@ -386,7 +386,7 @@ test_ls_scel()
 }
 
 char *
-run_op_suite()
+run_vm_op_suite()
 {
         RUN_TEST(test_ele_ops);
         RUN_TEST(test_ele_ops_unequal_size);
